@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.06 | Preferred Stock Valuation</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0166-R-s06" title="8.06 | Preferred Stock Valuation">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール8：株式評価（Equity Valuation）：概念および基本ツール（Concepts and Basic Tools）8.06｜優先株式評価（Preferred Stock Valuation）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">コール不可（non-callable）、転換不可（non-convertible）の優先株式（preferred stock）の本源的価値（intrinsic value）を計算する。</li>
+<li class="cfa-curriculum-los-item">各評価モデル分類の利点と欠点を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>一般的な配当割引モデル（dividend discount models）は、優先株式（preferred shares）に比較的容易に適用できる。最も単純な形では、優先株は（一般に議決権のない）株式の一形態であり、配当の受領および企業清算時の発行体資産に対して普通株式（common stock）より優先順位を持つ。満期日（maturity date）が設定されており、その時点で額面価額（par (face) value）が支払われる場合もあれば、満期のない永久（perpetual）の場合もある。また、コール可能（callable）または転換可能（convertible）であることもある。</p>
+<p>一定の配当Dを支払い、時間を通じて一定の要求収益率を仮定するコール不可・転換不可の永久優先株については、式1は永久年金（perpetuity）の現在価値の式に簡略化される。その価値は次の通りである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E6"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mn>0</mn>
+</msub>
+</mrow>
+<mi>r</mi>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">6</span></div>
+<p>例えば、額面価額100ドルのコール不可永久優先株が年間5.50ドルの配当を支払うとする。要求収益率が6％であれば、価値は5.50／0.06＝91.67ドルと推定される。</p>
+<p>満期が時点nにあるコール不可・転換不可の優先株については、本源的価値は式3を用いて推定できるが、Pₙの代わりに優先株の額面価額Fを用いる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E7"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>t</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>n</mi>
+</munderover>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mi>t</mi>
+</msub>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>t</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mi>F</mi>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>n</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">7</span></div>
+<p>式7を用いる場合、最も正確な方法は、配当支払いスケジュールを反映したn、r、およびDの値を用いることである。この方法は、債券を評価する際の固定利付証券アナリストの実務と類似している。例えば、額面価額20ポンド、満期6年、名目要求収益率8.20％、半年ごとの配当2.00ポンドの転換不可優先株は、n＝12、r＝4.10％、D＝2.00ポンド、F＝20.00ポンドとして評価される。この結果、推定価値は31.01ポンドとなる。配当が年次で支払われると仮定した場合（すなわち、n＝6、r＝8.20％、D＝4.00ポンド）、推定価値は30.84ポンドとなる。</p>
+<p>優先株の発行は、しばしば満期前のある時点で発行体によってコール（償還）可能（callable）であり、多くの場合、額面価額または額面を上回る価格（満期に近づくにつれて額面に収束）で償還される。このようなコールオプションは、発行体にとって有利な場合に行使され、不利な場合には行使されないため、投資家にとって優先株の価値を低下させる傾向がある。例えば、配当、満期、要求収益率に基づけば額面を上回って取引されるはずの株式を額面で償還できる場合、発行体には償還するインセンティブがある。</p>
+<p>優先株には、リトラクション・オプション（retraction option）が付与される場合もあり、これは優先株保有者が満期前にあらかじめ定められた条件で株式を発行体に売り戻すことを可能にするものである。本質的には、保有者はプットオプション（put option）を持つ。このようなプットオプションは、投資家にとって有利な場合に行使され、不利な場合には行使されないため、優先株の価値を高める傾向がある。このような組み込みオプション（embedded options）を含む証券の厳密な評価は本章の範囲外であるが、例6では式7を用いてコール可能かつリトラクタブルな優先株の価値を近似するケースを示す。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0166-R-EXM6">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例6 優先株評価（Preferred Share Valuation）：2つのケース</h3>
+<section>
+<h4>ケース1：コール不可・転換不可・永久優先株（Non-callable, Non-convertible, Perpetual Preferred Shares）</h4>
+<p>ユニオン・エレクトリック社（Union Electric Company）の年率4.75％永久優先株に関する情報は以下の通りである：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0166-R-L18">
+<li class="cfa-curriculum-list-item">発行体（Issuer）：ユニオン・エレクトリック社（Union Electric Co.）（アメレン（Ameren）所有）</li>
+<li class="cfa-curriculum-list-item">額面価額（Par value）：100米ドル</li>
+<li class="cfa-curriculum-list-item">配当（Dividend）：年間4.75米ドル</li>
+<li class="cfa-curriculum-list-item">満期（Maturity）：永久（perpetual）</li>
+<li class="cfa-curriculum-list-item">組み込みオプション（Embedded options）：なし</li>
+<li class="cfa-curriculum-list-item">信用格付け（Credit rating）：ムーディーズ（Moody’s Investors Service）／S&amp;P（Standard &amp; Poor’s） Ba1／BB</li>
+<li class="cfa-curriculum-list-item">評価日時点におけるBa1／BB格付け優先株の要求収益率：7.5％</li>
+</ul>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>この優先株の本源的価値を推定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>割引率としてBa1／BB格付け優先株の要求収益率7.5％を用いると、本源的価値は4.75／0.075＝63.33米ドルと推定される。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>この発行がコール可能であった場合（他の条件が同じと仮定）、本源的価値は高くなるか低くなるか説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>コール可能であれば本源的価値は低くなる。償還（call）オプションは、発行体にとって有利な場合に行使されるため価値があり、投資家にとっては不利である。このため、コール可能な場合、通常は投資家にとっての株式価値は低くなる。本ケースでは、コールなしの本源的価値が額面を大きく下回っているため、仮にコール可能であっても発行体が償還する可能性は低いが、それでもコール性は本源的価値をわずかに低下させる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section>
+<h4>ケース2：リトラクタブル期限付優先株（Retractable Term Preferred Shares）</h4>
+<p>リトラクタブル期限付優先株は、もともとカナダ企業によって発行されてきたタイプの優先株であり、現在では日本を含む他の法域でも提供されている。このタイプの証券では、「リトラクション日（retraction date）」が設定されており、その日に優先株主は株式を額面価額で発行体に売り戻すオプション（retractable または putable）を有する。² リトラクション日以前の特定の日には、発行体はあらかじめ定められた価格（常に額面以上）で優先株を償還するオプションを有する。</p>
+<p>現在発行されているリトラクタブル期限付優先株の例として、トヨタ自動車株式会社（Toyota Motor Corporation, TMC）の第1シリーズAA種株式がある。この株式は当初配当率0.5％で、2020年まで毎年0.5％ずつ上昇し、その後2.5％で固定される。TMCは日本に本社を置く世界的な自動車メーカーであり、グローバルに事業を展開している。この証券は日本円建てである。額面価額は10,598円で、2016年3月31日に26.5円［＝（0.5％×10,598円）／2］の半年配当を支払う。この半年配当は2020年3月31日以降132.5円［＝（2.5％×10,598円）／2］に増加する見込みである。2017年12月31日時点で、ムーディーズおよびS&amp;Pによる格付けはそれぞれAa3およびAA–である。したがって、これらの株式は相対的に高い信用品質を有すると評価されている。2021年4月2日以降、TMCの選択により10,598円（額面）で償還可能である。リトラクション日は2020年9月1日以降、毎年3月、6月、9月、12月の最終日であり、株式は額面で売り戻すことができる。AA種株式は議決権を有し、普通株主と同様の権利を行使できる。これらの株式は2015年に普通株価格に対して20％のプレミアムで発行されたが、その後株価は2017年12月31日時点で7,243円まで下落している。現在の要求収益率は年率3.05％（半年1.525％）である。この証券の市場価格がTMCの償還価格を大きく下回っているため、発行体による償還は起こりにくいと考えられる一方、保有者にとっては約45％高い価格（10,598円対7,243円）で売り戻せる可能性があるため、リトラクション・オプションは重要な価値を持つ。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>この証券は2020年12月にリトラクションされると仮定する（すなわち、保有者はその時点で株式を会社に売り戻す）。2017年12月時点として、この株式の本源的価値を推定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>この優先株の本源的価値は10,279円と推定される。</p>
+<p>予想される半年配当（expected semiannual dividends）：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___6">Year ended March 31, 2018: ¥79.5 [= (1.5 percent × ¥10,598)/2]</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___7">Year ended March 31, 2019: ¥106 [= (2.0 percent × ¥10,598)/2]</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___8">Year ended March 31, 2020: ¥132.5 [= (2.5 percent × ¥10,598)/2]</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___9"><math>
+<semantics>
+<mtable>
+<mtr>
+<mtd>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mrow>
+<mo>[</mo>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo>¥</mo>
+<mn>79.5</mn>
+</mrow>
+<mrow>
+<msup>
+<mn>1.01525</mn>
+<mn>0.5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo>¥</mo>
+<mn>79.5</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mn>1.01525</mn>
+</mrow>
+<mn>1.5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo>¥</mo>
+<mn>106</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mn>1.01525</mn>
+</mrow>
+<mn>2.5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo>¥</mo>
+<mn>106</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mn>1.01525</mn>
+</mrow>
+<mn>3.5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo>¥</mo>
+<mn>132.5</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mn>1.01525</mn>
+</mrow>
+<mn>4.5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo>¥</mo>
+<mn>132.5</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mn>1.01525</mn>
+</mrow>
+<mn>5.5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo>¥</mo>
+<mn>10</mn>
+<mo>,</mo>
+<mn>598</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mn>1.01525</mn>
+</mrow>
+<mrow>
+<mn>6</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mo>]</mo>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mo>≈</mo>
+<mo>¥</mo>
+<mn>10</mn>
+<mo>,</mo>
+<mn>279</mn>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+<p>現在の市場価格7,243円と本源的価値10,279円との差は、シリーズAA株の保有者に付与されたリトラクタブル・オプション（retractable option）の含意価値（implied value）である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0166-R-FN2Content">
+<p>²「リトラクション（retraction）」とはこのオプションを指し、プットオプション（put option）の一種である。この用語は完全に統一されているわけではなく、「リトラクタブル期限付優先株（retractable term preferred）」は「ハード・リトラクタブル優先株（hard retractable preferred）」とも呼ばれる。「ハード（hard）」とは、リトラクション日に普通株ではなく現金で支払われることを意味する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PreferredStockContent">
+<p>優先株（preference shares）を参照。</p>
+</div>
+<div class="dp-modal-content dp-modal-content cfa-curriculum-popup-disp-formula" id="CFA0166-R-E1_Content">
+<h4 class="dp-modal-title" style="margin-top: 0; border-bottom: 1px solid #A9A9A9;">式1（Equation 1）の内容。</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E1"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>t</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>∞</mi>
+</munderover>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mi>t</mi>
+</msub>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>t</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">1</span></div>
+</div>
+<div class="dp-modal-content dp-modal-content cfa-curriculum-popup-disp-formula" id="CFA0166-R-E3_Content">
+<h4 class="dp-modal-title" style="margin-top: 0; border-bottom: 1px solid #A9A9A9;">式3（Equation 3）の内容。</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E3"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>t</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>n</mi>
+</munderover>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mi>t</mi>
+</msub>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>t</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>P</mi>
+<mi>n</mi>
+</msub>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>n</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">3</span></div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142433_805_Dividend_Discount_Model_DDM_and_Free-Cash-Flow-to-Equity_Model_FCFE.html" >← 前へ</a>
+  <span class="title">8.06 | Preferred Stock Valuation</span>
+  <a href="courses_1868_modules_items_142437_807_The_Gordon_Growth_Model.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

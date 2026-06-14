@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12.04 | Portfolio Duration and Convexity</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2442-R-s04-R-1" title="12.04 | Portfolio Duration and Convexity">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール12：イールドベース債券コンベクシティとポートフォリオ特性（Yield-Based Bond Convexity and Portfolio Properties）12.04 | ポートフォリオのデュレーションとコンベクシティ（Portfolio Duration and Convexity）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">ポートフォリオのデュレーションとコンベクシティを計算し、これらの指標の限界を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>デュレーション（duration）とコンベクシティ（convexity）が単一債券の金利リスクの測定指標を提供するのと同様に、これらの指標は債券ポートフォリオの金利リスクの測定にも使用できる。債券ポートフォリオのデュレーションとコンベクシティを計算する方法は2つある：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA2442-R-s04-L1">
+<li class="cfa-curriculum-list-item">集計キャッシュフローの受取時点までの時間の加重平均を用いる方法</li>
+<li class="cfa-curriculum-list-item">ポートフォリオを構成する個々の債券のデュレーションとコンベクシティの加重平均を用いる方法</li>
+</ol>
+<p>最初の方法は理論的に正しいアプローチであるが、実務上は利用が難しい。本章では、固定利付ポートフォリオ・マネージャー（fixed-income portfolio managers）に広く用いられている第2の方法に焦点を当てる。また、その限界についても強調する。</p>
+<p>ある機関投資家（institutional investor）が、額面5,000万ドルのBRWAの5年債とルーマニア政府（government of Romania）の30年債をそれぞれ保有する2債券ポートフォリオを持っているとする。詳細は図表6（Exhibit 6）に示されている。両債券は米ドル建てであると仮定する。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2442-R-s04-EXH6">
+<h3 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">図表6（Exhibit 6）ポートフォリオのデュレーションとコンベクシティ算出のための入力</h3>
+<div class="cfa-curriculum-table-wrap" id="CFA2442-R-s04-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Bond</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">満期（年）（Maturity (Years)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">クーポン（%）（Coupon (%)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>Price</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">利回り（%）（Yield (%)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">デュレーション（Duration）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">コンベクシティ（Convexity）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">BRWA</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.58676</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24.23896</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ルーマニア（Romania）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">98.022</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.90637</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">369.64203</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2442-R-s04-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Bond</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">額面（Par Value）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">市場価値（Market Value）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">ポートフォリオ比率（Portfolio Weight）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">BRWA</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">50,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">50,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.5050</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ルーマニア（Romanian）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">50,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">49,011,224</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.4950</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+</div>
+<p>ポートフォリオの総市場価値は99,011,224ドルであり、2つの債券は市場価値ベースでほぼ均等に配分されている。前述の通り、ポートフォリオのデュレーションとコンベクシティは、ポートフォリオ全体の市場価値に対する各債券の比率を重みとして、個々の債券の指標の加重平均として計算される。この加重平均は理論的に正しいポートフォリオのデュレーションおよびコンベクシティの近似となり、各債券の満期利回り（yield-to-maturity）の差が小さく、かつイールドカーブ（yield curve）がフラットであるほど、その精度は高くなる。</p>
+<p>この単純な例におけるポートフォリオ比率を用いると、ポートフォリオのデュレーションとコンベクシティは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E">Weighted-average modified duration = (4.58676 × 0.5050) + (15.90637 × 0.4950) = 10.19004.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E___1">Weighted-average convexity = (24.23896 × 0.5050) + (369.64203 × 0.4950) = 195.21581.</div>
+<p>この加重平均アプローチの主な利点は、金利リスクの指標として容易に利用できる点である。例えば、ポートフォリオ内の各債券の満期利回りが100ベーシスポイント（bps）上昇した場合、ポートフォリオ価値の推定下落率は9.214%となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E___2">%∆<em>PV<sup>Full</sup>
+</em> ≈ (–10.19004 × 0.0100) + [½ × 195.21581 × (0.0100)<sup>2</sup>] = –9.21396%.</div>
+<p>しかし、このアプローチには限界もある。すなわち、ポートフォリオのデュレーションおよびコンベクシティの指標は、すべての満期における利回りが同じ方向に同じ幅で変化する、すなわちイールドカーブのパラレルシフト（parallel shift）を暗黙的に仮定している。実際には、純粋なパラレルシフトは稀であり、むしろスティープ化（steepening）、フラット化（flattening）、あるいはツイスト（twisting）といった変化が頻繁に観察される。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2442-R-s04-EXM3">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2 ポートフォリオのデュレーションとコンベクシティ（Example 2 Portfolio Duration and Convexity）</h3>
+<p>ある機関投資家（institutional investor）は、既存のBRWAおよびルーマニア政府債のポートフォリオに、新たに額面5,000万ドルの米国財務省債（US Treasury bond）の10年債ポジションを追加することを検討している。関連データは図表7（Exhibit 7）に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2442-R-s04-EXH7">
+<h4 class="cfa-curriculum-exhibit-table-title">図表7（Exhibit 7）ポートフォリオのデュレーションとコンベクシティ算出のための入力</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Bond</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">満期（年）（Maturity (Years)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">クーポン（%）（Coupon (%)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>Price</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">利回り（%）（Yield (%)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">デュレーション（Duration）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">コンベクシティ（Convexity）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">BRWA</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.58676</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24.23896</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ルーマニア（Romanian）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">98.022</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.90637</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">369.64203</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">米国財務省（US Treasury）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">98.168</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.700</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9.23693</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">93.87376</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2442-R-s04-Tc">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Bond</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">額面（USD）（Par Value (USD)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">市場価値（USD）（Market Value (USD)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">ポートフォリオ比率（Portfolio Weight）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">BRWA</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">50,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">50,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.33762</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ルーマニア（Romania）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">50,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">49,011,224</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.33094</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">米国財務省（US Treasury）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">50,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">49,083,948</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.33144</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>提案されたポートフォリオの加重平均デュレーションとコンベクシティを計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>図表7（Exhibit 7）のデータに基づき、加重平均修正デュレーション（modified duration）およびコンベクシティ（convexity）は以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E___3">Weighted-average modified duration = (4.58676 × 0.33762) + (15.90637 × 0.33094) + (9.23693 × 0.33144) = 9.87415.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E___4">Weighted-average convexity = (24.23896 × 0.33762) + (369.64203 × 0.33094) + (93.87376 × 0.33144) = 161.62749.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>提案されたポートフォリオと現在のポートフォリオのデュレーションおよびコンベクシティを比較し、解釈せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>米国財務省債（US Treasury）のポジションを追加することで、ポートフォリオのデュレーション（10.19004から9.87415へ）およびコンベクシティ（195.21581から161.62749へ）の両方が低下する。このデュレーションの低下は、イールドカーブの上方パラレルシフト（parallel shift）に対するポートフォリオの価格リスクを低減させるが、コンベクシティが低下するため、大きな変化に対してはこのリスク低減効果は弱まる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>投資家が利回りの100ベーシスポイント（bps）の下方パラレルシフトを予想している場合、米国財務省債のポジションを追加すべきかを推奨せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Given an expected 100 bp parallel shift down in yields, the investor should not add the position in US Treasury bonds. Adding the position lowers both the portfolio duration and convexity, which would also reduce the expected increase in the value of the portfolio. Given the investor’s yield curve view, it should seek to increase both portfolio duration and convexity.</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2442-R-s04-Ba">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"> </i>
+         Question Set</h3>
+<p>Questions 1–4 relate to the following information.</p>
+<section>
+<p>An investor purchases EUR10 million par value of a 5-year, zero-coupon bond and a 10-year, fixed-rate semiannual coupon bond. Details of the bonds are shown below.</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2442-R-s04-Td">
+<h4 class="cfa-curriculum-unknownType-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>
+<span style="display: block;">Two-Bond Portfolio</span>
+</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Bond</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>Maturity (Years)</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>Coupon (%)</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>Price</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>YTM (%)</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>Duration</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>Convexity</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Zero</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">83.18777</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.81928</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27.87052</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Semi- annual</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">105.91556</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.71210</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">72.54897</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>Calculate the weighted-average modified duration for the portfolio.</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">Check Answer</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">Solution</h3>
+<p>The market value of the bonds are as follows:</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E___5">Zero-coupon: €10,000,000 × 83.18777/100 = €8,318,777.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E___6">Semi-annual: €10,000,000 × 105.91556/100 = €10,591,556.</div>
+<p>Therefore, the weights are 43.991% for the zero-coupon bond and 56.009% for the semi-annual bond. As a result, the weighted-average modified duration is</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E___7">(4.81928 × 0.43991) + (7.71210 × 0.56009) = 6.43953.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>Calculate the weighted-average convexity for the portfolio.</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">Check Answer</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">Solution</h3>
+<p>Using the weights calculated previously,</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E___8">Weighted-average convexity = (27.87052 × 0.43991) + (72.54897 × 0.56009) = 52.89463.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>Calculate the estimated percentage price change of the portfolio given a 100 bp increase in yield-to-maturity on each of the bonds.</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">Check Answer</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">Solution</h3>
+<div class="cfa-curriculum-display-formula-container" id="CFA2442-R-s04-E___9">%∆<em>PV<sup>Full</sup>
+</em> ≈ (–6.43953 × 0.0100) + [½ × 52.89463 × (0.0100)<sup>2</sup>] = –6.1751%.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2442-R-s04-Q7">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>Based on rising inflation and tightening monetary policy, the investor expects interest rates to rise. Given that view, which bond should the investor consider replacing the 10-year bond with?</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>
+<span class="cfa-curriculum-option-label">A. </span>A 20-year bond</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">Solution</h3>
+<p>B is correct. With interest rates expected to rise, the investor should choose a bond with lower interest rate risk. Both the 20-year bond and the 10-year bond with a lower coupon should have higher durations than the current 10-year bond, all else equal, and would be expected to experience a larger percentage price decrease if interest rates increase. Floating-rate bonds, however, have low interest rate risk because coupon payments adjust to changing interest rates.</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>
+<span class="cfa-curriculum-option-label">B. </span>A 15-year floating-rate bond</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">Solution</h3>
+<p>B is correct. With interest rates expected to rise, the investor should choose a bond with lower interest rate risk. Both the 20-year bond and the 10-year bond with a lower coupon should have higher durations than the current 10-year bond, all else equal, and would be expected to experience a larger percentage price decrease if interest rates increase. Floating-rate bonds, however, have low interest rate risk because coupon payments adjust to changing interest rates.</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>
+<span class="cfa-curriculum-option-label">C. </span>A 10-year bond with a lower coupon</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">Solution</h3>
+<p>B is correct. With interest rates expected to rise, the investor should choose a bond with lower interest rate risk. Both the 20-year bond and the 10-year bond with a lower coupon should have higher durations than the current 10-year bond, all else equal, and would be expected to experience a larger percentage price decrease if interest rates increase. Floating-rate bonds, however, have low interest rate risk because coupon payments adjust to changing interest rates.</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+<p> </p>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ParallelShiftContent">
+<p>When all maturities along a yield curve increase or decrease in yield in the same direction by the same magnitude. A parallel shift in the yield curve is implicitly assumed in analytical duration and convexity.</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146487_1203_Bond_Risk_and_Return_Using_Duration_and_Convexity.html" >← 前へ</a>
+  <span class="title">12.04 | Portfolio Duration and Convexity</span>
+  <a href="courses_1869_modules_items_146504_Glossary_Yield-Based_Bond_Convexity_and_Portfolio_Properties.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

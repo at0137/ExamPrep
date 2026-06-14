@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.06 | Competitive Positioning</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2428-R-s06-R-1" title="6.06 | Competitive Positioning"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：産業および競争分析 6.06 | 競争ポジショニング</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">企業の競争戦略および競争上の位置を評価する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>すべての企業は、意図的であるか否かにかかわらず競争戦略を有している。意図的な戦略は、全社的な計画、パフォーマンス測定、および戦略を洗練させるためのフィードバックループから生じる。一方、非意図的な戦略は、企業内のさまざまなチームがそれぞれのインセンティブを追求したり、過去と同じことを行ったり、業界や専門職の慣行に従ったりすることから生じる。非意図的な戦略が最適であることはまれであり、多くの場合、あらゆる企業に存在するコミュニケーションや調整の問題を悪化させる。ただし、このアプローチは探索志向の研究（discovery-oriented research）のような分野では有効に機能する可能性がある。Munos（2009）は、製薬の研究開発（R&amp;D）における規模の不経済（diseconomies of scale）の証拠を見出しており、多くの新薬が比較的「管理されていない」形で運営される小規模企業によって発見されていることを示した。</p>
+<p>最終的に、有効な競争戦略は、経済的利益（economic profits）など、ステークホルダーに対する価値創出の実績によって示される。その有効性は事後的にのみ評価できる。将来志向で競争戦略を評価するためには、アナリストは次の3つの観点から戦略を評価すべきである。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2428-R-s06-L1">
+<li class="cfa-curriculum-list-item">その戦略は、5つの産業要因に対する防御を生み出しているか？</li>
+<li class="cfa-curriculum-list-item">その戦略は、PESTLE分析（PESTLE analysis）で特定された外部環境の影響から恩恵を受けているか、少なくともそれと矛盾していないか？</li>
+<li class="cfa-curriculum-list-item">企業はその戦略を実行するための資源と能力を有しているか？</li>
+</ul>
+<p>これらの分析およびこれらの問いに対する答えは、明らかに企業や産業ごとに異なる。しかし、図表6に示されているように、さまざまな産業で有効であった3つの代表的な競争戦略を特定することができる。それは、コストリーダーシップ（cost leadership）、差別化（differentiation）、および集中（focus）である。これらの一般的戦略は、Michael Porterの競争に関する研究に基づいている。企業は固有のバリエーションを持つ傾向があるものの、一般的戦略は実務における多くの戦略を説明している。これは、多くの企業のビジネスモデルが従来のモデルで十分に説明できるのと同様である。望ましくない状況は、「中途半端（stuck in the middle）」であり、すなわちコストリーダーでもなく、差別化もされておらず、集中もしていない状態である。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2428-R-s06-EXH-1-6">
+<h3 class="cfa-curriculum-exhibit-table-title">図表6 一般的競争戦略</h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">コストリーダーシップ（Cost Leadership）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">差別化（Differentiation）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Focus</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">戦略の実行手段</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">固定費からの規模の経済（economies of scale）、原材料への有利なアクセス（favorable access to raw materials）、厳格なコスト管理の文化（culture of strict cost control）、高い販売量を獲得するための積極的な価格設定（aggressive pricing）、低コストの流通（low-cost distribution）、範囲の経済（economies of scope）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">広告、ブランド、顧客サービス、独自の流通チャネルへの投資（investments in advertising, brand, customer service, proprietary distribution channels）、商標・著作権・特許による保護（protection using trademarks, copyright, patents）、優れた品質および独自機能（superior quality, unique features）、優れた顧客体験の文化（culture of strong customer experience）、プレミアム価格設定（premium pricing）、サービス・ソフトウェア・ハードウェアの統合（integration of services, software, and hardware）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">顧客への近接性およびそのニーズに対する深い理解（proximity to customers and strong understanding of their needs）、コストリーダーシップ（cost leadership）と差別化（differentiation）の両方の要素を取り入れる場合もあるが、特定の顧客層に焦点を当てる（focused on particular group）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">どのファイブフォース（Five Forces）に対する防御となるか（なぜ機能するのか）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">新規参入の脅威（Threat of new entrants）：資本要件および規模の優位性が参入を抑制する。顧客の交渉力（Bargaining power of customers）：顧客は価格を限界生産者（marginal producer）のコストまでしか引き下げられず、コストリーダーにはマージンが残る。産業内競争（Industry rivalry）：競合は価格面でコストリーダーと競争できない可能性がある。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">新規参入および代替品の脅威（Threat of new entrants and of substitutions）：独自製品に対する顧客ロイヤルティがスイッチングを抑制し、市場シェアを保護する。顧客の交渉力（Bargaining power of customers）：顧客は比較購買やスイッチングができない、または行おうとしない可能性がある。供給者の交渉力（Bargaining power of suppliers）：企業は価格上昇を顧客に転嫁する能力や、コスト上昇をマージンで吸収する能力を持つ可能性がある。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">新規参入および代替品の脅威（Threat of new entrants and of substitutes）：独自製品に対する顧客ロイヤルティがスイッチングを抑制し、市場シェアを保護する。顧客の交渉力（Bargaining power of customers）：顧客は比較購買やスイッチングができない、または行おうとしない可能性がある。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">産業適合性（Industry appropriateness）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資本集約的（capital intensive）、価格志向の顧客（price-conscious customers）、顧客が製品差異を重視しないまたは認識しない（customers do not value or notice product differences）、産業におけるイノベーションが最小限（minimal innovation in industry）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">顧客にとって価格が最重要ではない（price is not foremost concern for customers）、顧客が独自性を重視する（customers value distinctiveness）、製品の機能や形態に多様性があるイノベーションの進む産業（innovation in industry, with products varying in features and forms）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">他の企業にとって、特定の顧客層、製品、または地理的領域にサービスを提供することが困難（または非経済的）である（difficult (or uneconomical) to serve customer group, product, or geography for other players）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">戦略に対するリスク（Risks to the strategy）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">コストインフレ（cost inflation）、規律の喪失（loss of discipline）、コストリーダーシップまたは市場シェアの喪失をもたらす技術変化（technological change that results in loss of cost leadership or market share）、顧客におけるプレミアム志向の高まり（desire for premiumization among customers）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">競合による模倣（imitation by competitors）、顧客の高度化により当該サービス水準が求められなくなること（buyers become sophisticated, no longer demand level of service）、プレミアム価格が顧客にとって負担過大となること（pricing premium becomes too high for customers to bear）、顧客が独占性（exclusivity）を重視するため市場シェア拡大が制約される可能性（may preclude high market share）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">大規模競合が価格で優位に立つこと（larger competitors outcompete on price）、ニッチ市場と産業全体との需要差が縮小すること（the differences in demand between the narrow group and industry as a whole narrow）、顧客の高度化により当該サービス水準が求められなくなること（buyers become sophisticated, no longer demand level of service）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2428-R-s06-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット（Question Set）</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2428-R-s06-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>Manitou Resortsは、大都市から約3時間の地方の山間部に位置する25室のブティックホテルである。宿泊施設、高級ダイニング、敷地内のヘルスおよびウェルネススパを提供している。Manitouの主な顧客は、中～高所得層の若い専門職カップルである。リゾートは頻繁に満室となるため、CEOは複数の拡張案を検討している。次のうち、Manitouの現在の競争戦略と整合的な施策はどれか？</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 最大6人まで宿泊可能な独立型湖畔コテージを10棟開発し、プール、水上スポーツ、夜間エンターテインメントなどの家族向けアクティビティへのアクセスを提供する</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。Manitou Resortsの現在の競争戦略は、特定の顧客セグメント（近隣都市に居住する中～高所得層の若年専門職で、ウェルネスとリラクゼーションを重視する層）を対象とする集中戦略（focus strategy）である。他の選択肢は新たな顧客セグメント（家族旅行や企業イベント）への拡張を意味し、現在の顧客基盤と整合しない可能性がある。Aはコストリーダーシップ（cost leadership）戦略、Bは差別化（differentiation）戦略を表す。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. Manitouから約30分の場所にある150室のフランチャイズホテルに対して10～15％の割引価格で提供可能な企業イベント向けの会議室施設を追加する</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。Manitou Resortsの現在の競争戦略は、特定の顧客セグメント（近隣都市に居住する中～高所得層の若年専門職で、ウェルネスとリラクゼーションを重視する層）を対象とする集中戦略（focus strategy）である。他の選択肢は新たな顧客セグメント（家族旅行や企業イベント）への拡張を意味し、現在の顧客基盤と整合しない可能性がある。Aはコストリーダーシップ（cost leadership）戦略、Bは差別化（differentiation）戦略を表す。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. ゴルフ場、タクシー／シャトルサービス、その他の顧客体験などの紹介パートナーへのレコメンデーションを特定するための管理および予約システムを開発し、手数料収入を増加させる</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。Manitou Resortsの現在の競争戦略は、特定の顧客セグメント（近隣都市に居住する中～高所得層の若年専門職で、ウェルネスとリラクゼーションを重視する層）を対象とする集中戦略（focus strategy）である。他の選択肢は新たな顧客セグメント（家族旅行や企業イベント）への拡張を示しており、現在の顧客基盤と整合しない可能性がある。Aはコストリーダーシップ（cost leadership）戦略、Bは差別化（differentiation）戦略を表す。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2428-R-s06-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>Warehouse Club Inc.は、保存可能な食品（non-perishable food products）の「プライベートブランド（private label）」を立ち上げることを検討している。同社の現在の競争戦略に基づき、これを支持する最も適切な根拠はどれか？</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 顧客は製品の違いに気付かない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。Warehouse Club Inc.の現在の競争戦略はコストリーダーシップ（cost leadership）である。コストリーダーシップ戦略においては、産業の適合性は、資本集約性（capital intensity）、価格志向の顧客（price-conscious customers）、顧客が製品差異を重視しないまたは認識しないこと、そして産業におけるイノベーションが最小限であることによって判断される。Bは差別化（differentiation）戦略の例であり、Cは集中（focus）戦略の例である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 顧客は新しい製品の機能や形態を重視する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。Warehouse Club Inc.の現在の競争戦略はコストリーダーシップ（cost leadership）である。コストリーダーシップ戦略においては、産業の適合性は、資本集約性（capital intensity）、価格志向の顧客（price-conscious customers）、顧客が製品差異を重視しないまたは認識しないこと、そして産業におけるイノベーションが最小限であることによって判断される。Bは差別化（differentiation）戦略の例であり、Cは集中（focus）戦略の例である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 製品は通常ブランドとプレミアムブランドにセグメント化できる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。Warehouse Club Inc.の現在の競争戦略はコストリーダーシップ（cost leadership）である。コストリーダーシップ戦略においては、産業の適合性は、資本集約性（capital intensity）、価格志向の顧客（price-conscious customers）、顧客が製品差異を重視しないまたは認識しないこと、そして産業におけるイノベーションが最小限であることによって判断される。Bは差別化（differentiation）戦略の例であり、Cは集中（focus）戦略の例である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>供給者の交渉力に対抗するために、「顧客が比較購買やスイッチングをできない、または行おうとしない」状況が当てはまるのは、次のどの競争戦略か（該当するものすべてを選択せよ）：</p>
+<p>___ コストリーダーシップ（Cost leadership）</p>
+<p>___ 差別化（Differentiation）</p>
+<p>___ 集中（Focus）</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>差別化（differentiation）および集中（focus）の両方。「顧客が比較購買やスイッチングをできない、または行おうとしない」という特徴は、差別化戦略と集中戦略の両方に共通する。一方、コストリーダーシップ戦略では、「顧客は価格を限界生産者（marginal producer）のコストまでしか引き下げられず、コストリーダーにはマージンが残る」。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2428-R-s06-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>差別化戦略（differentiation competitive strategy）に対するリスクはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 独占性により市場シェアが制限される。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。差別化戦略は独自の製品またはサービス提供を追求するため、顧客が独占性（exclusivity）を重視する結果、市場シェアが制限される可能性がある。Bは集中戦略におけるリスク（大規模競合が価格で優位に立つ）であり、Cはコストリーダーシップ戦略におけるリスク（技術変化によるコスト優位性または市場シェアの喪失）である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 大規模競合が価格で優位に立つ。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。差別化戦略は独自の製品またはサービス提供を追求するため、顧客が独占性（exclusivity）を重視する結果、市場シェアが制限される可能性がある。Bは集中戦略におけるリスク（大規模競合が価格で優位に立つ）であり、Cはコストリーダーシップ戦略におけるリスク（技術変化によるコスト優位性または市場シェアの喪失）である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 市場シェアの喪失をもたらす技術変化。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。差別化戦略は独自の製品またはサービス提供を追求するため、顧客が独占性（exclusivity）を重視する結果、市場シェアが制限される可能性がある。Bは集中戦略におけるリスク（大規模競合が価格で優位に立つ）であり、Cはコストリーダーシップ戦略におけるリスク（技術変化によるコスト優位性または市場シェアの喪失）である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>米国の大手オンライン小売業者が、自社ウェブサイト上で、Iliso Marketplaceを含む競合他社の同一製品のオンライン価格に一致させる「価格マッチング（price-matching）」保証を提供し始めた。Ilisoは市場シェアを維持するために同様の保証を導入すべきか、推奨し、その理由を述べよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>いいえ、Ilisoは同様の保証を導入すべきではない。価格マッチング保証は、高い販売量を獲得するために積極的な価格設定を行うコストリーダーシップ戦略の企業が採用する戦略である。Iliso Marketplace Ltd.は、強い顧客体験と整合的であればプレミアム価格設定を可能とする差別化戦略を採用している。もしIlisoが顧客体験を維持したまま、コストリーダーに合わせて収益を引き下げれば、全体の収益性は低下する可能性が高い。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA2428-R-s06-R-1-1list">Munos, B.Dec (2009). “Lessons from 60 years of pharmaceutical innovation.” <em>Nature Reviews. Drug Discovery</em> 8 (12): 959–68. <a href="https://doi.org/10.1038/nrd2961" target="_blank">https://doi.org/10.1038/nrd2961</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA2428-R-s06-R-1-1Content">Munos, B.Dec (2009). “Lessons from 60 years of pharmaceutical innovation.” <em>Nature Reviews. Drug Discovery</em> 8 (12): 959–68. <a href="https://doi.org/10.1038/nrd2961" target="_blank">https://doi.org/10.1038/nrd2961</a></div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142358_605_Industry_Structure_and_External_Influences.html" >← 前へ</a>
+  <span class="title">6.06 | Competitive Positioning</span>
+  <a href="courses_1868_modules_items_142366_Glossary_Industry_and_Competitive_Analysis.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

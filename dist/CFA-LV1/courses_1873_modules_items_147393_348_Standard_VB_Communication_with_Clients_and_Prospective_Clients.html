@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.48 | Standard V(B) Communication with Clients and Prospective Clients</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0008-R-s48-R-1" title="3.48 | Standard V(B) Communication with Clients and Prospective Clients">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3：基準I～VIIの指針 3.48｜基準V(B)：顧客および見込み顧客とのコミュニケーション（Communication with Clients and Prospective Clients）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">職業的誠実性に関わる問題を含む状況において、倫理綱領（Code of Ethics）および職業行為基準（Standards of Professional Conduct）の適用を説明する</li>
+<li class="cfa-curriculum-los-item">倫理綱領（Code of Ethics）および職業行為基準（Standards of Professional Conduct）の違反を防止するために設計された慣行および手続きを推奨する</li>
+<li class="cfa-curriculum-los-item">倫理綱領および基準に適合する行為と違反する行為を識別する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="">
+<h3 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"> </i>
+</h3>
+<p>会員および受験者は以下を遵守しなければならない：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA0008-R-s48-L1">
+<li class="cfa-curriculum-list-item">提供されるサービスの内容およびそれに関連する顧客負担コストに関する情報を、顧客および見込み顧客に開示すること。</li>
+<li class="cfa-curriculum-list-item">投資分析、証券選択、ポートフォリオ構築に用いる投資プロセスの基本的な枠組みおよび一般原則を開示し、それらに重大な影響を与える変更があった場合には速やかに開示すること。</li>
+<li class="cfa-curriculum-list-item">投資プロセスに関連する重要な制約およびリスクを顧客および見込み顧客に開示すること。</li>
+<li class="cfa-curriculum-list-item">投資分析、推奨、または行動において重要な要因を合理的判断により特定し、それらを顧客および見込み顧客とのコミュニケーションに含めること。</li>
+<li class="cfa-curriculum-list-item">投資分析および推奨の提示において、事実（fact）と意見（opinion）を区別すること。</li>
+</ol>
+</div>
+<section id="CFA0008-R-s48-01-01">
+<h3 class="dp-heading">指針（Guidance）</h3>
+<p>要点（Highlights）：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0008-R-s48-L2">
+<li class="cfa-curriculum-list-item">サービスの性質およびコスト情報</li>
+<li class="cfa-curriculum-list-item">投資プロセスの顧客への説明</li>
+<li class="cfa-curriculum-list-item">コミュニケーションの様式</li>
+<li class="cfa-curriculum-list-item">リスクおよび制約の特定</li>
+<li class="cfa-curriculum-list-item">レポートの提示</li>
+<li class="cfa-curriculum-list-item">レポートにおける事実と意見の区別</li>
+</ul>
+<p>基準V(B)は、顧客とのコミュニケーションに関する会員および受験者の行動を扱う。明確で頻繁かつ十分なコミュニケーションを維持することは、高品質な金融サービス提供に不可欠である。顧客が伝達された情報を理解することで、会員および受験者がどのように顧客のために行動しているかを把握し、十分な情報に基づいた投資判断を行うことが可能となる。</p>
+<section id="CFA0008-R-s48-01-01-01">
+<h4>顧客および見込み顧客へのサービス内容およびコスト情報の開示</h4>
+<p>倫理綱領および基準の基本的な目的は、顧客利益を保護し、顧客が十分な情報に基づいた意思決定を行えるようにすることである。投資専門家が提供するサービスの内容とそのコストを開示することは、この目的達成に不可欠である。</p>
+<p>十分かつ公正な開示は顧客との信頼関係を構築する。基準V(B)は、すべての専門サービスに関する開示を求めており、顧客関係の基盤となる。顧客は提供されるサービスおよび提供されないサービスを理解する必要があり、最適な慣行として、契約開始時に書面で明示することが望ましい。</p>
+<p>顧客はサービス内容だけでなく、そのコストも理解する必要がある。本基準は、顧客が負担するコストについて合理的な詳細の提供を求めるが、具体的金額の提示までは要求しない。また、企業側のコスト開示は不要である。</p>
+<p>開示義務は継続的であり、サービスやコストに変更があれば速やかに更新しなければならない。</p>
+<p>開示範囲は直接関係する企業に限定されず、関連会社や第三者によるコストも含まれる。顧客の理解度を理由に開示を省略することはできないが、情報は顧客の理解度に応じて調整可能である。</p>
+<p>開示方法は適切・正確・適時・完全であれば自由であるが、書面が望ましい。企業の方針に従う場合でも、基準を満たしているか確認し、不十分な場合は補完または是正を求める必要がある。不十分な開示が是正できない場合には、異議を記録し、その業務から距離を置くべきである。</p>
+<p>本基準は主に顧客対応業務に従事する者に適用される。顧客対応を行わない者に対して、他者の開示義務遵守を保証する責任までは課さない。</p>
+</section>
+<section id="CFA0008-R-s48-01-01-02">
+<h4>投資プロセスの顧客への説明</h4>
+<p>会員および受験者は、投資意思決定プロセスの方法を顧客および見込み顧客に十分に説明しなければならない。この開示には、推奨に影響を与える要因、重要なリスクおよび制約が含まれるべきであり、これらに変更があれば継続的に情報提供を行う必要がある。顧客は投資サービスの本質を理解することで、その変更が自身の投資目標に与える影響を判断できる。</p>
+<p>投資の基本的な特性を理解することは、その投資を単独で評価する際の適合性判断において非常に重要であるが、各投資がポートフォリオ全体の特性に与える影響を判断するうえで特に重要である。ある普通株（common stock）のリスクとリターンの特性は、単独で見ればどの投資家にとってもほぼ同じに見えるかもしれないが、その影響は保有している他の投資に大きく依存する。例えば、ある株式が個人の投資の90%を占める場合、その重要性は、分散されたポートフォリオの中で2%しか占めない場合とは大きく異なる。</p>
+<p>企業の投資方針には、顧客資産の一部を運用するために外部アドバイザー（outside advisers）を活用することが含まれる場合がある。会員および受験者は、外部アドバイザーが提供する専門性や分散化能力について顧客に説明すべきである。この情報により、顧客は自身の投資目的に影響を与える製品や戦略の全体構成を理解することができる。</p>
+</section>
+<section id="CFA0008-R-s48-01-01-03">
+<h4>コミュニケーションの形態（Different Forms of Communication）</h4>
+<p>基準V(B)におけるコミュニケーションは、アナリストが作成する従来型の書面レポートに限定されない。対面での説明、電話、メディア放送、コンピュータ（インターネットなど）を通じた伝達など、あらゆる手段が含まれる。</p>
+<p>コンピュータやモバイル機器によるコミュニケーションは近年急速に進化している。ソーシャルメディアを用いる場合、すべての顧客がアクセスできない可能性があるため、意図しない問題を避けるよう注意しなければならない。新しい技術を用いる際には、すべての顧客に対して公正な情報提供となるよう合理的な措置を講じ、必要に応じて公開情報とみなされるようにすべきである。</p>
+<p>顧客とのコミュニケーションは、「買い（buy）」や「売り（sell）」の一語から100ページ以上の詳細レポートまで多様である。市場全体や資産配分、資産クラス（株式、債券、不動産など）に関する一般的な推奨もあれば、特定の証券に関するものもある。簡潔な形式（例：推奨銘柄リスト）の場合には、追加情報や分析が入手可能であることを顧客に通知すべきである。</p>
+</section>
+<section id="CFA0008-R-s48-01-01-04">
+<h4>リスクおよび制約の特定（Identifying Risks and Limitations）</h4>
+<p>会員および受験者は、自身の投資商品や推奨に含まれる分析に関する重要なリスクおよび制約を顧客および見込み顧客に明示しなければならない。重要なリスクの種類は、採用している投資プロセスや顧客の状況に依存するが、一般にレバレッジ（leverage）の使用は重要なリスクとして開示すべきである。</p>
+<p>一般的な市場リスクや複雑な金融商品に関連するリスクも適切に開示しなければならない。さらに、カウンターパーティー・リスク（counterparty risk）、カントリー・リスク（country risk）、セクター／産業リスク、個別証券リスク、信用リスク（credit risk）なども開示対象となり得る。</p>
+<p>投資証券や投資ビークルには、意思決定に影響を与える制約が存在する場合がある。例えば、流動性（liquidity）やキャパシティ（capacity）が挙げられる。流動性とは合理的なコストで迅速に売却できる能力であり、キャパシティとは投資額が増加するとリターンが低下する水準を指す。</p>
+<p>リスク開示の適切性は、投資判断時点での情報（ex ante）に基づいて評価される。会員および受験者は、その時点で認識している重要なリスクを開示すればよく、未知のリスクまで開示する義務はない。後に損失が発生したとしても、それだけでは開示違反とはならないが、分析の適切性（diligence）に問題がある可能性はある。</p>
+</section>
+<section id="CFA0008-R-s48-01-01-05">
+<h4>レポートの提示（Report Presentation）</h4>
+<p>分析プロセス完了後、レポート作成者は読者が推論を追跡し検証できるよう、重要な要素を含めなければならない。重要性に応じて強調や省略を行うことは許容されるが、分析範囲の制限は明示する必要がある。</p>
+<p>定量分析に基づく投資助言は、参照可能な資料によって裏付けられ、一貫した手法で適用されるべきである。手法変更があれば明示しなければならない。</p>
+</section>
+<section id="CFA0008-R-s48-01-01-06">
+<h4>レポートにおける事実と意見の区別（Distinction between Facts and Opinions in Reports）</h4>
+<p>基準V(B)は、事実と意見の明確な区別を要求する。特に、利益予想や将来の価格見通しなどが意見であることを明示しない場合、違反となることがある。</p>
+<p>複雑な定量分析の場合、事実と統計的推測を明確に区別し、分析の限界を明示する必要がある。これを怠ると、読者が結果の制約を理解できず違反となる可能性がある。</p>
+<p>会員および受験者は、投資モデルや分析に用いた前提条件を顧客に明示すべきである。また、モデルの精度を過度に強調することは避けるべきであり、結果は将来の推定値に過ぎないことを認識させる必要がある。</p>
+</section>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1873_modules_items_147389_347_Standard_VA_Application_of_the_Standard.html" >← 前へ</a>
+  <span class="title">3.48 | Standard V(B) Communication with Clients and Prospective Clients</span>
+  <a href="courses_1873_modules_items_147397_349_Standard_VB_Recommended_Procedures.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

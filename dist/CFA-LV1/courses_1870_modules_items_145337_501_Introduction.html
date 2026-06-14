@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2458-R-s01" title="5.01 | Introduction">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール5：フォワード契約（forward contracts）の価格付けおよび評価と、異なる満期（varying maturities）を持つ原資産（underlying） 5.01｜導入（Introduction）</h2>
+</header>
+<p>これまでのレッスンでは、フォワード契約（forward commitment）の特徴、ペイオフプロファイル、およびこれらのデリバティブ（derivative）商品の価格付けに用いられる概念を導入した。特に、スポット価格とフォワード契約価格の関係は、原資産を保有することの機会費用（リスクフリーレート（risk-free rate）で表される）および原資産の保有に伴う追加的なコストや便益によって決定されることが示された。この価格関係は裁定（arbitrage）を防ぐとともに、スポット市場取引とリスクフリーの借入または貸付を用いてフォワード契約を複製（replication）することを可能にする。</p>
+<p>最初のレッスンでは、契約開始から満期までのフォワード契約の価格付けおよび評価を、時価評価（mark-to-market）ベースで検討する。この分析は、これらの金融商品を含む資産または負債ポートフォリオの価値を評価するうえで、発行体、投資家、金融仲介機関にとって不可欠である。第2のレッスンでは、金利、クレジットスプレッド（credit spreads）、ボラティリティ（volatility）など、満期が異なる原資産に対するフォワード価格付けを扱う。いわゆるターム構造（term structure）にわたるこれらのフォワード契約の価格は、後のレッスンで扱うスワップ（swaps）や関連商品の価格付けにおける重要な構成要素である。</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA2458-s01-B-1-b">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title">学習モジュール概要（Learning Module Overview）</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2458-s01-L1">
+<li class="cfa-curriculum-list-item">契約開始時に合意されたフォワード契約価格は固定され、満期時のスポット価格に対して、将来における原資産（または現金）の交換条件の基準を定める。</li>
+<li class="cfa-curriculum-list-item">キャッシュフローを生まない原資産の場合、満期前におけるロングのフォワード契約の価値は、原資産の現在のスポット価格から、リスクフリーレートで割り引いたフォワード価格の現在価値を差し引いたものに等しい。ショートのフォワード契約では逆となる。外国為替（foreign exchange）は特別なケースであり、スポット価格とフォワード価格の関係は通貨間のリスクフリーレートの差によって決定される。</li>
+<li class="cfa-curriculum-list-item">追加的なコストや便益を持つ原資産の場合、フォワード契約の時価評価（mark-to-market, MTM）価値は、満期までのすべての追加キャッシュフローの現在価値の合計によって調整される。</li>
+<li class="cfa-curriculum-list-item">金利のようにターム構造（term structure）を持つ原資産は、満期までの期間ごとに異なるレートまたは価格を持つ。これらのゼロレート（zero rates）またはスポットレート（spot rates）、フォワードレート（forward rates）は、クーポン債（coupon bonds）および市場参照レート（market reference rates）から導出され、金利デリバティブの価格付けの基礎を形成する。</li>
+<li class="cfa-curriculum-list-item">インプライド・フォワードレート（implied forward rates）は、特定の期間において短期および長期のゼロクーポン債（zero-coupon bonds）を結びつける損益分岐の再投資レート（breakeven reinvestment rate）を表す。</li>
+<li class="cfa-curriculum-list-item">フォワードレート契約（forward rate agreement, FRA）は、将来の一定期間に適用される特定の金利について当事者間で合意する契約である。</li>
+</ul>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2458-s01-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">学習モジュール自己評価（Learning Module Self-Assessment）</h3>
+<p>これらの初期問題は、この学習モジュールに対する現在の理解度を測ることを目的としている。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>追加的なコストや便益を持たない資産に対するフォワード契約の評価に対応する状況を、以下から対応付けよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2458-s01-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1. 時点 t = 0 において、原資産のスポット価格が即座に上昇し、他の市場パラメータは変化しない。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">A. フォワード契約の買い手はMTMの利益を得る。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2. 時点 t において、リスクフリーレート（r）で割り引いたフォワード価格の現在価値が現在のスポット価格（S_t）と等しい。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">B. フォワード契約の売り手はMTMの利益を得る。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3. 時点 T において、フォワード契約価格 F₀(T) が現在のスポット価格 S_T より大きい。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">C. フォワード契約のMTM価値はゼロである。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>1. Aが正しい。無裁定条件を満たすためには、時点 t = 0 における元のスポット価格 S₀ は、リスクフリーレート r で割り引いたフォワード価格の現在価値に等しくなければならない。スポット価格が即座に S₀⁺ &gt; S₀ に上昇すると、フォワード買い手にMTMの利益が生じる。</p>
+<p>2. Cが正しい。任意の時点 t において、MTM価値 V_t(T) は、現在のスポット価格 S_t と、リスクフリーレート r で割り引いたフォワード価格 F₀(T)(1 + r)^(−(T − t)) の差に等しい。S_t = F₀(T)(1 + r)^(−(T − t)) のとき、V_t(T) = 0 となる。</p>
+<p>3. Bが正しい。時点 T における決済時のフォワード契約売り手のMTM価値は、F₀(T) − S_T に等しい。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2458-s01-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>フォワード契約成立後にリスクフリーレート r が上昇した場合、他の条件が一定であれば、フォワード契約売り手のMTM価値はどのように変化するか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. フォワード契約売り手のMTM価値は変化しない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。フォワード契約売り手の観点からの時価評価は、以下の式の V_t(T) に等しい：</p>
+<p>V_t(T) = F₀(T)(1 + r)^(−(T − t)) − S_t</p>
+<p>フォワード契約成立後にリスクフリーレート r が上昇すると、フォワード価格 F₀(T) の現在価値は低下し、これにより契約売り手のMTM価値は減少する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. フォワード契約売り手のMTM価値は増加する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。フォワード契約売り手の観点からの時価評価は、以下の式の V_t(T) に等しい：</p>
+<p>V_t(T) = F₀(T)(1 + r)^(−(T − t)) − S_t</p>
+<p>フォワード契約の成立後にリスクフリーレート r が上昇すると、フォワード価格 F₀(T) の現在価値は低下し、これにより契約売り手の観点からのMTM価値は減少する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. フォワード契約売り手にとってのMTM価値は減少する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。フォワード契約売り手の観点からの時価評価は、以下の式の V_t(T) に等しい：</p>
+<p>V_t(T) = F₀(T)(1 + r)^(−(T − t)) − S_t</p>
+<p>フォワード契約の成立後にリスクフリーレート r が上昇すると、フォワード価格 F₀(T) の現在価値は低下し、これにより契約売り手の観点からのMTM価値は減少する。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2458-s01-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>額面100あたり99で価格付けされた年率3%のクーポン債（annual coupon bond）があり、同一発行体の1年満期の年次クーポン債のイールド・トゥ・マチュリティ（yield-to-maturity）が2.50%であるとき、2年ゼロレート（two-year zero rate）に最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 3.5266%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。1期間後に単一のキャッシュフローを持つ債券においては、イールド・トゥ・マチュリティとゼロレートは一致するため、1年ゼロレート z₁ は2.50%となる。次の式で2年ゼロレート z₂ を求める：</p>
+<p>99 = 3 / 1.025 + 103 / (1 + z₂)²</p>
+<p>z₂ を解くと3.5422%となる。Aは誤りであり、3.5266%は t = 0 における−99、t = 1 における3、t = 2 における103のキャッシュフローに対して求めた内部収益率（internal rate of return, IRR）である。この解答はフラットなターム構造（flat term structure）を仮定しており、問題の前提として正しくない。Bも誤りであり、クーポンレートが1年および2年のゼロレートの単純平均であると仮定して解を求めている。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 3.5000%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。1期間後に単一のキャッシュフローを持つ債券においては、イールド・トゥ・マチュリティとゼロレートは一致するため、1年ゼロレート z₁ は2.50%となる。次の式で2年ゼロレート z₂ を求める：</p>
+<p>99 = 3 / 1.025 + 103 / (1 + z₂)²</p>
+<p>z₂ を解くと3.5422%となる。Aは誤りであり、3.5266%は t = 0 における−99、t = 1 における3、t = 2 における103のキャッシュフローに対して求めた内部収益率（internal rate of return, IRR）である。この解答はフラットなターム構造（flat term structure）を仮定しており、問題の前提として正しくない。Bも誤りであり、クーポンレートが1年および2年のゼロレートの単純平均であると仮定して解を求めている。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 3.5422%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。1期間後に単一のキャッシュフローを持つ債券においては、イールド・トゥ・マチュリティとゼロレートは一致するため、1年ゼロレート z₁ は2.50%となる。次の式で2年ゼロレート z₂ を求める：</p>
+<p>99 = 3 / 1.025 + 103 / (1 + z₂)²</p>
+<p>z₂ を解くと3.5422%となる。Aは誤りであり、3.5266%は t = 0 における−99、t = 1 における3、t = 2 における103のキャッシュフローに対して求めた内部収益率（internal rate of return, IRR）である。この解答はフラットなターム構造（flat term structure）を仮定しており、問題の前提として正しくない。Bも誤りであり、クーポンレートが1年および2年のゼロレートの単純平均であると仮定して解を求めている。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2458-s01-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>以下のうち、2y3yフォワードレートの正しい説明はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 将来3年後から始まる2年間のインプライドレート。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。フォワードレートの表記では、最初の数字はフォワードレートが開始する時点を示す。したがって、この場合は2年後に開始するレートである。2番目の数字は期間（満期）を示す。したがって、2y3yフォワードレートは、2年後に開始する3年間のレートを意味する。Aは誤りであり、これは3y2yフォワードレートの説明である。Cも誤りであり、これは2y1yレートの説明である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 将来2年後から始まる3年間のインプライドレート。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。フォワードレートの表記では、最初の数字はフォワードレートが開始する時点を示す。したがって、この場合は2年後に開始するレートである。2番目の数字は期間（満期）を示す。したがって、2y3yフォワードレートは、2年後に開始する3年間のレートを意味する。Aは誤りであり、これは3y2yフォワードレートの説明である。Cも誤りであり、これは2y1yレートの説明である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 将来2年後から始まる1年間のインプライドレート。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。フォワードレートの表記では、最初の数字はフォワードレートが開始する時点を示す。したがって、この場合は2年後に開始するレートである。2番目の数字は期間（満期）を示す。したがって、2y3yフォワードレートは、2年後に開始する3年間のレートを意味する。Aは誤りであり、これは3y2yフォワードレートの説明である。Cも誤りであり、これは2y1yレートの説明である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1870_modules_items_145335_Learning_Outcomes_Pricing_and_Valuation_of_Forward_Contracts_and_for_an_Underlyi.html" >← 前へ</a>
+  <span class="title">5.01 | Introduction</span>
+  <a href="courses_1870_modules_items_145340_502_Pricing_and_Valuation_of_Forward_Contracts.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

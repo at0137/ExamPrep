@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9.04 | Corporate Income Tax Rates</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2426-R-s04-R-1" title="9.04 | Corporate Income Tax Rates"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール9：法人所得税の分析（Analysis of Income Taxes）9.04 | 法人所得税率（Corporate Income Tax Rates）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">発行体（issuer）の実効税率（effective tax rate）、法定税率（statutory tax rate）、およびキャッシュ税率（cash tax rate）を計算し、解釈し、比較すること</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>未払法人税（income taxes payable）は主に課税所得の地理的構成および各管轄区域（jurisdiction）の税率によって決定されるが、事業の性質にも影響される可能性がある。一部の企業は特別な税制優遇の恩恵を受ける場合がある。例えば、研究開発税額控除（R&amp;D tax credits）や固定資産の加速償却（accelerated depreciation）などである。アナリストは、税率を変更し得る政府または事業上の変化にも注意を払うべきである。</p>
+<p>税率の違いは価値の重要な決定要因となり得る。一般に、アナリストに関連する税率は3種類ある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2426-R-s04-L1">
+<li class="cfa-curriculum-list-item">法定税率（statutory tax rate）：企業が本拠地を置く国における法人所得税率</li>
+<li class="cfa-curriculum-list-item">実効税率（effective tax rate）：損益計算書（income statement）に計上された法人税費用を税引前利益（pre-tax income）で除して算出される</li>
+<li class="cfa-curriculum-list-item">キャッシュ税率（cash tax rate）：当期に現金で支払われた税額（cash tax）を税引前利益で除したもの</li>
+</ul>
+<p>前述のとおり、キャッシュ税額と報告税額の差異は通常、財務会計基準（financial accounting standards）と税法（tax laws）の違い、および繰延税金資産（deferred tax assets）や繰延税金負債（deferred tax liabilities）の変動に起因する。</p>
+<p>税費用およびキャッシュ税額をそれぞれ予測する際には、実効税率とキャッシュ税率が重要である。これらの税率の業務上の決定要因および企業の財務構造を十分に理解することは、これらの税率を予測するうえで有用である。</p>
+<p>法定税率と実効税率の差異は多くの理由により生じる。税額控除（tax credits）、配当への源泉税（withholding tax on dividends）、過年度の調整（adjustments to previous years）、税務上損金不算入となる費用（expenses not deductible for tax purposes）などがその要因である。企業が本拠地国外で活動している場合にも、実効税率は異なる可能性がある。この場合、実効税率は各国での活動から生じた利益に応じて、それぞれの国の税率を組み合わせたもの（blend）となる。もし企業が高税率の国で高い利益を計上し、低税率の国で低い利益を計上した場合、実効税率は各国税率の加重平均（weighted average）となり、単純平均税率よりも高くなる。</p>
+<p>一般に、法定税率または競合他社の実効税率よりも一貫して低い実効税率は必ずしも異常ではないが、将来の税費用を予測する際には追加的な注意が必要となる場合がある。財務諸表の注記（notes in the financial statements）には、法定税率から実効税率への調整（reconciliation）が開示され、実効税率が一時的に高いまたは低い要因となる項目が特定されるべきである。キャッシュ税率はキャッシュフローの予測に使用され、実効税率は損益計算書上の利益予測に関連する。</p>
+<p>予測のための推定税率を作成する際には、一時的な事象（one-time events）を調整する必要がある。持分法適用投資先（equity-method investees）からの利益が税引前利益の大きな部分を占め、かつその変動性が高い場合、この金額を除外した実効税率の方が、企業の将来の税コストのより良い推定値となる可能性が高い。持分投資（participations）からの利益に対する税効果は財務諸表の注記に開示されている。</p>
+<p>将来の税費用を推定するための良い出発点は、多くの場合、関連会社（associates）や特別項目（special items）の影響を除いた正規化営業利益（normalized operating income）に基づく税率である。この正規化税率は、アナリストの利益モデルにおいて、特別項目を調整した将来の税費用の良い指標となる。</p>
+<p>モデルを構築することで、実効税額は損益計算書の予測（profit and loss projections）において、キャッシュ税額はキャッシュフロー計算書（cash flow statement）（または補足情報）において求められる。損益計算書上の税額とキャッシュフロー上の税額との調整は、繰延税金資産または負債の変化となる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2426-R-s04-EXM4">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例4 税率の推定（Tax Rate Estimates）</h3>
+<p>仮想企業であるABCは、国Aと国Bで事業を行っている。国Aの税率は40％、国Bの税率は10％である。初年度において、企業は各国で同額の税引前利益を生み出している（図表11参照）。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-EXH11">
+<h4 class="cfa-curriculum-exhibit-table-title">図表11 管轄区域ごとに異なる税率（Tax Rates That Differ by Jurisdiction）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>A</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>B</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">税引前利益（Profit before tax）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">200</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">実効税率（Effective tax rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Tax</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純利益（Net profit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">60</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">90</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">150</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>国Aの税引前利益が安定している一方で、国Bの税引前利益が年率15％で成長する場合、今後3年間の実効税率はどうなるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>実効税率は徐々に低下する。これは、毎年、より低い税率の国で生成される利益の割合が高まるためである。図表12に示されるように、実効税率は当初の25％から3年目には22％へと低下する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-EXH12">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 12<span style="display: block;">Worksheet for Tax Rate Estimates Problem</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Year</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>0</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">税引前利益（国A）（Profit before tax, Country A）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益（国B）（Profit before tax, Country B）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">115</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">132</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">152</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総税引前利益（Total profit before tax）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">215</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">232</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">252</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">実効税率（国A）（Effective tax rate, Country A）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">実効税率（国B）（Effective tax rate, Country B）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総税額（Total tax）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">52</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">53</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">55</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総実効税率（Total effective tax rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>国Aの税務当局が、一部の費用（例：加速償却（accelerated depreciation））について税務上より早期に認識することを認めた場合、今後3年間のキャッシュ税率および実効税率を評価せよ。具体的には、国Aについて、当期（Year 0）の支払税額が50％減少し、その分が翌期（Year 1）およびそれ以降の期間に同額増加すると仮定する。国Aの税引前利益は安定しており、国Bの税引前利益は年率15％で成長すると仮定する。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>合算キャッシュ税率（図表13の最下段）は初年度に15％となり、その後の年度で反発する。初年度のみが税の繰延（tax deferral）の恩恵を受け、その後の年度では、ある年度の繰延は前年度から繰り延べられた金額の加算によって相殺される。合算実効税率はこの繰延の影響を受けない。図表13に示されるように、2年目（Year 1）以降は、課税所得の成長が低税率の国Bで生じるため、合算キャッシュ税率および実効税率は時間とともに低下する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-EXH13">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 13<span style="display: block;">Worksheet for Tax Rate Estimates Problem</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Year</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>0</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">税引前利益（国A）（Profit before tax, Country A）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益（国B）（Profit before tax, Country B）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">115</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">132</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">152</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総税引前利益（Total profit before tax）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">215</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">232</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">252</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">実効税率（国A）（Effective tax rate, Country A）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">実効税率（国B）（Effective tax rate, Country B）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">損益計算書上の総税額（Total tax per income statement）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">52</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">53</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">55</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総実効税率（Total effective tax rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">キャッシュ税額（国A）（Cash taxes, Country A）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">キャッシュ税額（国B）（Cash taxes, Country B）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総キャッシュ税額（Total cash tax）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">52</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">53</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">55</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">キャッシュ税率（Cash tax rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>税率推定問題（Tax Rate Estimates Problem）を繰り返すが、今度は国Aではなく国Bが、税務上いくつかの費用をより早期に認識することを認めており、記述された税効果が国Bに適用されると仮定する。引き続き、国Aの税引前利益は安定しており、国Bの税引前利益は年率15％で成長すると仮定する。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>合算実効税率は図表12および図表13から変化しない。しかし、国Bに対して仮定された成長により、毎年の税の繰延（tax postponement）は、国Bのキャッシュ税率を国Bの実効税率よりも低くする。その結果、図表14に示されるように、Year 0において合算キャッシュ税率は実効税率を下回る。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-EXH14">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 14<span style="display: block;">Worksheet for Tax Rate Estimates Problem</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Year</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>0</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">税引前利益（国A）（Profit before tax, Country A）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益（国B）（Profit before tax, Country B）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">115</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">132</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">152</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総税引前利益（Total profit before tax）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">215</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">232</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">252</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">実効税率（国A）（Effective tax rate, Country A）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">実効税率（国B）（Effective tax rate, Country B）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">損益計算書上の総税額（Total tax per income statement）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">52</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">53</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">55</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総実効税率（Total effective tax rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">キャッシュ税額（国A）（Cash taxes, Country A）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">キャッシュ税額（国B）（Cash taxes, Country B）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総キャッシュ税額（Total cash tax）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">45</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">51</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">52</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">54</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">キャッシュ税率（Cash tax rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2426-R-s04-EXM5">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例5 Johnson &amp; Johnson</h3>
+<p>Johnson &amp; Johnson（JNJ）の実効税率とキャッシュ税率の差異は図表15に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-EXH15">
+<h4 class="cfa-curriculum-exhibit-table-title">図表15 Johnson &amp; Johnson 連結損益計算書（Consolidated Statement of Earnings）（米ドル百万）（US dollar millions）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2021</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2020</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2019</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">顧客への売上高（Sales to customers）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">93,775</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">82,584</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">82,059</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上原価（Cost of products sold）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29,855</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28,427</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27,556</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益（Gross profit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">63,920</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">54,157</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">54,503</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">販売費および一般管理費（Selling, marketing, and administrative expense）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24,659</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22,084</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22,178</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">研究開発費（Research and development expense）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14,714</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12,159</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11,355</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仕掛研究開発費（In-process research and development）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">900</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">181</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">890</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">受取利息（Interest income）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(53)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(111)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(357)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">支払利息（Interest expense）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">183</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">201</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">318</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他収益（費用）（純額）（Other (income) expense, net）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,899</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,525</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">リストラクチャリング費用（Restructuring）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">252</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">247</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">266</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益（Income before income taxes）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22,776</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,497</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17,328</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税費用（Provision for income taxes）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,898</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,783</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,209</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当期純利益（Net income）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20,878</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14,714</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15,119</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>JNJの2021年の法人税費用は18億9,800万米ドル（USD1,898 million）であった。したがって、JNJの実効税率（effective tax rate）は8.3％（1,898/22,776）であった。これは、米国企業としてのJNJの法定税率（statutory tax rate）21％を大きく下回っている。財務諸表注記（notes to financial statements）における法定税率から実効税率への調整（reconciliation）によれば、この差異の主な要因は、米国外事業に適用されるより低い税率である。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">税率（Tax rates）：</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2021</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2020</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2019</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国法定税率（US statutory rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">国際事業（International operations）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（16.4）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(9.9)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(5.9)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">国際所得に対する米国課税（US taxes on international income）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.8</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資本資産の損失による税効果（Tax benefits from loss on capital assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1.3)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1.2)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(0.3)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株式報酬に関する税効果（Tax benefits on share-based compensation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1.0)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1.5)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(0.5)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税制改革法（Tax Cuts And Jobs Act）関連の影響</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(0.5)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(3.9)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他すべて（All Other）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(0.2)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1.0)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">実効税率（Effective tax rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.7%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2426-R-s04-Ba">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題集（Question Set）</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s04-Q4"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>次のうち、法定税率（statutory tax rate）を最も適切に説明しているのはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 当期に現金で支払われた税額を税引前利益で除したもの</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。法定税率（statutory tax rate）は、企業が本拠地を置く国における法人所得税率である。Aはキャッシュ税率（cash tax rate）を説明しているため誤りである。Cは実効税率（effective tax rate）を説明しているため誤りである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 企業が本拠地を置く国における法人所得税率</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。法定税率（statutory tax rate）は、企業が本拠地を置く国における法人所得税率である。Aはキャッシュ税率（cash tax rate）を説明しているため誤りである。Cは実効税率（effective tax rate）を説明しているため誤りである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 損益計算書（income statement）に計上された法人税費用を税引前利益で除したもの</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。法定税率（statutory tax rate）は、企業が本拠地を置く国における法人所得税率である。Aはキャッシュ税率（cash tax rate）を説明しているため誤りである。Cは実効税率（effective tax rate）を説明しているため誤りである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<section>
+<p>次の情報およびWalmartの2021年Form 10-Kの図表16および図表17を用いて、設問2および3に答えよ：</p>
+<p>Walmartは、総収益572,762百万米ドル、税引前利益18,696百万米ドル、連結純利益13,940百万米ドルを報告した。さらに、税金に関する注記（tax footnote）において以下の情報を開示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-EXH16">
+<h4 class="cfa-curriculum-exhibit-table-title">図表16 Walmartの2021年Form 10-K</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">注記9：税金（Note 9: Taxes）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益の内訳は以下のとおりである：</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">（単位：百万米ドル）（in millions USD）</th>
+<th colspan="3" style="text-align: center; vertical-align: top; padding: 8px;">1月31日終了の会計年度（Fiscal Years Ended 31 January）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2022</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2021</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2020</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">US</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15,536</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18,068</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15,019</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国外（Non-US）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,160</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,496</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,097</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益合計（Total income before income taxes）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18,696</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20,564</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20,116</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>法人税費用の概要は以下のとおりである：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-EXH17">
+<h4 class="cfa-curriculum-exhibit-table-title">図表17 Walmartの2021年Form 10-K</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">（単位：百万米ドル）（in millions USD）</th>
+<th colspan="3" style="text-align: center; vertical-align: top; padding: 8px;">1月31日終了の会計年度（Fiscal Years Ended 31 January）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2022</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2021</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2020</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当期税（Current）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国連邦（US Federal）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,313</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,991</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,794</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国州および地方（US State and Local）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">649</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">742</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">587</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">国際（International）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,553</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,127</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,205</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当期法人税費用合計（Total current tax provision）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,515</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,860</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,586</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金（Deferred）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国連邦（US Federal）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(671)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,316</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">663</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国州および地方（US State and Local）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">41</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">国際（International）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(129)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(341)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(369)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金費用（利益）合計（Total deferred tax expense (benefit)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(759)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,998</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">329</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税費用合計（Total provision for income taxes）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,756</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6,858</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,915</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s04-Q5"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>図表16および図表17の情報に基づくと、Walmartの実効税率（effective tax rate）として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 25.4％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。実効税率（effective tax rate）は、法人税費用合計（total provision for income taxes）（4,756百万米ドル）を税引前利益合計（Total income before taxes）（18,696百万米ドル）で除して算出される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 29.5％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。実効税率（effective tax rate）は、法人税費用合計（total provision for income taxes）（4,756百万米ドル）を税引前利益合計（Total income before taxes）（18,696百万米ドル）で除して算出される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 34.1％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。実効税率（effective tax rate）は、法人税費用合計（total provision for income taxes）（4,756百万米ドル）を税引前利益合計（Total income before taxes）（18,696百万米ドル）で除して算出される。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s04-Q6"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>図表16および図表17の情報に基づくと、Walmartのキャッシュ税率（cash tax rate）として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 25.4％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。キャッシュ税率（cash tax rate）は、当期税費用（current tax expense）（5,515百万米ドル）を税引前利益合計（Total income before taxes）（18,696百万米ドル）で除して算出される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 29.5％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。キャッシュ税率（cash tax rate）は、当期税費用（current tax expense）（5,515百万米ドル）を税引前利益合計（Total income before taxes）（18,696百万米ドル）で除して算出される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 34.1％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。キャッシュ税率（cash tax rate）は、当期税費用（current tax expense）（5,515百万米ドル）を税引前利益合計（Total income before taxes）（18,696百万米ドル）で除して算出される。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+<section>
+<p>以下の情報を用いて、設問4および5に答えよ：</p>
+<p>Neutrinoは仮想企業であり、米国（United States）に本拠地を置き、アイルランド（Ireland）に重要な事業を有している。米国の法定税率（statutory tax rate）は21％、アイルランドの法定税率は12％である。20X1年において、Neutrinoは各国で税引前利益1,000米ドルを稼得したと仮定する。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s04-Q7"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>Neutrinoの実効税率（effective tax rate）と法定税率（statutory tax rate）の間に他の差異がないと仮定すると、Neutrinoの合算実効税率は最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 12.0％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。税額は以下のように計算される：（1,000 × 21％）＋（1,000 × 12％）＝330米ドル；実効税率＝330 / 2,000 ＝ 16.5％。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 16.5％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。税額は以下のように計算される：（1,000 × 21％）＋（1,000 × 12％）＝330米ドル；実効税率＝330 / 2,000 ＝ 16.5％。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 21.0％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。税額は以下のように計算される：（1,000 × 21％）＋（1,000 × 12％）＝330米ドル；実効税率＝330 / 2,000 ＝ 16.5％。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s04-Q8"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>翌年20X2年の1月1日に、Neutrinoは韓国（South Korea）に本拠地を置く企業EFGを買収したと仮定する。韓国の法定税率は25％である。EFGは20X2年に500米ドルの利益を稼得する。米国およびアイルランドの事業がそれぞれ税引前利益を25％増加させると仮定すると、連結ベースでの20X2年の実効税率は最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 6.5％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。連結ベースでの20X2年の実効税率は以下のように計算される：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">国（Country）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">課税所得（Taxable Income）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">法定税率（Statutory Rate）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Taxes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国（United States）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,250米ドル</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">262.50米ドル（USD262.50）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">アイルランド（Ireland）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">150.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">韓国（South Korea）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">125.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,000米ドル（USD3,000）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">537.50</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">実効税率（Effective tax rate）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">537.50 / 3,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>17.9%</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 17.9％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。連結ベースでの20X2年の実効税率（effective tax rate）は以下のように計算される：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">国（Country）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">課税所得（Taxable Income）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">法定税率（Statutory Rate）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Taxes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国（United States）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,250米ドル（USD1,250）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">262.50米ドル（USD262.50）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">アイルランド（Ireland）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">150.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">韓国（South Korea）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">125.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,000米ドル（USD3,000）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">537.50</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">実効税率（Effective tax rate）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">537.50 / 3,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>17.9%</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 22.0％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。連結ベースでの20X2年の実効税率（effective tax rate）は以下のように計算される：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s04-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">国（Country）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">課税所得（Taxable Income）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">法定税率（Statutory Rate）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Taxes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国（United States）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,250米ドル（USD1,250）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">262.50米ドル（USD262.50）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">アイルランド（Ireland）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">150.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">韓国（South Korea）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">125.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,000米ドル（USD3,000）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">537.50</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">実効税率（Effective tax rate）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">537.50 / 3,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>17.9%</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143680_903_Deferred_Tax_Assets_and_Liabilities.html" >← 前へ</a>
+  <span class="title">9.04 | Corporate Income Tax Rates</span>
+  <a href="courses_1867_modules_items_143686_905_Presentation_and_Disclosure.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

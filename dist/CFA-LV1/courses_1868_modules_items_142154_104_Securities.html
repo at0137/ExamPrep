@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.04 | Securities</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s04" title="1.04 | Securities">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.04｜証券（Securities）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">組織化された市場で取引される主要な証券、通貨、契約、商品、および実物資産の種類について、それらの特徴および主要なサブタイプを含めて説明する（describe the major types of securities, currencies, contracts, commodities, and real assets that trade in organized markets, including their distinguishing characteristics and major subtypes）</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>個人、企業、政府は資金調達のために証券を発行する。証券には、債券（bonds）、ノート（notes）、コマーシャルペーパー（commercial paper）、住宅ローン（mortgages）、普通株式（common stocks）、優先株式（preferred stocks）、ワラント（warrants）、投資信託の持分（mutual fund shares）、ユニットトラスト（unit trusts）、預託証券（depository receipts）などが含まれる。これらは大きく、固定収益証券（fixed-income instruments）、株式（equities）、集合投資ビークルの持分に分類される。なお、証券の法的定義は国によって異なり、ここでの用法と一致するとは限らない。一般に、公衆に販売される、または公衆に再販売可能な証券は発行証券（issues）と呼ばれる。企業および政府が最も一般的な発行体である。</p>
+<section id="CFA0161-R-s04-01">
+<h3 class="dp-heading">固定収益（Fixed Income）</h3>
+<p>固定収益証券は、契約上あらかじめ定められた支払スケジュールを含み、通常は利息および元本の支払いが含まれる。固定収益証券は一般に借入金の返済の約束であるが、法的和解の支払いや宝くじの賞金のような、支払スケジュールを持つ他の金融商品も含まれることがある。支払額は事前に定められている場合もあれば、将来の金利や商品価格に依存する一定の計算式に基づいて変動する場合もある。債券、ノート、ビル（bills）、譲渡性預金（certificates of deposit）、コマーシャルペーパー、レポ取引（repurchase agreements）、貸付契約（loan agreements）、住宅ローンなどは、将来資金を返済する約束の例である。個人、企業、政府は資金を借りる際に固定収益証券を発行する。</p>
+<p>企業および政府は債券およびノートを発行する。満期が短い固定収益証券は「ノート（notes）」、満期が長いものは「ボンド（bonds）」と呼ばれる。通常の区分は10年であるが、実務上はこれらの用語はしばしば互換的に用いられる。また、残存期間が短くなると、いずれも短期証券とみなされ、通常は1年以下とされる。</p>
+<p>一部の企業は転換社債（convertible bonds）を発行する。これは通常、一定期間経過後に保有者の選択で株式に転換可能である。株価が高く転換の可能性が高い場合、転換社債は株式のように評価される。逆に、株価が低く転換の可能性が低い場合、転換社債は債券のように評価される。</p>
+<p>ビル（bills）、譲渡性預金、コマーシャルペーパーは、それぞれ政府、銀行、企業によって発行される。通常、発行から1年以内に満期を迎えるが、譲渡性預金はより長い当初満期を持つ場合もある。</p>
+<p>レポ取引（repurchase agreements, repos）は短期の貸付手段であり、期間は一晩程度の場合もある。資金を必要とする借り手は、通常は高格付けの債券を貸し手に売却し、合意された利子率に基づくわずかに高い価格で後に買い戻す契約を結ぶ。</p>
+<p>実務家は固定収益証券を短期（short-term）、中期（intermediate-term）、長期（long-term）に分類する。ただし、これらの定義について一般的な合意はない。満期が1～2年未満のものは短期、5～10年以上のものは長期とされ、その中間が中期である。</p>
+<p>マネーマーケットで取引される金融商品はマネーマーケット商品（money market instruments）と呼ばれる。これらは満期1年以内の債務証券である。マネーマーケットファンドや短期資金の運用を行う企業は、通常これらの金融商品を保有する。</p>
+</section>
+<section id="CFA0161-R-s04-02">
+<h3 class="dp-heading">株式（Equities）</h3>
+<p>株式は企業の所有権を表す。これには普通株式および優先株式が含まれる。普通株主は企業資産に対する残余請求権（residual rights）を持つ。彼らは取締役会が決定した配当を受け取る権利を有し、清算時には他のすべての請求が満たされた後に残る資産を受け取る権利を持つ。また、選出した取締役会を通じて、通常は企業の経営者を選任することができる。</p>
+<p>優先株式は、企業のキャッシュフローおよび資産に対して普通株式より優先的な権利を持つ株式である。優先株主は通常、定期的に一定の配当を受け取る権利を有する。累積型優先株式（cumulative preferred equity）の場合、企業は過去に支払われなかった配当をすべて優先株主に支払った後でなければ普通株主に配当を支払うことができない。また、企業清算時には優先株主は普通株主よりも高い順位で資産に対する請求権を持つ。評価の観点から、発行体が将来にわたり配当を支払えると明確に見込まれる場合、金融アナリストは優先株式を固定収益証券として扱うことが多い。</p>
+<p>ワラント（warrants）は企業が発行する証券であり、保有者に対して、その企業が発行する証券を、通常は満期前または満期時に、所定の価格で購入する権利を与える。通常、購入対象は発行体の普通株式であり、この場合ワラントは、行使により株式を取得できるため株式とみなされる。ワラントの行使価格（exercise price）は、保有者が証券を購入する際に支払う価格である。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM6">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例6：証券（Securities）</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>固定収益証券と株式を区別する要因は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s04-02-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>固定収益証券は、定期的なスケジュールに基づいて収入を生み出す。その価値は、あらかじめ定められたキャッシュフローの支払い約束に基づく。最も一般的な固定収益証券は、個人、企業、政府によるローン返済の約束である。</p>
+<p>株式は、企業において他のすべての請求（企業の固定収益負債を含む）が満たされた後の残余所有権を表す。企業においては、通常、優先株式の請求権が普通株式より優先される。普通株式は企業における残余所有権を持つ。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA0161-R-s04-03">
+<h3 class="dp-heading">集合投資（Pooled Investments）</h3>
+<p>集合投資ビークルは、投資信託（mutual funds）、トラスト（trusts）、デポジトリー（depositories）、ヘッジファンド（hedge funds）などであり、これらが保有する資産に対する共有持分を表す証券を発行する。これらが発行する証券は、それぞれシェア（shares）、ユニット（units）、預託証券（depository receipts）、リミテッド・パートナーシップ持分（limited partnership interests）と呼ばれるが、実務上はこれらの用語はしばしば互換的に使用される。投資家は、運用者の投資管理サービスや、個別では得にくい分散投資の機会を享受するために、集合投資ビークルに投資する。</p>
+<p>投資信託は、多数の投資家から資金を集めて証券ポートフォリオに投資する投資ビークルである。法的には投資トラストまたは投資会社として組成されることが多い。集合投資ビークルはオープンエンド型（open-ended）またはクローズドエンド型（closed-ended）に分類される。オープンエンド型ファンドは、通常毎日、投資家の要求に応じて新規持分を発行し、既存持分を償還する。持分の売買価格は、ファンドの純資産価値（net asset value）に基づく。純資産価値とは、ファンドの資産から負債を差し引いた額を1口当たりで表したものである。投資家は通常、ファンドと直接取引することでオープンエンド型投資信託を売買する。</p>
+<p>一方、クローズドエンド型ファンドは、ファンドまたはその投資銀行が手配するプライマリー市場で持分を発行する。発行後、投資家はファンドに対して償還を請求して持分を売却することはできない。その代わり、セカンダリー市場で他の投資家に売却する必要がある。クローズドエンド型ファンドの市場価格は純資産価値と異なる場合があり、時には大きく乖離する。一般に純資産価値に対してディスカウントで取引されるが、これは運用コストや運用の質に対する懸念を反映することがある。また、投資家がポートフォリオの証券が過大評価または過小評価されていると考える場合、ディスカウントまたはプレミアムで取引されることもある。このため、多くの金融アナリストは、クローズドエンド型ファンドのディスカウントやプレミアムを市場センチメント（market sentiment）の指標とみなす。</p>
+<p>上場投資信託（exchange-traded funds, ETFs）および上場投資証券（exchange-traded notes, ETNs）は、投資家同士がセカンダリー市場で取引できるオープンエンド型ファンドである。ETFの市場価格は純資産価値と大きく乖離することはほとんどない。これは、認定参加者（authorized participants, APs）と呼ばれる投資家がファンドと直接取引できるためである。ETFの市場価格が純資産価値を十分に下回る場合、APは市場でETFを購入し、ファンドに対して純資産価値で償還する。逆に市場価格が純資産価値を上回る場合、APはファンドから純資産価値で取得し、市場で売却する。この結果、ETFの市場価格と純資産価値は収束する傾向にある。</p>
+<p>多くのETFでは、現物（in-kind）による拠出および償還のみが認められている。このようなファンドでは、直接購入する投資家は現金ではなく証券ポートフォリオで支払いを行い、売却時には証券ポートフォリオを受け取る。このポートフォリオは通常、ファンドが保有するポートフォリオとほぼ同一である。このようなファンドは、投資家が預けたポートフォリオに対して預託証券（depository receipts）を発行するため、デポジトリー（depositories）と呼ばれることもある。また、工業用原材料や貴金属を保管する倉庫も、取引可能な倉庫証券（warehouse receipts）を発行することがある。</p>
+<p>資産担保証券（asset-backed securities）は、住宅ローン債券、クレジットカード債権、自動車ローンなどの資産プールから価値および収益を得る証券である。これらは通常、資産プールから受け取る利息および元本の支払いを月次で保有者に分配する。これらの支払いは、トランシェ（tranches）と呼ばれる異なる証券クラスに対して異なる価値を配分する計算式に依存する場合がある。</p>
+<p>ヘッジファンドは通常、リミテッド・パートナーシップとして組成される投資ファンドである。運用者はジェネラル・パートナー（general partners）であり、リミテッド・パートナーは、潜在的な大きな損失を受容できる十分な資産と知識を持つ適格投資家である。ヘッジファンドへの参加要件や規制は法域によって異なる。多くのヘッジファンドは単一の投資戦略を採用するが、全体として統一された戦略は存在せず、株式市場のロング・ショート戦略からエキゾチックなオルタナティブ資産への直接投資まで、さまざまな戦略が存在する。</p>
+<p>ヘッジファンドの主な特徴は運用報酬体系である。ほとんどのファンドは、運用資産に比例する年次手数料と、投資家のために生み出した利益に応じた成功報酬（performance fee）を運用者に支払う。また、多くのヘッジファンドはレバレッジ（leverage）を用いてリスクエクスポージャーを高め、リターンの増加を目指すという特徴も持つ。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ExercisePriceContent">
+<p>オプション契約において事前に合意された行使価格。ストライク価格（strike price）とも呼ばれる。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142152_103_Assets_and_Contracts.html" >← 前へ</a>
+  <span class="title">1.04 | Securities</span>
+  <a href="courses_1868_modules_items_142156_105_Currencies_Commodities_and_Real_Assets.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

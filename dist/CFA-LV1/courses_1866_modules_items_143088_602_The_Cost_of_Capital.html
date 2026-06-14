@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.02 | The Cost of Capital</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2132-R-s02-R-1" title="6.02 | The Cost of Capital"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：資本構成（Capital Structure） 6.02｜資本コスト（The Cost of Capital）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">企業の加重平均資本コスト（weighted-average cost of capital）を計算し、解釈すること。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>これまでのレッスンで述べたように、発行体は投資収益率が必要収益率を上回ると期待される資本投資を行う。発行体の資本投資に対する必要収益率は、投資家の要求収益率から導かれ、プロジェクト固有のリスクを調整したものである。発行体が正のNPVを持つプロジェクト機会を使い果たした場合、投資家が他の場所で投資し必要収益率を得られるように、資本を投資家に返還すべきである。これを行わないと、投資家にとって価値を毀損することになる。</p>
+<p>発行体にとって、必要収益率は資本コスト（cost of capital）とも呼ばれる。発行体は負債と株式の両方を用いるため、資本コストは負債コスト（cost of debt）と株主資本コスト（cost of equity）から構成される。これまでに説明したように、負債は企業のキャッシュフローに対する優先的かつ固定的な請求権であるのに対し、株式は期間不定の残余請求権であるため、投資家にとって負債の方がリスクが低い。さらに、負債は時として担保資産によって裏付けられており、デフォルト時にはその資産が債権者に移転されるため、債権投資家のリスクはさらに低減される。したがって、債権投資家は株式投資家よりも低い要求収益率を持ち、同様に発行体の負債コストは株主資本コストより低い。</p>
+<p>発行体の加重平均資本コスト（weighted-average cost of capital, WACC）は、負債と株式のコストを組み合わせて単一の資本コストを算出するものである。プロジェクト固有のリスクを調整した後のWACCは、NPV分析における割引率rとして、またIRR分析におけるハードルレートとして用いられる。</p>
+<p>WACCの計算は式1に示される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E1">WACC = (Cost of debt × Weighting of debt) + (Cost of equity × Weighting of equity).<span class="cfa-curriculum-display-formula-number">1</span></div>
+<p>式1の各構成要素の推定については、カリキュラム後半の債券および株式のレッスンでより詳細に扱う。ここでは、以下の点に留意する。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2132-R-s02-L1">
+<li class="cfa-curriculum-list-item">発行体の負債コストは、債権投資家の要求収益率である。既存の無担保ローンや債券の金利は通常、出発点として有用である。しかし、将来志向の指標、すなわち新規プロジェクトの資金調達のために発行される新規負債の金利を求めたい場合、同様の企業が最近借り入れた金利を参照することもできる。さらに、利息費用が税控除可能な法域では、名目負債コストに（1 − 税率）を乗じて税引後コストを求める。</li>
+<li class="cfa-curriculum-list-item">負債と株式のウェイトは、それぞれの市場価値比率、または通常は簿価ベースで示される経営陣の目標ウェイトのいずれかである。市場価値ウェイトの方が一般的に用いられるのは、簿価が負債や株式の過去の価格を反映するのに対し、投資家の機会コストは現在の市場価格に基づくためである。</li>
+<li class="cfa-curriculum-list-item">発行体の株主資本コストは、株式投資家の要求収益率である。負債コストとは異なり、出発点として観察できる過去の金利は存在しない。ただし、株式はリスクが高く、株主への分配は税控除できないため、株主資本コストは負債コストより高いことは分かっている。</li>
+</ul>
+<p>一つの単純な方法としては、株式市場全体の過去のリターンを観察し、株式投資家が将来も同様の収益率を期待していると仮定し、その率を次のレッスンで議論する企業固有の要因（例えばキャッシュフローの安定性）に応じて調整することである。</p>
+<p>長期間にわたる広範な株式市場指数の一つは、1928年から2021年にかけて年平均成長率（CAGR）10％で上昇しており、これを本レッスンにおける株主資本コストの初期推定値として用いる。株式投資家の期待収益率および要求収益率については、後のカリキュラムでより詳細に扱う。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2132-R-s02-L2">
+<li class="cfa-curriculum-list-item">発行体が負債や株式とは異なるリスク・リターン特性を持つ追加の資金調達手段（例えば優先株（preferred stock）や非支配持分（non-controlling interests））を有する場合、それらの加重平均税引後コストも式1に加える必要がある。</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2132-R-s02-Ba">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Knowledge Check: Computing WACC</h3>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>ABC社は、40％の負債と60％の株式で資金調達されており、利息費用は税控除可能であるとする。また、ABC社は新たな資金調達においてもこれらの比率を維持する意向である。</p>
+<p>ABCの債権投資家の税引前要求収益率は4％、株式投資家の要求収益率は10％である。限界法人税率が23％の場合、ABCの加重平均資本コストはいくらか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>ABCの加重平均資本コストは7.23％である：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E">WACC = [(1 – Tax rate) × Pre-tax cost of debt × Weighting of debt] + (Cost of equity × Weighting of equity).</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___1">WACC = [0.04 × (1 – 0.23) × 0.40] + (0.10 × 0.60).</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___2">WACC = 7.23%.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>前のモジュールで示したように、資本投資はその収益が必要収益率を上回る場合に企業価値を増加させる。前のモジュールでは投資収益率を価値の主要な決定要因として扱ったが、必要収益率が低いほどNPVが増加する、あるいは少なくとも価値創造的な投資のハードルが低くなることも明らかである。これが、資本構成（負債と株式の組み合わせ）に関する意思決定における経営者の最も一般的な目的の一つ、すなわちWACCを最小化する資金調達構成を選択するという考え方の基礎となる。ただし、負債コストや株主資本コストは経営者によって決定されるものではなく、投資家によって金融市場で決定されるため、これは動的で単純ではない課題である。資本構成を選択する際の経営者の第二の目的は、可能かつ経済的である範囲で、資産の流動性や期間構造を資本投資と一致させることである。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2132-R-s02-Bc">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Question Set</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2132-R-s02-Q2"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>XYZ社は、負債30％、株式70％の資本構成を持ち、利息費用は税控除可能である。債権投資家の税引前要求収益率は6％、株式投資家の要求収益率は12％である。限界法人税率が20％から25％に上昇した場合、WACCの変化は次のうちどれに最も近いか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. −0.09％。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aは正しい。税率20％におけるXYZのWACCは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___3">WACC = (Weighting of debt × Cost of debt) + (Weighting of equity × Cost of equity)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___4">= (0.3)(6%)(1 – 0.2) + (0.70)(12%) = 9.84%.</div>
+<p>税率25％におけるXYZのWACCは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___5">WACC = (0.3)(6%)(1 – 0.25) +(0.70)(12%) = 9.75%.</div>
+<p>したがって、税引後負債コストが4.8％から4.5％に低下することにより、WACCは0.09％低下する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 0.09％。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aは正しい。税率20％におけるXYZのWACCは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___3">WACC = (Weighting of debt × Cost of debt) + (Weighting of equity × Cost of equity)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___4">= (0.3)(6%)(1 – 0.2) + (0.70)(12%) = 9.84%.</div>
+<p>税率25％におけるXYZのWACCは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___5">WACC = (0.3)(6%)(1 – 0.25) +(0.70)(12%) = 9.75%.</div>
+<p>したがって、税引後負債コストが4.8％から4.5％に低下することにより、WACCは0.09％低下する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 0.30％。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aは正しい。税率20％におけるXYZのWACCは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___3">WACC = (Weighting of debt × Cost of debt) + (Weighting of equity × Cost of equity)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___4">= (0.3)(6%)(1 – 0.2) + (0.70)(12%) = 9.84%.</div>
+<p>税率25％におけるXYZのWACCは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___5">WACC = (0.3)(6%)(1 – 0.25) +(0.70)(12%) = 9.75%.</div>
+<p>したがって、税引後負債コストが4.8％から4.5％に低下することにより、WACCは0.09％低下する。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2132-R-s02-Q3"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>正誤問題：負債コストおよび株主資本コストは企業によってコントロールされるため、経営者は資本配分プロセスにおいてそれらを引き下げることで企業の資本コストを低下させることができる。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 正しい（True）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。この記述は誤りである。なぜなら、負債コストおよび株主資本コストは経営陣によって選択されるのではなく、投資家によって金融市場で決定されるためである。ただし、経営陣の行動によって影響を受けることはある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 誤り（False）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。この記述は誤りである。なぜなら、負債コストおよび株主資本コストは経営陣によって選択されるのではなく、投資家によって金融市場で決定されるためである。ただし、経営陣の行動によって影響を受けることはある。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<section>
+<p>問題3および4は以下の情報に基づく：</p>
+<p>企業Xの貸借対照表の右側には以下がある：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2132-R-s02-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">社債（Bonds）　400,000ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">普通株式（Common stock）（40,000株）　600,000ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債および株主資本合計　1,000,000ドル</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>企業Xの株価は現在1株あたり20ドルである。負債の税引前要求収益率は5％、株主資本の要求収益率は10％である。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2132-R-s02-Q4"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>企業XのWACCを計算する際、貸借対照表項目の簿価を用いた負債のウェイトは、市場価値を用いた場合の負債のウェイトと比べて、____________である可能性が高い。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 低い（lower）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。</p>
+<p>簿価ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___6"><em>W<sub>d</sub> </em> = $400,000/$1,000,000 = 0.40.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___7"><em>W<sub>e</sub> </em> = $600,000/$1,000,000 = 0.60.</div>
+<p>株式の市場価値は20ドル × 40,000株 ＝ 800,000ドルである。</p>
+<p>市場価値ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___8"><em>W<sub>d</sub> </em> = $400,000/$1,200,000 = 0.33.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___9"><em>W<sub>e</sub> </em> = $800,000/$1,200,000 = 0.67.</div>
+<p>したがって、負債の簿価ウェイト（0.40）は市場価値ウェイト（0.33）よりも高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 同じ（the same）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。</p>
+<p>簿価ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___6"><em>W<sub>d</sub> </em> = $400,000/$1,000,000 = 0.40.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___7"><em>W<sub>e</sub> </em> = $600,000/$1,000,000 = 0.60.</div>
+<p>株式の市場価値は20ドル × 40,000株 ＝ 800,000ドルである。</p>
+<p>市場価値ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___8"><em>W<sub>d</sub> </em> = $400,000/$1,200,000 = 0.33.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___9"><em>W<sub>e</sub> </em> = $800,000/$1,200,000 = 0.67.</div>
+<p>したがって、負債の簿価ウェイト（0.40）は市場価値ウェイト（0.33）よりも高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 高い（higher）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。</p>
+<p>簿価ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___6"><em>W<sub>d</sub> </em> = $400,000/$1,000,000 = 0.40.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___7"><em>W<sub>e</sub> </em> = $600,000/$1,000,000 = 0.60.</div>
+<p>株式の市場価値は20ドル × 40,000株 ＝ 800,000ドルである。</p>
+<p>市場価値ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___8"><em>W<sub>d</sub> </em> = $400,000/$1,200,000 = 0.33.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___9"><em>W<sub>e</sub> </em> = $800,000/$1,200,000 = 0.67.</div>
+<p>したがって、負債の簿価ウェイト（0.40）は市場価値ウェイト（0.33）よりも高い。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2132-R-s02-Q5"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>限界法人税率が20％であり、株価が25ドルに上昇した場合、企業XのWACCは次のうちどれに最も近いか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 7.60％。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。</p>
+<p>簿価ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___10"><em>W<sub>d</sub> </em> = $400,000/$1,000,000 = 0.40.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___11"><em>W<sub>e</sub> </em> = $600,000/$1,000,000 = 0.60.</div>
+<p>株式の市場価値は25ドル × 40,000株 ＝ 1,000,000ドルである。</p>
+<p>市場価値ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___12"><em>W<sub>d</sub> </em> = $400,000/$1,400,000 = 0.29.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___13"><em>W<sub>e</sub> </em> = $1,000,000/$1,400,000 = 0.71.</div>
+<p>WACCの計算において適切なウェイトは市場価値ウェイトである。</p>
+<p>市場価値ウェイトを用いた企業XのWACCは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___14">WACC = (weighting of debt * cost of debt) + (weighting of equity * cost of equity)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___15">= (0.29) (5%)(1-0.2) +(0.71)(10%) = 8.26%</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 8.26％。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。</p>
+<p>簿価ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___10"><em>W<sub>d</sub> </em> = $400,000/$1,000,000 = 0.40.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___11"><em>W<sub>e</sub> </em> = $600,000/$1,000,000 = 0.60.</div>
+<p>株式の市場価値は25ドル × 40,000株 ＝ 1,000,000ドルである。</p>
+<p>市場価値ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___12"><em>W<sub>d</sub> </em> = $400,000/$1,400,000 = 0.29.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___13"><em>W<sub>e</sub> </em> = $1,000,000/$1,400,000 = 0.71.</div>
+<p>WACCの計算において適切なウェイトは市場価値ウェイトである。</p>
+<p>市場価値ウェイトを用いた企業XのWACCは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___14">WACC = (weighting of debt * cost of debt) + (weighting of equity * cost of equity)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___15">= (0.29) (5%)(1-0.2) +(0.71)(10%) = 8.26%</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 8.55％。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。</p>
+<p>簿価ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___10"><em>W<sub>d</sub> </em> = $400,000/$1,000,000 = 0.40.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___11"><em>W<sub>e</sub> </em> = $600,000/$1,000,000 = 0.60.</div>
+<p>株式の市場価値は25ドル × 40,000株 ＝ 1,000,000ドルである。</p>
+<p>市場価値ベースのウェイトは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___12"><em>W<sub>d</sub> </em> = $400,000/$1,400,000 = 0.29.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___13"><em>W<sub>e</sub> </em> = $1,000,000/$1,400,000 = 0.71.</div>
+<p>WACCの計算において適切なウェイトは市場価値ウェイトである。</p>
+<p>市場価値ウェイトを用いた企業XのWACCは以下のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___14">WACC = (weighting of debt * cost of debt) + (weighting of equity * cost of equity)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2132-R-s02-E___15">= (0.29) (5%)(1-0.2) +(0.71)(10%) = 8.26%</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>次の2つの用語を用いて空欄を埋めよ：</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2132-R-s02-L3">
+<li class="cfa-curriculum-list-item">高い（higher）</li>
+<li class="cfa-curriculum-list-item">
+<p>lower</p>
+</li>
+</ul>
+<p>株主価値は、より____________投資収益率と、より____________WACCとなる資本構成によって増加する。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>株主価値は、より高い投資収益率と、より低いWACCとなる資本構成によって増加する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CostOfCapitalContent">
+<p>企業の資金調達コスト；資本提供者がその資本提供に対する補償として要求する収益率（機会費用（opportunity cost of funds）とも呼ばれる）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CostOfDebtContent">
+<p>債券発行、銀行借入、ファイナンスリース（finance lease）による資産取得などにおける、企業の負債資金調達に対する要求収益率。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CostOfEquityContent">
+<p>貨幣の時間価値とリスクの双方を補償するために株式投資家が要求する収益率。普通株式に対する要求収益率（required rate of return on common stock）または株主資本収益率（required return on equity）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="WeightedAverageCostOfCapitalWACCContent">
+<p>企業の株主資本、負債、優先株（preferred stock）、およびその他の長期資金調達手段に対する税引後要求収益率の加重平均であり、各ウェイトは企業の現在の市場価値または経営陣の目標資本構成における各資金調達手段の割合である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CapitalStructureContent">
+<p>企業が事業を資金調達するために用いる負債と株式の組み合わせ；企業固有の長期資金調達の構成。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1866_modules_items_143077_601_Introduction.html" >← 前へ</a>
+  <span class="title">6.02 | The Cost of Capital</span>
+  <a href="courses_1866_modules_items_143098_603_Factors_Affecting_Capital_Structure.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

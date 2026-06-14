@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.02 | Cross-Rate Calculations</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2416-R-s02-R-1" title="8.02 | Cross-Rate Calculations">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール8：為替レート計算　8.02｜クロスレート計算（Cross-Rate Calculations）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">通貨のクロスレート（currency cross-rates）を計算し、解釈する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>世界の通貨は外国為替市場（foreign exchange, FX market）において売買および交換される。この分散型市場において、市場参加者は通常効率的市場（efficient market）を反映する為替レートを用いて通貨を取引する。本セクションでは、第3の通貨を用いて2通貨間の為替レートを計算するためのクロス為替レート関係（cross exchange rate relationships, cross-rates）の利用を扱う。また、FX市場における通貨取引で用いられる計算も導入する。</p>
+<p>3通貨に関係する2つの為替レートが与えられた場合、クロスレートを導出することが可能である。例えば、前のレッスンで見たように、FX市場の慣行では米ドルとユーロの為替レートはユーロ・ドル（USD/EUR）としてクォートされる。また、カナダドルと米ドルの為替レートはドル・カナダ（CAD/USD）としてクォートされる。これら2つの為替レートが与えられれば、市場慣行に従いユーロ・カナダ（CAD/EUR）としてクォートされるユーロとカナダドルのクロスレートを導出することができる。この計算は次のように示される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CAD</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CAD</mtext>
+</mrow>
+<mrow>
+<menclose notation="horizontalstrike">
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</menclose>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<menclose notation="horizontalstrike">
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</menclose>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CAD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mrow>
+</semantics>
+</math>
+</div>
+<p>したがって、ユーロ・カナダ（CAD/EUR）のクォートを得るには、ドル・カナダ（CAD/USD）のクォートにユーロ・ドル（USD/EUR）のクォートを掛ける必要がある。例えば、ドル・カナダの為替レートが1.3020、ユーロ・ドルの為替レートが1.1701であるとする。これらのスポット為替レート（spot exchange rates）を用いると、ユーロ・カナダのクロスレートは次のようになる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___1">1.3020 × 1.1701 = 1.5235 CAD per EUR.</div>
+<p>プロフェッショナルなFX市場では、直接クォート（direct quotes）や間接クォート（indirect quotes）の慣行は用いられない。これらは自国通貨と外国通貨の区別が所在地に依存するためである。その代わり、市場では定義された通貨ペアに基づくクォートが用いられる。複数の通貨クォートを用いてクロスレートを求める場合、式中で中間通貨を打ち消すためにクォートを反転（invert）させる必要があることがある。例えば、カナダ・円（JPY/CAD）のクォートを得るには、通常ドル・カナダ（CAD/USD）とドル・円（JPY/USD）のレート（いずれも市場慣行）を用いる。この計算では、ドル・カナダ（CAD/USD）をカナダ・ドル（USD/CAD）に反転する必要がある。以下の通りである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___2">
+<math>
+<semantics>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CAD</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</msup>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>JPY</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>CAD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>JPY</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<menclose notation="horizontalstrike">
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</menclose>
+</mrow>
+<mrow>
+<mtext>CAD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>JPY</mtext>
+</mrow>
+<mrow>
+<menclose notation="horizontalstrike">
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</menclose>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>JPY</mtext>
+</mrow>
+<mrow>
+<mtext>CAD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mrow>
+</semantics>
+</math>
+</div>
+<p>したがって、カナダ・円（JPY/CAD）のクォートを得るには、まずドル・カナダ（CAD/USD）を反転し、その後ドル・円（JPY/USD）のクォートを掛ける必要がある。ほとんどの通貨は小数点以下4桁でクォートされるが、日本円の為替レートは小数点以下2桁でクォートされる。例えば、ドル・カナダ（CAD/USD）が1.3020、ドル・円（JPY/USD）が111.94であるとする。ドル・カナダの1.3020を反転すると0.7680となり、これにドル・円の111.94を掛けることで、次のカナダ・円レートが得られる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___3">0.7680 × 111.94 = 85.97 JPY per CAD.</div>
+<p>クロスレート通貨ペアのクォートを求める市場参加者は、通常自らこの計算を行う必要はない。ディーラーまたは電子取引プラットフォームが指定された通貨ペアのクォートを提供するためである。（例えば、カナダ・円のクォートを求める顧客は、そのクォートをディーラーから直接受け取り、ドル・カナダとドル・円の別々のクォートを渡されて自分で計算することはない。）クォートを提供するディーラーは、多くの場合この計算を自ら行う必要がある。これは、ドル・カナダとドル・円の通貨ペアが異なるトレーディングデスクで取引され、異なるトレーダーが関与することが多いためである。インターバンク市場（interbank market）および銀行対顧客市場（bank-to-client markets）で用いられる電子ディーリングシステムは、このクロスレート計算を自動的に行う機能を備えている。</p>
+<p>市場参加者はクロスレート（例：カナダ・円）と、それを構成する基礎的な為替レート（例：ドル・カナダおよびドル・円）の両方のクォートを受け取ることができるため、これらのクロスレートは前述の関係式と整合的でなければならない。そうでなければ、市場は価格の歪みを裁定（arbitrage）する。例を拡張すると、ドル・カナダ1.3020およびドル・円111.94から計算されるカナダ・円（JPY/CAD）は85.97となる。ここで同時に、誤ったディーラーがカナダ・円レートを86.20と提示したとする。これは同一のサービス（円をカナダドルに交換すること）に対する異なる価格である。したがって、トレーダーは誰でもJPY85.97でCAD1を購入し、その後JPY86.20でCAD1を売却することができる（価格通貨と基準通貨の定義については前述参照）。この無リスク裁定利益（riskless arbitrage profit）はCAD1あたりJPY0.23である。この裁定、すなわち三角裁定（triangular arbitrage：「tri-」は3通貨を意味する）は、価格差が解消されるまで続く。</p>
+<p>しかし実際には、こうしたクロスレートの不一致はほとんど発生しない。人間のトレーダーおよび自動取引アルゴリズムが常に価格の非効率性を監視しているためである。実務上および本レッスンの目的においては、クロスレートは基礎となる為替レートと整合的であるとみなし、3通貨に関する任意の2つの為替レートが与えられれば、第3のクロスレートを導出できると仮定する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2416-R-s02-EXM-1-1">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例1　クロスレートとパーセンテージ変化（Cross-Rates and Percentage Changes）</h3>
+<section>
+<p>ディーラーが作成したリサーチレポートには、以下のスポットレートが含まれている：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2416-R-s02-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">通貨（Currency）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">スポットレート（Spot Rate）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">1年後の予想スポットレート（Expected Spot Rate in One Year）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">USD/EUR</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.1701</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.1619</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">CHF/USD</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.9900</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.9866</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">USD/GBP</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.3118</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.3066</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2416-R-s02-Q1">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>スポットのCHF/EURクロスレートは最も近いものはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.8461.</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___4">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CHF</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CHF</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>1.1701</mn>
+<mo>×</mo>
+<mn>0.9900</mn>
+<mo>=</mo>
+<mn>1.1584</mn>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 0.8546.</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___4">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CHF</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CHF</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>1.1701</mn>
+<mo>×</mo>
+<mn>0.9900</mn>
+<mo>=</mo>
+<mn>1.1584</mn>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 1.1584.</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___4">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CHF</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>CHF</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>1.1701</mn>
+<mo>×</mo>
+<mn>0.9900</mn>
+<mo>=</mo>
+<mn>1.1584</mn>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2416-R-s02-Q2">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>スポットのGBP/EURクロスレートは最も近いものはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.8920.</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___5">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>GBP</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>GBP</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>GBP</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.1701</mn>
+</mrow>
+<mrow>
+<mn>1.3118</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>0.8920</mn>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 1.1211.</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___5">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>GBP</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>GBP</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>GBP</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.1701</mn>
+</mrow>
+<mrow>
+<mn>1.3118</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>0.8920</mn>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 1.4653.</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___5">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>GBP</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>GBP</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+<mrow>
+<mtext>EUR</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>GBP</mtext>
+</mrow>
+<mrow>
+<mtext>USD</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.1701</mn>
+</mrow>
+<mrow>
+<mn>1.3118</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>0.8920</mn>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2416-R-s02-Q3">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>リサーチレポートに基づくと、ユーロは今後1年間で米ドルに対してどの程度増価すると予想されるか？</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. −0.7％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。USD/EURクォートにおいてユーロはベース通貨（base currency）であり、USD/EURレートの予想低下はユーロの減価を示している。1年後には、1ユーロを購入するのに必要な米ドルはより少なくなる。数式的には：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___6">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.1619</mn>
+</mrow>
+<mrow>
+<mn>1.1701</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mo>−</mo>
+<mn>0.7</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. +0.7％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。USD/EURクォートにおいてユーロはベース通貨（base currency）であり、USD/EURレートの予想低下はユーロの減価を示している。1年後には、1ユーロを購入するのに必要な米ドルはより少なくなる。数式的には：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___6">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.1619</mn>
+</mrow>
+<mrow>
+<mn>1.1701</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mo>−</mo>
+<mn>0.7</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. +1.0％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。USD/EURクォートにおいてユーロはベース通貨（base currency）であり、USD/EURレートの予想低下はユーロの減価を示している。1年後には、1ユーロを購入するのに必要な米ドルはより少なくなる。数式的には：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___6">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.1619</mn>
+</mrow>
+<mrow>
+<mn>1.1701</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mo>−</mo>
+<mn>0.7</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2416-R-s02-Q4">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>リサーチレポートに基づくと、米ドルは今後1年間で英ポンド（British pound sterling）に対してどの程度増価すると予想されるか？</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. +0.6％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。USD/GBPクォートにおいて英ポンドはベース通貨であり、USD/GBPレートの予想低下は英ポンドが米ドルに対して減価すると予想されることを意味する。言い換えれば、米ドルは英ポンドに対して増価すると予想される。数式的には：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___7">
+<math>
+<semantics>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.3066</mn>
+</mrow>
+<mrow>
+<mn>1.3118</mn>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.3118</mn>
+</mrow>
+<mrow>
+<mn>1.3066</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mo>+</mo>
+<mn>0.4</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. −0.4％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。USD/GBPクォートにおいて英ポンドはベース通貨であり、USD/GBPレートの予想低下は英ポンドが米ドルに対して減価すると予想されることを意味する。言い換えれば、米ドルは英ポンドに対して増価すると予想される。数式的には：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___7">
+<math>
+<semantics>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.3066</mn>
+</mrow>
+<mrow>
+<mn>1.3118</mn>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.3118</mn>
+</mrow>
+<mrow>
+<mn>1.3066</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mo>+</mo>
+<mn>0.4</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. +0.4％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。USD/GBPクォートにおいて英ポンドはベース通貨であり、USD/GBPレートの予想低下は英ポンドが米ドルに対して減価すると予想されることを意味する。言い換えれば、米ドルは英ポンドに対して増価すると予想される。数式的には：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2416-R-s02-E-1-___7">
+<math>
+<semantics>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.3066</mn>
+</mrow>
+<mrow>
+<mn>1.3118</mn>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.3118</mn>
+</mrow>
+<mrow>
+<mn>1.3066</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mo>+</mo>
+<mn>0.4</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math>
+</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2416-R-s02-Q5">
+<span class="cfa-curriculum-question-with-label">5. </span>
+<p>今後1年間で、スイスフラン（Swiss franc）は次のうちどれに該当すると予想されるか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 英ポンドに対して減価する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。この問題では増価・減価の大きさを計算する必要はないため、スイスフランをプライス通貨（price currency）またはベース通貨のいずれとしても扱うことができる。この場合、スイスフランをプライス通貨として扱う方が容易である。CHF/USDは0.9900から0.9866へ低下すると予想されているため、スイスフランは強くなる（すなわち米ドルに対して増価する）と予想される。CHF/EURは現在1.1584（問題1の解答参照）であり、1.1463（= 0.9866 × 1.1619）になると予想されるため、スイスフランはユーロに対して増価すると予想される。CHF/GBPは現在1.2987（= 0.9900 × 1.3118）であり、1.2891（= 0.9866 × 1.3066）になると予想されるため、スイスフランは英ポンドに対しても増価すると予想される。</p>
+<p>別の方法として、直感的に導出することもできる。リサーチレポートによれば、CHF/USDレートは低下すると予想されている。これは米ドルがスイスフランに対して減価する、すなわちスイスフランが米ドルに対して増価することを意味する。同様に、USD/EURおよびUSD/GBPも低下しているため、ユーロおよび英ポンドは米ドルに対して減価し、米ドルはユーロおよび英ポンドに対して増価する。スイスフランが米ドルに対して増価し、さらに米ドルがユーロおよび英ポンドに対して増価するのであれば、スイスフランはユーロおよび英ポンドに対しても増価すると結論づけられる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. ユーロに対して減価する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。この問題では増価・減価の大きさを計算する必要はないため、スイスフランをプライス通貨またはベース通貨のいずれとしても扱うことができる。この場合、スイスフランをプライス通貨として扱う方が容易である。CHF/USDは0.9900から0.9866へ低下すると予想されているため、スイスフランは強くなる（すなわち米ドルに対して増価する）と予想される。CHF/EURは現在1.1584（問題1の解答参照）であり、1.1463（= 0.9866 × 1.1619）になると予想されるため、スイスフランはユーロに対して増価すると予想される。CHF/GBPは現在1.2987（= 0.9900 × 1.3118）であり、1.2891（= 0.9866 × 1.3066）になると予想されるため、スイスフランは英ポンドに対しても増価すると予想される。</p>
+<p>別の方法として、直感的に導出することもできる。リサーチレポートによれば、CHF/USDレートは低下すると予想されている。これは米ドルがスイスフランに対して減価する、すなわちスイスフランが米ドルに対して増価することを意味する。同様に、USD/EURおよびUSD/GBPも低下しているため、ユーロおよび英ポンドは米ドルに対して減価し、米ドルはユーロおよび英ポンドに対して増価する。スイスフランが米ドルに対して増価し、さらに米ドルがユーロおよび英ポンドに対して増価するのであれば、スイスフランはユーロおよび英ポンドに対しても増価すると結論づけられる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 英ポンド、ユーロ、および米ドルに対して増価する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。この問題では増価・減価の大きさを計算する必要はないため、スイスフランをプライス通貨またはベース通貨のいずれとしても扱うことができる。この場合、スイスフランをプライス通貨として扱う方が容易である。CHF/USDは0.9900から0.9866へ低下すると予想されているため、スイスフランは強くなる（すなわち米ドルに対して増価する）と予想される。CHF/EURは現在1.1584（問題1の解答参照）であり、1.1463（= 0.9866 × 1.1619）になると予想されるため、スイスフランはユーロに対して増価すると予想される。CHF/GBPは現在1.2987（= 0.9900 × 1.3118）であり、1.2891（= 0.9866 × 1.3066）になると予想されるため、スイスフランは英ポンドに対しても増価すると予想される。</p>
+<p>別の方法として、直感的に導出することもできる。リサーチレポートによれば、CHF/USDレートは低下すると予想されている。これは米ドルがスイスフランに対して減価する、すなわちスイスフランが米ドルに対して増価することを意味する。同様に、USD/EURおよびUSD/GBPも低下しているため、ユーロおよび英ポンドは米ドルに対して減価し、米ドルはユーロおよび英ポンドに対して増価する。スイスフランが米ドルに対して増価し、さらに米ドルがユーロおよび英ポンドに対して増価するのであれば、スイスフランはユーロおよび英ポンドに対しても増価すると結論づけられる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2416-R-s02-Q6">
+<span class="cfa-curriculum-question-with-label">6. </span>
+<p>リサーチレポートに基づくと、今後1年間で最も強い通貨から最も弱い通貨への並びとして正しいものはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 米ドル、英ポンド、ユーロ</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。USD/EURは1.1701から1.1619へ低下し、USD/GBPは1.3118から1.3066へ低下すると予想されている。したがって、米ドルはユーロおよび英ポンドの両方に対してより強くなると予想される。GBP/EURは現在0.8920［= (1.3118)⁻¹ × 1.1701］であり、0.8893［= (1.3066)⁻¹ × 1.1619］になると予想されるため、英ポンドはユーロよりも強くなると予想される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 米ドル、ユーロ、英ポンド</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。USD/EURは1.1701から1.1619へ低下し、USD/GBPは1.3118から1.3066へ低下すると予想されている。したがって、米ドルはユーロおよび英ポンドの両方に対してより強くなると予想される。GBP/EURは現在0.8920［= (1.3118)⁻¹ × 1.1701］であり、0.8893［= (1.3066)⁻¹ × 1.1619］になると予想されるため、英ポンドはユーロよりも強くなると予想される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. ユーロ、米ドル、英ポンド</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。USD/EURは1.1701から1.1619へ低下し、USD/GBPは1.3118から1.3066へ低下すると予想されている。したがって、米ドルはユーロおよび英ポンドの両方に対してより強くなると予想される。GBP/EURは現在0.8920［= (1.3118)⁻¹ × 1.1701］であり、0.8893［= (1.3066)⁻¹ × 1.1619］になると予想されるため、英ポンドはユーロよりも強くなると予想される。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2416-R-s02-Q7">
+<span class="cfa-curriculum-question-with-label">7. </span>
+<p>リサーチレポートに基づくと、今後1年間で米ドルに対して（パーセンテージベースで）最も増価する通貨から最も増価しない通貨までの順序として正しいものはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 英ポンド、スイスフラン、ユーロ</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。USD/EURレートは−0.7％（= [1.1619/1.1701] − 1）低下しており、これはベース通貨であるユーロが米ドルに対して減価していることを意味する。USD/GBPレートは−0.4％（= [1.3066/1.3118] − 1）低下しており、これは英ポンドが米ドルに対して減価していることを意味する。CHF/USDレートをUSD/CHFの形式に反転すると、ベース通貨であるスイスフランは米ドルに対して+0.35％増価している（= [1.0136/1.0101] − 1）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. スイスフラン、英ポンド、ユーロ</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。USD/EURレートは−0.7％（= [1.1619/1.1701] − 1）低下しており、これはベース通貨であるユーロが米ドルに対して減価していることを意味する。USD/GBPレートは−0.4％（= [1.3066/1.3118] − 1）低下しており、これは英ポンドが米ドルに対して減価していることを意味する。CHF/USDレートをUSD/CHFの形式に反転すると、ベース通貨であるスイスフランは米ドルに対して+0.35％増価している（= [1.0136/1.0101] − 1）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. ユーロ、スイスフラン、英ポンド</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。USD/EURレートは−0.7％（= [1.1619/1.1701] − 1）低下しており、これはベース通貨であるユーロが米ドルに対して減価していることを意味する。USD/GBPレートは−0.4％（= [1.3066/1.3118] − 1）低下しており、これは英ポンドが米ドルに対して減価していることを意味する。CHF/USDレートをUSD/CHFの形式に反転すると、ベース通貨であるスイスフランは米ドルに対して+0.35％増価している（= [1.0136/1.0101] − 1）。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1865_modules_items_143214_801_Introduction.html" >← 前へ</a>
+  <span class="title">8.02 | Cross-Rate Calculations</span>
+  <a href="courses_1865_modules_items_143226_803_Forward_Rate_Calculations.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10.13 | Warning Signs</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1533-R-s12-R-1" title="10.13 | Warning Signs">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール10：財務報告の質（Financial Reporting Quality）10.13｜警告サイン（Warning Signs）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">会計上の警告サインおよび財務報告における情報操作を検出する方法を説明する（describe accounting warning signs and methods for detecting manipulation of information in financial reports）</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>望ましい結果を達成するために経営者が行う選択は、砂や雪の上の足跡のように痕跡を残す。財務報告における情報操作の証拠、すなわち警告サインは、操作の基本的手段である収益認識のバイアスおよび費用認識のバイアスに直接関連している。このバイアスは認識のタイミングまたは場所に関係する可能性がある。タイミングの問題の例として、企業が費用を資産計上することで繰り延べる場合がある。場所に関しては、損益計算書ではなくその他の包括利益や直接純資産を通じて損失を認識することがある。警戒心のある投資家またはアナリストは、これらの警告サインを識別するために以下を行うべきである。</p>
+<section id="CFA1533-R-s12-01-01">
+<h3 class="dp-heading">収益に注意を払う（Pay Attention to Revenue）</h3>
+<p>損益計算書で最大の数値は収益であり、収益認識は会計操作や不正の繰り返し発生する原因である。「収益は前の比較可能期間より高いか低いか」という問いに答えるだけでは不十分である。不正行為の警告シグナルを識別するために、さまざまな分析手続を日常的に実施することができる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s12-L1">
+<li class="cfa-curriculum-list-item">企業の収益認識方針について、会計方針の注記を検討する。</li>
+<li class="cfa-curriculum-list-item">商品出荷時に即時収益を認識する、あるいは商品が実際に顧客に出荷される前に売上を認識するビル・アンド・ホールド取引（bill-and-hold arrangements）を用いるなど、収益の早期認識を容易にする方針かどうかを検討する。</li>
+<li class="cfa-curriculum-list-item">適切な評価が難しいバーター取引（barter transactions）が存在する可能性がある。</li>
+<li class="cfa-curriculum-list-item">リベート・プログラム（rebate programs）は、最終的に発生するリベート額の予測など多くの見積りを伴い、収益認識に大きな影響を与える可能性がある。</li>
+<li class="cfa-curriculum-list-item">財やサービスの複数要素契約（multiple-deliverable arrangements）は一般的であるが、各財やサービスごとの収益認識のタイミングが明確であることが、投資家が収益報告を信頼するために必要である。</li>
+</ul>
+<p>これらの意思決定のいずれも必ずしも会計基準に違反するものではないが、いずれも重要な判断を伴い、他の警告サインが存在する場合には注意深く検討する必要がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s12-L2">
+<li class="cfa-curriculum-list-item">収益の関係性を確認する。企業の収益成長を主要な競合他社または業界の同業他社グループと比較する。</li>
+<li class="cfa-curriculum-list-item">企業の収益成長が競合他社、業界、または経済と整合しない場合、投資家またはアナリストはその優位性の理由を理解する必要がある。それが優れた経営や製品・サービスの結果である可能性もあるが、すべての経営が優れているわけでも、すべての企業の製品・サービスが優れているわけでもない。収益の質に疑問が生じる可能性があり、追加の分析手順を行う必要がある。</li>
+<li class="cfa-curriculum-list-item">数年間にわたり売掛金と収益を比較する。売掛金が総収益に対する割合として増加しているかどうかの傾向を確認する。もしそうであれば、企業がチャネル・スタッフィング（channel-stuffing）を行っているか、あるいは架空売上を計上している可能性がある。数年間の売掛金回転率（receivables turnover）を計算する：</li>
+<li class="cfa-curriculum-list-item">異常な変化がないか傾向を確認し、存在する場合には説明を求める。</li>
+<li class="cfa-curriculum-list-item">企業の売上債権回収期間（days sales outstanding, DSO）または売掛金回転率を、関連する競合他社または業界の同業他社グループと比較し、その企業が外れ値であるかどうかを判断する。</li>
+</ul>
+<p>DSOの増加または売掛金回転率の低下は、収益が早期に認識されているか、あるいは架空である可能性、または貸倒引当金が不十分である可能性を示唆する。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s12-L4">
+<li class="cfa-curriculum-list-item">総資産回転率（asset turnover）を確認する。経営者が資産配分の判断を誤ると、収益が投資を正当化するのに十分でない場合がある。特に、資産配分の判断が企業全体の買収を伴う場合には注意が必要である。買収後の収益創出が弱い場合、経営者はあらゆる手段で収益成長を追求する可能性がある。その結果、会計上の不正につながる可能性がある。</li>
+</ul>
+<p>総資産で割った収益は、収益創出における資産の生産性を示す。企業の総資産回転率が継続的に低下している、または競合他社や業界よりも低い場合、将来の資産の評価減、特に買収を多く行う企業ののれんの減損を示唆する可能性がある。</p>
+</section>
+<section id="CFA1533-R-s12-01-02">
+<h3 class="dp-heading">棚卸資産からのシグナルに注意を払う（Pay Attention to Signals from Inventories）</h3>
+<p>棚卸資産はすべての企業の資産に含まれるわけではないが、その存在は会計操作の機会を生み出す。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s12-L5">
+<li class="cfa-curriculum-list-item">棚卸資産の関係性を確認する。収益は棚卸資産から販売された項目に関連するため、投資家が棚卸資産について行うべき分析は収益の場合と類似している。</li>
+<li class="cfa-curriculum-list-item">棚卸資産の成長を競合他社や業界のベンチマークと比較する。売上の増加を伴わずに棚卸資産の増加が同業他社と整合しない場合、それは単に在庫管理の不備（業務効率の低さ）である可能性があり、投資家の企業評価に影響を与える可能性がある。また、棚卸資産の正味実現可能価額（net realizable value）への評価減がまだ認識されていない陳腐化問題を示している可能性もある。棚卸資産の過大計上により、報告される売上総利益および純利益が過大に表示されている可能性がある。</li>
+<li class="cfa-curriculum-list-item">
+<p>Calculate the inventory turnover ratio. This ratio is the cost of sales divided by the average ending inventory. Declining inventory turnover could also suggest obsolescence problems that should be recognized.</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>Companies reporting under US GAAP may use LIFO inventory cost flow assumptions. When this assumption is part of the accounting policies, and a company operates in an inflationary environment, investors should note whether old, low-cost inventory costs have been passed through current earnings and artificially improved gross, operating, and net profits.</p>
+</li>
+</ul>
+</section>
+<section id="CFA1533-R-s12-01-03">
+<h3 class="dp-heading">Pay Attention to Capitalization Policies and Deferred Costs</h3>
+<p>In a study of enforcement actions over a five-year period, the SEC found that improper revenue recognition was the most prevalent accounting issue.<a aria-describedby="CFA1533-R-s12-FN-1-1Content" class="dp-popover-trigger" href="#CFA1533-R-s12-FN-1-1Content">
+<sup>28</sup>
+</a> Suppression of expenses was the next most prevalent problem noted. As the earlier discussion of WorldCom showed, improper capitalization practices can result in a significant misstatement of financial results.</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s12-L6">
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Examine the company’s accounting policy note for its capitalization policy for long-term assets, including interest costs, and for its handling of other deferred costs.</em> Compare the company’s policy with the industry practice. If the company is the only one capitalizing certain costs while other industry participants treat them as expenses, a red flag is raised. If an outlier company of this type is encountered, it would be useful to cross-check such a company’s asset turnover and profitability margins with others in its industry. An investor might expect such a company to be more profitable than its competitors, but the investor might also have lower confidence in the quality of the reported numbers.</p>
+</li>
+</ul>
+</section>
+<section id="CFA1533-R-s12-01-04">
+<h3 class="dp-heading">Pay Attention to the Relationship between Cash Flow and Net Income</h3>
+<p>Net income propels stock prices, but cash flow pays bills. Management can manipulate either one, but sooner or later, net income must be realized in cash if a company is to remain viable. When net income is higher than cash provided by operations, one possibility is that aggressive accrual accounting policies have shifted current expenses to later periods. Increasing earnings in the presence of declining cash generated by operations might signal accounting irregularities.</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s12-L7">
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Construct a time series of cash generated by operations divided by net income.</em> If the ratio is consistently below 1.0 or has declined repeatedly, the company’s accrual accounts may have problems.</p>
+</li>
+</ul>
+</section>
+<section id="CFA1533-R-s12-01-05">
+<h3 class="dp-heading">Look for Other Potential Warnings Signs</h3>
+<p>Other areas that might suggest the need for further analysis include the following:</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s12-L8">
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Depreciation methods and useful lives.</em> As discussed earlier, selection of depreciation methods and useful lives can greatly influence profitability. An investor should compare a company’s policies with those of its peers to determine whether it is particularly lenient in its effects on earnings. Investors should likewise compare the length of depreciable lives used by a company with those used by its peers.</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Fourth-quarter surprises.</em> An investor should be suspicious of possible earnings management if a company routinely disappoints investors with poor earnings or overachieves in the fourth quarter of the year when no seasonality exists in the business. The company may be over- or under-reporting profits in the first three quarters of the year.</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Presence of related-party transactions.</em> Related-party transactions often arise when a company’s founders are still very active in managing the company, with much of their wealth tied to the company’s fortunes. They may be more biased in their view of a company’s performance because it relates directly to their own wealth and reputations, and they may be able to transact business with the company in ways that may not be detected. For instance, they may purchase unsellable inventory from the company for disposal in another company of their own to avoid markdowns.</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Non-operating income or one-time sales included in revenue.</em> To disguise weakening revenue growth, or just to enhance revenue growth, a company might classify non-operating income items into revenues or fail to clarify the nature of revenues. In the first quarter of 1997, Sunbeam Corporation included one-time disposal of product lines in sales without indicating that such non-recurring sales were included in revenues. This inclusion gave investors a false impression of the company’s sustainable revenue-generating capability.</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Classification of expenses as “non-recurring.”</em> To make operating performance look more attractive, managers might carve out “special items” in the income statement. Particularly when these items appear period after period, equity investors might find their interests best served by not accepting the carve-out of serial “special items” and instead focusing on the net income line in evaluating performance over long periods.</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Gross/operating margins out of line with competitors or industry.</em> This disparity is an ambivalent warning sign. It might signal superior management ability. But it might also signal the presence of accounting manipulations to add a veneer of superior management ability to the company’s reputation. Only the compilation and examination of other warning signals will enable an investor or analyst to decide which signal is being given.</p>
+</li>
+</ul>
+<p>Warning signals are just that: signals, not indisputable declarations of accounting manipulation guilt. Investors and analysts need to evaluate them cohesively, not on an isolated basis. When an investor finds a number of these signals, the investee company should be viewed with caution or even discarded in favor of alternatives.</p>
+<p>Furthermore, as discussed earlier, context is important in judging the value of warning signals. A few examples of facts and circumstances to be aware of are as follows.</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s12-L9">
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Younger companies with an unblemished record of meeting growth projections.</em> It is plausible, especially for a younger company with new and popular product offerings, to generate above-average returns for a period of time. But, as demand dissipates, products mature, and competitors challenge for market share, management may seek to extend its recent record of rapid growth in sales and profitability by unconventional means. At this point, the “earnings games” begin, including aggressive estimates, drawing down “cookie jar” reserves, selling assets for accounting gains, taking on excess leverage, or entering into financial transactions with no apparent business purpose other than financial statement “window dressing.”</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Management has adopted a minimalist approach to disclosure.</em> Confidence in accounting quality depends on disclosure. If management does not seem to take seriously its obligation to provide information, one needs to be concerned. For example, for a large company, management might claim that it has only one reportable segment, or its commentary might be similar from period to period. A plausible explanation for minimalist disclosure policies could be that management is protecting investors’ interests by withholding valuable information from competitors. But, this is not necessarily the case. For example, after Sony Corporation acquired CBS Records and Columbia Pictures, it incurred substantial losses for a number of years. Yet, Sony chose to hide its negative trends and doubtful future prospects by aggregating the results within a much larger “Entertainment Division.” In 1998, after Sony ultimately wrote off much of the goodwill associated with these ill-fated acquisitions, the SEC sanctioned Sony and its CFO for failing to separately discuss them in the MD&amp;A in a balanced manner.<a aria-describedby="CFA1533-R-s12-FN-1-2Content" class="dp-popover-trigger" href="#CFA1533-R-s12-FN-1-2Content">
+<sup>29</sup>
+</a>
+</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>
+<em>Management fixation on earnings reports.</em> Beware of companies whose management appears to be fixated on reported earnings, sometimes to the detriment of attending to real drivers of value. Indicators of excessive earnings fixation include the aggressive use of non-GAAP measures of performance, special items, or non-recurring charges. Another indicator of earnings fixation is highly decentralized operations in which division managers’ compensation packages are heavily weighted toward the attainment of reported earnings or non-GAAP measures of performance.</p>
+</li>
+</ul>
+<section id="CFA1533-R-s12-01-05-01">
+<h4>Company Culture</h4>
+<p>A company’s culture is an intangible that investors should bear in mind when they are evaluating financial statements for the possibility of accounting manipulation. A management’s highly competitive mentality may serve investors well when the company conducts business (assuming that actions taken are not unethical, illegal, or harmfully myopic), but that kind of thinking should not extend to communications with the owners of the company: the shareholders. That mentality can lead to the kind of accounting gamesmanship seen in the early part of the century. In examining financial statements for warning signs of manipulation, the investor should consider whether that mindset exists in the preparation of the financial statements.</p>
+<p>One notable example of this mindset comes from one of the most recognized corporate names in the world, General Electric. In the mid-1980s, GE acquired Kidder Peabody, and it was ultimately determined that much of the earnings that Kidder had reported were bogus. As a consequence, GE announced within two days of the acquisition that it would take a non-cash write-off of USD350 million. Here is how former CEO/Chair Jack Welsh described the ensuing meeting with senior management in his memoir, <em>Straight from the Gut</em>:</p>
+<div class="cfa-curriculum-blockquote">
+<p>The response of our business leaders to the crisis was typical of the GE <em>culture</em> [emphasis added]. Even though the books had closed on the quarter, many immediately offered to pitch in to cover the Kidder gap. Some said they could find an extra USD10 million, USD20 million, and even USD30 million from their businesses to offset the surprise. Though it was too late, their willingness to help was a dramatic contrast to the excuses I had been hearing from the Kidder people. (page 225)</p>
+</div>
+<p>It appears that the corporate governance apparatus fostered a GE culture that extended the concept of teamwork to the point of “sharing” profits to win one for the team as a whole, which is incompatible with the concept of neutral financial reporting. Although research is not conclusive on this question, it may be worth considering that predisposition to earnings manipulation is more likely to be present when the CEO and board chair positions are held by the same person, or when the audit committee of the board essentially serves at the pleasure of the CEO and lacks financial reporting sophistication. Finally, one could discuss whether the financial reporting environment today would reward or penalize a CEO who openly endorsed a view that he or she could legitimately exercise financial reporting discretion—albeit within limits—for the purpose of artificially smoothing earnings.</p>
+</section>
+<section id="CFA1533-R-s12-01-05-02">
+<h4>Restructuring or Impairment Charges</h4>
+<p>ときとして、企業が報告利益に対してビッグバス損失（big bath charge）を認識した後に株価が上昇することが観察されている。この株価上昇を説明する通説は、会計上の認識がポジティブなシグナルを発しているというものである。すなわち、経営陣が企業の不振部分を切り離し、より収益性の高い活動に注意と能力を再配分する準備が整ったことを示しているという解釈である。その結果、この利益への損失計上は過去の出来事にのみ関連するものとして無視すべきであるとされる。</p>
+<p>しかしながら、アナリストは、財務諸表におけるビッグバスに最終的につながった出来事が一夜にして起こったわけではないことも考慮すべきである。たとえそれらの出来事の会計処理が後の時点で行われるとしてもである。経営陣は、これらの会計調整が企業の新たな進路を反映していることを伝えようとするかもしれないが、再編費用（restructuring charge）はまた、過去の報告利益の流れが実態を反映していなかったことも示唆している。特に、過年度に報告された費用は過小計上されていた可能性が非常に高い（たとえ不適切な財務諸表操作が行われていなかったとしても）。過去の利益トレンドを外挿するにあたっては、アナリストは最新期の再編費用や減損損失（impairment charges）を合理的に配分するよう、過年度の利益に対してプロフォーマ（pro forma）ベースの分析的調整を行うことを検討すべきである。</p>
+</section>
+<section id="CFA1533-R-s12-01-05-03">
+<h4>経営陣が合併・買収（merger and acquisition）志向を持つ場合</h4>
+<p>Tyco International Ltd. は1996年から2002年にかけて700社以上を買収した。財務報告に関して最善の意図があったと仮定しても、あらゆるコストをかけて成長を追求する企業文化は、業務および財務報告の統制に重大な課題をもたらす。Tycoの事例では、SEC（米国証券取引委員会）は、同社が取得した資産を継続的かつ不正に過小評価（将来の減価償却費および償却費を低く抑える）し、引き受けた負債を過大評価（費用認識を回避し、将来期間の利益を増加させる可能性）していたと認定した。30</p>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s12-FN-1-1Content">
+<p>
+<sup>28</sup> SEC, “Report Pursuant to Section 704 of the Sarbanes–Oxley Act of 2002,” pages 5–6, <a href="http://www.sec.gov/news/studies/sox704report.pdf" target="_blank">www.sec.gov/news/studies/sox704report.pdf</a>.</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s12-FN-1-2Content">
+<p>29 SEC, 会計および監査執行リリース第1061号（Accounting and Auditing Enforcement Release No. 1061）「ソニー株式会社（Sony Corporation）および佐野澄夫（Sumio Sano）に関する件（被申立人）」1998年8月5日。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s12-FN-1-3Content">
+<p>
+<sup>30</sup> SEC, Accounting and Auditing Enforcement Release No. 2414, “SEC Brings Settled Charges Against Tyco International Ltd. Alleging Billion Dollar Accounting Fraud” (17 April 2006), <a href="http://www.sec.gov/litigation/litreleases/2006/lr19657.htm" target="_blank">www.sec.gov/litigation/litreleases/2006/lr19657.htm</a>.</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143737_1012_Accounting_Choices_that_Affect_Financial_Reporting.html" >← 前へ</a>
+  <span class="title">10.13 | Warning Signs</span>
+  <a href="courses_1867_modules_items_143746_Real_World_Applications_Bloombergs_News_Topics_-_Accounting_Fraud_Probes.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

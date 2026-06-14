@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11.02 | The Financial Analysis Process</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2422-R-s02-R-1" title="11.02 | The Financial Analysis Process"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール11：財務分析手法（Financial Analysis Techniques）11.02 | 財務分析プロセス（The Financial Analysis Process）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">財務分析において用いられるツールおよび手法（tools and techniques）について、その用途および限界を含めて説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>財務分析においては、最終的な目的およびその目的に到達するために必要なステップを明確に特定し理解することが不可欠である。さらに、アナリストは関連データをどこで入手できるか、データをどのように処理し分析するか（すなわち、データ解釈の際に取り組むべき典型的な問いを理解すること）、そして分析結果および結論をどのように伝達するかを把握している必要がある。</p>
+<section id="CFA2422-R-s02-01-01">
+<h3 class="dp-heading">財務分析プロセスの目的（The Objectives of the Financial Analysis Process）</h3>
+<p>財務分析を行う理由の多様性、利用可能な手法の多さ、そしてしばしば膨大なデータ量を踏まえると、分析アプローチは個別の状況に合わせて調整されることが重要である。財務分析を開始する前に、アナリストは目的および文脈を明確にし、以下を明確に理解する必要がある：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2422-R-s02-L1">
+<li class="cfa-curriculum-list-item">分析の目的は何か？この分析はどのような問いに答えるのか？</li>
+<li class="cfa-curriculum-list-item">この目的を達成するために、どの程度の詳細度が必要か？</li>
+<li class="cfa-curriculum-list-item">分析に利用可能なデータは何か？</li>
+<li class="cfa-curriculum-list-item">分析に影響を与える要因または関係は何か？</li>
+<li class="cfa-curriculum-list-item">分析上の制約は何か？また、それらの制約は分析に悪影響を及ぼす可能性があるか？</li>
+</ul>
+<p>分析の目的および文脈を明確にした後、アナリストは意思決定を最も効果的に支援する手法（例：比率）を選択できる。分析プロセスの構造化に単一の方法は存在しないが、一般的な枠組みは図表1（Exhibit 1）に示されている。このプロセスの各ステップは以前のモジュールでより詳細に説明されており、本モジュールでは主にフェーズ3および4、すなわちデータの処理と分析に焦点を当てる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s02-EXH-1-1">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 1<span style="display: block;">A Financial Statement Analysis Framework</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="2" style="text-align: left; vertical-align: top; padding: 8px;"><strong>Phase</strong></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">情報源（Sources of Information）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">アウトプット（Output）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1.</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">分析の目的および文脈を明確にする。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">アナリストの役割の性質（例：株式または債券投資の評価、信用格付けの付与など）。顧客または上司とのニーズや懸念に関するコミュニケーション。特定の成果物作成に関する組織のガイドライン。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">分析の目的または目標の記述。分析によって回答すべき具体的な問いのリスト（文書化されている場合とされていない場合がある）。提出すべきレポートの性質および内容。完了までのスケジュールおよび配分された資源。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2.</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">入力データを収集する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">財務諸表、その他の財務データ、質問票（questionnaires）、および業界／経済データ。経営陣、サプライヤー、顧客、および競合他社との議論。企業訪問（例：生産施設や小売店舗）。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">整理された財務諸表。財務データ表。該当する場合は記入済みの質問票（questionnaires）。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3.</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">データを処理する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">前段階のデータ。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">調整後財務諸表（adjusted financial statements）。共通サイズ財務諸表（common-size statements）。比率およびグラフ。予測（forecasts）。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">4.</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">処理されたデータを分析・解釈する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">入力データおよび処理済みデータ。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">分析結果。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5.</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">結論および提言を策定し伝達する（例：分析レポート）。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">分析結果および過去のレポート。公表レポートに関する組織のガイドライン。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フェーズ1で提示された問いに答える分析レポート。投資を行うか信用を供与するかなど、分析目的に関する提言。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">6.</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フォローアップ（Follow-up）。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">保有資産または提言に変更が必要かどうかを判断するために、必要に応じて上記のステップを定期的に繰り返すことによって収集された情報。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">更新されたレポートおよび提言。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="CFA2422-R-s02-01-02">
+<h3 class="dp-heading">計算（Computations）と分析（Analysis）の区別</h3>
+<p>有効な分析は、計算と解釈の両方を包含する。十分に考察された分析は、単なる情報の寄せ集め、計算、表、グラフの集積とは異なり、収集されたデータを一体的な全体へと統合するものである。例えば、過去の業績分析は、何が起きたかだけでなく、なぜ起きたのか、そしてそれが価値を生み出したかどうかにも焦点を当てるべきである。取り組むべき主要な問いには以下が含まれる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2422-R-s02-L14">
+<li class="cfa-curriculum-list-item">この企業がこの業界で競争に成功するために重要な業績の側面は何か？</li>
+<li class="cfa-curriculum-list-item">企業の業績はこれらの重要な側面をどの程度満たしているか？（企業自身の過去の業績や競合他社の業績など、適切なベンチマークとの計算および比較により評価される。）</li>
+<li class="cfa-curriculum-list-item">この業績の主要な要因は何であり、この業績は企業の戦略をどのように反映しているか？（分析により明らかにされる。）</li>
+</ul>
+<p>分析が将来志向である場合、追加の問いには以下が含まれる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2422-R-s02-L15">
+<li class="cfa-curriculum-list-item">ある事象またはトレンドの影響はどのようになる可能性が高いか？（分析結果の解釈により評価される。）</li>
+<li class="cfa-curriculum-list-item">このトレンドに対する経営陣の対応はどのようになる可能性が高いか？（経営の質およびコーポレートガバナンス（corporate governance）の評価により判断される。）</li>
+<li class="cfa-curriculum-list-item">企業、業界、および経済のトレンドが将来のキャッシュフローに与える影響はどのようになる可能性が高いか？（企業戦略の評価および予測により判断される。）</li>
+<li class="cfa-curriculum-list-item">アナリストの提言は何か？（分析結果の解釈および予測に基づいて導かれる。）</li>
+<li class="cfa-curriculum-list-item">どのようなリスクを強調すべきか？（予測および企業が事業を行う環境における主要な不確実性の評価により判断される。）</li>
+</ul>
+<p>例1では、企業の財務データがその事業戦略および戦略の変化の文脈でどのように分析され得るかを示している。アナリストは、数値や比率が何であるかだけでなく、それらの背後にある「なぜ」を理解できなければならない。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2422-R-s02-EXM-1-1">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 1<span style="display: block;">Strategy Reflected in Financial Performance</span></h4>
+<p>Apple Inc.は、コンピュータハードウェア、モバイルデバイス、オペレーティングシステムおよび関連製品、サービスの設計、製造、販売を行っている。また、小売店およびオンラインストアも運営している。Microsoftは、ソフトウェア製品、サービス、技術デバイスの開発、ライセンス供与、サポートを行っており、近年では小売店を含むさまざまなチャネルを通じて提供している。これら2社の2015年から2017年までの選択された財務データは図表2および図表3に示されている。Appleの会計年度（fiscal year; FY）は9月の最終土曜日に終了する（例えば、FY2017は2017年9月30日に終了）。Microsoftの会計年度は6月30日に終了する（例えば、FY2017は2017年6月30日に終了）。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s02-EXH-1-2">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 2<span style="display: block;">Selected Financial Data for Apple (US dollar millions)</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">会計年度（fiscal year）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純売上高（net sales）または収益（revenue）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">229,234</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">215,639</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">233,715</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益（gross margin）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">88,186</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">84,263</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">93,626</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業利益（operating income）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">61,344</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">60,024</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">71,230</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s02-EXH-1-3">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 3<span style="display: block;">Selected Financial Data for Microsoft (US dollar millions)*</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">会計年度（Fiscal year）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純売上高（Net sales）または収益（revenue）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">89,950</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">85,320</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">93,580</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益（Gross margin）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">55,689</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">52,540</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">60,542</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業利益（Operating income）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22,326</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20,182</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18,161</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>* Microsoftの2017年および2016年の収益は、収益認識（revenue recognition）およびリース会計基準の変更により、同社の2018年10-K報告書において後に修正された。</p>
+<p>出所（Source）：AppleおよびMicrosoftの10-K報告書。</p>
+</div>
+<p>AppleはFY2015からFY2016にかけて純売上高が7.7％減少し、FY2016からFY2017にかけて6.3％増加したが、3年間全体ではわずかな減少となった。売上総利益はFY2015からFY2016にかけて10.0％減少し、FY2016からFY2017にかけて4.7％増加した。これも3年間全体では売上総利益の減少を示している。同社の営業利益も同様の傾向を示した。</p>
+<p>MicrosoftはFY2015からFY2016にかけて純売上高が8.8％減少し、FY2016からFY2017にかけて5.4％増加したが、3年間全体ではわずかな減少となった。売上総利益はFY2015からFY2016にかけて13.2％減少し、FY2016からFY2017にかけて6.0％増加した。Appleと同様に、これは3年間全体で売上総利益の減少を示している。一方で、Microsoftの営業利益は毎年および3年間全体で増加を示した。営業利益の全体的な増加は23％であった。</p>
+<p>AppleとMicrosoftの売上高および売上総利益に類似したマイナスの傾向があるにもかかわらず、なぜMicrosoftの営業利益は増加したのか？AppleのFY2015からFY2016にかけての売上高、売上総利益、および営業利益の減少は、iPhone販売の減少および米ドルに対する外国通貨の弱さによって引き起こされた。FY2017には、iPhone、Macコンピュータ、およびサービスの販売回復が見られたが、外国通貨の弱さが一部相殺した。Microsoftも同様にFY2016にはデバイスおよびWindowsソフトウェアの販売減少、および外国通貨の弱さによる悪影響により、収益および売上総利益が減少した。MicrosoftのFY2017における収益および売上総利益の増加は、LinkedInの買収、Microsoft Officeソフトウェアの販売増加、およびクラウドサービスの販売増加によってもたらされた。Microsoftの営業利益が継続的に増加した主因は、3年間にわたる減損損失（impairment）、統合費用（integration）、およびリストラクチャリング費用（restructuring charges）の大幅な減少であった。MicrosoftはFY2015に電話事業に関連して100億ドルの費用を計上し、FY2016には11億ドル、FY2017には3億600万ドルの追加費用があった。これらの大規模な減損がなければ、Microsoftの営業利益は3年間にわたりAppleと同様の傾向を示していたであろう。</p>
+</div>
+<p>アナリストはしばしば、分析結果を文書によるレポートで伝達する必要がある。レポートは、どのように結論に至ったのか、なぜその提言が行われたのかを伝えるべきである。例えば、レポートには次の内容が含まれる可能性がある：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2422-R-s02-L16">
+<li class="cfa-curriculum-list-item">レポートの目的（自明でない場合）；</li>
+<li class="cfa-curriculum-list-item">ビジネスの文脈に関する関連要素（以下を含む）：経済環境（国／地域、マクロ経済、セクター）、財務およびその他のインフラ（会計、監査、格付機関）、および法的・規制環境（ならびに分析対象企業に対するその他の重要な制約）；</li>
+<li class="cfa-curriculum-list-item">コーポレート・ガバナンス（corporate governance）の評価および経営戦略の評価（企業の競争優位性を含む）；</li>
+<li class="cfa-curriculum-list-item">財務および業務データの評価（分析における主要な前提を含む）；および</li>
+<li class="cfa-curriculum-list-item">結論および提言（分析の制約およびリスクを含む）。</li>
+</ul>
+<p>効果的な記述および十分に裏付けられた結論と提言は、通常、3～10年のデータおよびレポートの目的に適した分析手法を用いることによって強化される。</p>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143752_1101_Introduction.html" >← 前へ</a>
+  <span class="title">11.02 | The Financial Analysis Process</span>
+  <a href="courses_1867_modules_items_143758_1103_Analytical_Tools_and_Techniques.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

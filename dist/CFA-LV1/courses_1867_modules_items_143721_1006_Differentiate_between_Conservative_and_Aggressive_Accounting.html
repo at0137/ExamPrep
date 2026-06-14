@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10.06 | Differentiate between Conservative and Aggressive Accounting</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1533-R-s05-R-1" title="10.06 | Differentiate between Conservative and Aggressive Accounting">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール10：財務報告の質（Financial Reporting Quality） 10.06｜保守的会計と攻撃的会計の区別（Differentiate between Conservative and Aggressive Accounting）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">保守的会計（conservative accounting）と攻撃的会計（aggressive accounting）の違いを説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>本レッスンでは、保守的および攻撃的な会計選択（accounting choices）の含意に立ち戻る。前述のとおり、バイアスのない財務報告（unbiased financial reporting）が理想である。しかし、一部の投資家は攻撃的な会計選択よりも保守的な会計選択を好む、あるいは好むと認識される場合がある。これはポジティブなサプライズが受け入れられやすいためである。一方で、経営者は企業の報告上の業績および財政状態を向上させるため、攻撃的な会計選択を行う、あるいは行うと認識されることがある。</p>
+<p>検討対象期間における攻撃的な会計選択は、後の期間において企業の報告上の業績および財政状態を低下させる可能性があり、持続可能性（sustainability）の問題を生じさせる。一方、保守的な選択は通常このような問題を生じさせない。なぜなら、それらは当期の業績および財政状態を低下させ、後の期間においてそれらを増加させる可能性があるためである。しかし、将来に関する期待を形成する観点からは、関連性（relevant）と忠実な表現（faithful representation）を備えた財務報告が最も有用である。</p>
+<p>一般的な前提として、財務報告は通常上方にバイアスされていると考えられがちであるが、必ずしもそうではない。会計基準は理想的にはバイアスのない財務報告を促進するが、一部の会計基準は特定の取引や事象に対して保守的な処理を明示的に要求する場合がある。また、経営者が基準適用に際して保守的なアプローチを選択することもある。アナリストは保守的な選択の可能性とその影響を考慮することが重要である。</p>
+<p>最も極端な場合、保守主義（conservatism）は「利益は一切見込まず、すべての損失を見込む（anticipate no profit, but anticipate all losses）」という会計慣行に従う（Bliss, 1924）。しかし一般的には、保守主義とは、検証可能で法的に強制可能な債権（receivable）が発生した時点で収益（revenues）を認識し、損失については実際に発生することが「可能性が高い（probable）」と判断されるまで認識する必要がないことを意味する。保守主義は絶対的な概念ではなく、「良いニュースを利益として認識する際には、悪いニュースを損失として認識する場合よりも高い検証水準を要求する会計担当者の傾向（the accountant’s tendency to require a higher degree of verification to recognize good news as gains than to recognize bad news as losses）」といった程度の差で特徴づけられる（Basu, 1997）。この観点では、「検証（verification）」（例：棚卸資産の実在性、発生済または発生予定コストの証拠、法的根拠に基づく権利・義務の確立）が保守性の程度を左右する。収益認識においては、費用認識よりも高い検証水準が要求される。</p>
+<section id="CFA1533-R-s05-01-01">
+<h3 class="dp-heading">会計基準における保守主義（Conservatism in Accounting Standards）</h3>
+<p>概念フレームワーク（Conceptual Framework）は情報の中立性（neutrality）を支持している：「中立的な表現とは、財務情報の選択または提示において偏りがないことである。」9 中立性―すなわち上方または下方へのバイアスがないこと―は、財務報告の望ましい特性とされる。保守主義はその非対称的性質により、資産および負債の測定、ひいては利益にバイアスをもたらすため、この中立性の特性と直接的に対立する。</p>
+<p>財務報告の中立性を支持する努力にもかかわらず、多くの保守的バイアスを持つ基準が依然として存在する。法域によって、基準に組み込まれている保守性の程度は異なる可能性がある。アナリストは会計基準が財務報告に与える影響を認識すべきである。</p>
+<p>例として、長期性資産（long-lived assets）の減損（impairment）に関するIFRSとUS GAAPの取扱いの違いがある。10 両基準とも、最近の事象が個別またはグループの長期性資産から得られる経済的便益が帳簿価額（carrying amount）を下回る可能性を示唆しているかどうかの評価から始まる減損テストの手順（impairment analysis protocol）を規定している。しかし、その後の取扱いは両者で異なる。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s05-L1">
+<li class="cfa-curriculum-list-item">IFRSでは、「回収可能価額（recoverable amount）」（売却費用控除後の公正価値（fair value less costs to sell）と使用価値（value in use）のいずれか高い方）が帳簿価額を下回る場合、減損損失（impairment charge）が認識される。</li>
+<li class="cfa-curriculum-list-item">US GAAPでは、資産から将来得られると期待される割引前キャッシュフロー（undiscounted future cash flows）の合計が帳簿価額を下回る場合にのみ減損損失が認識される。割引前キャッシュフローが帳簿価額を下回る場合、資産は公正価値まで減額（write down）される。</li>
+</ul>
+<p>適用の違いを示すために、ある工場が減損テストの対象単位（unit of account）であると仮定する。その帳簿価額は1,000万米ドル（USD10,000,000）、公正価値（fair value）および回収可能価額はともに600万米ドル（USD6,000,000）、関連する割引前将来純キャッシュフローの合計は1,000万米ドル（USD10,000,000）である。この場合、IFRSでは400万米ドル（USD4,000,000）の減損損失が認識されるが、US GAAPでは減損損失は認識されない。</p>
+<p>したがって、一見するとIFRSの方がUS GAAPよりも保守的であると考えられる。なぜなら、通常はIFRSの方がより早期に減損損失を認識するためである。しかし、さらに踏み込むと、このような一般化は必ずしも成り立たない可能性がある。例えば、資産がIFRSとUS GAAPの両方で減損され、かつ使用価値が公正価値を上回る場合、US GAAPにおける減損損失の方が大きくなる。また、IFRSでは、その後の期間に回収可能価額が増加した証拠がある場合、減損の戻入れ（recoveries）を認識することが認められている。これに対し、US GAAPでは減損後の評価増（write-up）は認められず、資産価値の増加は最終的に売却された時点でのみ認識される。</p>
+<p>会計基準における保守主義の一般的な例には以下が含まれる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s05-L2">
+<li class="cfa-curriculum-list-item">研究費（research costs）：研究費の将来の便益が発生時点では不確実であるため、US GAAPおよびIFRSのいずれにおいても資産計上（capitalization）ではなく即時費用処理（expensing）が要求される。</li>
+<li class="cfa-curriculum-list-item">訴訟損失（litigation losses）：「費用が発生する可能性が高い（probable）」と判断された場合、実際の法的負債が将来に発生する可能性があっても、US GAAPおよびIFRSのいずれにおいても費用認識が要求される。</li>
+<li class="cfa-curriculum-list-item">保険金受取債権（insurance recoverables）：一般に、保険金請求に対する支払いを受ける企業は、保険会社が請求額の妥当性を認めるまで債権（receivable）を認識することはできない。</li>
+</ul>
+<p>Watts（2003）は保守主義に関する実証研究をレビューし、以下の4つの潜在的な利点を特定している：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s05-L3">
+<li class="cfa-curriculum-list-item">情報の非対称性（asymmetrical information）が存在する場合、保守主義は情報が少なくリスクが大きい契約当事者（contracting parties）を保護する可能性がある。この保護は、当該当事者が不利な立場にある可能性があるため必要である。例えば、債券市場（debt markets）にアクセスする企業は有限責任（limited liability）であり、貸し手（lenders）は株主から損失を回収する手段が限られている。また、利益に基づくボーナス（earnings-based bonuses）を受け取る経営者は、後に利益が過大計上されていたことが判明しても、そのボーナスを返還（clawed back）する必要がない場合がある。</li>
+<li class="cfa-curriculum-list-item">保守主義は訴訟（litigation）の可能性を低減し、その結果として訴訟コスト（litigation costs）を低減する。企業が良いニュースを過小計上した、または悪いニュースを過大計上したことを理由に訴えられることはほとんどない。</li>
+<li class="cfa-curriculum-list-item">保守的なルールは、企業が利益や資産を過大計上した場合に責任を問われる可能性を低減することで、規制当局（regulators）や政治家（politicians）の利益を保護する可能性がある。</li>
+<li class="cfa-curriculum-list-item">多くの税務管轄（tax jurisdictions）では、財務報告と税務報告のルールが連動している。例えばドイツ（Germany）や日本（Japan）では、報告利益に対して控除された項目のみが課税所得から控除できる。そのため、企業は特定の事象について保守的な会計方針を選択することで、税負担の現在価値（present value of tax payments）を低減することができる。</li>
+</ul>
+<p>アナリストは、財務報告を分析する際に、保守的および攻撃的なバイアスの可能性とその影響を考慮すべきである。当期の財務報告は、バイアスがない場合、攻撃的な会計選択による上方バイアス、保守的な会計選択による下方バイアス、または両者の組み合わせによるバイアスを持つ可能性がある。</p>
+</section>
+<section id="CFA1533-R-s05-01-02">
+<h3 class="dp-heading">会計基準の適用におけるバイアス（Bias in the Application of Accounting Standards）</h3>
+<p>会計基準の適用は、その基準が中立的であるか否かにかかわらず、多くの場合、重要な判断（judgment）を必要とする。会計基準の適用を保守的または攻撃的と特徴づけることは、定義よりもむしろ意図（intent）の問題である。</p>
+<p>開示内容、事実、および状況を慎重に分析することが、意図を正確に推測することに寄与する。利益を操作しようとする経営者は、将来期間の利益を高めるために短期的な収益性（short-term profitability）を犠牲にするという長期的視点を取ることがある。保守主義を装ったバイアスのある会計の一例が、いわゆるビッグバス（big bath）再編費用（restructuring charge）である。US GAAPおよびIFRSのいずれも再編に関連する将来コストの引当（accrual）を認めており、これらのコストはしばしば資産減損（asset impairments）と関連付けて表示される。しかし場合によっては、企業は当期に「大きな」損失を見積計上するためにこれらの規定を利用し、将来期間の業績をより良く見せることがある。1990年代後半に、米国企業が将来期間における業績とは無関係に高い利益を報告する機会を設定する操作的慣行が多数観察されたことを受け、SECスタッフは、費用を「非経常（non-recurring）」の再編事象の一部として分類できる状況を制限し、再編費用および資産減損に関する透明性（transparency）を高める規則を発行した。11</p>
+<p>ビッグバス会計に類似したものとして、「クッキージャー・リザーブ（cookie jar reserve）会計」がある。US GAAPおよびIFRSはいずれも、将来の貸出金の不払い（non-payments of loans）に関する見積りの引当（accrual）を要求している。1998年の講演「The Numbers Game」において、SEC議長（SEC chair）のアーサー・レビット（Arthur Levitt）は、企業が時間を通じて利益を平準化（smoothing income）する目的で貸倒引当金（loss allowances）を過大に計上している可能性について懸念を表明した。12 2003年、SECは解釈指針（interpretive guidance）を発行し、企業に対して経営者による議論と分析（management discussion and analysis, MD&amp;A）に「重要な会計見積り（Critical Accounting Estimates）」という独立したセクションを設けることを実質的に要求した。13 高度に不確実な事項に関する主観的な見積りおよび判断の影響が利害関係者（investors, customers, suppliers, and other users of the financial statements）にとって重要である場合、その性質および不確実性へのエクスポージャー（exposure to uncertainty）についてMD&amp;Aで開示されるべきである。この要件は、財務諸表の注記（notes）における開示要件に加えて課されるものである。</p>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA1533-R-s05-R-1-1list">Basu, SudiptaDecember  (1997). “The Conservatism Principle and the Asymmetric Timeliness of Earnings.” <em>Journal of Accounting and Economics</em> 24 (1): 3−37. <a href="https://doi.org/10.1016/S0165-4101(97)00014-1" target="_blank">https://doi.org/10.1016/S0165-4101(97)00014-1</a>
+</li>
+<li id="CFA1533-R-s05-R-1-2list">Bliss, James Harris（1924年）『会計による経営（Management through Accounts）』ニューヨーク：Ronald Press Company。</li>
+<li id="CFA1533-R-s05-R-1-3list">Watts, RossSeptember  (2003). “Conservatism in Accounting Part I: Explanations and Implications.” <em>Accounting Horizons</em> 17 (3): 207−221. <a href="https://doi.org/10.2308/acch.2003.17.3.207" target="_blank">https://doi.org/10.2308/acch.2003.17.3.207</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s05-FN-1-1Content">
+<p>国際会計基準審議会（International Accounting Standards Board, IASB）および財務会計基準審議会（Financial Accounting Standards Board, FASB）『財務報告に関する概念フレームワーク（The Conceptual Framework for Financial Reporting）（2010）』：QC 14。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s05-FN-1-2Content">
+<p>10 国際会計基準（International Accounting Standards, IAS）第36号および財務会計基準審議会（Financial Accounting Standards Board, FASB）の会計基準コディフィケーション（Accounting Standards Codification, ASC）セクション360-10-35を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s05-FN-1-3Content">
+<p>
+<sup>11</sup> SEC, “Restructuring and Impairment Charges,” Staff Accounting Bulletin (SAB) No. 100 (1999), <a href="http://www.sec.gov/interps/account/sab100.htm" target="_blank">www.sec.gov/interps/account/sab100.htm</a>.</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s05-FN-1-4Content">
+<p>
+<sup>12</sup> Arthur Levitt, “The Numbers Game,” Remarks given at NYU Center for Law and Business (28 September 1998), <a href="http://www.sec.gov/news/speech/speecharchive/1998/spch220.txt" target="_blank">www.sec.gov/news/speech/speecharchive/1998/spch220.txt</a>.</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s05-FN-1-5Content">
+<p>
+<sup>13</sup> SEC, “Commission Guidance Regarding Management’s Discussion and Analysis of Financial Condition and Results of Operations,” Financial Reporting Release (FRR) No. 72 (2003), <a href="http://www.sec.gov/rules/interp%C2%AD/33-8350.htm" target="_blank">www.sec.gov/rules/interp­/33-8350.htm</a>.</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1533-R-s05-R-1-2Content">Bliss, James Harris (1924). <em>Management through Accounts</em>. New York: Ronald Press Company.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1533-R-s05-R-1-1Content">Basu, SudiptaDecember  (1997). “The Conservatism Principle and the Asymmetric Timeliness of Earnings.” <em>Journal of Accounting and Economics</em> 24 (1): 3−37. <a href="https://doi.org/10.1016/S0165-4101(97)00014-1" target="_blank">https://doi.org/10.1016/S0165-4101(97)00014-1</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1533-R-s05-R-1-3Content">Watts, RossSeptember  (2003). “Conservatism in Accounting Part I: Explanations and Implications.” <em>Accounting Horizons</em> 17 (3): 207−221. <a href="https://doi.org/10.2308/acch.2003.17.3.207" target="_blank">https://doi.org/10.2308/acch.2003.17.3.207</a>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143718_1005_Departures_from_GAAP.html" >← 前へ</a>
+  <span class="title">10.06 | Differentiate between Conservative and Aggressive Accounting</span>
+  <a href="courses_1867_modules_items_143724_1007_Context_for_Assessing_Financial_Reporting_Quality.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

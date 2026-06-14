@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.04 | Distinguishing Investment Skill from Luck</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Investment Performance Appraisal › Module 1: Investment Performance Appraisal</nav>
+<h1 class="page-title screenreader-only">1.04 | Distinguishing Investment Skill from Luck</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM1509-R-s04-R-1" title="1.04 | Distinguishing Investment Skill from Luck"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：投資パフォーマンス評価（Investment Performance Appraisal）1.04｜投資スキルと運の識別（Distinguishing Investment Skill from Luck）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul id="CIPM1509-R-s04-los-1">
+<li class="cfa-curriculum-los-item">スキルと運を識別する問題を説明せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>特定の期間における投資マネージャーの実績は、幸運（予期されていなかった好ましい展開）および／または不運（予期されていなかった不利な展開）を反映する。投資パフォーマンスを評価する際に運を重要と考えるべき理由の一つは、スキルのパラドックス（paradox of skill）である。投資マネージャー全体がより経験を積むにつれて、全体的な「スキル」水準は向上し、最も劣るパフォーマーと最も優れたパフォーマーの差は縮小する可能性が高い。膨大な計算能力と「ビッグ」データ（big data）へのアクセスは、投資パフォーマンスの差をさらに縮小させ、それらの差異が運によって説明される可能性を高めるかもしれない。</p>
+<p>過去のリターンに基づいてポートフォリオ・マネージャーがアクティブ投資スキルを有しているか否かを判断することは困難であり、常に誤りの可能性を伴う。金融市場のリターンには大きなランダム性が含まれている。このランダム性の一部は、資産価値に直接または間接的に関連するニュースや情報の影響を反映している。流動性ニーズ（すなわち分析ではなく資金調達を目的とした取引）や、投資家の感情やセンチメントに基づく取引も、リターンのボラティリティを高める要因となる。</p>
+<p>投資ポートフォリオの過去パフォーマンスを観察する際、私たちが目にする実績は、同じ投資規律（investment discipline）を適用しつつ異なる運の下で投資マネージャーが達成し得た、潜在的に無数の結果のうちの一つに過ぎない。パフォーマンスの一貫性を検証することで、スキルに関する追加的な洞察が得られる場合もある。しかし、マネージャーの基礎的な平均リターン（mean return）がベンチマークの平均リターンを上回るという仮説を、十分に高い信頼度で確認するには、多年にわたる観測が必要となる場合がある。</p>
+<figure class="dp-content-block cfa-curriculum-shaded-box" id="CIPM1509-R-s04-Ba">
+<figcaption class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i><span style="display: block;">Randomness in Returns and Evaluation Periods: 1 of 2</span></figcaption>
+<p>スキルを識別することの難しさを示すために、図表3（Exhibit 3）に示されているような、ある投資マネージャーの3年間の実績を提示されたアナリストを考える。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM1509-R-s04-EXH3A">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 3<span style="display: block;">An Investment Manager’s Record Most Recent Performance</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s04-EXH3A-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s04-EXH3A-title">図表3：投資マネージャーの実績（直近のパフォーマンス）</caption>
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">年率リターン（Annualized Returns）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">直近1年（Previous One Year）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">直近3年（Previous Three Years）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ポートフォリオ（Portfolio）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒38.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ベンチマーク（Benchmark）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒28.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.9%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">超過リターン（Excess）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒10.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒1.4%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>当該マネージャーは直近1年でベンチマークを10.7%下回り、過去3年間でも1.4%下回っている。これらの結果は、マネージャーにスキルが欠如しているという仮説と整合的である。</p>
+<p>図表3（Exhibit 3）、図表4（Exhibit 4）、および図表5（Exhibit 5）は、互いに整合的となるように構成されている。図表4に示されているように、マネージャーは過去5年間でベンチマークに対して0.5%の小幅な正の超過リターンを達成している。この結果は、直近1年の実績が、本来であればある程度良好に見える可能性のある5年実績を押し下げたことを示唆している。これらの結果は、マネージャーがある程度のスキルを有しているという仮説とより整合的である。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM1509-R-s04-EXH3B">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 4<span style="display: block;">Performance One, Three, and Five Years</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s04-EXH3B-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s04-EXH3B-title">図表4：1年・3年・5年のパフォーマンス</caption>
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">年率リターン（Annualized Returns）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">直近1年（Previous One Year）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">直近3年（Previous Three Years）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">直近5年（Previous Five Years）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ポートフォリオ（Portfolio）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒38.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ベンチマーク（Benchmark）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒28.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">超過リターン（Excess）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒10.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒1.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>次に、マネージャーは年ごとの投資実績を検証する可能性がある。図表5（Exhibit 5）は、過去5年間における1年リターンを示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM1509-R-s04-EXH3C">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 5<span style="display: block;">Trailing 1 Year Performance</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s04-EXH3C-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s04-EXH3C-title">図表5：直近1年リターン（Trailing 1 Year Performance）</caption>
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">昨年（Last Year）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2年前（Two Years Ago）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">3年前（Three Years Ago）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">4年前（Four Years Ago）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">5年前（Five Years Ago）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ポートフォリオ（Portfolio）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒38.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13.73%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">45.77%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒0.90%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.82%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ベンチマーク（Benchmark）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒28.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.61%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.69%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒6.05%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17.20%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">超過リターン（Excess）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒10.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.11%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.08%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.62%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>図表5（Exhibit 5）は、ベンチマークに対して4年間にわたり正の超過リターンを示している。この結果は、図表3（Exhibit 3）と比較して、かなり異なり、かつはるかに肯定的な結論を支持する傾向がある。アナリストはデータおよびマネージャーについてさらに検討する必要があるが、一つの可能性として、マネージャーはスキルを有しているが直近の1年において不運であった可能性がある。</p>
+</figure>
+<figure class="dp-content-block cfa-curriculum-shaded-box" id="CIPM1509-R-s04-Bb">
+<figcaption class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i><span style="display: block;">Randomness in Returns and Evaluation Periods: 2 of 2</span></figcaption>
+<p>図表3（Exhibit 3）のデータに基づいて投資マネージャーを評価したアナリストが、そのマネージャーの採用に反対する助言を行ったと仮定する。クライアントはその助言に従うことでリスクを負うことになるだろうか。</p>
+<p>答えはイエスである。ベンチマークを上回る確率が0.5を超えるマネージャーは、スキルがあるとみなされる可能性がある。マネージャーが5年間のうち4年間でベンチマークを上回ったことを踏まえ、実際の勝率が0.8であると仮定する。マネージャーの年ごとのパフォーマンス変化が無相関（uncorrelated）であると仮定すると、5年連続でベンチマークを上回る確率は0.328（0.8^5 = 0.328）である。5年連続で上回らない確率は1 − 0.328 = 0.672となる。仮に任意の1年においてベンチマークを上回る確率が0.95と高くても、5年間のうち少なくとも1年で下回る確率は0.226である。</p>
+</figure>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip0Content" role="tooltip" style="display: none;">
+<p>3 公平なコイン投げ（fair coin）の結果を一度だけ正しく当てることは可能だろうか。もちろん可能である。では4回連続ではどうか。可能ではあるが、はるかに起こりにくい。ポートフォリオ・マネージャーが15年間連続して優れた投資パフォーマンスを生み出すほど幸運であることはあり得るだろうか。非常に起こりにくいが、数百あるいは数千のポートフォリオ・マネージャーが試みていれば、運のみによって成功する者がわずかに存在するかもしれない。投資パフォーマンス評価（investment performance appraisal）における問題の一つは、多くの投資運用の実績が短期間であり、運とスキルを分離することが困難である点である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip1Content" role="tooltip" style="display: none;">
+<p>4 1 − (0.95)^5 = 1 − 0.774 = 0.226 = 22.6%。</p>
+</div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1369_modules_items_99600_103_Expenses_in_Investment_Performance_Appraisal.html" >← 前へ</a>
+  <span class="title">1.04 | Distinguishing Investment Skill from Luck</span>
+  <a href="courses_1369_modules_items_99602_105_The_Need_to_Take_Risk_into_Account_in_Performance_Appraisal.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

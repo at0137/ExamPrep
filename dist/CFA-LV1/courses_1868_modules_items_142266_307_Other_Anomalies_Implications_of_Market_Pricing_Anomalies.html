@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.07 | Other Anomalies, Implications of Market Pricing Anomalies</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0163-R-s07" title="3.07 | Other Anomalies, Implications of Market Pricing Anomalies">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3：市場効率性（Market Efficiency）3.07｜その他のアノマリーおよび市場価格アノマリーの含意（Other Anomalies, Implications of Market Pricing Anomalies）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">市場アノマリー（market anomalies）を説明できること。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>金融市場では、クローズドエンド型投資ファンドのディスカウント（closed-end investment fund discounts）、利益情報の公表に対する価格反応（price reactions to the release of earnings information）、新規株式公開（initial public offerings, IPOs）のリターン、および過去情報に基づくリターンの予測可能性（predictability of returns）など、多くの追加的なアノマリーが報告されている。</p>
+<section id="CFA0163-R-s07-01">
+<h3 class="dp-heading">クローズドエンド型投資ファンドのディスカウント（Closed-End Investment Fund Discounts）</h3>
+<p>クローズドエンド型投資ファンドは、設立時に固定数の株式を発行し、その後は追加の株式を発行しない。したがって、追加の公募（secondary public offering）が行われない限り、ファンドの資本は固定される。クローズドエンドファンドの株式は、株式市場において他の株式と同様に取引され（すなわち価格は需給によって決定される）。</p>
+<p>理論的には、これらの株式は1株当たり純資産価値（net asset value, NAV）にほぼ等しい価格で取引されるべきである。NAVとは、ファンドの保有証券の市場価値の合計から負債を差し引き、それを発行済株式数で割ったものである。しかし、多くの研究は、平均的にクローズドエンドファンドがNAVに対してディスカウントで取引されていることを示している。多くの研究では平均ディスカウントは4〜10％の範囲であるが、個別のファンドでは50％を超えるディスカウントや大きなプレミアムで取引されるものもある。35</p>
+<p>クローズドエンドファンドのディスカウントは謎を呈する。なぜなら理論的には、投資家がファンドのすべての株式を購入して清算すれば利益を得られるからである。一部の研究者は、このディスカウントは運用手数料や運用者のパフォーマンスに対する期待によるものと説明しているが、証拠はこれを支持していない。36 別の説明として、投資家が株式を購入する以前に存在する未実現キャピタルゲインおよび損失に関連する税負担が挙げられ、投資家は利益や損失の実現時期を完全にはコントロールできない。37 この仮説は一定程度支持されているが、税効果だけではディスカウント全体を説明するには不十分である。さらに、流動性の問題やNAV算定の誤りによるものとする説もある。非流動性の説明は、流動性の高い上場株式と同じ価格で記録される場合には妥当であり、一部の証拠がこれを支持している。しかし、税要因と同様に、流動性の問題もディスカウントの一部しか説明しない。</p>
+<p>これらのディスカウントは、取引コストを考慮して異常リターンを得るために利用できるか。答えはノーである。第一に、ディスカウントを利用するための取引コスト（すべての株式の購入およびファンドの清算）は利益を消失させる。38 第二に、これらのディスカウントは時間とともにゼロへ回帰する傾向がある。したがって、これらに基づく取引戦略は収益性がないと考えられる。39</p>
+</section>
+<section id="CFA0163-R-s07-02">
+<h3 class="dp-heading">利益サプライズ（Earnings Surprise）</h3>
+<p>多くのイベントスタディは準強形式の市場効率性を支持しているが、一部の研究はこれに疑問を呈している。その一例が、利益発表に対する株価調整の研究である。40 利益サプライズ（earnings surprise）とは、投資家が予想していなかった利益部分であり、効率的市場仮説によれば価格調整の対象となる。正（負）のサプライズは、適切かつ迅速な価格上昇（下落）を引き起こすはずである。多くの市場データを用いた研究では、利益サプライズは株価に迅速に反映されるものの、調整過程が常に効率的とは限らないことが示されている。特に、発表前および発表時に大きな調整が行われる一方で、発表後にも追加的な調整が行われる。41</p>
+<p>このような価格調整の遅れの結果として、最も大きな正の利益サプライズを示した企業はその後も優れた株式リターンを示し、逆に低いまたは負の利益サプライズを示した企業はその後のパフォーマンスが劣る傾向がある。42 この結果は、公開情報に基づき、正のサプライズを持つ企業の株式を購入し、負のサプライズを持つ企業を売却することで異常リターンを得られる可能性を示唆する。</p>
+<p>しかし、利益サプライズに関連する異常リターンを支持する証拠がある一方で、これらのリターンが取引コストやリスクを十分に考慮していない研究手法の産物である可能性を示す証拠も存在する。43</p>
+</section>
+<section id="CFA0163-R-s07-03">
+<h3 class="dp-heading">新規株式公開（Initial Public Offerings, IPOs）</h3>
+<p>企業が初めて株式を一般に提供する際、それは新規株式公開（IPO）として実施される。この過程では、投資銀行（investment bank）が新規発行株の価格設定および販売を支援する。公開が完了すると、新株は初めて株式市場で取引される。新規発行株の真の価格が不確実である中で販売を行う投資銀行のリスクを考えると、平均的に発行価格が低めに設定され、初日の取引で価格が大きく上昇することは驚くべきことではない。発行価格と初日終値の差はアンダープライシングの程度（degree of underpricing）と呼ばれる。</p>
+<p>証拠によれば、IPO株を発行価格で購入できた投資家は平均的に異常利益を得る可能性がある。例えば、1995年から2000年のインターネットバブル期には、多くのIPOが初日に100％以上上昇した。しかし、このような結果は常に見られるわけではなく、発行価格が高すぎる場合には初日に株価が下落することもある。また、公開後に株式を購入した投資家は、価格が迅速に「真の価値」に調整されるため、異常利益を得ることはできないとする証拠もあり、これは準強形式の市場効率性を支持する。実際、IPOの長期的なパフォーマンスは一般に平均を下回ることが示されている。これらを総合すると、IPOのアンダープライシングとその後の低パフォーマンスは、市場が当初過度に楽観的である（すなわち投資家が過剰反応する）ことを示唆する。</p>
+<p>一部の研究者は、IPOの異常リターンがなぜ観察されるのかを詳しく分析している。IPO企業の規模が小さいことや、サンプルを等加重（equally weighting）する手法の影響により、アノマリーに見えるものが単なる方法論上の産物である可能性がある。44</p>
+</section>
+<section id="CFA0163-R-s07-04">
+<h3 class="dp-heading">過去情報に基づくリターンの予測可能性（Predictability of Returns Based on Prior Information）</h3>
+<p>多くの研究者は、株式リターンが金利（interest rates）、インフレ率（inflation rates）、株式ボラティリティ（stock volatility）、配当利回り（dividend yields）などの過去情報と関連していることを示している。45 しかし、株式リターンが経済のファンダメンタルズの変化に影響されるという事実は、市場の非効率性の証拠ではなく、異常な取引利益をもたらすものでもない。46</p>
+<p>さらに、株式リターンと過去情報との関係は時間を通じて一貫していない。例えば、ある研究では株価と配当利回りの関係が期間によって正から負へと変化している。47 したがって、配当利回りに基づく取引戦略は一貫した異常リターンを生み出さない。</p>
+</section>
+<section id="CFA0163-R-s07-05">
+<h3 class="dp-heading">投資戦略への含意（Implications for Investment Strategies）</h3>
+<p>上述のアノマリーは興味深いが、実務においてそれらから利益を得ることは容易ではない。実際、多くの研究者は観察されたアノマリーは市場効率性の違反ではなく、それらを検出する統計手法の結果であると結論づけている。そのため、手法を修正すればこれらのアノマリーの多くは消滅する。48 また、効率的市場では過剰反応も過小反応も起こり得る。49 したがって平均的には市場は効率的である。言い換えれば、投資家が統計的アノマリーを経済的利益に変換することは困難である。以下はThe Economist（「Frontiers of Finance Survey」、1993年10月9日）による引用である：</p>
+<div class="cfa-curriculum-blockquote">
+<p>多くは説明可能である。取引コストを考慮すると、株価がニュースに過剰反応し、良いニュースの翌日に下落し、悪いニュースの翌日に上昇するという事実は利用できない。価格の反転は常にビッド・アスク・スプレッド（bid-ask spread）の範囲内にある。他のもの、例えば小型株効果は数年間は機能するが、その後数年間は機能しない。また、他のものは単にリスクに対する報酬の代理変数に過ぎないことがある。多くは注目されたことで（そしてその結果として）消滅している。</p>
+</div>
+<p>平均的に月曜日に負のリターンを示すことを利用して月曜日に購入し金曜日に売却する戦略に基づく運用者に、退職資金を委ねることは想像しにくい。第一に、月曜日の負のリターンは平均であり、特定の週では正となる可能性もある。さらに、このような戦略は高い取引コストを伴う。さらに重要なのは、明確な経済的根拠を欠く戦略に投資することに対して投資家が不安を感じる可能性が高いことである。</p>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA0163-R-R1list">Alexander, John C., Goff, Delbert and Peterson, Pamela P. (1989). “Profitability of a Trading Strategy Based on Unexpected Earnings.” <em>Financial Analysts Journal</em>, vol.  45, no. 4:65–71. <a href="http://dx.doi.org/10.2469/faj.v45.n4.65" target="_blank">http://dx.doi.org/10.2469/faj.v45.n4.65</a>
+</li>
+<li id="CFA0163-R-R6list">Brav, Alon、Geczy, Christopher、Gompers, Paul A.（1995）「増資後の長期パフォーマンスの再検証（The Long-Run Underperformance of Seasoned Equity Offerings Revisited）」ハーバード大学ワーキングペーパー。</li>
+<li id="CFA0163-R-R9list">Brown, Laurence D. (1997). “Earning Surprise Research: Synthesis and Perspectives.” <em>Financial Analysts Journal</em>, vol.  53, no. 2:13–19. <a href="http://dx.doi.org/10.2469/faj.v53.n2.2067" target="_blank">http://dx.doi.org/10.2469/faj.v53.n2.2067</a>
+</li>
+<li id="CFA0163-R-R15list">Dimson, Elroy and Minio-Kozerski, Carolina (1999). “Closed-End Funds: A Survey.” <em>Financial Markets, Institutions &amp; Instruments</em>, vol.  8, no. 2:1–41. <a href="http://dx.doi.org/10.1111/1468-0416.00027" target="_blank">http://dx.doi.org/10.1111/1468-0416.00027</a>
+</li>
+<li id="CFA0163-R-R18list">Fama, Eugene F. (1998). “Market Efficiency, Long-Term Returns, and Behavioral Finance.” <em>Journal of Financial Economics</em>, vol.  50, no. 3:283–306. <a href="http://dx.doi.org/10.1016/S0304-405X(98)00026-9" target="_blank">http://dx.doi.org/10.1016/S0304-405X(98)00026-9</a>
+</li>
+<li id="CFA0163-R-R20list">Fama, Eugene F. and French, Kenneth R. (1988). “Dividend Yields and Expected Stock Returns.” <em>Journal of Financial Economics</em>, vol.  22, no. 1:3–25. <a href="http://dx.doi.org/10.1016/0304-405X(88)90020-7" target="_blank">http://dx.doi.org/10.1016/0304-405X(88)90020-7</a>
+</li>
+<li id="CFA0163-R-R23list">Fama, Eugene F. and French, Kenneth R. (2008). “Dissecting Anomalies.” <em>Journal of Finance</em>, vol.  63, no. 4:1653–1678. <a href="http://dx.doi.org/10.1111/j.1540-6261.2008.01371.x" target="_blank">http://dx.doi.org/10.1111/j.1540-6261.2008.01371.x</a>
+</li>
+<li id="CFA0163-R-R34list">Kim, Donchoi and Kim, Myungsun (2003). “A Multifactor Explanation of Post-Earnings Announcement Drift.” <em>Journal of Financial and Quantitative Analysis</em>, vol.  38, no. 2:383–398. <a href="http://dx.doi.org/10.2307/4126756" target="_blank">http://dx.doi.org/10.2307/4126756</a>
+</li>
+<li id="CFA0163-R-R36list">Lee, Charles M.C.、Sheifer, Andrei、Thaler, Richard H.（1990）「アノマリー：クローズドエンド型ミューチュアルファンド（Anomalies: Closed-End Mutual Funds）」『Journal of Economic Perspectives』第4巻第4号：153–164。</li>
+<li id="CFA0163-R-R39list">Pontiff, Jeffrey (1995). “Closed-End Fund Premia and Returns: Implications for Financial Market Equilibrium.” <em>Journal of Financial Economics</em>, vol.  37:341–370. <a href="http://dx.doi.org/10.1016/0304-405X(94)00800-G" target="_blank">http://dx.doi.org/10.1016/0304-405X(94)00800-G</a>
+</li>
+<li id="CFA0163-R-R40list">Pontiff, Jeffrey (1996). “Costly Arbitrage: Evidence from Closed-End Funds.” <em>Quarterly Journal of Economics</em>, vol.  111, no. 4:1135–1151. <a href="http://dx.doi.org/10.2307/2946710" target="_blank">http://dx.doi.org/10.2307/2946710</a>
+</li>
+<li id="CFA0163-R-R44list">Schwert, G. William（2003）「アノマリーと市場効率性（Anomalies and Market Efficiency）」『Handbook of the Economics of Finance』。George M. Constantinides、M. Harris、Rene Stulz編。アムステルダム：Elsevier Science。</li>
+<li id="CFA0163-R-R48list">Zarowin, P. (1989). “Does the Stock Market Overreact to Corporate Earnings Information?” <em>Journal of Finance</em>, vol.  44:1385–1399. <a href="http://dx.doi.org/10.2307/2328649" target="_blank">http://dx.doi.org/10.2307/2328649</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN35Content">
+<p>35 この分野のレビューについてはDimson and Minio-Kozerski（1999）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN36Content">
+<p>36 Lee, Sheifer, and Thaler（1990）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN37Content">
+<p>37 クローズドエンドファンドの株主リターンは、(1)株価の上昇または下落、(2)配当、(3)ファンドが実現し分配するキャピタルゲインおよび損失の3要素から構成される。この価格アノマリーの説明はキャピタルゲイン分配のタイミングに関係している。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN38Content">
+<p>38 例えばPontiff（1996）の研究を参照。この研究はディスカウントのアービトラージコストが利益を消失させることを示している。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN39Content">
+<p>39 Pontiff（1995）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN40Content">
+<p>40 Jones, Rendleman, and Latané（1984）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN41Content">
+<p>41 この遅い反応はモメンタム・パターンの一因であるとしばしば指摘される。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN42Content">
+<p>42 同様のパターンは社債市場でも観察されており、企業の利益発表や信用格付けの変化に対して債券価格が遅れて反応する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN43Content">
+<p>43 Brown（1997）を参照。また、Zarowin（1989）は規模の影響、Alexander, Goff, and Peterson（1989）は取引コスト、Kim and Kim（2003）はリスク要因による説明を示している。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN44Content">
+<p>44 Brav, Geczy, and Gompers（1995）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN45Content">
+<p>45 例えばFama and Schwert（1977）およびFama and French（1988）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN46Content">
+<p>46 Fama and French（2008）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN47Content">
+<p>47 Schwert（2003、第15章）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN48Content">
+<p>48 Fama（1998）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN49Content">
+<p>49 この点はFama（1998）によって指摘されている。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R15Content">Dimson, Elroy and Minio-Kozerski, Carolina (1999). “Closed-End Funds: A Survey.” <em>Financial Markets, Institutions &amp; Instruments</em>, vol.  8, no. 2:1–41. <a href="http://dx.doi.org/10.1111/1468-0416.00027" target="_blank">http://dx.doi.org/10.1111/1468-0416.00027</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R36Content">Lee, Charles M.C., Sheifer, Andrei and Thaler, Richard H. (1990). “Anomalies: Closed-End Mutual Funds.” <em>Journal of Economic Perspectives</em>, vol.  4, no. 4:153–164.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R40Content">Pontiff, Jeffrey (1996). “Costly Arbitrage: Evidence from Closed-End Funds.” <em>Quarterly Journal of Economics</em>, vol.  111, no. 4:1135–1151. <a href="http://dx.doi.org/10.2307/2946710" target="_blank">http://dx.doi.org/10.2307/2946710</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R39Content">Pontiff, Jeffrey (1995). “Closed-End Fund Premia and Returns: Implications for Financial Market Equilibrium.” <em>Journal of Financial Economics</em>, vol.  37:341–370. <a href="http://dx.doi.org/10.1016/0304-405X(94)00800-G" target="_blank">http://dx.doi.org/10.1016/0304-405X(94)00800-G</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R9Content">Brown, Laurence D. (1997). “Earning Surprise Research: Synthesis and Perspectives.” <em>Financial Analysts Journal</em>, vol.  53, no. 2:13–19. <a href="http://dx.doi.org/10.2469/faj.v53.n2.2067" target="_blank">http://dx.doi.org/10.2469/faj.v53.n2.2067</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R48Content">Zarowin, P. (1989). “Does the Stock Market Overreact to Corporate Earnings Information?” <em>Journal of Finance</em>, vol.  44:1385–1399. <a href="http://dx.doi.org/10.2307/2328649" target="_blank">http://dx.doi.org/10.2307/2328649</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R1Content">Alexander, John C., Goff, Delbert and Peterson, Pamela P. (1989). “Profitability of a Trading Strategy Based on Unexpected Earnings.” <em>Financial Analysts Journal</em>, vol.  45, no. 4:65–71. <a href="http://dx.doi.org/10.2469/faj.v45.n4.65" target="_blank">http://dx.doi.org/10.2469/faj.v45.n4.65</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R34Content">Kim, Donchoi and Kim, Myungsun (2003). “A Multifactor Explanation of Post-Earnings Announcement Drift.” <em>Journal of Financial and Quantitative Analysis</em>, vol.  38, no. 2:383–398. <a href="http://dx.doi.org/10.2307/4126756" target="_blank">http://dx.doi.org/10.2307/4126756</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R6Content">Brav, Alon, Geczy, Christopher and Gompers, Paul A. (1995). “The Long-Run Underperformance of Seasoned Equity Offerings Revisited.” Working paper, Harvard University.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R20Content">Fama, Eugene F. and French, Kenneth R. (1988). “Dividend Yields and Expected Stock Returns.” <em>Journal of Financial Economics</em>, vol.  22, no. 1:3–25. <a href="http://dx.doi.org/10.1016/0304-405X(88)90020-7" target="_blank">http://dx.doi.org/10.1016/0304-405X(88)90020-7</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R23Content">Fama, Eugene F. and French, Kenneth R. (2008). “Dissecting Anomalies.” <em>Journal of Finance</em>, vol.  63, no. 4:1653–1678. <a href="http://dx.doi.org/10.1111/j.1540-6261.2008.01371.x" target="_blank">http://dx.doi.org/10.1111/j.1540-6261.2008.01371.x</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R44Content">Schwert, G. William (2003). “Anomalies and Market Efficiency.” <em>Handbook of the Economics of Finance</em>. Edited by George M. Constantinides, M. Harris, and Rene Stulz. Amsterdam: Elsevier Science, B. V.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R18Content">Fama, Eugene F. (1998). “Market Efficiency, Long-Term Returns, and Behavioral Finance.” <em>Journal of Financial Economics</em>, vol.  50, no. 3:283–306. <a href="http://dx.doi.org/10.1016/S0304-405X(98)00026-9" target="_blank">http://dx.doi.org/10.1016/S0304-405X(98)00026-9</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R18Content">Fama, Eugene F. (1998). “Market Efficiency, Long-Term Returns, and Behavioral Finance.” <em>Journal of Financial Economics</em>, vol.  50, no. 3:283–306. <a href="http://dx.doi.org/10.1016/S0304-405X(98)00026-9" target="_blank">http://dx.doi.org/10.1016/S0304-405X(98)00026-9</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="EarningsSurpriseContent">
+<p>報告された1株当たり利益（EPS）と予想EPSとの差。予想外利益（unexpected earnings）とも呼ばれる。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142265_306_Market_Pricing_Anomalies_-_Time_Series_and_Cross-Sectional.html" >← 前へ</a>
+  <span class="title">3.07 | Other Anomalies, Implications of Market Pricing Anomalies</span>
+  <a href="courses_1868_modules_items_142267_308_Behavioral_Finance.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

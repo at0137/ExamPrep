@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9.03 | Tests of Independence Using Contingency Table Data</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2407-R-s03-R-1" title="9.03 | Tests of Independence Using Contingency Table Data">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール9：独立性のパラメトリック検定およびノンパラメトリック検定（Parametric and Non-Parametric Tests of Independence）9.03 | 分割表データ（contingency table data）を用いた独立性の検定</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">分割表データ（contingency table data）に基づく独立性の検定を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>カテゴリデータ（categorical data）や離散データ（discrete data）に直面した場合、これまで議論してきた方法を用いて、それらの分類が独立であるかどうかを検定することはできない。例えば、図表7（Exhibit 7）に示されているように、1,594本の上場投資信託（exchange-traded funds, ETFs）について、サイズ（すなわち時価総額）と投資タイプ（バリュー（value）、グロース（growth）、またはブレンド（blend））の2つの分類に基づく度数表（frequency table）を観察するとする。投資タイプの分類は離散的であるため、サイズと投資タイプの関係を評価するために相関（correlation）を用いることはできない。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2407-R-s03-EXH-1-7">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 7<span style="display: block;">Size and Investment Type Classifications of 1,594 ETFs</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">投資タイプ（Investment Type）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">時価総額に基づくサイズ（Size Based on Market Capitalization）</th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Total</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Small</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">中型（Medium）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Large</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Value</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">110</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">343</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">503</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">グロース（Growth）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">42</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">122</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">202</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">366</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Blend</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">56</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">149</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">520</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">725</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">148</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">381</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,065</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,594</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>図表7は分割表（contingency table）または二元表（two-way table）と呼ばれる（分類が2つ、すなわちサイズと投資タイプであるため）。</p>
+<p>サイズと投資タイプの間に関係が存在するかどうかを検定したい場合、カイ二乗分布（chi-square distribution）に従うノンパラメトリックな検定統計量を用いて独立性の検定を行うことができる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2407-R-s03-E-1-4"><math>
+<semantics>
+<mrow>
+<msup>
+<mi>χ</mi>
+<mn>2</mn>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<msubsup>
+<mo>∑</mo>
+<mrow>
+<mi>i</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>m</mi>
+</msubsup>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<msub>
+<mi>O</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>,</mo>
+</mrow>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">4</span></div>
+<p>ここで：</p>
+<ul class="cfa-curriculum-definition-list">
+<li>m = 表のセルの数であり、第1の分類のグループ数と第2の分類のグループ数の積である；</li>
+<li>O_ij = 行 i および列 j の各セルにおける観測値の数（すなわち観測度数（observed frequency））；</li>
+<li>E_ij = 独立であると仮定した場合の、行 i および列 j の各セルにおける期待観測数（すなわち期待度数（expected frequency））。</li>
+</ul>
+<p>この検定統計量は、自由度（degrees of freedom）が (r − 1)(c − 1) であり、ここで r は行数、c は列数である。</p>
+<p>図表7では、サイズ分類は3つのグループ（小型（small）、中型（medium）、大型（large））を持ち、投資タイプ分類も3つのグループ（バリュー（value）、グロース（growth）、ブレンド（blend））を持つため、m は9（= 3 × 3）である。各セルにおけるETFの数（O_ij）、すなわち観測度数は与えられているので、カイ二乗検定統計量を計算するためには、E_ij、すなわち期待度数を推定する必要がある。期待度数とは、サイズと投資タイプが完全に独立である場合に各セルに存在すると期待されるETFの数である。期待度数（E_ij）は次の式を用いて計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2407-R-s03-E-1-5"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo stretchy="false">(</mo>
+<mtext>Total row </mtext>
+<mi>i</mi>
+<mo stretchy="false">)</mo>
+<mo>×</mo>
+<mo stretchy="false">(</mo>
+<mtext>Total column </mtext>
+<mi>j</mi>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mtext>Overall total</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">5</span></div>
+<p>サイズと投資タイプの1つの組み合わせ（例：小型バリュー（small-cap value））を考える：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2407-R-s03-E-1-"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>503</mn>
+<mo>×</mo>
+<mn>148</mn>
+</mrow>
+<mrow>
+<mn>1</mn>
+<mo>,</mo>
+<mn>594</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>46.703.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>この計算をサイズと投資タイプのすべての組み合わせ（すなわち m = 9 組）について繰り返し、図表8のパネルAに示される期待度数を求める。</p>
+<p>次に、</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2407-R-s03-E-1-___1"><math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<msub>
+<mi>O</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math>,</div>
+<p>図表8のパネルBに示されているように、各セルについて観測度数と期待度数の差の二乗を期待度数で割った値を計算する。最後に、</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2407-R-s03-E-1-___2"><math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<msub>
+<mi>O</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math></div>
+<p>これらの値を m 個すべてのセルについて合計することで、カイ二乗統計量は32.08025となる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2407-R-s03-EXH-1-8">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 8<span style="display: block;">Inputs to Chi-Square Test Statistic Calculation for 1,594 ETFs Assuming Independence of Size and Investment Type</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">A. サイズと投資タイプ別のETFの期待度数（Expected Frequency of ETFs by Size and Investment Type）</th>
+</tr>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">投資タイプ（Investment Type）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">時価総額に基づくサイズ（Size Based on Market Capitalization）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Small</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">中型（Medium）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Large</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Value</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.703</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">120.228</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">336.070</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">グロース（Growth）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33.982</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">87.482</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">244.536</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Blend</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">67.315</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">173.290</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">484.395</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">148.000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">381.000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,065.000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">B. サイズと投資タイプの各組み合わせに対するスケーリングされた二乗偏差（Scaled Squared Deviation for Each Combination of Size and Investment Type）</th>
+</tr>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">投資タイプ（Investment Type）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">時価総額に基づくサイズ（Size Based on Market Capitalization）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Small</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">中型（Medium）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Large</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Value</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.233</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.870</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.143</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">グロース（Growth）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.892</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13.620</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.399</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Blend</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.902</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.405</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.617</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>このETFの例では、図表9（Exhibit 9）に示されているように、2つの分類の独立性に関する帰無仮説（null hypothesis）（すなわち、サイズと投資タイプの間に関係がない）と、依存関係に関する対立仮説（alternative hypothesis）（すなわち、サイズと投資タイプの間に関係がある）を、有意水準5%で検定する。観測値が期待値と等しい場合、計算される検定統計量はゼロとなる。一方で、観測値と期待値が異なる場合、その差は二乗されるため、計算されるカイ二乗統計量（chi-square statistic）は正の値となる。したがって、分割表（contingency table）を用いた独立性の検定では、棄却域は右側の一つのみである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2407-R-s03-EXH-1-9">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 9<span style="display: block;">Test of Independence of Size and Investment Type for 1,594 ETFs</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仮説を設定する。</td>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">H₀：ETFのサイズと投資タイプは関連しておらず、これらの分類は独立である；Hₐ：ETFのサイズと投資タイプは関連しており、これらの分類は独立ではない。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">適切な検定統計量を特定する。</td>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m6">
+<mrow>
+<msup>
+<mi>χ</mi>
+<mn>2</mn>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>i</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>m</mi>
+</munderover>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<msub>
+<mi>O</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+</mfenced>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mstyle>
+</mrow>
+</math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有意水準を指定する。</td>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">5%</td>
+</tr>
+<tr>
+<td rowspan="6" style="text-align: left; vertical-align: top; padding: 8px;">ステップ4</td>
+<td rowspan="6" style="text-align: left; vertical-align: top; padding: 8px;">判定ルールを述べる。</td>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">自由度（degrees of freedom）が (3 − 1) × (3 − 1) = 4 であり、有意水準5%の片側検定（one-sided test）における臨界値（critical value）は9.4877である。</td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">計算された χ² 統計量が 9.4877 を上回る場合、帰無仮説を棄却する。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>Excel</strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">CHISQ.INV(0.95,4)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>R </strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">qchisq(.95,4)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Python</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">from scipy.stats import chi2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">chi2.ppf(.95,4)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">検定統計量を計算する。</td>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">χ² = 32.08025</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">判断を下す。</td>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">計算された χ² 検定統計量が 9.4877 を上回るため、独立性の帰無仮説を棄却する。ETFのサイズと投資タイプが関連している（すなわち独立ではない）と結論づけるのに十分な証拠がある。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>分割表はモザイク（mosaic）と呼ばれる図で可視化することができる。モザイクでは、グリッドが観測度数と期待度数の比較を表す。ETFの分割表を表した図表10（Exhibit 10）を考える。</p>
+<div class="cfa-curriculum-exhibit-figure" id="CFA2407-R-s03-EXH-1-10">
+<h3 class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 10<span style="display: block;">Mosaic of the ETF Contingency Table</span></h3>
+<div class="cfa-curriculum-graphic"><img alt="Mosaic of the E T F Contingency table. The width of the rectangles in the table reflects the proportion of E T F s that are small, medium and large. The height of the rectangles reflects the proportion that are value, growth and blend. " data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1864/files/460044" data-api-returntype="File" id="CFA2407-R-s03-EXH-1-10" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/></div>
+</div>
+<p>図表10における長方形の幅は、小型・中型・大型のETFの割合を反映し、高さはバリュー（value）、グロース（growth）、ブレンド（blend）の割合を反映している。濃い色の陰影は、独立性の帰無仮説の下で期待されるよりも観測数が多いことを示し、薄い色の陰影は、期待されるよりも観測数が少ないことを示す。「多い」か「少ない」かは、標準化残差（standardized residual）ボックスを参照して判断される。標準化残差は、ピアソン残差（Pearson residual）とも呼ばれ、次のように定義される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2407-R-s03-E-1-6"><math>
+<semantics>
+<mrow>
+<mtext>Standardized residual</mtext>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>O</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+<mrow>
+<msqrt>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+</msqrt>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">6</span></div>
+<p>このETFの例の解釈としては、サイズと投資タイプが独立であると仮定した場合に比べて、中型グロースETFは多く（標準化残差 3.69）、大型グロースETFは少ない（標準化残差 −2.72）ことが示されている。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2407-R-s03-EXM-1-4">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 4<span style="display: block;">Using Contingency Tables to Test for Independence</span></h3>
+<section>
+<p>図表11（Exhibit 11）に示される分割表を考える。この表は、無作為に選ばれた500社を、環境・社会・ガバナンス（environmental, social, and governance, ESG）の2つの評価軸、すなわち環境評価（environmental rating）とガバナンス評価（governance rating）に基づいて分類したものである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2407-R-s03-EXH-1-11">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 11<span style="display: block;">Classification of 500 Randomly Selected Companies Based on Environmental and Governance Ratings</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">環境評価（Environmental Rating）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">ガバナンス評価（Governance Rating）</th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Total</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">先進的（Progressive）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">平均的（Average）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Poor</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">先進的（Progressive）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">80</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">平均的（Average）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">80</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">130</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">260</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Poor</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">60</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">60</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">160</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">155</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">230</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">115</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>これらのカテゴリが独立であるとした場合、この2つのESG評価次元に対する期待度数（expected frequencies）はいくつか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>ガバナンス評価と環境評価の独立性に基づく期待度数は、図表12のパネルAに示されている。例えば、式5を用いると、ガバナンス評価が先進的かつ環境評価が先進的である組み合わせの期待度数は次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2407-R-s03-E-1-___3"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>155</mn>
+<mo>×</mo>
+<mn>80</mn>
+</mrow>
+<mrow>
+<mn>500</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>24.80.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>環境評価とガバナンス評価の各組み合わせに対するスケーリングされた二乗偏差（scaled squared deviations）は、図表12（Exhibit 12）のパネルBに示されている。例えば、式4（Equation 4）を用いると、ガバナンス評価が先進的（progressive）かつ環境評価が先進的（progressive）である組み合わせのスケーリングされた二乗偏差は次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2407-R-s03-E-1-___4"><math>
+<semantics>
+<mrow>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>35</mn>
+<mo>−</mo>
+<mn>24.8</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+<mrow>
+<mn>24.8</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>4.195.</mn>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-table-wrap" id="CFA2407-R-s03-EXH-1-12">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 12<span style="display: block;">Inputs to Chi-Square Test Statistic Calculation Assuming Independence of Environmental and Governance Ratings</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">A. 独立性を仮定した場合の環境評価とガバナンス評価の期待度数（Expected Frequencies of Environmental and Governance Ratings Assuming Independence）</th>
+</tr>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">環境評価（Environmental Rating）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">ガバナンス評価（Governance Rating）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">先進的（Progressive）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">平均的（Average）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Poor</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">先進的（Progressive）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">36.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">平均的（Average）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">80.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">119.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59.8</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Poor</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">49.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">73.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">36.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">B. 環境評価とガバナンス評価の各組み合わせに対するスケーリングされた二乗偏差（Scaled Squared Deviation for Each Combination of Environmental and Governance Ratings）</th>
+</tr>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">環境評価（Environmental Rating）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">ガバナンス評価（Governance Rating）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">先進的（Progressive）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">平均的（Average）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Poor</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">先進的（Progressive）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.195</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.278</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.759</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">平均的（Average）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.004</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.904</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.606</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Poor</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.858</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.513</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.626</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>有意水準5%を用いて、これら2つのESG評価次元が互いに独立であるかどうかを判定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<div class="cfa-curriculum-table-wrap" id="CFA2407-R-s03-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仮説を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">H₀：ガバナンス評価と環境評価は関連しておらず、これらの評価は独立である；Hₐ：ガバナンス評価と環境評価は関連しており、これらの評価は独立ではない。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">適切な検定統計量を特定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m10">
+<mrow>
+<msup>
+<mi>χ</mi>
+<mn>2</mn>
+</msup>
+<mo>=</mo>
+<munderover>
+<mstyle displaystyle="true" mathsize="140%">
+<mo>∑</mo>
+</mstyle>
+<mrow>
+<mi>i</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>m</mi>
+</munderover>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<msub>
+<mi>O</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+</mfenced>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有意水準を指定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5%</td>
+</tr>
+<tr>
+<td rowspan="6" style="text-align: left; vertical-align: top; padding: 8px;">ステップ4</td>
+<td rowspan="6" style="text-align: left; vertical-align: top; padding: 8px;">判定ルールを述べる。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">自由度（degrees of freedom）が (3 − 1) × (3 − 1) = 4 であり、有意水準5%の片側検定（one-sided test）における臨界値（critical value）は9.487729である。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された χ² 統計量が 9.487729 を上回る場合、帰無仮説を棄却する。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Excel：CHISQ.INV(0.95,4)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">R：qchisq(.95,4)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Python：from scipy.stats import chi2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">chi2.ppf(.95,4)</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;">ステップ5</td>
+<td rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;">検定統計量を計算する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">χ² = 35.74415</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">検定統計量を計算するには、まず図表12のパネルBに示されているように、各セルについて観測度数と期待度数の差の二乗を期待度数で割った値を計算する。その後、m 個すべてのセルについてこれらの値を合計することで（式4を参照）、カイ二乗統計量は35.74415となる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">判断を下す。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された χ² 検定統計量が 9.487729 を上回るため、帰無仮説を棄却する。環境評価とガバナンス評価が関連している（すなわち独立ではない）ことを示すのに十分な証拠がある。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2407-R-s03-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Question Set</h3>
+<section>
+<p>あるアナリストグループは250社を対象とし、2つの次元で分類している。第一に、配当支払い履歴（dividend payment history）と利益予測（earnings forecasts）を用いて企業を3つのグループに分類し、1が配当優良企業（dividend stars）、3が配当劣後企業（dividend laggards）を示す。第二に、財務レバレッジ（financial leverage）に基づき、負債比率（debt ratios）、負債の特性（debt features）、およびコーポレート・ガバナンス（corporate governance）を用いて企業を3つのグループに分類し、1が最もリスクの低い企業、3が最もリスクの高い企業を示す。250社の分類は次のとおりである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2407-R-s03-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">財務レバレッジ・グループ（Financial Leverage Group）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">配当グループ（Dividend Group）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>この250社の分類を用いて、以下の問いに答えよ。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>配当グループと財務レバレッジ・グループが互いに独立であるかどうかを検定するための帰無仮説と対立仮説は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>仮説は次のとおりである：</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2407-R-s03-L1">
+<li class="cfa-curriculum-list-item">H₀：配当評価と財務レバレッジ評価は関連しておらず、これらのグループ分けは独立である。</li>
+<li class="cfa-curriculum-list-item">Hₐ：配当評価と財務レバレッジ評価は関連しており、これらのグループ分けは独立ではない。</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>この種の検定で用いる適切な検定統計量は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>適切な検定統計量は次のとおりである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2407-R-s03-E-1-___5"><math>
+<semantics>
+<mrow>
+<msup>
+<mi>χ</mi>
+<mn>2</mn>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<msubsup>
+<mo>∑</mo>
+<mrow>
+<mi>i</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>m</mi>
+</msubsup>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<msub>
+<mi>O</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+<mrow>
+<msub>
+<mi>E</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>,</mo>
+</mrow>
+</mstyle>
+</mrow>
+</semantics>
+</math></div>
+<p>ここで、O_ij は i 行 j 列のグループにおける観測度数（observed frequency）を表し、E_ij はグループ分けが独立である場合における i 行 j 列の期待度数（expected frequency）を表す。</p>
+<p>独立性に基づく期待度数は次のとおりである：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2407-R-s03-T-1-c">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">財務レバレッジ・グループ（Financial Leverage Group）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">配当グループ（Dividend Group）</th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Sum</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">38.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">48</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">120</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">60</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">70</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Sum</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">80</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">70</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">250</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>財務レバレッジと配当グループの各組み合わせに対するスケーリングされた二乗偏差は次のとおりである：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2407-R-s03-T-1-d">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">財務レバレッジ・グループ（Financial Leverage Group）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">配当グループ（Dividend Group）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.06667</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.33333</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.21905</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.07500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.16667</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.60952</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.86429</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17.28571</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.70204</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>有意水準0.05における臨界値が9.4877である場合、どのような結論になるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>これらのスケーリングされた二乗偏差の合計は、計算されたカイ二乗統計量46.3223である。この値は臨界値9.4877を上回るため、これらのグループ分けが独立であるという帰無仮説を棄却する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FrequencyTableContent">
+<p>2つの離散変数の発生頻度を表す表現。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ContingencyTableContent">
+<p>2つの離散変数に基づいて分類された観測値の度数分布表。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TwoWayTableContent">
+<p>2つの離散変数に基づいて分類された観測値の度数分布表。分割表（contingency table）とも呼ばれる。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144621_902_Tests_Concerning_Correlation.html" >← 前へ</a>
+  <span class="title">9.03 | Tests of Independence Using Contingency Table Data</span>
+  <a href="courses_1864_modules_items_144640_Glossary_Parametric_and_Non-Parametric_Tests_of_Independence.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

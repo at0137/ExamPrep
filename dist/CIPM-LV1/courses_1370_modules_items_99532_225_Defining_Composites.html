@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.25 | Defining Composites</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Investment Performance Presentation and GIPS › Module 2: An Introduction to the Global Investment Performance Standards (GIPS®)</nav>
+<h1 class="page-title screenreader-only">2.25 | Defining Composites</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM2113-R-s25-R-1" title="2.25 | Defining Composites"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール2：グローバル投資パフォーマンス基準（Global Investment Performance Standards (GIPS®)）入門 2.25 | コンポジットの定義（Defining Composites）</h2></header><div class="cfa-curriculum-los-box"><h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"></i>Learning Outcome</h3><p class="p1">The candidate should be able to:</p><ul id="CIPM2113-R-s25-los-1"><li class="cfa-curriculum-los-item">コンポジットの構築における投資マンデート（investment mandate）、目的（objective）、または戦略（strategy）の役割を説明せよ。</li></ul></div><hr class="dp-hr-solid-light dp-hr-color-dp-primary"/><p>特定のコンポジットにどのポートフォリオを含めるかの決定は、事前に定められた客観的基準に基づいて行われなければならない。コンポジット定義（composite definition）とは、ポートフォリオをコンポジットに割り当てるための詳細な基準である。言い換えれば、コンポジット定義は、ポートフォリオがコンポジットに含まれるか除外されるかを決定するルールを定めるものである。最も重要な点として、コンポジットは投資マンデート、目的、または戦略に基づいて定義されなければならない。同一コンポジットに含まれるすべてのポートフォリオは、類似した特性を持ち、類似の証券に投資し、または類似の投資目的やリスク許容度を有し、それによりポートフォリオが実質的に類似した方法で構築され、高い相関を持つパフォーマンス結果を生むべきである。実質的に異なる方法で運用されるポートフォリオや、著しく異なる目的を持つポートフォリオを同一コンポジットに含めることは適切ではない。なぜなら、そのようなポートフォリオの組み合わせは、企業が提供する明確な戦略を反映せず、見込み顧客（prospective clients）にとって有意義な情報を提供しないためである。</p><p>GIPS基準は、企業が分別管理口座（segregated account）として管理または提供するすべての戦略についてコンポジットを作成および維持することを要求している（分別管理口座とは、単一の顧客が所有するポートフォリオである）。同時に、すべての実在のフィー支払裁量分別管理口座は、少なくとも1つのコンポジットに含めなければならない。プールドファンド（pooled funds）については、当該戦略が分別管理口座として提供されていない場合、企業はプールドファンドのみを含むコンポジットを作成する必要はない。ただし、一度コンポジットが作成された場合、そのコンポジットには、コンポジット定義を満たすすべての実在のフィー支払裁量ポートフォリオ（分別管理口座およびプールドファンドの両方）を含めなければならない。プールドファンドが既存のコンポジットの定義を満たす場合、そのコンポジットに含めなければ、戦略の完全な履歴を正確に反映できない。企業はまた、分別管理口座として提供されていない戦略について、1つ以上のプールドファンドを含むコンポジットを作成することもできるが、必須ではない。</p><p>さらに、コンポジットには定義を満たすすべてのポートフォリオを含めなければならないため、ポートフォリオが複数のコンポジットに含まれる場合もある。例えば、企業が大型株グロース株式コンポジット（large-cap growth equity composite）と、より広範な大型株株式コンポジット（large-cap equity composite）の両方を管理している場合、単一のポートフォリオが両方に該当することがある。</p><p>投資マンデート、目的、または戦略に加えて、コンポジット定義に考慮され得る基準には以下が含まれる（ただしこれらに限定されない）：</p><ul class="cfa-curriculum-list-bullet" id="CIPM2113-R-s25-L1"><li class="cfa-curriculum-list-item">資産クラス（asset class）（例：株式（equities）、債券（fixed income）、不動産（real estate）、プライベートエクイティ（private equity））；</li><li class="cfa-curriculum-list-item">特定の金融商品または投資手法の使用（例：デリバティブ（derivatives）、レバレッジ（leverage）、ヘッジ（hedging））；</li><li class="cfa-curriculum-list-item">目標とするリスクまたはリターン指標（例：目標トラッキングエラー（target tracking error）やアルファ（alpha））；または</li><li class="cfa-curriculum-list-item">顧客によって課される投資制約または制限（例：社会的責任（social responsibility）や環境配慮（environmental sensitivity）に関する制約）。</li></ul><p>ポートフォリオは、フィー支払か非フィー支払かによっても区別され得る。非フィー支払ポートフォリオは必ずしもコンポジットに含める必要はないが、企業の判断で含めることができる。一度、特定のコンポジットに非フィー支払裁量ポートフォリオを含めることを選択した場合、そのコンポジットには定義を満たすすべての非フィー支払ポートフォリオを含めなければならない。ただし、あるコンポジットで非フィー支払ポートフォリオを含めた場合でも、企業がすべてのコンポジットでそれらを含める義務はなく、含めるか否かの判断はコンポジットごとに行うことができる。</p><p>投資戦略は時間とともに変化する可能性があり、それに伴いコンポジットの定義も変更される場合がある。すなわち、あるポートフォリオが特定の戦略を代表するための重要な特性が、過去と現在で異なると企業が判断することがあり、その結果、コンポジットへの組入れ基準が変更されることがある（コンポジットの再定義）。例えば、過去にはデリバティブの使用が限定的であった戦略が、近年では広範に使用されるようになった場合、企業はデリバティブの使用が戦略の完全な実行に不可欠であると判断し、デリバティブの使用を許容するポートフォリオのみを含むようコンポジットを再定義する可能性がある。ただし、このような変更は将来に向けてのみ適用されなければならず、過去に遡ってコンポジットの構成やパフォーマンスを変更することはできない。</p><figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM2113-R-s25-Ba"><figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"></i>Knowledge Check: Defining Composites</figcaption><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM2113-R-s25-Q1"><legend><span class="cfa-curriculum-question-with-label">1. </span><p>パフォーマンス提示においてコンポジットが適切である理由は：</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-0" id="dp-qc-0-0" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-0"><p>A. 終了ポートフォリオ（terminated portfolios）を除外するため。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい答えを選択して詳細を確認せよ。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-1" id="dp-qc-0-1" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-1"><p>B. 類似したパフォーマンスを示したポートフォリオのみを含めるため。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい答えを選択して詳細を確認せよ。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse0-2" id="dp-qc-0-2" name="dp-qc-0" type="radio" value="true"/><label for="dp-qc-0-2"><p>C. コンポジット定義を満たすすべての裁量ポートフォリオを含めるため。</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse0-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h3 class="cfa-curriculum-solution-title">解答</h3><p>Cが正解。コンポジットには、裁量運用されていた期間の終了ポートフォリオも含めなければならない。また、同一コンポジットに含まれるポートフォリオは類似したパフォーマンスを示すことが期待されるが、パフォーマンスの違いを理由にポートフォリオを除外することはできない。</p></section></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM2113-R-s25-Q2"><legend><span class="cfa-curriculum-question-with-label">2. </span><p>コンポジットは以下に基づいて定義されなければならない：</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse1-0" id="dp-qc-1-0" name="dp-qc-1" type="radio" value="true"/><label for="dp-qc-1-0"><p>A. 投資マンデート、目的、または戦略。</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse1-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h3 class="cfa-curriculum-solution-title">解答</h3><p>Aが正解。ベンチマークや顧客のリスク許容度はコンポジット定義の一部として考慮され得るが、必須ではない。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-1" id="dp-qc-1-1" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-1"><p>B. 同一ベンチマークで運用されるポートフォリオのみを含めるように定義する。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい答えを選択して詳細を確認せよ。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-2" id="dp-qc-1-2" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-2"><p>C. 顧客のリスク許容度に基づいて定義する。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい答えを選択して詳細を確認せよ。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div></figure><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip0Content" role="tooltip" style="display: none;"><p>ポートフォリオをコンポジットに割り当てるための詳細な基準。</p></div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1370_modules_items_99530_224_Composite_Construction_and_Reporting.html" >← 前へ</a>
+  <span class="title">2.25 | Defining Composites</span>
+  <a href="courses_1370_modules_items_99533_226_Discretion.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

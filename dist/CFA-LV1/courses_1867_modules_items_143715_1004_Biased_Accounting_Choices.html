@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10.04 | Biased Accounting Choices</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1533-R-s03-R-1" title="10.04 | Biased Accounting Choices"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール10：財務報告の質（Financial Reporting Quality） 10.04｜バイアスのある会計選択（Biased Accounting Choices）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">財務報告の質を評価するためのスペクトラム（spectrum）を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>図表2（Exhibit 2）に示されるスペクトラムの次のレベルは「GAAPの範囲内だがバイアスのある選択（Within GAAP, but biased choices）」である。バイアスのある選択は、報告されている内容の経済的実質（economic substance）を忠実に表現しない財務報告をもたらす。財務報告におけるバイアスの問題は、他の報告の質の欠陥と同様に、投資家が企業の過去の業績を正しく評価し、将来の業績を正確に予測し、したがって企業を適切に評価（value）する能力を妨げる点にある。</p>
+<p>選択が「攻撃的（aggressive）」とみなされるのは、検討対象期間における企業の報告上の業績および財政状態を高める場合である。このような選択は、当期の収益（revenues）、利益（earnings）、または営業キャッシュフロー（operating cash flow）を増加させたり、費用（expenses）を減少させたり、あるいは貸借対照表（balance sheet）に報告される負債（debt）水準を低下させたりする可能性がある。攻撃的な選択は、後の期間において企業の報告上の業績および財政状態の低下をもたらす可能性がある。これに対して、「保守的（conservative）」とみなされる選択は、報告期間における企業の業績および財政状態を低下させるものである。これには、報告される収益、利益、営業キャッシュフローを低くすることや、費用を増加させること、あるいは貸借対照表により高い負債水準を計上することが含まれる。保守的な選択は、後の期間において企業の報告上の業績および財政状態の上昇をもたらす可能性がある。</p>
+<p>もう一つのバイアスの形態は、利益のボラティリティ（earnings volatility）を過小に示すことであり、いわゆる利益平準化（earnings smoothing）と呼ばれるものである。利益平準化は、企業の業績が好調な期間において利益を過小に計上する保守的な選択により（しばしば隠れた）引当金（reserves）を積み上げ、その後、業績が悪化した期間において攻撃的な選択を行うことを可能にすることで生じ得る。</p>
+<p>バイアスのある選択は、報告金額（reported amounts）の文脈だけでなく、情報の提示方法（presentation）の文脈においても行われ得る。例えば、企業は分析を容易にする透明性の高い形で情報を開示することもできるし、不利な情報を隠したり有利な情報を強調したりすることを目的とした形で開示することもできる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1533-R-s03-EXM-1-1">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 1<span style="display: block;">Quality of Financial Reports</span></h3>
+<p>PACCAR社（PACCAR Inc.）は、Kenworth、Peterbilt、およびDAFのブランド名（nameplates）で世界中に販売されるトラックおよび関連アフターマーケット部品（aftermarket parts）を設計・製造・販売している。2013年、米国証券取引委員会（US Securities and Exchange Commission, SEC）は、「金融危機（financial crisis）の最中に投資家に対する財務報告を曇らせた（clouded their financial reporting）」として、PACCARに対してさまざまな会計上の不備（accounting deficiencies）を理由に訴追した。SECの訴状（complaint）は、同社の2009年のセグメント報告（segment reporting）を指摘している。図表4（Exhibit 4）は、PACCARの財務諸表の注記（notes）および年次報告書の経営者による議論と分析（management discussion and analysis, MD&amp;A）の抜粋を示している。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA1533-R-s03-EXH-1-4">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 4<span style="display: block;">PACCAR’S 2009 Financial Statements and Annual Report</span></h4>
+<p>A. 注記からの抜粋（Excerpt from Notes）</p>
+<p>S. セグメントおよび関連情報（SEGMENT AND RELATED INFORMATION）</p>
+<p>PACCARは、トラック（Truck）と金融サービス（Financial Services）の2つの主要セグメントで事業を展開している。</p>
+<p>トラックセグメントは、トラックの製造および関連アフターマーケット部品の販売を含み、これらは独立ディーラー（independent dealers）のネットワークを通じて販売される。. . . 金融サービスセグメントは、トラック顧客およびディーラーに提供される金融およびリース（leasing）関連の製品・サービスで構成される…。All Otherには、PACCARの産業用ウインチ（industrial winch）製造事業が含まれる。またこのカテゴリーには、報告対象セグメント（reportable segment）に帰属しないその他の売上、収益および費用（income and expenses）も含まれており、その中には本社費用（corporate expense）の一部も含まれる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1533-R-s03-T-1-a">
+<h5 class="cfa-curriculum-unknownType-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Pre-tax Income by Business Segment (USD millions)</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2009</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2008</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2007</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">Truck</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">25.9百万米ドル（USD25.9）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,156.5百万米ドル（USD1,156.5）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,352.8百万米ドル（USD1,352.8）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">その他（All other）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">42.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">32.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">68.1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,162.5百万米ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,384.8百万米ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">金融サービス（Financial services）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">84.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">216.9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">284.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">投資収益（Investment income）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">22.3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">84.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">95.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">175.0百万米ドル（USD175.0）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,464.0百万米ドル（USD1,464.0）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,764.3百万米ドル（USD1,764.3）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>B. MD&amp;Aからの抜粋（Excerpt from MD&amp;A）</p>
+<p>トラックユニットおよびアフターマーケット部品の純売上高および収益（net sales and revenues）、ならびに粗利益率（gross margins）を以下に示す。アフターマーケット部品の粗利益率には、直接的な収益およびコストが含まれるが、トラックセグメントの一部コストは含まれていない。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1533-R-s03-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2009</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2008</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">変化率（Change (%))</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">純売上高および収益（Net Sales and Revenues）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">トラック（Trucks）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5,103.30百万米ドル（USD5,103.30）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11,281.30百万米ドル（USD11,281.30）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−55</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">アフターマーケット部品（Aftermarket parts）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,890.70百万米ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2,266.10百万米ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−17</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6,994.00百万米ドル（USD6,994.00）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">13,547.40百万米ドル（USD13,547.40）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−48</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">粗利益（Gross Margin）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">トラック（Trucks）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−46.6百万米ドル（−USD46.6）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,141.70百万米ドル（USD1,141.70）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−104</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">アフターマーケット部品（Aftermarket parts）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">625.7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">795.20百万米ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−21</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">579.1百万米ドル（USD579.1）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,936.90百万米ドル（USD1,936.90）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−70</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>財務諸表の注記（notes）から抜粋されたセグメントデータに基づくと、PACCARのトラックセグメントは2009年に利益を上げていたか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>はい。財務諸表の注記に提示されたセグメントデータによると、トラックセグメントは2009年に2,590万米ドル（USD25.9 million）の利益を計上している。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>MD&amp;A（management discussion and analysis）に提示されたトラックの粗利益（gross margin）に関するデータに基づくと、PACCARのトラックセグメントは2009年に利益を上げていたか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>いいえ。MD&amp;Aに提示されたセグメントデータによると、トラックセグメントの粗利益はマイナスであった。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>注記の表示（note presentation）とMD&amp;Aの表示（MD&amp;A presentation）の主な違いは何か？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>注記の表示とMD&amp;Aの表示の主な違いは、アフターマーケット部品事業（aftermarket parts business）が注記ではトラック事業と統合されている一方で、MD&amp;Aでは分離されている点である。2つの開示におけるデータは完全に比較可能ではない（注記は税引前利益（income before taxes）を示し、MD&amp;Aは粗利益（gross profit）を示している）ものの、両者はトラック販売からのPACCARの利益について異なる姿を示している。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>SEC（US Securities and Exchange Commission）の訴状（complaint）は、「PACCARは、投資家が企業の経営陣と同様の洞察を得られるようにするために設けられているセグメント報告要件（segment reporting requirements）に従い、アフターマーケット部品事業の営業成績をトラック販売事業と区別して報告しなかった」と述べている。PACCARの事例は、財務報告の質（financial reporting quality）、利益の質（earnings quality）、あるいはその両方の問題の例であるか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>PACCARの事例は、財務報告の質と利益の質の両方に関する問題の例であると考えられる。トラック販売の大幅な減少と負の粗利益は、低い利益の質を示している。一方で、明確なセグメント情報を開示しなかったことは、低い財務報告の質の一例である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>GAAPの範囲内でも望ましい経済的イメージを提示するための選択が存在するが、非GAAP報告（non-GAAP reporting）は、さらに別の経営裁量（management discretion）の次元を加える。米国GAAP（US GAAP）やIFRSなどの一般に公正妥当と認められた会計原則に準拠しない財務指標の非GAAP報告には、財務指標（financial metrics）とオペレーティング指標（operating metrics）の両方が含まれる。5 非GAAPの財務指標は財務諸表と直接関連する。一般的な非GAAP財務指標の一つは「非GAAP利益（non-GAAP earnings）」であり、これは企業が「会計基準に準拠した利益を調整し、会計基準で要求される項目を除外したり、会計基準では認められていない項目を含めたりすることによって作成される」（Ciesielski and Henry, 2017）。これに対して、非GAAPのオペレーティング指標は財務諸表と直接関係せず、加入者数（subscriber numbers）、アクティブユーザー（active users）、稼働率（occupancy rates）など、通常は業界特有の指標を含む。</p>
+<p>非GAAP財務報告はますます一般的になっており、アナリストにとって課題をもたらしている。重要な課題の一つは、非GAAP財務報告が財務諸表間の比較可能性（comparability）を低下させる点である。例えば、企業が非GAAP利益を作成するために行う調整は、一般にアドホック（ad hoc）であり、大きく異なる。非GAAP指標を評価する際、投資家は特定の調整をどの程度分析や予測に取り入れるべきかを判断しなければならない。6</p>
+<p>もう一つの課題は、用語の違いから生じる。非GAAP利益は、基礎利益（underlying earnings）、調整後利益（adjusted earnings）、継続利益（recurring earnings）、コア利益（core earnings）などと呼ばれることがある。図表5（Exhibit 5）は、タタ・モーターズ（Tata Motors Ltd.）の子会社であるジャガー・ランドローバー・オートモーティブ（Jaguar Land Rover Automotive plc, JLR）の例を示している。同社はIFRSに基づいて財務報告を作成している。この図表はJLRの2016/17年次報告書からの抜粋であり、「代替的業績指標（alternative performance measures）」という用語を用いている。図表6（Exhibit 6）は、米国SECに提出されたタタ・モーターズのForm 6-Kからの抜粋であり、JLRに関する補足情報を含み、「非IFRS財務指標（non-IFRS Financial Measures）」という用語を用いている。2つの図表に含まれる情報は本質的に同一であるが、用語および形式は異なっている。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA1533-R-s03-EXH-1-5">
+<h3 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 5<span style="display: block;">Excerpt from JLR’s 2016/17 Annual Report: Footnote 3</span></h3>
+<section id="CFA1533-R-s03-01-01">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h1">3）代替的業績指標（ALTERNATIVE PERFORMANCE MEASURES）</h4>
+<p>多くの企業は、財務諸表利用者に対して追加的に有用な情報を提供し、当該期間における事業の業績をより明確に示すために、代替的業績指標（alternative performance measures, APMs）を使用している。. . . これらの指標は、比較可能な法定指標（statutory measures）に含まれる特定の項目を除外している。</p>
+<p>これらの代替的業績指標と法定報告指標との間の調整表（reconciliations）は以下に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1533-R-s03-T-1-c">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">2017年3月31日終了事業年度（Fiscal year ended 31 March 2017）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">百万ポンド（GBP millions）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">EBITDA</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2,955</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">減価償却費および償却費（Depreciation and amortization）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1,656</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">持分法適用投資の利益／（損失）（Share of profit/(loss) of equity accounted investments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">159</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>EBIT</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1,458</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">デリバティブに係る為替差損／（差益）（Foreign exchange (loss)/gain on derivatives）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–11</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">商品に係る未実現損益（Unrealised gain/(loss) on commodities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">148</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">借入金に係る為替損失（Foreign exchange loss on loans）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–101</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">金融収益（Finance income）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">33</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">金融費用（純額）（Finance expense (net)）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–68</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">特別項目（Exceptional item）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>151</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益（Profit before tax）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1,610</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA1533-R-s03-EXH-1-6">
+<h3 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 6<span style="display: block;">Excerpt from Tata Motors Ltd. SEC Form 6-K</span></h3>
+<section id="CFA1533-R-s03-01-02">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h1">非IFRS財務指標（Non-IFRS Financial Measures）</h4>
+<p>本報告書には、EBITDA、EBITなどの特定の非IFRS指標（non-IFRS measures）への言及が含まれている。. . . これらの指標および関連比率は単独で考慮されるべきではなく、IFRSに基づくJLRの財務パフォーマンスまたは流動性（liquidity）の指標ではない。また、当該期間の利益または損失や、IFRSに基づいて算出された他の業績指標の代替として、あるいは営業活動・投資活動・財務活動によるキャッシュフローやIFRSに基づくその他の流動性指標の代替として考慮されるべきではない。. . . さらに、定義されたEBITDAやEBITは、他社が用いる同様の名称の指標と比較可能でない場合がある。</p>
+</section>
+<section id="CFA1533-R-s03-01-03">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h1">タタ・モーターズ（Tata Motors Limited）のジャガーおよびランドローバー事業に関する補足情報を含むForm 6-K（Form 6-K Supplemental Information Regarding the Jaguar and Land Rover Business of Tata Motors Limited）</h4>
+<p>JLRのEBITおよびEBITDAを当期利益（profit for the period）項目へ調整するリコンシリエーション（reconciliation）は以下のとおりである：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1533-R-s03-T-1-d">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">2017年3月31日終了事業年度（Fiscal year ended 31 March 2017）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">百万ポンド（GBP millions）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当期利益（Profit for the period）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,272</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税（taxation）を加算戻し（Add back）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">338</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">特別損失／（利益）（exceptional charge/(credit)）を加算／（減算）戻し（Add/(less) back）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–151</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">為替差益／損（foreign exchange (gains)/loss）―財務活動（financing）に係るものを加算／（減算）戻し</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">101</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">為替差益／損（foreign exchange (gains)/loss）―デリバティブ（derivatives）に係るものを加算／（減算）戻し</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">商品に係る未実現損失／（利益）（unrealized commodity losses/(gains)）―未実現デリバティブ（unrealized derivatives）を加算／（減算）戻し</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–148</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">金融収益（finance income）を控除（Less）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–33</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">金融費用（純額）（finance expense (net)）を加算戻し</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">68</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>EBIT</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1,458</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">減価償却費および償却費（depreciation and amortization）を加算戻し</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,656</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">持分法適用投資先（equity accounted investees）からの損失／（利益）の持分（share of loss/(profit)）を加算／（減算）戻し</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–159</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">EBITDA</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2,955</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+<p>望ましくないGAAPベースの財務結果（GAAP financial results）から注意をそらすために、経営者が非GAAP財務指標（non-GAAP financial measures）を強調することは、攻撃的な表示選択（aggressive presentation choice）の一例である。2003年以降、企業がSEC（US Securities and Exchange Commission）への提出書類（filing）で非GAAP財務指標を使用する場合、最も直接的に比較可能なGAAP指標（GAAP measure）を同等の重要性（equal prominence）で表示し、非GAAP指標と対応するGAAP指標との間のリコンシリエーション（reconciliation）を提供することが求められている。言い換えれば、企業はSEC提出書類において非GAAP財務指標をより強調して表示することは許されていない。</p>
+<p>同様に、2010年12月に公表されたIFRS実務記述書（IFRS Practice Statement）「経営者による説明（Management Commentary）」は、財務報告に非IFRS指標（non-IFRS measures）が含まれる場合の開示要件を定めている：</p>
+<div class="cfa-curriculum-blockquote">
+<p>財務諸表からの情報が経営者による説明（management commentary）に含めるために調整されている場合、その事実を開示しなければならない。IFRSで要求または定義されていない財務業績指標（financial performance measures）が経営者による説明に含まれる場合、それらの指標は定義および説明されるべきであり、当該指標が利用者にとってどのように関連性を有するかについての説明も含めなければならない。財務業績指標が財務諸表から導出または抽出されている場合、それらの指標はIFRSに基づいて作成された財務諸表に提示された指標と調整（reconcile）されなければならない。（17ページ）</p>
+</div>
+<p>報告ベースの指標（as-reported measures）（財務諸表に表示されるGAAP財務指標）と調整後指標（as-adjusted measures）（財務諸表以外で提示される非GAAP財務指標）との間のリコンシリエーションは、重要な情報を提供する可能性がある。</p>
+<p>欧州証券市場監督機構（European Securities and Markets Authority, ESMA）は2015年10月にガイドライン（ESMA Guidelines on Alternative Performance Measures）を公表し、APM（alternative performance measures）の定義、GAAPとの調整（reconciliation）、指標の関連性の説明、および時間的な一貫性（consistency over time）などを扱っている。本モジュールの後半でESMAについてさらに詳しく説明する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1533-R-s03-EXM-1-2">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 2<span style="display: block;">Presentation of Non-GAAP Financial Measures</span></h3>
+<p>コンバテック・グループPLC（Convatec Group PLC, Convatec）は、グローバルな医療製品メーカーであり、2016年にロンドン証券取引所（London Stock Exchange）での新規株式公開（initial public offering, IPO）により18億米ドル（USD1.8 billion）を調達した。同社は2008年にブリストル・マイヤーズ スクイブ（Bristol-Myers Squibb）からプライベート・エクイティ（private equity）ファームにより41億米ドル（USD4.1 billion）で買収されていた。図表7（Exhibit 7）は、2016年通期業績を公表したロンドン証券取引所への規制開示（regulatory filing）からの抜粋を示している。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA1533-R-s03-EXH-1-7">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 7<span style="display: block;">Excerpt from Convatec’s Press Release for Full Year 2016 Results</span></h4>
+<p>A. 強い業績、戦略の実行（Strong results, delivering on strategy）</p>
+<p>CEOレビュー（CEO Review）</p>
+<p>一定為替レートベース（constant currency）では、売上高（revenue）は4%増の16億8,800万ドル（$1,688 million）となり、調整後EBITDA（adjusted EBITDA）は5億800万ドル（$508 million）で、一定為替レートベースで6.5%増加した。. . .</p>
+<p>【脚注】一定為替レート成長（constant currency growth, CER）は、当該期間における2015年の為替レート（foreign exchange rates）を用いて2016年の実績を再計算することにより算出される。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1533-R-s03-T-1-e">
+<h5 class="cfa-curriculum-unknownType-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Consolidated Statement of Profit or Loss for the year ended 31 December 2016 (USD millions)</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高（Revenue）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,688.3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,650.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上原価（Cost of goods sold）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−821.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−799.9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益（Gross profit）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">867.3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">850.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">販売費および流通費（Selling and distribution expenses）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−357.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−346.7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">一般管理費（General and administrative expenses）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−318.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−233.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">研究開発費（Research and development expenses）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–38.1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–40.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業利益（Operating profit）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">154.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">230.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">金融費用（Finance costs）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−271.4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−303.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他費用（純額）（Other expense, net）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–8.4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–37.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税控除前損失（Loss before income taxes）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−125.8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−110.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税費用（利益）（Income tax (expense) benefit）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–77.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">16.9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純損失（Net loss）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−202.8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–93.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>B. 非IFRS財務情報（Non-IFRS Financial Information）</p>
+<p>本リリースには、IFRSの下で定義または認識されていない特定の財務指標（financial measures）が含まれている。これらの指標は「調整後（Adjusted）」指標と呼ばれる。. . . これらの指標はIFRSに基づく財務パフォーマンスまたは流動性（liquidity）の測定ではなく、IFRSに従って算出された流動性または営業利益（operating profit）の指標の代替として用いられるべきではない。</p>
+<p>C. 調整後利益へのリコンシリエーション（Reconciliation to adjusted earnings）</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1533-R-s03-T-1-f">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>2016 </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">報告値（Reported）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>(a)</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>(b)</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>(c)</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>(d)</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>(e)</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>(f)</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>(g)</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">調整後（Adjusted）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高（Revenue）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,688.3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,688.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業利益（Operating profit）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>154.0</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>155.1</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>30.9</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>11.7</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>0.8</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>—</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>90.2</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>29.5</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>472.2</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税控除前（損失）利益（(Loss) profit before income taxes）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−125.8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">155.1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">30.9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11.7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">37.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">29.5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">230.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税費用（Income tax expense）（h）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–77.0</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–51.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純（損失）利益（Net (loss) profit）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−202.8</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">178.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>（a）(i) 取得関連の償却費（acquisition-related amortisation expense）…、(ii) 特定の製造施設の閉鎖に関連する加速償却（accelerated depreciation）…、および (iii) 有形固定資産（property, plant and equipment）および無形資産（intangible assets）に関連する減損損失（impairment charges）および資産の帳簿価額切下げ（assets write offs）を除外するための調整を表す。</p>
+<p>（b）再編費用（restructuring costs）およびその他関連費用を表す。</p>
+<p>（c）是正費用（remediation costs）を表し、これにはFDA（Food and Drug Administration）の活動に関連する規制遵守費用（regulatory compliance costs）、IT強化費用（IT enhancement costs）、およびグループのコンプライアンス機能（compliance function）および財務における統制環境（control environment）を強化するために実施された活動に関連する専門サービス費用（professional service fees）が含まれる。</p>
+<p>（d）主に (i) コーポレート開発活動（corporate development activities）および (ii) 2015年における通常業務に関連する複数年の特許訴訟（multi-year patent-related litigations）の和解に関連する費用を表す。</p>
+<p>（e）(i) 債務の消滅損失（loss on extinguishment of debt）および繰延資金調達費用（deferred financing fees）の償却…、および (ii) 為替関連取引（foreign exchange related transactions）を除外するための調整を表す。</p>
+<p>（f）(i) IPO前（pre-IPO）の従業員株式付与（employee equity grants）に起因する株式報酬費用（share-based compensation expense）…および (ii) IPO前の所有構造（ownership structure）に関連する費用（Nordic CapitalおよびAvistaへのマネジメントフィー（management fees）を含む。詳細は注記6（Note 6 Related Party Transactions）参照）を除外するための調整を表す。</p>
+<p>（g）IPO関連費用（IPO related costs）、主としてアドバイザリー費用（primary advisory fees）を表す。</p>
+<p>（h）調整後法人税費用／利益（Adjusted income tax expense/benefit）は、税務調整（tax adjustments）を控除した法人税費用（利益）（income tax (expense) benefit）である。</p>
+</div>
+<p>D. 調整後EBITDA（Adjusted EBITDA）</p>
+<p>調整後EBITDAは、調整後EBIT（Adjusted EBIT）…を基礎として、さらに (i) ソフトウェアおよび研究開発の償却（software and R&amp;D amortisation）、(ii) 減価償却（depreciation）、および (iii) IPO後の株式報酬（post-IPO share-based compensation）を除外するよう調整したものとして定義される。</p>
+<p>以下の表は、グループの調整後EBIT（Adjusted EBIT）と調整後EBITDA（Adjusted EBITDA）とのリコンシリエーションを示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1533-R-s03-T-1-g">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2016年（百万米ドル）（2016 (USD millions)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">調整後EBIT（Adjusted EBIT）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">472.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ソフトウェアおよび研究開発の償却（Software and R&amp;D amortization）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">減価償却（Depreciation）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">27.9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">IPO後の株式報酬（Post-IPO share-based compensation）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.8</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">調整後EBITDA（Adjusted EBITDA）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">507.6</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>図表7（Exhibit 7）で提供された情報に基づき、Convatecのプレスリリースに含まれる以下の2つの開示の違いを説明せよ：</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA1533-R-s03-L1">
+<li class="cfa-curriculum-list-item">CEOレビュー（CEO Review）の2016年業績では、売上高（revenue）は4%増加して1,688百万米ドル（USD1,688 million）となったと述べられている。</li>
+<li class="cfa-curriculum-list-item">Convatecの連結損益計算書（Consolidated Statement of Profit or Loss）では、2016年の売上高は1,688.3百万米ドル（USD1,688.3 million）、2015年は1,650.4百万米ドル（USD1,650.4 million）と示されている。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>損益計算書に報告されている売上高は、国際財務報告基準（International Financial Reporting Standards, IFRS）に準拠している。損益計算書の数値を用いると、同社の売上高は2.3%増加している（= USD1,688.3 / USD1,650.4 − 1）。CEOレビューにおける4%の売上成長率は非IFRS指標（non-IFRS measure）であり、「一定為替レート（constant currency）」ベースで算出されている。脚注によると、これは2016年の売上高を2015年の為替レートで再計算した上で比較したものである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>提供された情報に基づき、Convatecの決算発表（earnings release）に含まれる以下の2つの開示の違いを説明せよ：</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA1533-R-s03-L2">
+<li class="cfa-curriculum-list-item">CEOレビューの2016年業績では、調整後EBITDA（adjusted EBITDA）は508百万米ドル（USD508 million）であり、一定為替レートベースで6.5%増加したと述べられている。</li>
+<li class="cfa-curriculum-list-item">Convatecの連結損益計算書（Consolidated Statement of Profit or Loss）では、2016年の純損失（net loss）は202.8百万米ドル（USD202.8 million）、2015年は93.4百万米ドル（USD93.4 million）と示されている。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>損益計算書に報告されている数値はIFRSに準拠している。損益計算書の数値によると、同社は2016年に202.8百万米ドル（USD202.8 million）の損失を計上しており、これは2015年の93.4百万米ドル（USD93.4 million）の損失の2倍以上である。また損益計算書によれば、同社は2016年に営業利益（operating profit）（他の箇所ではEBITと呼ばれる）154.0百万米ドル（USD154.0 million）を計上しており、これは2016年に報告された230.4百万米ドル（USD230.4 million）の営業利益から33.2%減少している。</p>
+<p>これに対して、CEOレビューで強調されている調整後EBITDA（adjusted EBITDA）は、IFRSの下で定義も認識もされていない非IFRS指標（non-IFRS measure）である。調整後EBITDAを算出するために、同社はまずEBIT（抜粋IIおよびIIIでは営業利益（operating profit）と呼ばれる）154.0百万米ドルから出発し、IFRSにより認識が要求される8つの異なる費用を加算戻しすることで、調整後EBIT（adjusted EBIT）（472.2百万米ドル）を作成する。これらの調整は、最初の表形式のリコンシリエーションの下に（a）から（g）として示されている。その後、同社はさらにIFRSで認識が求められる3つの費用を加算戻しすることで、調整後EBITDA（507.6百万米ドル）を算出する。</p>
+<p>全体として、開示AとBの間には3つの重要な違いがある：(1) 最も重要な点として、開示AはIFRS準拠の指標ではなく非IFRS指標を参照している；(2) 開示Aは純利益（net income）ではなく、プラスであった営業利益（operating profit）を参照している；(3) 開示Aは為替調整ベースでの増加というポジティブな経済的結果を強調している。アナリストは、企業の業績発表（earnings announcements）がポジティブな印象を与えるために用い得る代替的手段に注意する必要がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>多くの場合、低い報告の質（reporting quality）は低い利益の質（earnings quality）と同時に発生する。例えば、業績不振を隠すために攻撃的な会計選択（aggressive accounting choices）が行われる場合である。しかし当然ながら、高品質な利益と同時に低い報告の質が発生することもあり得る。業績が良好な企業は業績不振を隠すために攻撃的な会計を必要としないが、それでも他の理由により低品質な報告を作成する可能性がある。例えば、内部システム（internal systems）が不十分であるために高品質な報告を作成できない場合がある。</p>
+<p>低い報告の質が高品質な利益と同時に発生する別のシナリオとして、業績が良好な企業が意図的に攻撃的ではなく「保守的（conservative）」な会計選択、すなわち当期の業績を悪く見せる選択を行う場合がある。その動機の一つは、望ましくない政治的注目（political attention）を避けることである。また、期末前にすでに目標を達成している場合、利益の計上を翌期に繰り延べるために保守的な会計選択（いわゆる隠れ準備（hidden reserves））を行う可能性もある。同様の動機は、将来の業績の軌道（trajectory）をより魅力的に見せるような会計選択にもつながり得る。例えば、企業は買収初年度や新CEO就任初年度に損失を前倒し計上することで、その後の業績の改善をより魅力的に見せる可能性がある。</p>
+<p>総じて、バイアスのない（unbiased）財務報告が最適である。ただし、一部の投資家は攻撃的な選択よりも保守的な選択を好む場合がある。これは、ネガティブなサプライズよりもポジティブなサプライズの方が受け入れやすいためである。しかし、保守的であれ攻撃的であれ、バイアスのある報告は利用者が企業を評価する能力に悪影響を与える。</p>
+<p>質のスペクトラム（quality spectrum）は、望ましくない基礎的な経済状況（underlying economics）が低品質な報告の主な動機となるという、より直感的な状況を考慮している。さらに、利益の質を評価するためには、ある程度の報告の質が必要である。したがって、スペクトラムを下るにつれて、報告の質と利益の質の概念は次第に区別がつきにくくなる。</p>
+<section id="CFA1533-R-s03-01-04">
+<h3 class="dp-heading">GAAPの範囲内だが「利益操作（earnings management）」あり（Within GAAP, but “Earnings Management”）</h3>
+<p>図表2に示されるスペクトラムの次のレベルは、「GAAPの範囲内だが『利益操作（earnings management）』」とラベル付けされている。「利益操作（earnings management）」とは、バイアスのある財務報告を生み出す意図的な選択を行うことと定義される。8 利益操作とバイアスのある選択の違いは微妙であり、主に意図（intent）の問題である。利益操作は、「報告された利益およびその解釈に影響を与えるための意図的な行動」（Ronen and Yaari, 2008）を意味する。利益は、研究開発費（research and development, R&amp;D）を次の報告期間に繰り延べるなどの実際の行動（real actions）によって上方（増加）に操作される可能性がある。あるいは、会計見積り（accounting estimates）の変更などの会計上の選択によって増加させることも可能である。例えば、製品返品の見積額（estimated product returns）、貸倒費用（bad debt expense）、または資産の減損（asset impairment）を減少させることで、より高い利益を創出することができる。意図を判断することは困難であるため、本モジュールでは利益操作をバイアスのある選択の一部として扱う。</p>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist"><i aria-hidden="true" class="dp-icon fas fa-clipboard-list" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Reference List</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA1533-R-s03-R-1-1list">Ciesielski, Jack T. and Elaine, Henry (2017). “Accounting’s Tower of Babel: Key Considerations in Assessing Non-GAAP Earnings.” <em>Financial Analysts Journal</em> 73 (2): 34−50. <a href="https://doi.org/10.2469/faj.v73.n2.5" target="_blank">https://doi.org/10.2469/faj.v73.n2.5</a></li>
+<li id="CFA1533-R-s03-R-1-2list">Ronen, Joshua（2008年）Yaari, Varda『利益操作（Earnings Management）：理論・実務・研究における新たな洞察（Emerging Insights in Theory, Practice, and Research）』ニューヨーク：Springer。</li>
+<li id="CFA1533-R-s03-R-1-3list">Schipper, Katherine（1989年12月）「利益操作に関する論評（Commentary on Earnings Management）」Accounting Horizons 3巻4号：91–102頁。</li>
+<li id="CFA1533-R-s03-R-1-4list">Gu, Feng and Lev, Baruch (2017). “Time to Change Your Investment Model.” <em>Financial Analysts Journal</em> 73 (4): 23–33. <a href="https://doi.org/10.2469/faj.v73.n4.4" target="_blank">https://doi.org/10.2469/faj.v73.n4.4</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s03-FN-1-1Content">
+<p>5 「non-GAAP」という用語は、一般にGAAPに準拠しないすべての指標を指し、「non-IFRS」指標も含む。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s03-FN-1-2Content">
+<p>6 S&amp;P500における非GAAP利益に関する調査はCiesielski and Henry（2017）で示されている。一部の観察者は、投資家は企業の利益ではなく「戦略的資産（strategic assets）」およびそれらが競争優位（competitive edge）に与える貢献に焦点を移すべきであるとさえ提案している（Gu and Lev, 2017）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s03-FN-1-3Content">
+<p>7 非米国の民間発行体（non-domestic private issuers）は、US GAAPへの調整なしにIFRSに基づいて作成された財務諸表を提出することができる。SECはUS GAAPおよびIFRSの両方をGAAPとして認識している。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s03-FN-1-4Content">
+<p>8 学術研究においてはさまざまな定義が存在する。本モジュールの議論に最も近いのはSchipper（1989）であり、「利益操作（earnings management）」を「外部財務報告プロセスへの意図的な介入であり、何らかの私的利益を得ることを目的とするもの（単にプロセスの中立的な運用を促進するものとは対照的）」と定義している。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1533-R-s03-R-1-4Content">Gu, Feng and Lev, Baruch (2017). “Time to Change Your Investment Model.” <em>Financial Analysts Journal</em> 73 (4): 23–33. <a href="https://doi.org/10.2469/faj.v73.n4.4" target="_blank">https://doi.org/10.2469/faj.v73.n4.4</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1533-R-s03-R-1-3Content">Schipper, KatherineDecember (1989). “Commentary on Earnings Management.” <em>Accounting Horizons</em> 3 (4): 91102.</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143712_1003_GAAP_Decision_Useful_Financial_Reporting.html" >← 前へ</a>
+  <span class="title">10.04 | Biased Accounting Choices</span>
+  <a href="courses_1867_modules_items_143718_1005_Departures_from_GAAP.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

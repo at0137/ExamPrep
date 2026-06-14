@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.02 | Hedge Fund Investment Features</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2457-R-s02-R-1" title="6.02 | Hedge Fund Investment Features"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：ヘッジファンド（Hedge Funds）6.02｜ヘッジファンドの投資特性（Hedge Fund Investment Features）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">ヘッジファンドの投資特性（investment features）を説明し、他の資産クラス（asset classes）と比較対照する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>私募の投資ビークルとして、ヘッジファンドは投資対象そのものではなく投資アプローチによって特徴づけられる。ヘッジファンドは、伝統的な債券（debt）および株式（equity）商品に、レバレッジ（leverage）、デリバティブ（derivatives）、空売り（short selling）およびその他の戦略を組み合わせてリターンを創出・強化する。ヘッジファンドの目的は、絶対リターン（absolute return）の観点、またはポートフォリオレベルのボラティリティ（volatility）に対するリスク調整後ベース（risk-adjusted basis）の観点で高いリターンを生み出すことである。ヘッジファンドが用いる戦略は、伝統的な指数ベンチマーク（index performance benchmarks）との比較によるパフォーマンス評価を困難にする。そのため、多くのヘッジファンドはベンチマークを追跡する代わりに絶対リターン基準でパフォーマンスを評価する。ヘッジファンドは、そのリターンが伝統的資産投資と低い相関（low correlation）を示すことが多いため、分散効果（diversification effects）において魅力的である。</p>
+<p>ヘッジファンドは通常、借入による投資、レバレッジ（derivatives）、空売りなど、一見ポートフォリオのリスクを高める原則を適用する。これら単独では、市場変動に対してリスクポジションをヘッジするものではなく、むしろリスクを増幅させるように見える。このため、「ヘッジファンド」という名称は誤解を招くように思えるかもしれない。しかし、投資戦略はポートフォリオを分割し、それぞれの構成要素が他のリスクを相互にヘッジするように設計されている。したがって、市場リスクを内部的に中立化（neutralizing）し、ポートフォリオ構成を管理することで、ヘッジファンド・マネージャーはリスク調整後リターンを向上させることができる。</p>
+<p>ミューチュアルファンド（mutual funds）とヘッジファンドは、いずれも顧客資金を運用してより良いリスク／リターン特性（risk/reward profile）を達成するという点で類似しているが、いくつか重要な違いがある。ミューチュアルファンドのマネージャーは固定報酬（fixed compensation）を受け取り、自身の運用ファンドに投資しない場合もある。一方、ヘッジファンドのマネージャーは成果報酬（performance-based fee）を受け取り、多くの場合、マネージャー自身の投資を求められる。さらに、一部のヘッジファンドはハイウォーターマーク（high-water mark）を採用しており、ファンドの過去最高値を上回った場合にのみ成功報酬が支払われる。</p>
+<p>通常、ヘッジファンド・マネージャーは取引意思決定および顧客資金の配分に関して大きな裁量を持つ。ミューチュアルファンドは一般投資家に提供されるため厳しく規制されている。一方、ヘッジファンドは機関投資家および適格投資家（accredited investors）のみが利用可能である。</p>
+<p>ヘッジファンドは、ミューチュアルファンド（mutual funds）、ETF（exchange-traded funds, ETFs）、債券ファンド（bond funds）、不動産投資信託（real estate investment trusts, REITs）などの他のファンドとは異なり、私的に所有されている。また、これらの多くのファンドとは異なり、ヘッジファンドは規制が比較的緩やかである。さらに、プライベート・エクイティ・ファンド（private equity funds）とは異なり、ヘッジファンドは通常、投資期間が短く、より流動性の高い資産クラスに投資する。</p>
+<p>ヘッジファンドは、1つまたは複数の資産クラス（株式（equities）、クレジット（credit）、債券（fixed income）、コモディティ（commodities）、先物（futures）、外国為替（foreign exchange）、ローン（loans）、さらには不動産（real estate）などの実物資産（hard assets））から投資対象を選択する。特定の資産クラスに焦点を当てた戦略を採用するヘッジファンドもあれば、複数の資産クラスを組み合わせるものもある。また、地理的に特定地域に集中する場合もあれば、特定地域に依存せず複数の地域で戦略を実行する場合もある。</p>
+<p>レバレッジ（leverage）は、空売り、借入、デリバティブ、またはこれらの組み合わせを通じて、リターンを高めるためにしばしば利用される。レバレッジが戦略の中核となることが多いため、ヘッジファンドは常にエクスポージャー（exposures）の価値を監視する必要がある。これは、デリバティブのみを用いてロングとショートの両ポジションを取る場合に特に重要である。</p>
+<p>ヘッジファンドは通常、戦略によって分類される。その一例として、5つの主要な戦略カテゴリーがある：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2457-R-s02-L1">
+<li class="cfa-curriculum-list-item">株式ヘッジ戦略（equity hedge funds）、</li>
+<li class="cfa-curriculum-list-item">イベントドリブン戦略（event-driven hedge funds）、</li>
+<li class="cfa-curriculum-list-item">リラティブ・バリュー戦略（relative value hedge funds）、</li>
+<li class="cfa-curriculum-list-item">オポチュニスティック戦略（opportunistic hedge funds）、および</li>
+<li class="cfa-curriculum-list-item">マルチマネージャー戦略（multi-manager hedge funds）。</li>
+</ul>
+<p>多くのヘッジファンドは、国債および社債（sovereign and corporate debt）、コモディティ（commodities）、先物契約（futures contracts）、オプション（options）、デリバティブ（derivatives）、さらには不動産投資（real estate investments）などを取引する。しかし、すべてのヘッジファンドがショートポジションを維持したりレバレッジを利用したりするわけではない。むしろ、多くのファンドは特定の専門領域（niche areas of expertise）を高度に活用するだけであり、ヘッジやレバレッジが用いられる場合もあれば、そうでない場合もある。さらに、ヘッジファンド・オブ・ファンズ（funds of hedge funds）は、複数のヘッジファンドを組み合わせた分散ポートフォリオを構築する。このようなビークルは、個別のヘッジファンドを選択してポートフォリオを構築するための資源を持たない小規模投資家にとって魅力的である。</p>
+<p>ヘッジファンドの分類は、投資家が集計パフォーマンスデータ（aggregate performance data）を評価し、ポートフォリオ構築に適した戦略を選択し、適切なパフォーマンス・ベンチマーク（performance benchmarks）を選定または構築するのに役立つ。図表1（Exhibit 1）は、上述の5つの主要な戦略カテゴリーの例を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2457-R-s02-EXH-1-1">
+<h3 class="cfa-curriculum-exhibit-table-title">図表1（Exhibit 1）ヘッジファンド戦略（Hedge Fund Strategies）</h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">株式（Equity）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">イベントドリブン（Event Driven）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リラティブ・バリュー（Relative Value）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">オポチュニスティック（Opportunistic）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">マルチマネージャー（Multi-Manager）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ロング／ショート株式（Long/Short Equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">マージャー・アービトラージ（Merger Arbitrage）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">転換社債アービトラージ（Convertible Bond Arbitrage）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">グローバル・マクロ（Global Macro）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">ファンド・オブ・ファンズ（Fund of Funds）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ショートバイアス（Short Biased）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">ディストレスト（Distressed）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">債券アービトラージ（Fixed-Income Arbitrage）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">マネージド・フューチャーズ（Managed Futures）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マーケットニュートラル（Market Neutral）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">特殊状況（Special Situations）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">マルチストラテジー（Multi-Strategy）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">アクティビスト（Activist）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="CFA2457-R-s02-01-01">
+<h3 class="dp-heading">株式ヘッジファンド戦略（Equity Hedge Fund Strategies）</h3>
+<p>ロングポジションを空売り（short selling）によってヘッジすることは、ヘッジファンドの原初的なカテゴリーとみなすことができる。ロング／ショート株式ファンド（long/short equity funds）は公開株式市場（public equity markets）に焦点を当て、株式および株式デリバティブ証券（equity derivative securities）にロングとショートのポジションを取る。ほとんどの株式ヘッジ戦略は「ボトムアップ（bottom-up）」の銘柄特化型アプローチを用いる—企業レベルの分析（company-level analysis）に続いて、業界全体の分析（industry analysis）、さらに市場全体の分析（market analysis）を行い、比較的バランスの取れたロングとショートのエクスポージャー（exposures）を維持する。これと対照的に「トップダウン（top-down）」アプローチは、グローバル・マクロ分析（global macro analysis）に続いて、セクター／地域分析（sector/regional analysis）、さらに個別企業分析またはマーケットタイミング（market-timing）を行う。一部のロング／ショート株式戦略では、市場リスクを低減するために指数ベースのショートヘッジ（index-based short hedges）を用いたり、ポートフォリオのアルファ（alpha）や追加的な絶対リターン（absolute return）を得るために個別銘柄のショート（single-name shorts）を用いることがある。以下は株式ヘッジ戦略の例である。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2457-R-s02-L2">
+<li class="cfa-curriculum-list-item">ファンダメンタル・ロング／ショート（Fundamental long/short）：この戦略では、ヘッジファンドは潜在的な本源的価値（intrinsic value）に比べて割安に取引されている企業にロングポジションを取り、逆に割高に取引されている企業をショートし、この取引を反転させることでアルファ（alpha）を獲得することを意図する。すべての場合において、この戦略は市場に過小評価（underestimated/undervalued）されている、または市場がまだ認識していない成長可能性（growth potential）を持つ証券にロングポジション（株式またはコールオプションの購入）を取る。同時に、リスク低減のために株式または指数をショートする。マネージャーは通常ネットでロングエクスポージャー（net long exposure）を維持するが、市場予測に応じてネットの市場リスクを調整する場合がある。ロング／ショート戦略を用いるヘッジファンドの多くはロングバイアス（long bias）を持ち、これがショートバイアス戦略との違いである。</li>
+<li class="cfa-curriculum-list-item">ファンダメンタル・グロース（Fundamental growth）：これらの戦略はファンダメンタル分析（fundamental analysis）を用いて、高成長および資本価値の上昇（capital appreciation）が期待される企業を特定する。ヘッジファンドはこれらの株式にロングポジションを取る。一方で、事業モデルが下方圧力（downward pressure）を受けており、低成長またはマイナス成長が予想され、資本価値の下落（capital depreciation）が見込まれる企業をショートする。実質的には、成長と価値（growth and value）に対する期待のスプレッドが投資戦略およびポートフォリオのパフォーマンスを左右する。これらのポートフォリオの多くはロングバイアスとなる傾向があり、市場中立（market neutral）ではなく、リターンはゼロでないベータ（non-zero beta）を示す可能性がある。</li>
+<li class="cfa-curriculum-list-item">ファンダメンタル・バリュー（Fundamental value）：これらの戦略はファンダメンタル分析を用いて、企業の再生（corporate turnaround）および将来の収益（revenue）とキャッシュフロー（cash flow）の成長によってより高い評価が期待される、過小評価され市場から見放された企業を特定する。ヘッジファンドはこれらの企業にロングポジションを取り、将来の株価上昇を捉える。実質的には、価値と成長に対する期待のスプレッドがポートフォリオのパフォーマンスを左右する。</li>
+<li class="cfa-curriculum-list-item">ショートバイアス（Short biased）：これらの戦略は、定量分析（quantitative）、テクニカル分析（technical）、ファンダメンタル分析を用いて、ロング側のエクスポージャーをほとんど持たず、または全く持たずに、過大評価された株式証券をショートする。マネージャーはしばしば法医学的（forensic）なファンダメンタル分析を行い、これまで認識されていなかった会計上または事業上の欠陥を明らかにしようとすることがある。企業の株価が下落することが期待され、それによりファンドの収益性が向上する。これらのファンドは時間とともにショートエクスポージャーを変化させる。ショートバイアスのマネージャーは逆張り（contrarian）的であり、一般的には成功している企業の株式をショートする。これらのファンドは市場ストレス期において大規模ポートフォリオの有用な補完となり得るが、過去30年間の概ね上昇傾向にある市場環境では、長期的に有意なリターンを上げるのが困難であった。</li>
+<li class="cfa-curriculum-list-item">マーケット・ニュートラル（Market neutral）：これらの戦略は、定量、ファンダメンタル、テクニカル分析を用いて、過小評価および過大評価された株式を特定する。ヘッジファンドは過小評価された証券にロングポジションを取り、過大評価された証券にショートポジションを取りつつ、市場中立のネットポジションを維持することを目指す。理想的には、市場に対する全体ベータ（beta）をゼロに近づける。</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2457-R-s02-EXM-1-1">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例1 テンダーレッジ・インベストメンツLLC（Tenderledge Investments LLC）—株式戦略</h4>
+<p>テンダーレッジ・インベストメンツはファンド・オブ・ファンズ（fund-of-funds）のヘッジファンドであり、以下の表に示されるように、10年間の月次リターンを用いて各種株式戦略のパフォーマンスをベンチマークしている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2457-R-s02-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">株式戦略：月次リターン（Equity Strategies: Monthly Returns）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">市場指数（Market Index）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンダメンタル・バリュー（Fundamental Value）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">マーケット・ニュートラル（Market Neutral）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンダメンタル・グロース（Fundamental Growth）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ショートバイアス（Short Bias）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">平均（Average）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.03%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−0.04%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.03%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−0.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">標準偏差（Standard deviation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">変動係数（Coefficient of variation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−7.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−20.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Max.</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Min.</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−8.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−4.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−2.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−10.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−11.3%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">株式戦略：月次リターンの相関（Equity Strategies: Correlation of Monthly Returns）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">市場指数（Market Index）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンダメンタル・バリュー（Fundamental Value）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">マーケット・ニュートラル（Market Neutral）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンダメンタル・グロース（Fundamental Growth）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ショートバイアス（Short Bias）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">市場指数（Market Index）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ファンダメンタル・バリュー（Fundamental Value）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.80</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マーケット・ニュートラル（Market Neutral）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ファンダメンタル・グロース（Fundamental Growth）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.67</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.64</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.38</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ショートバイアス（Short Bias）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−0.72</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−0.53</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−0.23</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−0.60</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>市場指数（S&amp;P 500指数（S&amp;P 500 Index）で測定）は、平均月次リターンによる絶対ベースでも、リターンの変動係数（coefficient of variation）による相対ベースでも、各戦略を上回った。さらに、これらの戦略間の相関を分析すると、ファンダメンタル・バリュー（fundamental value）およびファンダメンタル・グロース（fundamental growth）は市場指数と高い相関を示している。</p>
+<p>マーケット・ニュートラル・ファンド（market-neutral funds）は市場指数との正の相関が最も低く、これらの戦略が市場レベルのエクスポージャー（market-level exposure）を取らずにリターンを生み出すことを目的としていることを反映している。予想通り、ショートバイアス・ファンド（short-bias funds）は他の戦略と負の相関を示す。短期的には、ショートバイアス戦略は市場指数ベースの戦略と負の相関を示すが、長期的には同様の相関関係が維持されるとは限らない。</p>
+</div>
+</section>
+<section id="CFA2457-R-s02-01-02">
+<h3 class="dp-heading">イベントドリブン戦略（Event-Driven Strategies）</h3>
+<p>これらのボトムアップ型戦略は、通常、企業構造の変化（例：買収や再編）を伴う、評価を変化させると期待される特定のイベントから利益を得ることを目的とする。イベントドリブン戦略は、普通株（common stocks）および優先株（preferred stocks）、債券（debt securities）、オプション（options）におけるロングおよびショートポジションを含む場合がある。ヘッジファンド・リサーチ（Hedge Fund Research, HFR）によるこのカテゴリーの細分類には以下が含まれる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2457-R-s02-L3">
+<li class="cfa-curriculum-list-item">マージャー・アービトラージ（Merger arbitrage）：一般に、この戦略は、発表された買収価格に対して割引で取引されている被買収企業の株式をロング（購入）し、合併または買収の発表時に買収企業の株式をショート（売却）することを含む。マネージャーは、この初期のディール・スプレッド（deal spread：買収側と被買収対象との価格差）が、取引完了後の最終価格に収束した際に利益を得ることを期待する。このスプレッドは、法的・規制上の障害による取引完了の不確実性や時間差、あるいは買収企業が撤退する可能性によって生じる。買収企業のショートは、過大な買収価格のリスクを表現する手段でもある。主なリスクは、発表された取引が成立しないことであり、その場合、ポジションを解消する前にファンドの保有価値が悪影響を受ける。この戦略のリスクとリターンは比較的小さな価格差に由来するため、レバレッジ（leverage）がリターンの増幅に用いられるが、失敗時には損失も拡大する。</li>
+<li class="cfa-curriculum-list-item">ディストレスト／リストラクチャリング（Distressed/restructuring）：これらの戦略は、破綻状態またはその近くにあると認識される企業の証券に焦点を当てる。一つの手法として、ヘッジファンドは額面（par）に対して大きく割引された価格で取引されているが、依然として企業資産によって十分に裏付けられている上位の債券（senior fixed-income securities）を購入する。これらの証券は、破産再編（bankruptcy reorganization）または清算（liquidation）において額面または少なくとも現在の購入価格に対して大きなプレミアムで評価されることが期待される。別の方法として、再編または破産時に新株式へ転換されることが期待される債務証券（fulcrum security）を購入し、その株式を保有または売却する。</li>
+<li class="cfa-curriculum-list-item">特殊状況（Special situations）：これらの戦略は、証券の発行または自社株買い（repurchase）、特別配当（special capital distributions）、レスキュー・ファイナンス（rescue finance）、資産売却／スピンオフ（asset sales/spin-offs）など、特定のカタリスト（catalyst）に基づく状況にある企業の株式購入機会に焦点を当てる。</li>
+<li class="cfa-curriculum-list-item">アクティビスト（Activist）：この用語は「アクティビスト株主（activist shareholder）」の略である。ここでは、マネージャーが企業の取締役会に影響力を持つために十分な株式を取得し、企業の方針や方向性に影響を与える。投資を望ましい結果へ導くための事業変革を促すことを目的とする。例えば、事業売却（divestitures）、再編（restructuring）、株主への資本分配（capital distributions）、経営陣や企業戦略の変更などを提案する。この種のヘッジファンドは主に公開株式市場で活動する点でプライベート・エクイティ（private equity）と異なる。</li>
+</ul>
+<p>イベントドリブン戦略は一般にロングバイアスを持ち、その中でもマージャー・アービトラージは最もバイアスが小さい。合併の完了には通常6〜24か月を要し、破産や再編は数年かかることがある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2457-R-s02-EXM-1-2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2 カール・アイカーン（Carl Icahn）とハーツ（Hertz）のアクティビズム</h4>
+<p>アクティビスト・ヘッジファンド・マネージャーであるカール・アイカーン（Carl Icahn）は、企業の支配的持分を取得して経営に関与し企業価値（enterprise value）を高めることで、いくつかのケースで成功を収めてきた。レンタカー会社ハーツ（Hertz）は興味深い例である。2014年にアイカーンはハーツへの投資を開始し、2020年には5,500万株以上（約39%）を保有していた。2020年5月、新型コロナウイルス（COVID-19）と世界的な旅行業界の崩壊の影響により、ハーツは破産保護を申請した。申請前、アイカーンの持分は約23億ドルであったが、申請後に約20億ドルの損失で売却した。</p>
+<p>当初、アイカーンは2014年にハーツが強いブランドと事業基盤を持ちながらも経営規律に欠けていると判断して投資を開始し、同年末までに11億ドル以上の持分を取得した。彼は新たな取締役や経営陣を導入し、財務および運営の規律を強化した。同時に、自動車レンタル業界はSUV需要の増加とライドシェアアプリの台頭という変化に直面した。収益は改善したものの、再建コストが財務および流動性を圧迫した。2021年7月の破産手続き終了後も、アイカーンは同社を注視している。</p>
+</div>
+</section>
+<section id="CFA2457-R-s02-01-03">
+<h3 class="dp-heading">リラティブ・バリュー戦略（Relative Value Strategies）</h3>
+<p>リラティブ・バリュー戦略は、短期的な異常な関係に基づく関連証券間の価格差から利益を得ることを目的とし、この乖離が時間とともに解消されることを期待する。例は以下の通り：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2457-R-s02-L4">
+<li class="cfa-curriculum-list-item">転換社債アービトラージ（Convertible bond arbitrage）：この概念的にマーケット・ニュートラルな戦略は、転換社債とその構成要素（基礎となる債券と内在するコールオプション（embedded call option））とのミスプライシングを利用する。株式と転換社債の間に価格乖離が存在する場合がある。この戦略は通常、転換社債を購入し、内在オプションのデルタ（delta）に基づいて同一発行体の株式を同時に売却する。破産リスクに敏感であるが、株式プットオプション（equity put options）やクレジット・デフォルト・スワップ（credit default swap）でヘッジ可能である。</li>
+<li class="cfa-curriculum-list-item">債券（一般）（Fixed income, general）：これらの戦略は債券市場内の相対価値に焦点を当て、特に国債（sovereign debt）や投資適格社債（investment-grade corporate debt）の相対価格を対象とする。異なる発行体間、企業と政府間、同一発行体の資本構造内、またはイールドカーブ（yield curve）上の異なる部分間でロング／ショート取引を行う。スプレッド（spread）、通貨（currency）、およびイールドカーブ形状が投資判断とリターンを左右する。</li>
+<li class="cfa-curriculum-list-item">債券（資産担保・住宅ローン担保・ハイイールド）（Fixed income: asset backed, mortgage backed, high yield）：これらの戦略は、資産担保証券（asset-backed securities）、住宅ローン担保証券（mortgage-backed securities）、ハイイールド債やローン、およびそのデリバティブなどの高利回り証券の相対価値に焦点を当てる。魅力的で安全性の高いクーポン収益（coupon return）を得るとともに、証券間のミスプライシングを活用する。</li>
+<li class="cfa-curriculum-list-item">マルチストラテジー（Multi-strategy）：これらの戦略は、資産クラスや金融商品をまたいで相対価値取引を行う。特定の取引タイプや資産クラスに限定せず、複数のマネージャーチーム（pods）が異なる市場アプローチを実行する。目的は、市場環境の変化に応じて資本を効率的かつ迅速に配分・再配分することである。</li>
+</ul>
+</section>
+<section id="CFA2457-R-s02-01-04">
+<h3 class="dp-heading">オポチュニスティック戦略（Opportunistic Strategies）</h3>
+<p>マクロイベントやコモディティ取引に焦点を当てるファンドも存在し、個別証券に加えて指数ETFやデリバティブを用いることがある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2457-R-s02-L5">
+<li class="cfa-curriculum-list-item">マクロ戦略（Macro strategies）はトップダウンアプローチを用いて経済トレンドを特定し、経済変数の変動予想に基づいて取引を行う。債券、株式、通貨、コモディティ市場で機動的に取引し、市場全体の方向性に関する見通しから利益を得る。これらのファンドは高いボラティリティ環境で最も利益を得やすく、中央銀行などの政策当局が経済ショックを平滑化する場合、投資機会は縮小する。</li>
+<li class="cfa-curriculum-list-item">マネージド・フューチャーズ（Managed futures funds）は、主に先物市場でテクニカルおよびファンダメンタル戦略に基づく分散的な方向性投資を行うアクティブ運用ファンドである。これらは歴史的にコモディティ先物に焦点を当てていたため、商品投資顧問（commodity trading advisers, CTAs）とも呼ばれる。現在では、コモディティ、株式、債券、外国為替など幅広い先物に投資する。CTAはトレンドやモメンタムを測定するモデルを使用し、ポートフォリオ分散に有用であるが、平均回帰型市場ではドローダウンが発生する可能性がある。また、金融商品への投資拡大に伴い分散効果は低下している。</li>
+</ul>
+<p>コモディティ特化型マネージド・フューチャーズは、供給者と需要者の間の価格の緊張関係という特有の構造を持つ。高価格は需要を抑制し、低価格は供給を縮小させるため、株式や債券にはない独自のバランスが形成される。</p>
+</section>
+<section id="CFA2457-R-s02-01-05">
+<h3 class="dp-heading">ヘッジファンド投資の特徴（Distinguishing Characteristics of Hedge Fund Investments）</h3>
+<p>伝統的投資と比較した主な特徴は以下の通り：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA2457-R-s02-L6">
+<li class="cfa-curriculum-list-item">法的および規制上の制約が少ない（Less legal and regulatory constraints）</li>
+<li class="cfa-curriculum-list-item">空売りやデリバティブの使用を許容する柔軟な運用方針（Flexible mandates permitting the use of shorting and derivatives）</li>
+<li class="cfa-curriculum-list-item">より広範な投資対象ユニバース（investment universe）</li>
+<li class="cfa-curriculum-list-item">クレジット（credit）、ボラティリティ（volatility）、流動性（liquidity）のリスクプレミアムにエクスポージャーを持つ証券に集中投資を可能とする積極的な投資スタイル（Aggressive investment styles）</li>
+<li class="cfa-curriculum-list-item">比較的自由度の高いレバレッジ（leverage）の使用</li>
+<li class="cfa-curriculum-list-item">ロックアップ期間（lockups）および流動性ゲート（liquidity gates）を含む流動性制約（liquidity constraints）</li>
+<li class="cfa-curriculum-list-item">管理報酬（management fees）および成功報酬（incentive fees）を含む比較的高い手数料体系（fee structures）</li>
+</ol>
+<p>ヘッジファンドは公開市場で取引される株式や債券に投資し、証券の評価に財務諸表分析（financial statement analysis）を用いる点では、上場投資信託（exchange-traded funds, ETFs）やミューチュアルファンド（mutual funds）と共通するが、そのリスク・リターン特性は一般に異なる。典型的なリラティブ・バリュー・ヘッジファンドは、株式のロングおよびショートポジションの組み合わせを用いてリターンを生み出し、借入によって資産規模を拡大し、特殊状況（special situations）における機会主義的ポジションを取ることで、ロングオンリー（long-only）ファンドとは大きく異なるリスク・リターン特性を目指す。</p>
+<p>ヘッジファンドはまた、規制（regulatory）、コンプライアンス（compliance）、および透明性（transparency）の要件がはるかに緩やかである。ポートフォリオ構築における柔軟性が高いため、期待リターンの実現に時間を要する投資機会にも投資できるが、これは日次流動性（daily liquidity）を提供するミューチュアルファンドには適さない。現代のヘッジファンド投資家は、長期の保有期間（lockup periods）およびその後の通知期間（notice periods）を経て初めて解約（redemption）が可能となる。さらに、一部のヘッジファンドは流動性ゲート（liquidity gate）を設け、資産の売却をより長期間にわたって行うことで解約を部分的に制限する。日次での解約や高い流動性が保証されるミューチュアルファンドと比較すると、このような制約はヘッジファンドにより大きな柔軟性を与える。</p>
+<p>解約手数料（redemption fee）が課される場合があり、通常はマネージャーではなくファンド自体に支払われ、特にロックアップ期間中の解約において残存投資家を保護する。この特徴はソフト・ロックアップ（soft lockup）と呼ばれ、コストは高いが早期解約の手段を提供する。</p>
+<p>運用上の制約が少ないため、ヘッジファンドは流動性が低く見過ごされがちな投資機会を活用できるが、その真の評価は不透明である場合がある。例えば、ロング／ショート、アクティビスト（activist）、ディストレスト（distressed）、アービトラージ（arbitrage）戦略は、株式、債券、デリバティブにおける高集中・長期・レバレッジのポジションに基づくことが多い。このようなポジションの構築や解消には時間がかかり、市場が一時的なストレス下にある場合には特に複雑で時間を要する。そのため、解約制限が課されることが一般的である。</p>
+<p>また、複雑なヘッジファンド投資では透明性が低く、マネージャーと投資家の間に情報の非対称性（asymmetric information）が存在する。このため、両者の利害を一致させるために成果報酬（performance fees）が用いられる。投資家は高いリターンを求め、その一部をマネージャーと共有することで、マネージャーに投資家利益に沿った行動を促す。ヘッジファンドは監督の観点（fraud risk）ではリスクが高いと見なされるが、一部のヘッジファンドはリテール投資家向け商品よりも市場リスクを低く抑える場合もある。そのため、真の市場リスクと規制リスクおよび流動性リスクの区別は混同されやすい。</p>
+<p>ヘッジファンドは一般に経験豊富なマネージャーによるアクティブ運用（active management）と統合的リスク管理（integrated risk management）を用いる。多様な戦略が可能であり、各ヘッジファンドは固有の特徴を持つ。特定の投資家ニーズに合わせたカスタマイズも可能であり、アルファ（alpha）および低相関のリスク調整後リターン（uncorrelated risk-adjusted returns）の創出が期待される。一部の戦略では大幅な損失を防ぐガードレール（guardrails）も導入されており、これらの特性はマルチアセットポートフォリオにおける分散効果と安定化に寄与する。</p>
+<p>投資家はヘッジファンド選択にあたり複数の要素を考慮すべきである。特に、ゼネラル・パートナー（general partner, GP）の能力、運用体制（operational framework）、リスク管理手法、ポートフォリオのモニタリング体制を評価する必要がある。また、受託者責任（fiduciary management）、マネージャーの経験、戦略に対する利害の一致も重要である。</p>
+<p>ヘッジファンド業界では、ポンジ・スキーム（Ponzi scheme）や虚偽のパフォーマンス報告などの詐欺事例が報告されている。また、市場混乱時に破綻した複雑な戦略も存在する。規制の緩さと高額な投資要件により、一部の不正なマネージャーが投資家の信頼を悪用する余地がある。</p>
+<p>投資評価においては、戦略、透明性、流動性、報告体制を考慮すべきである。また、マネージャーの過去実績および報酬体系（fee structure）についても十分に検討する必要がある。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2457-R-s02-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット（Question Set）</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2457-R-s02-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>ヘッジファンドとプライベート・エクイティ（private equity）はともに公開または非公開企業の株式に投資し、多くの共通点がある。以下の記述のうち誤っているものを選べ。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 両者とも投資家によるパートナーシップとして構成され、私募で資金を集め、主に富裕層（high-net-worth individuals）を対象とする。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bは誤り。ヘッジファンドは通常、公開市場の証券（債券、株式、デリバティブ）に投資するのに対し、プライベート・エクイティは非公開企業に直接投資する。また、プライベート・エクイティはファンドレベルでレバレッジを用いない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 両者ともレバレッジを用いて市場性のある証券に投資する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bは誤り。ヘッジファンドは公開証券に投資するが、プライベート・エクイティは非公開企業に直接投資し、レバレッジはファンドではなく投資先企業レベルで用いられる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 両者ともミューチュアルファンドやETFより流動性が低い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bは誤り。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>D. 両者とも規制が比較的緩く、透明性および報告要件は厳しくない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bは誤り。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2457-R-s02-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>ヘッジファンドとプライベート・エクイティは共に企業株式に投資するが、多くの相違点がある。以下の記述のうち誤っているものを選べ。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. プライベート・エクイティは長期投資であり、ヘッジファンドはより短期的に株式投資を行う。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Dが正しい（誤りの記述）。ヘッジファンドは定期的に解約可能である一方、プライベート・エクイティは長期コミットメントを必要とする。他の記述は正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. ヘッジファンドは取引志向で複数の相殺取引を行うのに対し、プライベート・エクイティは少数企業への安定的な長期投資を行う。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Dが正しい解答である。これは誤った記述だからである。ヘッジファンドは定期的に解約可能であるが、プライベート・エクイティ（private equity）ファンドは長期的なコミットメントを必要とする。他の記述は正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 投資家は通常、ヘッジファンドへの資金を投資開始時に拠出するが、プライベート・エクイティ・ファンドは開始時にコミットされ、必要に応じて時間をかけて資金が投入される。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Dが正しい解答である。ヘッジファンドは定期的に解約可能であるが、プライベート・エクイティ・ファンドは長期コミットメントを必要とする。他の記述は正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>D. プライベート・エクイティ（private equity）は定期的に解約可能であり、ヘッジファンドは長期コミットメントを必要とする。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Dが正しい解答である。ヘッジファンドは定期的に解約可能であるが、プライベート・エクイティ・ファンドは長期コミットメントを必要とする。他の記述は正しい。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2457-R-s02-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>ヘッジファンドとミューチュアルファンド（mutual funds）の比較：誤った記述を選べ。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. ミューチュアルファンドはすべての投資家に開放されており、解約制約が最小限で一般に流動性が高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが誤った記述である。ヘッジファンドは、取引可能な証券に関してミューチュアルファンドより制限が少ない。また、開示（disclosure）および透明性（transparency）の要件も少ない。AおよびBは正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. ヘッジファンドの手数料は投資家が交渉可能であるが、ミューチュアルファンドはすべての投資家に同一の手数料が適用される。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが誤った記述である。ヘッジファンドはミューチュアルファンドに比べて取引可能な証券の制限が少ない。また、開示や透明性の要件も少ない。AおよびBは正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. ヘッジファンドはミューチュアルファンドよりも取引可能な範囲に制限が多い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが誤った記述である。ヘッジファンドはミューチュアルファンドに比べて取引制限が少なく、開示や透明性の要件も少ない。AおよびBは正しい。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2457-R-s02-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>ヘッジファンドとETFの比較において、次の記述のうちいくつが正しいか。</p>
+<p>1. ETFは上場される公開証券であり、ヘッジファンドは私募パートナーシップ型のファンドである。</p>
+<p>2. ETFには任意の投資家が投資可能であるが、ヘッジファンドには特定の制限が適用される。</p>
+<p>3. ETFはヘッジファンドに比べて手数料（fees）や経費率（expense ratios）が非常に低い。</p>
+<p>4. ETFは規制が厳格で、報告要件が明確である一方、ヘッジファンドは規制が緩やかである。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 1つの記述のみ正しい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Dが正しい。すべての記述が正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 2つの記述が正しい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Dが正しい。すべての記述が正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 3つの記述が正しい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Dが正しい。すべての記述が正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>D. 4つの記述が正しい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Dが正しい。すべての記述が正しい。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>正しい記述を選べ：</p>
+<p>A. 株式のリターンの主な原動力は、成長予測（growth projections）、配当（dividends）、内部留保（retained earnings）である。</p>
+<p>B. 債券のリターンの主な原動力は、金利（interest rates）、信用リスク（credit risk）、クーポン支払い（coupon payments）である。</p>
+<p>C. ヘッジファンドのリターンの主な原動力は、市場のボラティリティ（market volatility）および市場非効率性（market inefficiency）である。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>A、B、およびCはいずれも正しい。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FundamentalLongshortContent">
+<p>この戦略では、ヘッジファンドは潜在的本源価値（intrinsic value）に比べて割安に取引されている企業にロングポジションを取り、逆方向に取引されている企業をショートし、この取引を反転させてアルファ（alpha）を獲得することを意図する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FundamentalGrowthContent">
+<p>これらの戦略は、ファンダメンタル分析（fundamental analysis）を用いて、高い成長および資本価値上昇（capital appreciation）が見込まれる企業を特定する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FundamentalValueContent">
+<p>これらの戦略は、企業再生（corporate turnaround）の可能性があり、将来の収益（revenue）およびキャッシュフロー（cash flow）の成長によって評価が上昇することが期待される、過小評価され市場から見放された企業を特定する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ShortBiasedContent">
+<p>これらの戦略は、定量分析（quantitative）、テクニカル分析（technical）、およびファンダメンタル分析を用いて、ロング側のエクスポージャーが限定的または全くない過大評価株式証券をショートする。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MarketNeutralContent">
+<p>これらの戦略は、定量分析、ファンダメンタル分析、およびテクニカル分析を用いて、過小評価および過大評価された株式証券を特定する。ヘッジファンドは過小評価銘柄にロングポジションを取り、過大評価銘柄にショートポジションを取りつつ、市場中立（market-neutral）のネットポジションを維持することを目指す。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MergerArbitrageContent">
+<p>特殊状況（Special situations）の投資は、投資家がターゲット企業（target company）が発行した証券の価格差（price discrepancies）を活用して利益を上げようとする企業結合（business combinations）に関連する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DistressedrestructuringContent">
+<p>これらの戦略は、破産中または破産間近と見なされる企業の証券に焦点を当てる。一つの方法として、ヘッジファンドは額面（par）に対して大幅に割引された債券（fixed-income securities）を購入するが、企業資産によって十分裏付けられた上位債（senior）である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SpecialSituationsContent">
+<p>ストレス下、ディストレスト（distressed）、またはイベントドリブン（event-driven）の機会に投資してリターンを狙うプライベート・キャピタル投資（private capital investment）の分野。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ActivistContent">
+<p>「アクティビスト株主（activist shareholder）」の略。マネージャーは企業の取締役会に影響力を持つために十分な株式を取得し、企業方針や方向性に影響を与えることができる。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1871_modules_items_144793_601_Introduction.html" >← 前へ</a>
+  <span class="title">6.02 | Hedge Fund Investment Features</span>
+  <a href="courses_1871_modules_items_144805_603_Hedge_Fund_Investment_Forms.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

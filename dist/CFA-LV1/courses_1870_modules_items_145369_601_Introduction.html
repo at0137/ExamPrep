@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0929-R-s01" title="6.01 | Introduction">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：先物契約（futures contracts）の価格決定（pricing）と評価（valuation） 6.01｜導入（Introduction）</h2>
+</header>
+<p>フォワード・コミットメント（forward commitments）に関連する価格決定および評価の原則の多くは、フォワード契約（forward contracts）と先物契約（futures contracts）の両方に共通している。例えば、これまでのレッスンでは、フォワード・コミットメントの価格は、市場参加者が裁定取引（arbitrage）によって無リスク利益（riskless profit）を得ることを防ぐように決定されることが示された。また、ロングおよびショートのフォワード・コミットメントは、現金ポジション（cash positions）のロングまたはショートと、無リスク金利（risk-free rate）での借入または貸付の組み合わせによって複製（replicated）できることも示された。最後に、フォワードおよび先物の価格決定と評価の双方には、キャリーコスト（cost of carry）、すなわちデリバティブ契約（derivative contract）の存続期間にわたって原資産（underlying asset）を保有することによる便益とコストが組み込まれている。</p>
+<p>次に、先物契約（futures contracts）に焦点を移す。それらが他のフォワード・コミットメントと何が異なるのか、また発行体（issuers）や投資家（investors）によってどのように利用されるのかを議論する。さらに、先に導入した先物契約の損益の毎日決済（daily settlement）について詳述し、フォワードと先物の違いを説明する。また、金利先物市場（interest rate futures market）と、それが金利デリバティブ契約（interest rate derivative contracts）において果たす役割についても扱う。</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA0929-s01-B-1-b">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-list-alt" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Learning Module Overview</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0929-s01-L1">
+<li class="cfa-curriculum-list-item">先物（futures）は、標準化された取引所上場デリバティブ（exchange-traded derivatives, ETDs）であり、初期価値（initial value）はゼロで、契約開始時（inception）に先物価格（futures price）f₀(T) が設定される。先物価格 f₀(T) は、フォワード契約の場合と同様に、スポット価格（spot price）を無リスク金利（risk-free rate）で複利運用した値に等しい。</li>
+<li class="cfa-curriculum-list-item">フォワードと先物の評価の主な違いは、証拠金口座（margin account）を通じた先物損益の毎日決済（daily settlement）である。毎日決済により、先物契約の価値はその時点の先物価格 fₜ(T) においてゼロにリセットされる。このプロセスは契約満期（contract maturity）まで続き、最終的に先物価格はスポット価格 Sₜ に収束する。</li>
+<li class="cfa-curriculum-list-item">先物契約における累積実現マーク・トゥ・マーケット損益（cumulative realized mark-to-market, MTM gain or loss）は、同等のフォワード契約の場合とほぼ同じである。</li>
+<li class="cfa-curriculum-list-item">毎日決済（daily settlement）および証拠金要件（margin requirements）は、先物とフォワードの間で異なるキャッシュフローパターンを生み、その結果として両契約タイプ間に価格差が生じる。この差は、金利のボラティリティ（interest rate volatility）および金利と先物価格の相関（correlation）に依存する。</li>
+<li class="cfa-curriculum-list-item">短期金利先物（short-term interest rate futures）の先物価格は (100 − 利回り（yield）) で与えられ、利回りはパーセンテージで表される。金利先物とフォワード・レート・アグリーメント（forward rate agreements, FRAs）の間には、コンベクシティ・バイアス（convexity bias）により価格差が存在する。</li>
+<li class="cfa-curriculum-list-item">デリバティブの中央清算（derivatives central clearing）の進展により、フォワードなどの店頭デリバティブ（over-the-counter, OTC derivatives）にも先物に類似した証拠金制度（margining requirements）が導入されている。この仕組みにより、取引所上場デリバティブ（ETDs）とOTCデリバティブのキャッシュフローへの影響の差、および先物とフォワードの価格差は縮小している。</li>
+</ul>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Learning Module Self-Assessment</h3>
+<p>これらの最初の質問は、この学習モジュールに対する現在の理解度を測るためのものである。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA0929-s01-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>次のうち、スポット価格（S₀）が€125で、満期時に€2.50の年間配当を支払う株式の1年先物価格として最も近いものはどれか。無リスク金利（risk-free rate）は1%とする。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. €123.75</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。配当のような既知の便益（known benefits）を持つ原資産に対する無裁定（no arbitrage）の先物価格は、以下の式で求められる：</p>
+<p>f₀(T) = [S₀ − PV₀(I)] (1 + r)ᵀ</p>
+<p>まず、配当の現在価値（present value）PV₀(I) を次のように求める：</p>
+<p>€2.48 = (€2.50 / 1.01)</p>
+<p>次に、PV₀(I) を元の式に代入して f₀(T) を求める：</p>
+<p>f₀(T) = €123.75 = (€125 − €2.48)(1.01)</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. €122.50</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。配当のような既知の便益（known benefits）を持つ原資産に対する無裁定（no arbitrage）の先物価格は、以下の式で求められる：</p>
+<p>f₀(T) = [S₀ − PV₀(I)] (1 + r)ᵀ</p>
+<p>まず、配当の現在価値（present value）PV₀(I) を次のように求める：</p>
+<p>€2.48 = (€2.50 / 1.01)</p>
+<p>次に、PV₀(I) を元の式に代入して f₀(T) を求める：</p>
+<p>f₀(T) = €123.75 = (€125 − €2.48)(1.01)</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. €126.25</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。配当のような既知の便益（known benefits）を持つ原資産に対する無裁定（no arbitrage）の先物価格は、以下の式で求められる：</p>
+<p>f₀(T) = [S₀ − PV₀(I)] (1 + r)ᵀ</p>
+<p>まず、配当の現在価値（present value）PV₀(I) を次のように求める：</p>
+<p>€2.48 = (€2.50 / 1.01)</p>
+<p>次に、PV₀(I) を元の式に代入して f₀(T) を求める：</p>
+<p>f₀(T) = €123.75 = (€125 − €2.48)(1.01)</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA0929-s01-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>同一の原資産（underlying）に基づき、かつ満期までの期間が同じであると仮定した場合、ロングのフォワード契約ポジションとロングの先物契約ポジションの損益（gains or losses）に関する次の記述のうち、最も正しいものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. フォワード契約ポジションと先物契約ポジションの1日ごとの実現損益（daily realized gain or loss）は等しい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。両契約は、マーク・トゥ・マーケット（mark-to-market, MTM）が行われる頻度を除いて、すべての点で類似している。その結果、満期時には累積損益（cumulative gain or loss）はほぼ同じとなる。Aは誤りである。先物契約は毎日のマーク・トゥ・マーケット（MTM）により日々実現損益が発生する一方、フォワード契約の損益は満期時にのみ実現されるためである。Bも誤りである。この選択肢は実現損益に言及しているが、契約はまだ満期に達していないため、フォワード契約ではまだ実現損益は発生していない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 契約満期前において、フォワード契約ポジションと先物契約ポジションの累積実現損益（cumulative realized gains or losses）は等しい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。両契約は、マーク・トゥ・マーケット（mark-to-market, MTM）が行われる頻度を除いて、すべての点で類似している。その結果、満期時には累積損益（cumulative gain or loss）はほぼ同じとなる。Aは誤りである。先物契約は毎日のマーク・トゥ・マーケット（MTM）により日々実現損益が発生する一方、フォワード契約の損益は満期時にのみ実現されるためである。Bも誤りである。この選択肢は実現損益に言及しているが、契約はまだ満期に達していないため、フォワード契約ではまだ実現損益は発生していない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 契約満期時において、フォワード契約ポジションと先物契約ポジションの累積実現損益（cumulative realized gains or losses）はほぼ等しい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。両契約は、マーク・トゥ・マーケット（mark-to-market, MTM）が行われる頻度を除いて、すべての点で類似している。その結果、満期時には累積損益（cumulative gain or loss）はほぼ同じとなる。Aは誤りである。先物契約は毎日のマーク・トゥ・マーケット（MTM）により日々実現損益が発生する一方、フォワード契約の損益は満期時にのみ実現されるためである。Bも誤りである。この選択肢は実現損益に言及しているが、契約はまだ満期に達していないため、フォワード契約ではまだ実現損益は発生していない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>その他の条件が同一であるフォワード・コミットメント契約（forward commitment contracts）について、以下の状況がフォワード価格と先物価格のどの関係をもたらすかを識別せよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0929-s01-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1. 先物価格（futures prices）が金利（interest rates）と正の相関を持ち、かつ契約期間中に金利が変動する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">A. フォワード価格が先物価格を上回る：F₀(T) &gt; f₀(T)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2. 先物価格（futures prices）が金利（interest rates）と負の相関を持ち、かつ契約期間中に金利が変動する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">B. フォワード価格と先物価格は等しい：F₀(T) = f₀(T)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3. フォワード・コミットメント契約期間中、金利が一定である。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">C. 先物価格がフォワード価格を上回る：f₀(T) &gt; F₀(T)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>1. Cが正しい。先物価格が金利と正の相関を持つ場合、価格上昇時には先物の利益が上昇する金利で再投資され、価格下落時には損失がより低い金利で資金調達される。</p>
+<p>2. Aが正しい。先物価格が金利と負の相関を持つ場合、価格上昇時には先物の利益がより低い金利で再投資され、価格下落時には損失がより高い金利で資金調達される。</p>
+<p>3. Bが正しい。契約期間中に金利が一定であれば、フォワード価格と先物価格は等しい。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA0929-s01-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>次のうち、フォワード契約と先物契約のキャッシュフローへの影響の差を縮小させるのに寄与した進展を最も適切に説明しているものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 先物取引所（futures exchanges）は、先物契約の損益の毎日マーク・トゥ・マーケット（daily mark-to-market）を廃止した。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。OTCデリバティブ（over-the-counter, OTC derivatives）の中央清算（central clearing）枠組みの下では、カウンターパーティ（counterparties）として機能する金融仲介機関（financial intermediaries）は、中央清算機関（central counterparty, CCP）に対して日々証拠金または適格担保（eligible collateral）を差し入れることが求められる。このプロセスは先物の証拠金制度（futures margining）と非常に類似している。そのため、ディーラー（dealers）はデリバティブのエンドユーザー（end users）にも同様の要件を課すことが多い。Aは誤りである。このような変更は取引所上場の先物市場では発生していない。Cも誤りである。ボラティリティ（volatility）の変化は時間とともに変動するため、高いか低いかを一般化することは難しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. OTCデリバティブは中央清算要件（central clearing requirements）の対象となることが増えている。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。OTCデリバティブ（over-the-counter, OTC derivatives）の中央清算（central clearing）枠組みの下では、カウンターパーティ（counterparties）として機能する金融仲介機関（financial intermediaries）は、中央清算機関（central counterparty, CCP）に対して日々証拠金または適格担保（eligible collateral）を差し入れることが求められる。このプロセスは先物の証拠金制度（futures margining）と非常に類似している。そのため、ディーラー（dealers）はデリバティブのエンドユーザー（end users）にも同様の要件を課すことが多い。Aは誤りである。このような変更は取引所上場の先物市場では発生していない。Cも誤りである。ボラティリティ（volatility）の変化は時間とともに変動するため、高いか低いかを一般化することは難しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 市場のボラティリティ（volatility）の低下が、両契約タイプにおける損益の規模を縮小させた。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。OTCデリバティブ（over-the-counter, OTC derivatives）の中央清算（central clearing）枠組みの下では、カウンターパーティ（counterparties）として機能する金融仲介機関（financial intermediaries）は、中央清算機関（central counterparty, CCP）に対して日々証拠金または適格担保（eligible collateral）を差し入れることが求められる。このプロセスは先物の証拠金制度（futures margining）と非常に類似している。そのため、ディーラー（dealers）はデリバティブのエンドユーザー（end users）にも同様の要件を課すことが多い。Aは誤りである。このような変更は取引所上場の先物市場では発生していない。Cも誤りである。ボラティリティ（volatility）の変化は時間とともに変動するため、高いか低いかを一般化することは難しい。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1870_modules_items_145366_Learning_Outcomes_Pricing_and_Valuation_of_Futures_Contracts.html" >← 前へ</a>
+  <span class="title">6.01 | Introduction</span>
+  <a href="courses_1870_modules_items_145372_602_Pricing_of_Futures_Contracts_at_Inception.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.06 | Equity indexes</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0162-R-s06" title="2.06 | Equity indexes"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：証券市場指数（Security Market Indexes） 2.06｜株式指数（Equity Indexes）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">株式指数（equity indexes）の種類を説明する</li>
+<li class="cfa-curriculum-los-item">証券市場指数（security market indexes）の種類を比較する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>株式指数には、広範市場指数（broad market）、マルチマーケット指数（multi-market）、セクター指数（sector）、スタイル指数（style）など、多様な種類が存在する。</p>
+<section id="CFA0162-R-s06-01">
+<h3 class="dp-heading">広範市場指数（Broad Market Indexes）</h3>
+<p>広範株式市場指数（broad equity market index）は、その名のとおり、特定の株式市場全体を表し、通常は選定された市場の90％以上を代表する証券を含む。例えば、上海総合指数（Shanghai Stock Exchange Composite Index, SSE）は、上海証券取引所（Shanghai Stock Exchange）で取引されるすべての株式を対象とした時価総額加重指数（market-capitalization-weighted index）である。米国では、ウィルシャー5000トータルマーケット指数（Wilshire 5000 Total Market Index）が、価格データが入手可能なすべての米国株式を含む時価総額加重指数であり、米国株式市場全体を表すことを目的としている。³ また、時価総額上位3,000銘柄で構成されるラッセル3000（Russell 3000）は、米国株式市場の約98％を代表している。</p>
+</section>
+<section id="CFA0162-R-s06-02">
+<h3 class="dp-heading">マルチマーケット指数（Multi-Market Indexes）</h3>
+<p>マルチマーケット指数（multi-market indexes）は、通常、異なる国や地域の指数で構成され、複数の証券市場を表すよう設計されている。これらの指数は、複数の国別市場、地理的地域、経済発展段階別グループ、場合によっては世界全体を表すことがある。世界指数（world indexes）は、特定の国や地域に偏らず、グローバルな株式投資を行う投資家にとって重要である。多くの指数提供者は、マルチマーケット株式指数のファミリーを提供している。</p>
+<p>MSCIは多数のマルチマーケット指数を提供している。図表7（Exhibit 7）に示されているように、MSCIは国および地域を、経済発展水準（level of economic development）と地理的地域（geographic region）の2つの軸で分類している。MSCIが市場分類（market classifications）と呼ぶ発展段階のグループには、先進国市場（developed markets）、新興市場（emerging markets）、フロンティア市場（frontier markets）が含まれる。地理的地域は主に経度に基づいて区分され、アメリカ大陸（Americas）、ヨーロッパおよびアフリカ（Europe with Africa）、アジアおよび太平洋（Asia with the Pacific）に分けられる。MSCIは、これらのマルチマーケット指数において、先進国および新興国それぞれについて国別および地域別の指数を提供している。また、MSCIは市場分類を定期的に見直し、フロンティア市場から新興市場へ、新興市場から先進国市場へと移行する場合に応じて指数をリコンスティテューション（reconstitutes）する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0162-R-EXH7">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 7<span style="display: block;">MSCI Global Investable Market Indexes (as of October 2018) </span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="3" style="text-align: left; vertical-align: bottom; padding: 8px;">先進国市場（Developed Markets）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">アメリカ大陸（Americas）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">ヨーロッパおよび中東（Europe and Middle East）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">太平洋地域（Pacific）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">カナダ（Canada）、米国（United States）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">オーストリア（Austria）、ベルギー（Belgium）、デンマーク（Denmark）、フィンランド（Finland）、フランス（France）、ドイツ（Germany）、アイルランド（Ireland）、イスラエル（Israel）、イタリア（Italy）、オランダ（Netherlands）、ノルウェー（Norway）、ポルトガル（Portugal）、スペイン（Spain）、スウェーデン（Sweden）、スイス（Switzerland）、英国（United Kingdom）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">オーストラリア（Australia）、香港特別行政区（Hong Kong SAR）、日本（Japan）、ニュージーランド（New Zealand）、シンガポール（Singapore）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="3" style="text-align: left; vertical-align: bottom; padding: 8px;">新興市場（Emerging Markets）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">アメリカ大陸（Americas）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">ヨーロッパ・中東・アフリカ（Europe, Middle East, Africa）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Asia</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ブラジル（Brazil）、チリ（Chile）、コロンビア（Colombia）、メキシコ（Mexico）、ペルー（Peru）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">チェコ共和国（Czech Republic）、エジプト（Egypt）、ギリシャ（Greece）、ハンガリー（Hungary）、ポーランド（Poland）、カタール（Qatar）、ロシア（Russia）、南アフリカ（South Africa）、トルコ（Turkey）、アラブ首長国連邦（United Arab Emirates）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">中国本土（Chinese Mainland）、インド（India）、インドネシア（Indonesia）、韓国（South Korea）、マレーシア（Malaysia）、パキスタン（Pakistan）、フィリピン（Philippines）、台湾地域（Taiwan region）、タイ（Thailand）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="5" style="text-align: left; vertical-align: bottom; padding: 8px;">フロンティア市場（Frontier Markets）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">アメリカ大陸（Americas）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">ヨーロッパおよびCIS（Europe &amp; CIS）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">アフリカ（Africa）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">中東（Middle East）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Asia</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">アルゼンチン（Argentina）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クロアチア（Croatia）、エストニア（Estonia）、リトアニア（Lithuania）、カザフスタン（Kazakhstan）、ルーマニア（Romania）、セルビア（Serbia）、スロベニア（Slovenia）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ケニア（Kenya）、モーリシャス（Mauritius）、モロッコ（Morocco）、ナイジェリア（Nigeria）、チュニジア（Tunisia）、西アフリカ経済通貨同盟（WAEMU）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">バーレーン（Bahrain）、ヨルダン（Jordan）、クウェート（Kuwait）、レバノン（Lebanon）、オマーン（Oman）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">バングラデシュ（Bangladesh）、スリランカ（Sri Lanka）、ベトナム（Vietnam）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="5" style="text-align: center; vertical-align: bottom; padding: 8px;">MSCI単独市場指数（MSCI Standalone Market Indexes）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">ヨーロッパ・中東・アフリカ（Europe, Middle East, and Africa）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">アメリカ大陸（Americas）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">ヨーロッパおよびCIS（Europe and CIS）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">アフリカ（Africa）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">中東（Middle East）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">サウジアラビア（Saudi Arabia）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ジャマイカ（Jamaica）、パナマ（Panama）、トリニダード・トバゴ（Trinidad &amp; Tobago）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ボスニア・ヘルツェゴビナ（Bosnia Herzegovina）、ブルガリア（Bulgaria）、ウクライナ（Ukraine）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ボツワナ（Botswana）、ガーナ（Ghana）、ジンバブエ（Zimbabwe）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">パレスチナ（Palestine）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>1 西アフリカ経済通貨同盟（West African Economic and Monetary Union, WAEMU）は、ベナン（Benin）、ブルキナファソ（Burkina Faso）、コートジボワール（Ivory Coast）、ギニアビサウ（Guinea-Bissau）、マリ（Mali）、ニジェール（Niger）、セネガル（Senegal）、トーゴ（Togo）から構成される。現在、MSCI WAEMU指数（MSCI WAEMU Indexes）には、セネガル、コートジボワール、ブルキナファソに分類される証券が含まれている。</p>
+<p>2 MSCI単独市場指数（MSCI Standalone Market Indexes）は、MSCI新興市場指数（MSCI Emerging Markets Index）またはMSCIフロンティア市場指数（MSCI Frontier Markets Index）には含まれない。しかし、これらの指数は、規模（size）および流動性（liquidity）に関して、新興市場またはフロンティア市場の方法論的基準（methodological criteria）を使用している。</p>
+<p>3 MSCIパナマ指数（MSCI Panama Index）は、単独市場指数（Standalone Market Index）として導入された。</p>
+<p><span class="cfa-curriculum-table-wrap-foot"> <em>Source</em>: adapted from MSCI (<a href="https://www.msci.com/en/market-cap-weighted-indexes" target="_blank">https://www.msci.com/en/market-cap-weighted-indexes</a>), October 2018.</span></p>
+</div>
+<section id="CFA0162-R-s06-02-01">
+<h4>マルチマーケット指数におけるファンダメンタル加重（Fundamental Weighting in Multi-Market Indexes）</h4>
+<p>一部の指数提供者は、各国・地域内の証券を時価総額（market capitalization）で加重し、その後、各国・地域をその相対的な国内総生産（GDP）に比例して指数全体で加重することで、マルチマーケット指数におけるファンダメンタル加重を実現している。GDP加重指数（GDP-weighted indexes）は、最初に作成されたファンダメンタル加重指数の一部である。1987年にMSCIによって導入され、当時の時価総額加重MSCI EAFE指数（MSCI EAFE Index）において日本株が60％のウェイトを占めていた問題に対処するために設計された。GDP加重指数は、日本株への配分を半分に削減した。⁴</p>
+</section>
+</section>
+<section id="CFA0162-R-s06-03">
+<h3 class="dp-heading">セクター指数（Sector Indexes）</h3>
+<p>セクター指数（sector indexes）は、消費財（consumer goods）、エネルギー（energy）、金融（finance）、ヘルスケア（health care）、テクノロジー（technology）などの異なる経済セクターを、国別、地域別、またはグローバルベースで表し、追跡する。経済の各セクターは景気循環（business cycle）の中で異なる動きを示すため、一部の投資家は特定のセクターへのエクスポージャーを過大配分（overweight）または過小配分（underweight）することを志向する場合がある。</p>
+<p>セクター指数はファミリーとして構成され、ファミリー内の各指数が1つの経済セクターを表す。通常、セクター指数ファミリーを集約すると広範市場指数に相当する。経済セクター分類は、グローバル、地域別、または国別で適用できるが、普遍的に合意された分類方法は存在しない。</p>
+<p>セクター指数はパフォーマンス分析（performance analysis）において重要な役割を果たす。なぜなら、ポートフォリオマネージャーが銘柄選択（stock selection）に優れているのか、セクター配分（sector allocation）に優れているのかを判断する手段を提供するためである。また、セクター指数はセクター特化型ETF（sector-specific ETFs）やその他の投資商品のモデルポートフォリオとしても機能する。</p>
+</section>
+<section id="CFA0162-R-s06-04">
+<h3 class="dp-heading">スタイル指数（Style Indexes）</h3>
+<p>スタイル指数（style indexes）は、時価総額（market capitalization）、バリュー（value）、グロース（growth）、またはこれらの組み合わせに基づいて分類された証券群を表す。これらは、グロース投資家（growth investor）、バリュー投資家（value investor）、小型株投資家（small-cap investor）など、特定の投資スタイルを反映することを目的としている。</p>
+<section id="CFA0162-R-s06-04-01">
+<h4>時価総額（Market Capitalization）</h4>
+<p>時価総額指数（market-capitalization indexes）は、大型株（large cap）、中型株（midcap）、小型株（small cap）という主要な時価総額カテゴリーに基づいて証券を分類する。これらのカテゴリーに関する統一的な定義は存在しないため、大型株と中型株、中型株と小型株の区別や、小型株指数に含まれるための最小時価総額は指数ごとに異なる。分類は絶対的な時価総額（例：1億ユーロ未満）または相対的な時価総額（例：最小の2,500銘柄）に基づく場合がある。</p>
+</section>
+<section id="CFA0162-R-s06-04-02">
+<h4>バリュー／グロース分類（Value/Growth Classification）</h4>
+<p>一部の指数は、株式をバリュー株（value stocks）またはグロース株（growth stocks）として分類することに基づいて構成される。異なる指数提供者は、バリュー株とグロース株を区別するために、異なる要因や評価指標（valuation ratios）（低い株価純資産倍率（price-to-book ratios）、低い株価収益率（price-to-earnings ratios）、高い配当利回り（dividend yields）など）を使用する。</p>
+</section>
+<section id="CFA0162-R-s06-04-03">
+<h4>時価総額およびバリュー／グロース分類（Market Capitalization and Value/Growth Classification）</h4>
+<p>3つの時価総額グループとバリュー／グロース分類を組み合わせると、基本的な6つのスタイル指数カテゴリーが得られる：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0162-R-Td">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">大型株バリュー（Large-Cap Value）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">大型株グロース（Large-Cap Growth）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">中型株バリュー（Mid-Cap Value）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">中型株グロース（Mid-Cap Growth）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">小型株バリュー（Small-Cap Value）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">小型株グロース（Small-Cap Growth）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>指数は異なる規模および評価基準を用いるため、小型株バリュー（small-cap value）など特定のスタイルを表すよう設計された指数の構成銘柄は、時に大きく異なることがある。</p>
+<p>評価指標（valuation ratios）や時価総額は時間とともに変化するため、銘柄はリコンスティテューション日（reconstitution dates）において、あるスタイル指数カテゴリーから別のカテゴリーへ頻繁に移行する。その結果、スタイル指数は一般に広範市場指数よりもはるかに高い売買回転（turnover）を持つ。</p>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0162-R-FN3Content">
+<p>3 ウィルシャー5000（Wilshire 5000）はその名称にもかかわらず、組み入れ可能な証券数に制約はない。設定時（inception）には約5,000銘柄が含まれていた。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0162-R-FN4Content">
+<p>4 Steven A. Schoenfeld『Active Index Investing』（ニュージャージー州ホーボーケン（Hoboken, NJ）：John Wiley &amp; Sons, 2004年）：220ページ。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MultiMarketIndexesContent">
+<p>異なる国の指数で構成され、複数の証券市場を表すように設計された指数。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SectorIndexesContent">
+<p>消費財（consumer goods）、エネルギー（energy）、金融（finance）、ヘルスケア（health care）、テクノロジー（technology）など、異なる経済セクターを、国別、地域別、またはグローバルベースで表し追跡する指数。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142223_205_Uses_of_Market_Indexes.html" >← 前へ</a>
+  <span class="title">2.06 | Equity indexes</span>
+  <a href="courses_1868_modules_items_142227_207_Fixed-income_indexes.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

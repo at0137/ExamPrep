@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.03 | Expense Recognition</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2418-R-s03-R-1" title="2.03 | Expense Recognition"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading"><span class="dp-header-pre">Module 2: Analyzing Income Statements</span>2.03 | Expense Recognition</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">describe general principles of expense recognition, specific expense recognition applications, implications of expense recognition choices for financial analysis and contrast costs that are capitalized versus those that are expensed in the period in which they are incurred</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>Assume a company purchased inventory for cash and sold the entire inventory in the same period. When the company paid for the inventory, absent indications to the contrary, it is clear that inventory cost was incurred and when that inventory is sold, it should be recognized as an expense (cost of goods sold). Assume also that the company paid all operating and administrative expenses in cash within each accounting period. In such a simple hypothetical scenario, no issues of expense recognition would arise. In practice, however, as with revenue recognition, determining when expenses should be recognized can be somewhat more complex.</p>
+<section id="CFA2418-R-s03-01-01">
+<h3 class="dp-heading">General Principles</h3>
+<p>In general, a company recognizes expenses in the period that it consumes (i.e., uses up) the economic benefits associated with the expenditure, or loses some previously recognized economic benefit. The three common expense recognition models are as follows: the matching principle, expensing as incurred, and capitalization with subsequent depreciation or amortization.</p>
+<p>Under matching, a company recognizes expenses (e.g., cost of goods sold) when associated revenues are recognized, and thus, expenses and revenues are matched. Associated revenues and expenses are those that result directly and jointly from the same transactions or events. Unlike the simple scenario in which a company purchases inventory and sells all of the inventory within the same accounting period, in practice, it is more likely that some of the current period’s sales are made from inventory purchased in a previous period or previous periods. It is also likely that some of the inventory purchased in the current period will remain unsold at the end of the current period and so will be sold in a following period. Matching requires that a company recognizes cost of goods sold in the same period as revenues from the sale of the goods. Strictly speaking, IFRS do not refer to a “matching principle” but rather to a “matching concept” or to a process resulting in “matching of costs with revenues.”</p>
+<p><a aria-label="View Example 2" class="internal" href="#CFA2418-R-s03-EXM2" role="button">Example 2</a> demonstrate matching applied to inventory and cost of goods sold.</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2418-R-s03-EXM2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 2<span style="display: block;">The Matching of Inventory Costs with Revenues</span></h4>
+<section>
+<p>Kahn Distribution Limited (KDL), a hypothetical company, purchases inventory items for resale. At the beginning of 20X1, Kahn had no inventory on hand. During 20X1, KDL had the following transactions:</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="3" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Inventory Purchases</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">First quarter</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,000</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">units at USD40 per unit</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Second quarter</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,500</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">units at USD41 per unit</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Third quarter</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,200</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">units at USD43 per unit</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Fourth quarter</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,900</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">units at USD45 per unit</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7,600</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">units at a total cost of USD321,600</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>KDL sold 5,600 units of inventory during the year at USD50 per unit and received cash. KDL determines that there were 2,000 remaining units of inventory and specifically identifies that 1,900 were those purchased in the fourth quarter and 100 were purchased in the third quarter.</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>What are the revenue and expense associated with these transactions during 20X1 based on specific identification of inventory items as sold or remaining in inventory? (Assume that the company does not expect any products to be returned.)</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>The revenue for 20X1 would be USD280,000 (5,600 units × USD50 per unit). Initially, the total cost of the goods purchased would be recorded as inventory (an asset) in the amount of USD321,600. During 20X1, the cost of the 5,600 units sold would be expensed (matched against the revenue) while the cost of the 2,000 remaining unsold units would remain in inventory as follows:</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="3" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Cost of Goods Sold</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">From the first quarter</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2,000 units at USD40 per unit =</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD80,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">From the second quarter</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1,500 units at USD41 per unit =</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD61,500</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">From the third quarter</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2,100 units at USD43 per unit =</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD90,300</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total cost of goods sold</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD231,800</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="3" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Cost of Goods Remaining in Inventory</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">From the third quarter</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">100 units at USD43 per unit =</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">USD4,300</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">From the fourth quarter</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1,900 units at USD45 per unit =</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">USD85,500</td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">Total remaining (or ending) inventory cost</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD89,800</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>To confirm that total costs are accounted for: USD231,800 + USD89,800 = USD321,600. The cost of the goods sold would be expensed against the revenue of USD280,000 as follows:</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-Tc">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Revenue</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD280,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cost of Goods Sold</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">231,800</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Gross Profit</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">48,200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>An alternative way to think about this is that the company created an asset (inventory) of USD321,600 as it made its purchases. At the end of the period, the value of the company’s inventory on hand is USD89,800. Therefore, the amount of the Cost of goods sold expense recognized for the period should be the difference: USD231,800.</p>
+<p>The remaining inventory amount of USD89,800 will be matched against revenue in a future year when the inventory items are sold.</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p><a aria-describedby="PeriodCostsContent" class="dp-popover-trigger cfa-curriculum-cite-glossary" href="#PeriodCostsContent">Period costs</a>, expenditures that less directly match revenues, are generally expensed as incurred (i.e., either when the company makes the expenditure in cash or incurs the liability to pay). Costs associated with administrative, managerial, information technology (IT), and research and development activities as well as the maintenance or repair of assets generally fit this model. For most companies, payroll expenses are accounted for this way, excluding employees whose compensation is considered a product cost and recognized as inventory and later cost of goods sold or items like sales commissions, which are capitalized and expensed systematically or with sales.</p>
+</section>
+<section id="CFA2418-R-s03-01-02">
+<h3 class="dp-heading">Capitalization versus Expensing</h3>
+<p>Finally, certain expenditures are capitalized as assets on the balance sheet and typically appear as an investing cash outflow on the statement of cash flows. After initial recognition, a company expenses the capitalized amount over the asset’s useful life as depreciation or amortization expense (except assets that are not depreciated, i.e., land, or amortized, e.g., intangible assets with indefinite lives). This expense reduces net income on the income statement and reduces the value of the asset on the balance sheet. Depreciation and amortization are non-cash expenses and therefore, apart from their effect on taxable income and taxes payable, they have no impact on the cash flow statement.</p>
+<p>This model is a form of the matching principle, whereby expenses are recognized on the income statement over the expected useful life of the investment, so the costs and benefits are “matched.” <a aria-label="View Example 3" class="internal" href="#CFA2418-R-s03-EXM3" role="button">Example 3</a> illustrates the impact on the financial statements of capitalizing versus expensing an expenditure.</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2418-R-s03-EXM3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 3<span style="display: block;">General Financial Statement Impact of Capitalizing versus Expensing</span></h4>
+<section>
+<p>Assume two identical (hypothetical) companies, CAP Inc. (CAP) and NOW Inc. (NOW), start with EUR1,000 cash and EUR1,000 common stock. Each year the companies recognize total revenues of EUR1,500 cash and make cash expenditures, excluding an equipment purchase, of EUR500. At the beginning of operations, each company pays EUR900 to purchase equipment. CAP estimates the equipment will have a useful life of three years and an estimated salvage value of EUR0 at the end of the three years. NOW estimates a much shorter useful life and expenses the equipment immediately. The companies have no other assets and make no other asset purchases during the three-year period. Assume the companies pay no dividends, earn zero interest on cash balances, have a tax rate of 30 percent, and use the same accounting method for financial and tax purposes.</p>
+<p>The left side of <a aria-label="View Exhibit 1" class="internal" href="#CFA2418-R-s03-EXH1" role="button">Exhibit 1</a> shows CAP’s financial statements—that is, with the expenditure capitalized and depreciated at EUR300 per year based on the straight-line method of depreciation (EUR900 cost minus EUR0 salvage value equals EUR900, divided by a three-year life equals EUR300 per year). The right side of the exhibit shows NOW’s financial statements, with the entire EUR900 expenditure treated as an expense in the first year. All amounts are in euro.</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-EXH1">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 1<span style="display: block;">Capitalizing versus Expensing</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;">CAP株式会社(CAP Inc.)</th>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;">NOW株式会社(NOW Inc.)</th>
+</tr>
+<tr>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;">EUR900を資産として資本化し減価償却</th>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;">EUR900を即時費用計上</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">年度別</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>3</strong></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">年度別</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Revenue</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,500</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Revenue</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,500</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash Expenses</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash expenses</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,400</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">減価償却費(Depreciation)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">300</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">300</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">300</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Depreciation</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Income before Tax</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Income before Tax</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Tax at 30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">210</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">210</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">210</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Tax at 30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">300</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">300</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純利益(Net Income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">490</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">490</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">490</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Net Income</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">70</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash from Operations</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">790</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">790</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">790</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash from Operations</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">70</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">投資に使用された現金</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(900)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash Used in Investing</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金の総変動</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(110)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">790</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">790</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金の総変動</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">70</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-Td">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>As of</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">時点0</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年度末1</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年度末2</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年度末3</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Time</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">時点0</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年度末1</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年度末2</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年度末3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">890</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,680</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,470</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,070</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,770</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,470</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産（純額）(PP&amp;E (net))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">300</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産（純額）(PP &amp; E (net))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,490</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,980</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,470</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,070</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,770</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,470</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利益剰余金</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">490</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">980</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,470</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利益剰余金</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">70</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">770</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,470</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">普通株式(Common Stock)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">普通株式(Common Stock)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株主資本合計(Total Shareholders’ Equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,490</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,980</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,470</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株主資本合計(Total Shareholders’ Equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,070</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,770</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,470</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>どの会社が3年間でより高い純利益を報告しているか？総現金フローは？営業活動による現金は？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>どちらの会社も3年間の総純利益や総現金フローが高いわけではない。3年間の純利益の合計は、EUR900を資本化した場合でも費用計上した場合でも同じ（合計EUR1,470）である。また、現金の変動の合計（合計EUR1,470）もどちらのシナリオでも同一である。CAPは、資本化シナリオではEUR900の購入が投資活動によるキャッシュフローとして扱われるため、営業活動による現金がEUR900多くなる。</p>
+<p>注：両社とも財務上所得と課税所得で同じ会計手法を使用しているため、現金残高に対する利息がゼロと仮定しない限り、EUR900を費用計上すると、初年度に支払う税金が少ない（EUR30対EUR210）ことで、NOWが節税分に対する利息収入を得られ、より高い利益と現金フローを得られたことになる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>ROEと純利益率に基づき、両社の収益性はどのように比較されるか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>一般に、期末株主資本 = 期首株主資本 + 純利益 + その他の包括利益 – 配当 + 株主からの純資本拠出。例の会社はその他包括利益がなく、配当も支払っておらず、株主からの資本拠出も報告していないため、期末利益剰余金 = 期首利益剰余金 + 純利益、期末株主資本 = 期首株主資本 + 純利益となる。</p>
+<p>ROEは純利益 ÷ 平均株主資本で計算され、純利益率は純利益 ÷ 総収益で計算される。例えば、CAPは年度1のROEが39％（EUR490 ÷ [(EUR1,000 + EUR1,490)/2]）、年度1の純利益率が33％（EUR490 ÷ EUR1,500）であった。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-Te">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>CAP Inc.</strong></th>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>NOW Inc.</strong></th>
+</tr>
+<tr>
+<th colspan="4" style="text-align: center; vertical-align: top; padding: 8px;"><strong>Capitalize EUR900 as Asset and Depreciate</strong></th>
+<th colspan="4" style="text-align: center; vertical-align: top; padding: 8px;"><strong>Expense EUR900 Immediately</strong></th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>For Year</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>3</strong></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>For Year</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ROE</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ROE</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">49%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純利益率(Net Profit Margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純利益率(Net Profit Margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">47%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">47%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>示されている通り、費用計上と比較して資本化すると、初年度はROEおよび純利益率などの収益性指標が高くなり、翌年度以降は低くなる。例えば、CAPの年度1のROEは39％でNOWの年度1のROE 7％より高かったが、年度2および3ではNOWの方が収益性が優れている。</p>
+<p>また、NOWの年度1から年度2にかけての純利益の優れた成長は、CAPと比較して優れた業績によるものではなく、むしろ費用をCAPよりも早く認識する会計上の判断によるものである。一般に、その他すべてが同じであれば、費用を早期に認識する会計上の判断は、その後の成長が大きく見える印象を与える。会計手法の違いを認識せずに両社の純利益の成長を比較すると誤解を招く。付随的に、NOWの収益および収益性は3年間でより変動が大きく見えるが、それは業績がより不安定だからではなく、会計上の判断の違いによるものである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>なぜNOWは年度1にEUR70の現金変動を報告するのに対し、CAPは現金の総変動が(EUR110)と報告するのか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>NOWは年度1にEUR70の現金増加を報告し、CAPはEUR110の現金減少を報告する。これはNOWの税金がCAPよりもEUR180低かったためである（EUR30対EUR210）。</p>
+<p>この問題では、各会社が税務目的で使用する会計手法が、財務報告で使用する会計手法と同一であると仮定していることに注意。多くの国では、企業は財務報告と税務で異なる減価償却方法を使用することが認められており、繰延税金が生じる可能性がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>示されている通り、費用計上するか資本化するかの裁量は、企業間の比較可能性を妨げる可能性がある。例4では、企業が1年間に単一の資産を購入すると仮定している。3年間の純利益の合計は、資産を資本化しても費用計上しても同一であるため、資本化は初年度に費用計上と比べて収益性を高めるが、翌年度以降は収益性が低下することを示している。逆に、費用計上は初年度の収益性を低下させるが、後年の収益性を高め、好ましいトレンドを示す。</p>
+<p>同様に、支出を資本化する企業の株主資本は、初期利益が高いため初年度は高くなる。例4では、企業が1年間に単一の資産を購入し、3年間の総純利益は同額と報告されるため、費用計上する企業の株主資本（および利益剰余金）は、資本化する企業の株主資本（および利益剰余金）と3年後に同一となる。</p>
+<p>例3では企業が初年度のみ資産を購入すると示されているが、もし企業が毎年同様または増加する量の資産を購入し続ける場合、費用が減価償却費を上回る限り、資本化による収益性向上効果は継続する。例4はこの点を示している。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2418-R-s03-EXM4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 4<span style="display: block;">Impact of Capitalizing versus Expensing for Ongoing Purchases</span></h4>
+<section>
+<p>企業が年度1にGBP300のコンピュータを購入し資本化したとする。コンピュータの耐用年数は3年で、残存価値はGBP0と見込まれるため、定額法による年間減価償却費は年間GBP100である。即時にGBP300全額を費用計上する場合と比較すると、年度1の税引前利益はGBP200多くなる。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>企業が毎年同一のコンピュータを同価格で購入し続け、同じ会計処理を適用する場合、資本化と費用計上の収益性向上効果はいつ終了するか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>資本化と費用計上の収益性向上効果は年度3に終了する。年度3では、年度1、2、3に購入した3台のコンピュータそれぞれの減価償却費の合計はGBP300（GBP100 + GBP100 + GBP100）となる。したがって、年度3の総減価償却費は年度3の資本支出と完全に一致する。年度3の費用はGBP300であり、年間コンピュータ購入を資本化しても費用計上しても変わらない。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>企業が年度4に同一のコンピュータを購入し、過去と同じ会計処理を適用した場合、年度4の利益に対する資本化と費用計上の影響はどうなるか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答を確認(Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>年度4の利益に影響はない。前年度と同様に、年度2、3、4に購入した3台のコンピュータの減価償却費の合計はGBP300（GBP100 + GBP100 + GBP100）となる。したがって、年度4の総減価償却費は年度4の資本支出と完全に一致する。税引前利益は、年間コンピュータ購入を資本化しても費用計上してもGBP300減少する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>費用計上と比較して、支出を資本化すると通常、営業活動による現金として報告される額が多くなる。アナリストは、本来費用計上すべき支出を資本化することで、企業が営業活動による現金フローを操作している証拠に注意すべきである。</p>
+<p>まとめると、その他すべてが同じであれば、支出の資本化は当期の収益性を高め、営業活動による現金フローを増加させる。資本支出が減価償却費を上回る限り、資本化による収益性向上効果は継続する。資本化を選択する収益性向上の動機は、業績分析時に考慮すべきである。例えば、企業は特定期間の収益目標を達成するため、会計基準の許容範囲内でより多くの支出を資本化する場合がある。その期間に費用計上すると当期利益は減少するが、将来の収益性を高め、利益トレンドを改善する。利益トレンド改善の動機も、業績分析時に考慮すべきである。企業が財務報告と税務で同一の会計手法を要求される環境（米国のように、財務報告と税務で異なる減価償却方法の使用を許容する国とは異なる）にある場合、費用計上はより有利な現金フローへの影響を持つ。これは、早期に低い税金を支払うことで、節約された現金に対して利息収入を得る機会が生まれるためである。</p>
+<p>これら比較的単純な例とは対照的に、支出を資本化するか費用計上するかの裁量が関与する個別事例を特定することは、一般に不可能であり望ましくもない。しかし、アナリストは通常、企業間で異なる処理がされた重要な支出項目を特定できる。企業間の最も関連性の高い差異を生む支出項目は業界ごとに異なる。この業界間の違いは、支出の資本化に関する次の議論で明らかである。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2418-R-s03-Ba">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Capitalization versus Expensing</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2418-R-s03-Q7"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>その他すべてが同じであれば、耐用年数の長い設備が購入された会計年度において：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 減価償却費が増加する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。耐用年数の長い設備が購入された会計年度には、貸借対照表上の資産が増加し、損益計算書上の減価償却費が新しい長期資産のために増加する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 営業活動による現金が減少する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。耐用年数の長い設備が購入された会計年度には、貸借対照表上の資産が増加し、損益計算書上の減価償却費が新しい長期資産のために増加する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 純利益は購入額だけ減少する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。耐用年数の長い設備が購入された会計年度には、貸借対照表上の資産が増加し、損益計算書上の減価償却費が新しい長期資産のために増加する。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2418-R-s03-Q8"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>企業XとZは期首の株主資本簿価が同一で、税率も同じである。両社は年間を通じて同一の取引を行い、ほとんどの取引は同様に報告されるが、一点だけ異なる。両社は新年1月1日に耐用年数3年、残存価値GBP0のGBP300,000のプリンターを取得する。企業Xはプリンターを資本化し、定額法で減価償却する。一方、企業Zはプリンターを費用計上する。表2には企業Xの年末情報がまとめられている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-EXH2">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 2<span style="display: block;">Company X Year-End Information</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">企業X 12月31日時点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">期末株主資本(Ending Shareholders’ Equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">GBP10,000,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税率(Tax Rate)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">配当(Dividends)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">GBP0.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Net Income</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">GBP750,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>表2の情報に基づき、企業Z(Company Z)の期末株主資本を用いた自己資本利益率(ROE)は次の値に最も近い：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 5.4パーセント</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。企業Zの期末株主資本に基づく自己資本利益率は6.1パーセントとなる。企業Zは企業X(Company X)と比較して追加でGBP200,000の費用が発生する。企業ZはプリンターをGBP300,000で費用計上したのに対し、企業Xはプリンターを資本化しGBP100,000の減価償却費を計上した。企業Zの純利益と株主資本は企業XよりGBP150,000低くなる（= GBP200,000 × 0.75）。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E"><math> <semantics> <mrow> <mtext>ROE</mtext> <mo>=</mo> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mtext>Net income</mtext> </mrow> <mrow> <mtext>Shareholders' Equity</mtext> </mrow> </mfrac> </mstyle> </mrow> </mfenced> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___1">= <em>GBP</em>600,00/<em>GBP</em>9,850,000</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___2">= 0.61 = 6.1%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 6.1パーセント</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。企業Zの期末株主資本に基づく自己資本利益率は6.1パーセントとなる。企業Zは企業Xと比較して追加でGBP200,000の費用が発生する。企業ZはプリンターをGBP300,000で費用計上したのに対し、企業Xはプリンターを資本化しGBP100,000の減価償却費を計上した。企業Zの純利益と株主資本は企業XよりGBP150,000低くなる（= GBP200,000 × 0.75）。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E"><math> <semantics> <mrow> <mtext>ROE</mtext> <mo>=</mo> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mtext>Net income</mtext> </mrow> <mrow> <mtext>Shareholders' Equity</mtext> </mrow> </mfrac> </mstyle> </mrow> </mfenced> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___1">= <em>GBP</em>600,00/<em>GBP</em>9,850,000</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___2">= 0.61 = 6.1%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 7.5パーセント</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。企業Zの期末株主資本に基づく自己資本利益率は6.1パーセントとなる。企業Zは企業Xと比較して追加でGBP200,000の費用が発生する。企業ZはプリンターをGBP300,000で費用計上したのに対し、企業Xはプリンターを資本化しGBP100,000の減価償却費を計上した。企業Zの純利益と株主資本は企業XよりGBP150,000低くなる（= GBP200,000 × 0.75）。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E"><math> <semantics> <mrow> <mtext>ROE</mtext> <mo>=</mo> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mtext>Net income</mtext> </mrow> <mrow> <mtext>Shareholders' Equity</mtext> </mrow> </mfrac> </mstyle> </mrow> </mfenced> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___1">= <em>GBP</em>600,00/<em>GBP</em>9,850,000</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___2">= 0.61 = 6.1%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<section>
+<p>以下の情報は質問3〜6に関連する。</p>
+<p>メラニー・ハート(CFA)（Melanie Hart, CFA）は運輸アナリストである。ハートはアルタイ・マウンテン・レール・カンパニー(Altai Mountain Rail Company (AMRC))に関するリサーチレポートの作成を依頼されている。鉄道業界の他の企業と同様、AMRCの事業は資本集約型であり、土地、建物、設備などの長期有形資産への多額の投資が必要である。2008年11月、AMRCの取締役会(Board of Directors)は新しい経営チームを採用した。2009年の年次報告書を確認する中で、ハートは新経営陣が行ったいくつかの会計上の選択に懸念を抱いている。これらの選択は、前経営陣の手法および業界の一般的慣行とは異なる。ハートは年次報告書から以下の記述を抜き出した。</p>
+<ul class="cfa-curriculum-list-step">
+<li class="cfa-curriculum-steplist-item">記述1：「2009年、AMRCは線路の交換や類似の改善に多額を支出した。AMRCはこれらの支出のかなりの割合を資本化せず、費用計上した。」</li>
+<li class="cfa-curriculum-steplist-item">記述2：「AMRCは、建物および設備に対して、財務報告および税務報告の両方で定額法(straight-line method)による減価償却を使用している。」</li>
+<li class="cfa-curriculum-steplist-item">記述3：「2009年、AMRCは機関車のフリートに対してEUR5,000万の減損損失(impairment loss)を認識した。減損損失は損益計算書の『その他の収益(other income)』として報告され、貸借対照表上の資産の帳簿価額を減少させた。」</li>
+</ul>
+<p>表3および4にはAMRCの2009年連結損益計算書と貸借対照表が含まれている。AMRCは国際財務報告基準(International Financial Reporting Standards)に従って財務諸表を作成している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-EXH3">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 3<span style="display: block;">Consolidated Statement of Income</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2009</strong></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2008</strong></th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">12月31日に終了する年度について</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">単位：百万ユーロ(Euro Millions)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">収益(%)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">単位：百万ユーロ(Euro Millions)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">収益(%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">営業収益(Operating revenues)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,300</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業費用(Operating expenses)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Depreciation</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(200)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(7.7)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(190)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(8.3)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の営業費用(Other operating expense)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,590)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(61.1)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,515)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(65.9)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業費用合計(Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,790)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(68.8)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,705)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(74.2)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業利益(Operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">810</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">595</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25.8</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の収益(Other income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(50)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1.9)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">支払利息(Interest expense)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(73)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2.8)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(69)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(3.0)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益(Income before taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">687</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">526</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22.8</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税(Income taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(272)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(10.5)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(198)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(8.6)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純利益(Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">415</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">328</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-EXH4">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 4<span style="display: block;">Consolidated Balance Sheet</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">12月31日時点(As of 31 December)</th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2009</strong></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2008</strong></th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">資産(Assets)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">単位：百万ユーロ(Euro Millions)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">資産比率(Assets (%))</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">単位：百万ユーロ(Euro Millions)</th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">資産比率(Assets (%))</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産(Current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">450</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">8.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産(Property and equipment)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Land</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">700</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">13.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">建物および設備(Plant and equipment)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">112.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,800</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">109.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産合計(Total property and equipment)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6,700</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">125.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6,500</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">122.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">減価償却累計(Accumulated depreciation)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,850)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(34.6)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,650)</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">(31.1)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産純額(Net property and equipment)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,850</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">90.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,850</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">91.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産(Total assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,350</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,300</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">負債および株主資本(Liabilities and Shareholders’ Equity)</th>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債(Current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">480</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">430</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期債務(Long-term debt)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,030</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,080</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の長期引当金および負債(Other long-term provisions and liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,240</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,440</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債合計(Total liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">51.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,950</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">55.7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株主資本(Shareholders’ equity)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">普通株式および払込剰余金(Common stock and paid-in-surplus)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">760</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">760</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利益剰余金(Retained earnings)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,888</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他包括損失(Other comprehensive losses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(48)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(0.9)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(10)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(0.2)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株主資本合計(Total shareholders’ equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">48.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,350</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">44.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債および株主資本合計(Total liabilities &amp; shareholders’ equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,350</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,300</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2418-R-s03-Q9"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>記述1に関して、これらの支出を資本化せず費用計上するという経営判断の最も可能性の高い影響は次のうちどれか？</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 支出を資本化した場合よりも2009年の純利益率(Net profit margin)が高くなる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。長期資産への投資を資本化せず費用計上すると、当期の費用が増加し、純利益および純利益率(Net profit margin)は低下する。将来の年度の収益には、これらの支出に関連する減価償却費は含まれない。その結果、年度間の収益性の成長率は高くなる。もし支出が資本化されていれば、資産の帳簿価額は高くなり、2009年の総資産回転率(Total asset turnover)は低くなっていただろう。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 支出を資本化した場合よりも2009年の総資産回転率(Total asset turnover)が低くなる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答(Solution)</h4>
+<p>Cが正しい。長期資産への投資を資本化せず費用計上すると、当期の費用が増加し、純利益および純利益率は低下する。将来の年度の収益には、これらの支出に関連する減価償却費は含まれない。その結果、年度間の収益性の成長率は高くなる。もし支出が資本化されていれば、資産の帳簿価額は高くなり、2009年の総資産回転率は低くなっていただろう。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 将来の利益成長(Future profit growth)は、支出を資本化した場合よりも高くなる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。長期資産への投資を資本化せず費用計上すると、当期の費用が増加し、純利益および純利益率(Net profit margin)は低下する。将来年度の収益には、これらの支出に関連する減価償却費は含まれない。その結果、年度間の収益性の成長率は高くなる。もし支出が資本化されていれば、資産の帳簿価額は高くなり、2009年の総資産回転率(Total asset turnover)は低くなっていただろう。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2418-R-s03-Q10"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>記述2に関して、AMRCが財務報告および税務報告の両方で加速減価償却法(accelerated depreciation method)に切り替えた場合、2010年に最も考えられる影響は何か？</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 純利益率(Net profit margin)が増加する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。2010年に加速減価償却法に切り替えると、減価償却費が増加し、税引前利益(Income before taxes)、支払税金(taxes payable)、純利益(Net income)が減少する。営業活動による現金フロー(Cash flow from operating activities)は、節税効果により増加する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 総資産回転率(Total asset turnover)が低下する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。2010年に加速減価償却法に切り替えると、減価償却費が増加し、税引前利益、支払税金、純利益が減少する。営業活動による現金フローは、節税効果により増加する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 営業活動による現金フロー(Cash flow from operating activities)が増加する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。2010年に加速減価償却法に切り替えると、減価償却費が増加し、税引前利益、支払税金、純利益が減少する。営業活動による現金フローは、節税効果により増加する。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2418-R-s03-Q11"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>記述3に関して、減損損失(impairment loss)の最も可能性の高い影響は何か？</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 2009年前の年度の純利益(Net income)は過小計上されていた可能性がある。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。2009年の純利益および純利益率(Net profit margin)は減損損失により低くなる。その結果、以降の年度の純利益率は高くなる可能性がある。減損損失は、前年度に十分な減価償却費が認識されていなかったことを示唆し、過去年度の純利益は過大計上されていた。減損損失は非現金項目であり、営業活動による現金フローには影響しない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 2009年以降の年度の純利益率(Net profit margins)は、2009年の純利益率を上回る可能性がある。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。2009年の純利益および純利益率は減損損失により低くなる。その結果、以降の年度の純利益率は高くなる可能性がある。減損損失は、前年度に十分な減価償却費が認識されていなかったことを示唆し、過去年度の純利益は過大計上されていた。減損損失は非現金項目であり、営業活動による現金フローには影響しない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 2009年の営業活動による現金フローは、減損損失により低下していた可能性がある。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。2009年の純利益および純利益率は減損損失により低くなる。その結果、以降の年度の純利益率は高くなる可能性がある。減損損失は、前年度に十分な減価償却費が認識されていなかったことを示唆し、過去年度の純利益は過大計上されていた。減損損失は非現金項目であり、営業活動による現金フローには影響しない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2418-R-s03-Q12"><span class="cfa-curriculum-question-with-label">6. </span>
+<p>表1および表2に基づき、2009年末時点の企業の建物および設備の平均残存耐用年数(average remaining useful life)の最良推定値は？</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 20.75年</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。推定平均残存耐用年数は20.75年である。</p>
+<p>残存耐用年数の推定 = 有形固定資産純額(Net plant and equipment) ÷ 年間減価償却費(Annual depreciation expense)</p>
+<p>有形固定資産純額(Net plant and equipment) = 有形固定資産総額(Gross P &amp; E) – 減価償却累計(Accumulated depreciation)</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___3">= €6000 – €1850 = €4150</div>
+<p>残存耐用年数の推定 = 有形固定資産純額(Net P &amp; E) ÷ 減価償却費(Depreciation expense)</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___4">= €4150 ÷ €200 = 20.75</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 24.25年</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。推定平均残存耐用年数は20.75年である。</p>
+<p>残存耐用年数の推定 = 有形固定資産純額 ÷ 年間減価償却費</p>
+<p>有形固定資産純額 = 有形固定資産総額 – 減価償却累計</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___3">= €6000 – €1850 = €4150</div>
+<p>残存耐用年数の推定 = 有形固定資産純額 ÷ 減価償却費</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___4">= €4150 ÷ €200 = 20.75</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 30.00年</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答(Solution)</h4>
+<p>Aが正しい。推定平均残存耐用年数は20.75年である。</p>
+<p>残存耐用年数の推定 = 有形固定資産純額 ÷ 年間減価償却費</p>
+<p>有形固定資産純額 = 有形固定資産総額 – 減価償却累計</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___3">= €6000 – €1850 = €4150</div>
+<p>残存耐用年数の推定 = 有形固定資産純額(Net P &amp; E) ÷ 減価償却費(Depreciation expense)</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2418-R-s03-E___4">= €4150 ÷ €200 = 20.75</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA2418-R-s03-01-03">
+<h3 class="dp-heading">利息費用の資本化(Capitalization of Interest Costs)</h3>
+<p>企業は一般に、取得または建設に長期間を要する資産に関連する利息費用を資本化する必要がある。</p>
+<p>この会計処理の結果として、企業の期間中の利息費用は、貸借対照表に表示される場合（資本化された分）や、損益計算書に表示される場合（費用計上された分）があるように見えることがある。</p>
+<p>利息費用が企業自身の使用のために資産を建設する際に発生した場合、資本化された利息は貸借対照表上の該当する長期資産の一部として表示される。資本化された利息は、資産が減価償却されるにつれて費用計上され、したがって利息費用ではなく減価償却費の一部となる。例えば、不動産建設会社が販売用資産を建設する場合に発生した利息費用は、資本化されて貸借対照表上の棚卸資産の一部として表示される。その後、資産が販売された際には、売上原価の一部として費用計上される。</p>
+<p>資本化利息の取り扱いは、アナリストが考慮すべきいくつかの問題を提起する。まず、資本化利息は投資によるキャッシュアウトフローの一部として表示されるが、費用計上された利息は通常、営業キャッシュフローを減少させる。米国会計基準(US GAAP)で報告する企業は、営業キャッシュフローにおける利息を分類することが求められ、国際財務報告基準(IFRS)で報告する企業は、費用計上された利息を営業または財務キャッシュフローに分類できる。この処理は会計基準に沿ったものであるが、アナリストは報告されたキャッシュフローへの影響を検討する必要があるかもしれない。次に、利息カバレッジ比率(interest coverage ratios)は、期間中の企業の利益(またはキャッシュフロー)が利息費用をどの程度カバーしているかを測定する支払能力指標である。企業の利息カバレッジを正確に把握するためには、資本化分と費用計上分を含む利息費用全額を使用して利息カバレッジ比率を計算すべきである。さらに、企業が前期間に資本化した利息を減価償却している場合は、その減価償却の影響を除去するために利益を調整すべきである。例5が計算方法を示している。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2418-R-s03-EXM5">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 5<span style="display: block;">Effect of Capitalized Interest Costs on Coverage Ratios and Cash Flow</span></h4>
+<section>
+<p>メルコ・リゾーツ・アンド・エンターテインメント・リミテッド(Melco Resorts &amp; Entertainment Limited (NASDAQ: MLCO))は、香港特別行政区(Hong Kong SAR)を拠点とするカジノ会社で、NASDAQ株式市場に上場しており、US GAAPに基づいて財務報告を行っている。同社は2017年の財務諸表の脚注の一つで次の情報を開示している：「主要な開発および建設プロジェクトに関連する利息および繰延融資費用の償却は資本化され、プロジェクトコストに含まれる……。発生した利息費用の総額は$267,065、$252,600、$253,168であり、そのうち資本化された額は2017年、2016年、2015年の各年度でそれぞれ$37,483、$29,033、$134,838である。繰延融資費用の償却額は、資本化償却を差し引いた後で2017年、2016年、2015年の各年度でそれぞれ$26,182、$48,345、$38,511である」（Form 20-F 2018年4月12日提出）。繰延融資費用の現金支払いは財務活動によるキャッシュフローに計上された。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-EXH5">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 5<span style="display: block;">Melco Resorts and Entertainment Limited Selected Data, as Reported (US dollar thousands)</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">EBIT（損益計算書より）(EBIT (from income statement))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">544,865</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">298,663</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">58,553</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">支払利息（損益計算書より）(Interest expense (from income statement))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">229,582</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">223,567</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">118,330</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資本化利息（脚注より）(Capitalized interest (from footnote))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">37,483</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29,033</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">134,838</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延融資費用の償却（脚注より）(Amortization of deferred financing costs (from footnote))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26,182</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">48,345</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">38,511</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業活動による純キャッシュ(Net cash provided by operating activities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,162,500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,158,128</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">522,026</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">投資活動による純キャッシュ(Net cash from (used) in investing activities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(410,226)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">280,604</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(469,656)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">財務活動による純キャッシュ(Net cash from (used) in financing activities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,046,041)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,339,717)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(29,688)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：EBITは損益計算書の「税引前利益(Income (Loss) Before Income Tax)」に「利息費用－資本化利息(Interest expenses, net of capitalized interest)」を加えたものである。</p>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>メルコの利息カバレッジ比率を、資本化利息を含む場合と含まない場合で計算し解釈せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答を確認(Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答(Solution)</h4>
+<p>資本化利息を含む場合と含まない場合の利息カバレッジ比率は以下の通りである：</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2418-R-s03-L2">
+<li class="cfa-curriculum-list-item">2017年は、資本化利息を調整せずに2.37 (USD544,865 ÷ USD229,582)；資本化済み利息の減価償却によるEBIT調整および2017年に資本化された利息を利息費用に反映した場合は2.14 [(USD544,865 + USD26,182) ÷ (USD229,582 + USD37,483)]</li>
+<li class="cfa-curriculum-list-item">2016年は、資本化利息を調整せずに1.34 (USD298,663 ÷ USD223,567)；資本化済み利息の減価償却によるEBIT調整および2016年に資本化された利息を利息費用に反映した場合は1.37 [(USD298,663 + USD48,345) ÷ (USD223,567 + USD29,033)]</li>
+<li class="cfa-curriculum-list-item">2015年は、資本化利息を調整せずに0.49 (USD58,533 ÷ USD118,330)；資本化済み利息の減価償却によるEBIT調整および2015年に資本化された利息を利息費用に反映した場合は0.38 [(USD58,533 + USD38,511) ÷ (USD118,330 + USD134,838)]</li>
+</ul>
+<p>これらの計算は、メルコ(Melco)の利息カバレッジが過去2年と比較して2017年に改善したことを示している。資本化利息を調整した場合、2017年および2015年の両方でカバレッジ比率は低くなった。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>2016年から2017年の営業キャッシュフロー(Operating cash flow)の増減率を計算せよ。財務報告が所得税報告に影響しないと仮定した場合、資本化利息が営業および投資キャッシュフローに与えた影響は何か？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答を確認(Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答(Solution)</h4>
+<p>利息が資本化されず費用計上されていた場合、3年間すべてで営業キャッシュフローは低くなっていた。調整後の基準では、2017年の営業キャッシュフローは2016年と比べて減少したが、非調整基準では2017年は2016年比で0.4％増加した [(USD1,162,500 ÷ USD1,158,128) – 1]。すべての利息費用を費用計上する調整を含めると、2017年の営業キャッシュフローは0.4％減少した {[USD1,162,500 – USD37,483) ÷ (USD1,158,128 – USD29,033)] – 1}。</p>
+<p>利息が資本化されず費用計上されていた場合、3年間すべてで財務キャッシュフロー(Financing cash flows)は増加した。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>資本化利息の取り扱いは、アナリストが考慮すべき問題を提起する。まず、資本化利息は投資活動によるキャッシュアウトフローの一部として表示されるが、IFRSでは費用計上利息が営業または財務キャッシュフローを減少させ、US GAAPでは営業キャッシュフローを減少させる。企業間比較の際、利息支出が報告キャッシュフローに与える影響をアナリストは検討すべきである。次に、利息カバレッジ比率は、期間中の企業の利益(またはキャッシュフロー)が利息費用をどの程度カバーしているかを測定する支払能力指標である。企業の利息カバレッジを正確に把握するためには、資本化分と費用計上分を含む利息全額を使用すべきである。</p>
+<p>一般に、利息カバレッジ比率の計算に資本化利息を含めると、企業の支払能力をより適切に評価できる。信用格付けの割当において、格付け機関はカバレッジ比率に資本化利息を含める。例えば、スタンダード＆プアーズ(Standard &amp; Poor’s)は、EBIT利息カバレッジ比率を、EBIT ÷ 総利息（資本化利息控除前または利息収益控除前の利息）として計算する。</p>
+<p>最低利息カバレッジ比率を維持することは、貸付契約（例：銀行ローンや社債契約）によく含まれる財務契約条件である。カバレッジ比率の定義は、企業の信用契約書に記載されている。この定義は重要であり、カバレッジ比率の計算に資本化利息を含めるかどうかで、企業の実際の比率が契約条件で指定された水準にどれだけ近いか、すなわち契約違反の可能性に影響を与える。</p>
+</section>
+<section id="CFA2418-R-s03-01-04">
+<h3 class="dp-heading">内部開発費の資本化(Capitalization of Internal Development Costs)</h3>
+<p>会計基準では、製品の技術的実現可能性が確立された後にソフトウェア開発費を資本化することを企業に要求している。この要件にもかかわらず、実現可能性の判断は企業によって異なる場合がある。例えば、表6に示されるように、マイクロソフト(Microsoft)は製品の技術的実現可能性を製造開始直前に確立されたと判断し、実質的に研究開発費を費用計上している。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2418-R-s03-EXH6">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 6<span style="display: block;"> Disclosure on Software Development Costs </span></h4>
+<p>マイクロソフト(Microsoft Corporation)の経営者による議論および分析(MD&amp;A)、重要な会計方針の適用、研究開発費用(Research and Development Costs)からの抜粋：</p>
+<div class="cfa-curriculum-blockquote">
+<p>コンピュータソフトウェア製品の研究開発に内部で発生した費用は、その製品の技術的実現可能性が確立されるまで費用計上される。技術的実現可能性が確立されると、製品が一般販売可能になるまでの間、すべてのソフトウェア費用は資本化される。製品の技術的実現可能性がいつ確立されるかの判断が必要である。当社は、ソフトウェア製品の技術的実現可能性は、すべての高リスク開発課題がコーディングおよびテストを通じて解決された後に達成されると判断している。一般に、これは製品が生産に投入される直前に発生する。これら費用の償却は、製品の推定耐用期間にわたり売上原価に含まれる。</p>
+</div>
+<p>出典：Microsoft Corporation, 2017年Form 10-K年次報告書、p.45</p>
+</div>
+<p>開発費を資本化せず費用計上すると、当期の純利益(Net income)は低くなる。費用計上は、当期の開発費が前期間の資本化開発費を償却した場合の償却費より高い限り、将来も純利益を低くする傾向にある—企業の開発費が増加している場合が典型である。キャッシュフロー計算書においても、費用計上は営業キャッシュフロー(Net operating cash flows)を低く、投資キャッシュフロー(Net investing cash flows)を高くする。これは、開発費が投資活動によるキャッシュアウトフローではなく、営業活動によるキャッシュアウトフローとして計上されるためである。</p>
+<p>研究開発費のほとんどまたはすべてを費用計上する企業（例：Microsoft）と、ソフトウェア開発費を資本化する企業の財務パフォーマンスを比較する際には、調整を行い両者を比較可能にできる。ソフトウェア開発費を資本化する企業の場合、アナリストは次の調整を行える：(1) 損益計算書にソフトウェア開発費を費用として含め、過去年度の資本化ソフトウェア償却を除外する；(2) 貸借対照表から資本化ソフトウェアを除外（資産と株主資本を減少）する；(3) キャッシュフロー計算書を調整し、営業キャッシュフローを減少させ、当期開発費の額だけ投資キャッシュフローを減少させる。収益、長期資産、営業キャッシュフローを含む比率（例：自己資本利益率）も影響を受ける。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2418-R-s03-EXM6">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 6<span style="display: block;">Software Development Costs</span></h4>
+<section>
+<p>あなたは、JHHソフトウェア(JHH Software)という（仮想）ソフトウェア開発企業の分析プロジェクトに取り組んでおり、同社は2017年に最初の製品の技術的実現可能性を確立した。分析の一部として、特定の市場ベースの比率を算出し、すべてのソフトウェア開発費を費用計上する他社と比較する予定である。関連データおよび年次報告書の抜粋は表7に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-EXH7">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 7<span style="display: block;">JHH SOFTWARE (US dollar thousands, except per share amounts)</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">連結損益計算書（簡略版）(Consolidated Statement of Earnings—Abbreviated)</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">12月31日に終了する年度(For Year Ended 31 December)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2018</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総収益(Total revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD91,424</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD91,134</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD96,293</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業費用合計(Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">78,107</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">78,908</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">85,624</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業利益(Operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13,317</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12,226</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10,669</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税引当金(Provision for income taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,825</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,232</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,172</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純利益(Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD9,492</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD7,994</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD7,479</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1株当たり利益(Earnings per share (EPS))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD1.40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD0.82</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD0.68</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">キャッシュフロー計算書—簡略版(Statement of Cash Flows—Abbreviated)</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">12月31日に終了する年度(For Year Ended 31 December)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2018</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業活動による純キャッシュ(Net cash provided by operating activities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD15,007</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD14,874</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD15,266</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">投資活動による純キャッシュ(Net cash used in investing activities*)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(11,549)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(4,423)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(5,346)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">財務活動による純キャッシュ(Net cash used in financing activities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(8,003)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(7,936)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(7,157)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金及び現金同等物の純増減(Net change in cash and cash equivalents)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(USD4,545)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD2,515</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD2,763</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;">*ソフトウェア開発費用を含み、資本支出を含む(*Includes software development expenses of and includes capital expenditures of)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(USD6,000)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(USD4,000)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(USD2,000)</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>(USD2,000)</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>(USD1,600)</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>(USD1,200)</em></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Additional Information:</strong></th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>For Year Ended 31 December:</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2018</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Market value of outstanding debt</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Amortization of capitalized software development expenses</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(USD2,000)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(USD667)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Depreciation expense</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(USD2,200)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(USD1,440)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(USD1,320)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Market price per share of common stock</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD42</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD26</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD17</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Shares of common stock outstanding (thousands)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6,780</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,765</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10,999</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em><span class="cfa-curriculum-table-wrap-foot">Footnote disclosure of accounting policy for software development:</span></em></p>
+<p><em><span class="cfa-curriculum-table-wrap-foot">Expenses that are related to the conceptual formulation and design of software products are</span></em></p>
+<p><em><span class="cfa-curriculum-table-wrap-foot">expensed to research and development as incurred. The company capitalises expenses that are</span></em></p>
+<p><em><span class="cfa-curriculum-table-wrap-foot">incurred to produce the finished product after technological feasibility has been established.</span></em></p>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>Compute the following ratios for JHH based on the reported financial statements for fiscal year ended 31 December 2018, with no adjustments. Next, determine the approximate impact on these ratios if the company had expensed rather than capitalized its investments in software. (Assume the financial reporting does not affect reporting for income taxes. There would be no change in the effective tax rate.)</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2418-R-s03-L6">
+<li class="cfa-curriculum-list-item">
+<p>P/E: Price/Earnings per share</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>P/CFO: Price/Operating cash flow per share</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>EV/EBITDA: Enterprise value/EBITDA, where enterprise value is defined as the total market value of all sources of a company’s financing, including equity and debt, and EBITDA is earnings before interest, taxes, depreciation, and amortization.</p>
+</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">Check Answer</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">Solution</h4>
+<p>(US dollars are in thousands, except per share amounts.) JHH’s 2019 ratios are presented in the following table:</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s03-Tf">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Ratios </strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>As reported</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>As adjusted</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">A</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">P/E ratio</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">42.9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">B</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">P/CFO</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">C</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">EV/EBITDA</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2418-R-s03-L7">
+<li class="cfa-curriculum-list-item">
+<p>Based on the information as reported, the P/E ratio was 30.0 (USD42 ÷ USD1.40). Based on EPS adjusted to expense software development costs, the P/E ratio was 42.9 (USD42 ÷ USD0.98).</p>
+<p>株価(Price)：企業の株式時価が基礎的価値に基づくと仮定すると、会計上の差異にかかわらず1株あたりUSD42である。</p>
+<p>EPS: As reported, EPS was USD1.40. Adjusted EPS was USD0.98. Expensing software development costs would have reduced JHH’s 2018 operating income by USD6,000, but the company would have reported no amortization of prior years’ software costs, which would have increased operating income by USD2,000. The net change of USD4,000 would have reduced operating income from the reported USD13,317 to USD9,317. The effective tax rate for 2018 (USD3,825 ÷ USD13,317) is 28.72%, and using this effective tax rate would give an adjusted net income of USD6,641 [USD9,317 × (1 – 0.2872)], compared to USD9,492 before the adjustment. The EPS would therefore be reduced from the reported USD1.40 to USD0.98 (adjusted net income of USD6,641 divided by 6,780 shares).</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>報告値に基づくと、P/CFOは19.0 (USD42 ÷ USD2.21)であった。ソフトウェア開発費を費用計上するようCFOを調整すると、P/CFOは31.6 (USD42 ÷ USD1.33)となる。</p>
+<p>Price: Assuming that the market value of the company’s equity is based on its fundamentals, the price per share is USD42, regardless of a difference in accounting.</p>
+<p>報告値の1株当たりCFO(CFO per share, as reported)はUSD2.21（営業キャッシュフロー合計USD15,007 ÷ 6,780株）である。</p>
+<p>調整後の1株当たりCFO(CFO per share, as adjusted)はUSD1.33である。企業のUSD6,000のソフトウェア開発費は投資活動によるキャッシュアウトフローとして報告されており、費用計上すると営業キャッシュフローがUSD6,000減少し、報告値USD15,007からUSD9,007となる。調整後の営業キャッシュフロー合計USD9,007を6,780株で割ると、1株当たりCFOはUSD1.33となる。</p>
+</li>
+<li class="cfa-curriculum-list-item">報告値に基づくと、EV/EBITDAは16.3 (USD284,760 ÷ USD17,517)であった。ソフトウェア開発費を費用計上するようEBITDAを調整すると、EV/EBITDAは24.7 (USD284,760 ÷ USD11,517)となる。企業価値(Enterprise Value)：企業価値は株式および負債を含む全資金源の時価総額の合計である。JHHは負債を持たないため、企業価値は株式の時価と等しい。株式の時価はUSD284,760 (USD42 × 6,780株)である。報告値EBITDAはUSD17,517（税引前利益13,317 + 減価償却2,200 + 償却2,000）である。ソフトウェア開発費を費用計上するよう調整したEBITDAはUSD11,517（税引前利益9,317 + 減価償却2,200 + 償却0）である。</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>比率の変化を解釈せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">Check Answer</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">Solution</h4>
+<p>ソフトウェア開発費を費用計上すると、過去の利益、営業キャッシュフロー、およびEBITDAが減少し、すべての市場倍数(Market multiples)は増加する。そのため、ソフトウェア開発費を資本化せず費用計上した場合、JHH株はより割高に見える。</p>
+<p>調整前の市場ベース比率を、ソフトウェア開発費をすべて費用計上する競合他社との比較に使用すると、JHHは会計要因による差異のみで割安に見える可能性がある。調整済み市場ベース比率はより適切な比較基準を提供する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>例6の企業では、当期のソフトウェア開発費が過去期間の資本化ソフトウェア償却額を上回っている。その結果、ソフトウェア開発費を資本化せず費用計上すると、利益は低下する。しかし、当期の開発費が過去資本化費用の償却額より少ない場合、費用計上すると資本化に比べ利益が増加する。</p>
+<p>この節では、資本化と費用計上の判断が財務諸表と比率にどのように影響するかを示した。早期の費用計上は当期利益を低下させるが、利益傾向を改善する。一方、今資本化して後に費用計上すると、当期利益は高くなる。長期資産取得の会計処理を説明したので、次に後続期間における長期資産の評価方法について説明する。</p>
+</section>
+<section id="CFA2418-R-s03-01-05">
+<h3 class="dp-heading">財務アナリストへの示唆：費用認識(Implications for Financial Analysts: Expense Recognition)</h3>
+<p>収益認識ポリシーと同様に、企業の費用認識の選択は相対的保守性(conservatism)で特徴付けられる。費用を早く認識するよりも遅く認識する方が保守的でないと見なされる。さらに、多くの費用項目は純利益に大きく影響する見積りを企業に要求する。企業の財務諸表の分析、特に他社との比較には、これらの見積りの差異と潜在的影響を理解することが必要である。</p>
+<p>例えば、未回収債権の売上比率、保証費用の売上比率、資産の推定耐用年数の年度間変動が大きい場合、アナリストはその理由を理解すべきである。変化は事業運営の変化（例：製品品質向上による保証請求件数減少で保証費用が低下）によるものか、それとも事業運営とは無関係で、企業が特定の純利益効果を得るために見積りを操作している兆候か？</p>
+<p>同様に、同業他社2社の未回収債権比率、保証費用比率、資産推定耐用年数が大きく異なる場合、その理由を理解することが重要である。違いは事業運営の差異と一致しているか（例：顧客基盤や与信方針の違いにより未回収債権が少ない、または新しい設備を使うことによる資産耐用年数の違い）か。それとも事業運営とは一致せず、企業が見積りを操作している兆候か？</p>
+<p>企業の会計方針や重要な見積りに関する情報は、財務諸表の脚注および年次報告書の経営者による議論と分析(MD&amp;A)に記載されている。</p>
+<p>可能であれば、費用認識ポリシーや見積りの差異による金額的影響は、過去の業績や複数企業間での比較をより意味のあるものにする。アナリストは報告された費用を調整して比較可能にできる。</p>
+<p>金額的影響を計算できない場合でも、ポリシーや見積りの相対的保守性を特徴付け、これらの差異が報告費用および財務比率にどのように影響するかを定性的に評価することが一般に可能である。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PeriodCostsContent">
+<p>収益のタイミングと直接対応付けできない費用（例：経営者給与）は、直ちに費用計上される。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143491_202_Revenue_Recognition.html" >← 前へ</a>
+  <span class="title">2.03 | Expense Recognition</span>
+  <a href="courses_1867_modules_items_143495_204_Non-Recurring_Items.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

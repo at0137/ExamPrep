@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.03 | Goodwill</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2419-R-s03-R-1" title="3.03 | Goodwill">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3: 貸借対照表の分析 (Module 3: Analyzing Balance Sheets) 3.03 | のれん (Goodwill)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">のれん (goodwill) に関する財務報告および開示を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>ある企業が他社を取得する場合、購入価格は取得した識別可能な資産（有形・無形）および負債に、公正価値 (fair value) に基づき配分される。購入価格が取得した識別可能資産および負債の公正価値を上回る場合、その超過額は資産として認識され、のれん (goodwill) となる。取得企業が、対象企業の識別可能資産の純額を上回る価格を支払う理由を理解するには、以下の三つの観察点がある。第一に、被取得企業の財務諸表で認識されない項目（例：評判、確立された流通システム、訓練された従業員）には価値がある。第二に、対象企業の研究開発費は、認識基準を満たす個別資産を生み出していない場合でも、何らかの価値を創出している可能性がある。第三に、買収価値の一部は、競合他社に対する戦略的ポジショニングの改善や、買収後の営業費用削減などのシナジーから生じる場合がある。</p>
+<p>財務諸表におけるのれんの認識には賛否がある。のれん認識の支持者は、のれんは企業が得ると予想される超過収益の現在価値であると主張する。このグループは、超過収益の現在価値を決定することは、他の資産やプロジェクトに関連する将来キャッシュフローの現在価値を決定することに類似していると主張する。一方、のれん認識に反対する者は、買収価格はしばしば非現実的な期待に基づいており、その結果、将来ののれんの減損を招くと主張する。</p>
+<p>アナリストは、会計上ののれん (accounting goodwill) と経済的のれん (economic goodwill) を区別すべきである。経済的のれんは企業の経済的パフォーマンスに基づくものであり、会計上ののれんは会計基準に基づき、買収の場合にのみ貸借対照表に計上される。経済的のれんはアナリストや投資家にとって重要であり、必ずしも貸借対照表に反映されるわけではない。むしろ、株価に反映される（少なくとも理論上）。一部の財務諸表利用者は、のれんは企業から分離して売却できないため貸借対照表に記載すべきではないと考える。これらの利用者は、分離して識別・販売可能な資産のみが貸借対照表に反映されるべきだと考える。他の利用者は、のれんおよびその後の減損費用を分析し、過去の買収に対する経営陣のパフォーマンスを評価する。</p>
+<p>IFRSおよびUS GAAPの両方では、買収により生じた会計上ののれんは資本化される。のれんは償却されず、毎年減損テストを行う。のれんが減損と判断された場合、その減損損失は当期の損益として計上され、利益が減少する。減損損失は総資産も減少させるため、資産利益率 (return on assets, 純利益÷平均総資産) などの一部の業績指標は将来期間に増加する場合がある。減損損失は非現金項目である。</p>
+<p>のれんの認識に関する会計基準の要求事項は、以下のステップでまとめられる。</p>
+<ul class="cfa-curriculum-list-step">
+<li class="cfa-curriculum-steplist-item">ステップ1: 取得対象企業 (被取得企業, acquiree) を購入する総コストを決定する。</li>
+<li class="cfa-curriculum-steplist-item">ステップ2: 被取得企業の識別可能資産を公正価値で測定する。被取得企業の負債および偶発負債も公正価値で測定する。識別可能資産の公正価値と負債・偶発負債の公正価値の差額が、取得した純識別可能資産となる。</li>
+<li class="cfa-curriculum-steplist-item">ステップ3: 購入によるのれんは、(1) 取得対象企業の購入コストの超過分と、(2) 取得した純識別可能資産との差額である。時折、取得した純識別可能資産の価値が購入コストを上回る取引がある。このような取引は「バーゲン購入 (bargain purchase)」と呼ばれ、バーゲン購入による利益は発生した期間の損益として認識される。</li>
+</ul>
+<p>企業は、ユーザーが事業結合の性質および財務影響を評価できる情報を開示する必要がある。必要な開示には、例えば、取得対象企業の購入総コストの取得日公正価値、主要資産および負債ごとの取得日金額、認識されたのれんを構成する要因の定性的説明が含まれる。</p>
+<p>会計基準に組み込まれた指針にもかかわらず、アナリストは公正価値の推定には経営判断が大きく関わることに注意すべきである。コンピュータソフトウェアなど無形資産の価値は、買収を分析する際に容易に検証できない場合がある。経営判断による評価は、耐用年数が確定している識別可能無形資産の償却のため、現在および将来の財務諸表に影響を与える。対照的に、のれんや耐用年数が無限の識別可能無形資産は償却されず、前述の通り、毎年減損テストが行われる。</p>
+<p>のれんの認識および減損は、企業間の財務諸表の比較可能性に大きな影響を与える。そのため、アナリストはしばしば企業の財務諸表からのれんの影響を除外して調整する。これらの調整には以下が含まれる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2419-R-s03-L2">
+<li class="cfa-curriculum-list-item">財務比率算出に使用する貸借対照表データからのれんを除外</li>
+<li class="cfa-curriculum-list-item">営業動向を確認するために使用する損益データからのれん減損損失を除外</li>
+</ul>
+<p>さらに、取得企業は、購入価格と被取得企業の純資産および収益見込みを考慮して、買収後の企業業績について予測を立てることができる。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2419-R-s03-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">のれんの減損 (Goodwill Impairment)</h3>
+<section>
+<p>Safeway, Inc. (Safeway, Inc.) は北米の食品・医薬品小売業者である。2010年2月25日、同社は次の情報を含むプレスリリースを発表した：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2419-R-s03-L3">
+<li class="cfa-curriculum-list-item">Safeway Inc. は、2009年第4四半期（16週間）において、希薄化後1株当たり4.06米ドル (USD4.06 per diluted share)、純損失1,609.1百万米ドル (USD1,609.1 million) を報告した。税引後での非現金ののれん減損費用1,818.2百万米ドル (USD1,818.2 million, net of tax, USD4.59 per diluted share) を除外すると、純利益は209.1百万米ドル (USD209.1 million, USD0.53 per diluted share) となる。2008年第4四半期（17週間）の純利益は338.0百万米ドル (USD338.0 million, USD0.79 per diluted share) であった。</li>
+<li class="cfa-curriculum-list-item">2009年第4四半期に、Safewayは非現金ののれん減損費用1,974.2百万米ドル (USD1,974.2 million、税引後1,818.2百万米ドル) を計上した。この減損は主にSafewayの時価総額の減少および経済低迷によるものである。のれんは過去の買収から生じたものである。</li>
+<li class="cfa-curriculum-list-item">2010年1月2日時点のSafewayの貸借対照表では、のれんが426.6百万米ドル (USD426.6 million)、総資産は14,963.6百万米ドル (USD14,963.6 million) であった。2009年1月3日時点では、のれんが2,390.2百万米ドル (USD2,390.2 million)、総資産は17,484.7百万米ドル (USD17,484.7 million) であった。</li>
+</ul>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>こののれん減損費用はどの程度重要であったか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答例 (Solution)</h3>
+<p>のれん減損は、のれん総額の80％超および総資産の11％に相当するため、明らかに重要である。（1,974.2百万米ドルの減損費用は、年初の2,390.2百万米ドルののれんの82.6％、総資産17,484.7百万米ドルの11.3％に相当する）</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>買収価格に関連して、こののれん減損は何を示唆する可能性があるか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答例</h3>
+<p>こののれんは過去の買収から生じたものである。減損費用は、取得した事業の価値が支払った買収価格よりも低くなっていることを意味する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>図2および図3に示されるように、SAPの2017年貸借対照表ではのれんが21,274百万ユーロ (EUR21,274 million)、Appleの2017年貸借対照表ではのれんが5,717百万米ドル (USD5,717 million) である。SAPの総資産に占めるのれんの割合は50.1％であり、Appleの総資産に占める割合はわずか1.5％である。アナリストは、SAPの総資産に占めるのれんの割合が非常に高いことを懸念する場合がある。</p>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2419-R-s03-FN-1-1Content">
+<p>IFRS第3号、事業結合 (IFRS 3, Business Combinations) および財務会計基準審議会 (Financial Accounting Standards Board, FASB) 会計基準コード化 (Accounting Standards Codification, ASC) 第805号、事業結合 (Business Combinations)</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="GoodwillContent">
+<p>無形資産で、取得企業の購入価格が取得した純識別可能資産の価値を上回る部分を表すもの。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143514_302_Intangible_Assets.html" >← 前へ</a>
+  <span class="title">3.03 | Goodwill</span>
+  <a href="courses_1867_modules_items_143518_304_Financial_Instruments.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

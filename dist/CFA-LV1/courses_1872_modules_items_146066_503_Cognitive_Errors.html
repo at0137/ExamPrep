@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.03 | Cognitive Errors</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2252-R-s03" title="5.03 | Cognitive Errors">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール5：個人の行動バイアス 5.03 | 認知エラー（Cognitive Errors）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">一般的に認識されている行動バイアス（behavioral biases）と、それらが金融上の意思決定（financial decision making）に与える影響について論じよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>認知エラー（cognitive errors）は、「信念固執バイアス（belief perseverance biases）」と「処理エラー（processing errors）」の2つに分類される。</p>
+<p>信念固執（belief perseverance）とは、統計的誤り（statistical errors）、情報処理の誤り（information-processing errors）、または記憶の誤り（memory errors）を犯しながら、以前に保持していた信念に固執する傾向である。本リーディングで扱う信念固執バイアスには、保守性（conservatism）、確証（confirmation）、代表性（representativeness）、コントロールの錯覚（illusion of control）、および後知恵（hindsight）が含まれる。</p>
+<p>処理エラー（processing errors）は、情報が金融上の意思決定において非論理的または非合理的に処理・利用される可能性を説明する。本リーディングで扱う処理エラーには、アンカリングと調整（anchoring and adjustment）、メンタル・アカウンティング（mental accounting）、フレーミング（framing）、および利用可能性（availability）が含まれる。</p>
+<section id="CFA2252-R-s03-01">
+<h3 class="dp-heading">信念固執バイアス（Belief Perseverance Biases）</h3>
+<p>信念固執バイアスは、新しい情報が既存の信念や認知と衝突する際に生じる精神的な不快感、すなわち認知的不協和（cognitive dissonance）から生じる。この不快感を解消するために、人々は矛盾する情報を無視または修正し、既存の信念や考えを裏付ける情報のみを考慮する傾向がある。</p>
+<section id="CFA2252-R-s03-01-01">
+<h4>保守性バイアス（Conservatism Bias）</h4>
+<p>保守性バイアスとは、新たな矛盾する情報を十分に取り入れずに、以前の見解や予測を維持する信念固執バイアスである。ベイズ的観点（Bayesian terms）では、事象の事前確率（prior probability）を過大評価し、新しい情報を過小評価する傾向があり、その結果、確率や結果に関する修正された信念が新情報に対して過小反応（underreact）となる。</p>
+<section id="CFA2252-R-s03-01-01-01">
+<h5><em>Consequences of Conservatism Bias</em></h5>
+<p>保守性バイアスの結果として、金融市場参加者（financial market participants, FMPs）は以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L3">
+<li class="cfa-curriculum-list-item">新しい情報が提示されても、見解や予測の更新を維持する、または更新が遅れる。</li>
+<li class="cfa-curriculum-list-item">複雑なデータに基づいて信念を更新する際の精神的ストレスを避けるため、従来の信念を維持する。この行動は、新しい情報を処理することの困難さに関連している。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s03-01-01-02">
+<h5><em>Detection of and Guidance for Overcoming Conservatism Bias</em></h5>
+<p>保守性バイアスの影響は、新しい情報を適切に分析し重み付けすることで修正または軽減できる。その第一歩は、特に技術的・抽象的・統計的な情報に関してバイアスの存在を認識することである。これらの情報は処理にかかる認知コスト（cognitive cost）が高いためである。</p>
+<p>新しい情報が提示された場合、FMPは「この情報は私の予測をどのように変えるか」「この情報は私の予測にどのような影響を与えるか」といった問いを自らに投げかけるべきである。新しい情報を組み込んだ慎重な分析を行い、適切に対応すべきである。このような新情報に基づく信念の更新は、ベイズの定理（Bayes’ Rule）の原則と一致しており、事前の推定と新しい情報を体系的に組み合わせて更新確率が導出される。</p>
+<p>情報の解釈や理解が難しい場合、FMPはその解釈方法や含意を説明できる専門家の助言を求めるべきである。</p>
+</section>
+</section>
+<section id="CFA2252-R-s03-01-02">
+<h4>確証バイアス（Confirmation Bias）</h4>
+<p>確証バイアスとは、既存の信念を裏付ける情報を探し、それに注目し、矛盾する情報を無視または過小評価する傾向を指す。認知的不協和への反応として、確証バイアスは自分が信じたいことを正当化しようとする傾向を反映する。</p>
+<p>多くの経験豊富なプライベート・ウェルス・アドバイザー（private wealth advisers）は、独自に調査を行い、特定の投資をポートフォリオに追加することを主張する顧客に対応した経験があるだろう。この顧客は、アドバイザーが反対を勧めても、その投資を保有し続けることを主張する場合がある。なぜなら、その後の調査では、その投資が依然として魅力的であるという自身の信念を裏付ける情報のみを探すためである。確証バイアスは個人投資家に限られたものではなく、すべてのFMPは自身の中にある潜在的な確証バイアスに注意すべきである。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM1">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 1<span style="display: block;">Confirmation Bias</span></h5>
+<p>Sarter Investment Advisorsのポートフォリオマネージャーは、架空のテレビ制作・配給会社であるReal Media Inc.の株式を、主にトップの株式アナリストによる説得力のある分析およびバリュエーションに基づいて推奨した。Sarterの顧客はこれらの株式を数年間保有している。</p>
+<p>最近、この株式は、同社がアナリスト予想の利益を下回ったことや経営陣の交代により大幅にアンダーパフォームしている。ポートフォリオマネージャーの同僚は、このアンダーパフォーマンスは、より優れた技術と流通を持つ競合企業に市場シェアを奪われている結果であると考えている。この競合企業は上場しているが、Sarterのポートフォリオマネージャーやアナリストはその企業について調査を行っていない。</p>
+<p>Real Mediaが再び低調な決算を発表した後、ポートフォリオマネージャーは当該投資の主要な情報源であった株式アナリストと話をする。この株式アナリストは当該銘柄に対して「買い（buy）」評価を維持しており、株価が下落した一方で利益予想は変わっていないため、Real Mediaはこれまで以上に魅力的な投資であると考えている。この会話の結果、ポートフォリオマネージャーは安心感を得て、ポジションを維持する。</p>
+<p>このポートフォリオマネージャーは確証バイアスに陥っている。異なる見解を得るために売り（sell）評価のアナリストと話したり、競合企業について調査したりするのではなく、すでに自分と同じ意見を持つ人物と話をしている。</p>
+</div>
+<section id="CFA2252-R-s03-01-02-02">
+<h5>Consequences of Confirmation Bias</h5>
+<p>確証バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L4">
+<li class="cfa-curriculum-list-item">既存の投資に関するポジティブな情報のみを考慮し、ネガティブな情報を無視する。</li>
+<li class="cfa-curriculum-list-item">スクリーニング基準（screening criteria）を設定する際、その妥当性を否定する情報や他の基準を支持する情報を無視する。その結果、基準を満たさない優良投資が見落とされる一方で、基準を満たす劣悪な投資が採用される可能性がある。</li>
+<li class="cfa-curriculum-list-item">ポートフォリオの分散が不十分になる。FMPは単一企業の株式価値を過信し、ネガティブなニュースを無視し、その企業が良い投資であることを裏付ける情報のみを収集・処理する。その結果、適切以上に大きなポジションを構築し、分散不足のポートフォリオを保有する。</li>
+<li class="cfa-curriculum-list-item">自社株に投資資産の不釣り合いな割合を保有する。自社を信じ、その将来性に確信を持っているためである。好ましい情報のみが引用され、不利な情報は無視される。不利な情報を認識すると、それに伴う精神的な不快感が業務遂行を困難にする可能性がある。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s03-01-02-03">
+<h5>Detection of and Guidance for Overcoming Confirmation Bias</h5>
+<p>確証バイアスの影響は、既存の信念に反する情報を積極的に探すことで修正または軽減できる。</p>
+<p>もう一つ有用な方法は、投資判断を裏付けることである。例えば、52週高値を更新した株式など、既存の信念を裏付ける基準に基づいて投資選択を行う場合、その判断を別の視点や情報源（例：企業・業界・セクターのファンダメンタル分析（fundamental research））からの調査によって確認することが望ましい。</p>
+</section>
+</section>
+<section id="CFA2252-R-s03-01-03">
+<h4>代表性バイアス（Representativeness Bias）</h4>
+<p>代表性バイアスとは、新しい情報を過去の経験や分類に基づいて分類する傾向を指す。新しい情報は既知の要素に類似しているように見える場合があるが、実際には大きく異なる可能性がある。このような場合、分類の反射的行動（classification reflex）は誤った理解を生み、その後の思考すべてにバイアスを与える。ベースレート無視（base-rate neglect）とサンプルサイズ無視（sample-size neglect）は、FMPに関連する代表性バイアスの2つの形態である。</p>
+<p>ベースレート無視では、ある現象がより大きな母集団においてどの程度発生するかという基本発生率（base rate）が無視され、個別具体的な情報が優先される。個別情報は、より適切な一般情報や基礎的な確率に対して誤解を招く可能性がある。FMPは個別の証券や戦略について詳細な分析を行うことが多いため、その投資が属する「クラス」（産業、セクター、地域など）に関する一般的な情報を見落としがちである。</p>
+<p>代表性バイアスのもう一つの形態はサンプルサイズ無視であり、FMPは小さなサンプルが母集団を代表していると誤って仮定する。この傾向を持つ人は、小さなサンプルで観察された特性を大規模なデータ集合の特性として扱い、小サンプルの情報を過大評価する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM2">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 2<span style="display: block;">Representativeness Bias</span></h5>
+<section>
+<p>Jacques Verteは、困難な状況にある大手自動車部品メーカーであるAPM社の将来見通しを評価している。過去50年間において、自動車部品メーカーが倒産した例はほとんどなく、困難な時期であっても同様であった。しかし最近の報道では、APMの事業および財務上の問題が強調され、一部の論者は同社が倒産する可能性があると示唆している。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">1. </span>
+<p>次のシナリオのうち、どちらがより起こりやすいか。理由とともに説明しなさい。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. APMは問題を解決する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA2252-R-s03-01-03-01-01">
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>シナリオAの方が起こりやすい。50年のデータに基づくベースレート（base rate）は、困難な状況においても倒産するよりも生き残る自動車部品会社の方が多いことを示している。したがって、APMが倒産するよりも問題を解決する可能性の方が高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. APMは倒産する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section id="CFA2252-R-s03-01-03-01-01">
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>シナリオAの方が起こりやすい。50年のデータに基づくベースレート（base rate）は、困難な状況においても倒産するよりも生き残る自動車部品会社の方が多いことを示している。したがって、APMが倒産するよりも問題を解決する可能性の方が高い。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>Verteが代表性バイアス（representativeness bias）に影響されている場合、APMをAとBのどちらに分類する可能性が高いか。理由を説明しなさい。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA2252-R-s03-01-03-01-02">
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Verteが代表性バイアスに影響されている場合、彼はシナリオBを選択し、同社が倒産すると予測する可能性が高い。これは彼が読んだ見出しに影響されているためである。APMが倒産する可能性が高いと分類することで、Verteは困難な状況においても自動車部品メーカーが倒産する確率が低いというベースレートを無視しており、ベースレート無視（base-rate neglect）に該当する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<section id="CFA2252-R-s03-01-03-02">
+<h5>Consequences of Representativeness Bias</h5>
+<p>代表性バイアスの結果として、金融市場参加者（financial market participants, FMPs）は以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L7">
+<li class="cfa-curriculum-list-item">個別具体的な情報や小さなサンプルにほぼ完全に依存して見解や予測を形成する。</li>
+<li class="cfa-curriculum-list-item">複雑なデータの高い認知コスト（cognitive costs）に伴う信念更新の精神的負担を避けるため、単純な分類に基づいて信念を更新する。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s03-01-03-03">
+<h5>Detection of and Guidance on Overcoming Representativeness Bias</h5>
+<p>FMPがベースレート無視またはサンプルサイズ無視が問題である可能性を感じた場合、次のような問いを自らに投げかけるべきである。「X（検討中の投資）が、グループA（それが類似している、または代表していると考えられるグループ）に属する確率と、グループB（統計的に属する可能性がより高いグループ）に属する確率はどちらが高いか？」このような問いは、ベースレート確率を考慮していない、あるいは小数の法則（law of small numbers）を無視しているかどうかを検討する助けとなる。ベースレート情報を得たり、観測サンプルサイズを拡大したりするために、さらなる調査が必要となる場合もある。</p>
+</section>
+</section>
+<section id="CFA2252-R-s03-01-04">
+<h4>コントロールの錯覚バイアス（Illusion of Control Bias）</h4>
+<p>コントロールの錯覚バイアスとは、人々が実際には制御または影響できないにもかかわらず、結果をコントロールまたは影響できると信じる傾向である。多くの研究により、人々が実際以上に自分がコントロールを持っていると認識したり、存在しない因果関係を推測したり、偶然の結果に対して過度に確信を持った予測を行う状況が明らかにされている。典型的な例として、人々はランダムに割り当てられた番号よりも自分で選んだ宝くじ番号を好む傾向がある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM3">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 3<span style="display: block;">Illusion of Control Bias</span></h5>
+<p>Adelia Scottは、富裕層向け投資助言会社であるSarter Investment Advisors（Sarter）のウェルス・アドバイザーである。Scottは、口座の30%を勤務先企業の株式で保有している顧客と面談する。この顧客には従業員保有義務はない。</p>
+<p>以前の面談記録によれば、この顧客は当初、集中したポジションを5年間で分散することに同意していた。しかしScottは、業界動向およびマクロ経済環境により同社の将来の成長見通しが大幅に悪化しているという最近の調査に基づき、より速いスケジュールを提案する。</p>
+<p>この情報を提示された際、顧客は分散計画の変更に消極的であり、同社の過去の二桁成長率と今後も同様の成長が続くという自身の信念を理由に挙げる。顧客は「信じてください。私と私のチームは、あなたが引用しているような予測を現実にさせるつもりはありません」と述べる。</p>
+<p>この顧客はコントロールの錯覚バイアスに影響されている。彼は自身とチームが企業の業績や株価をコントロールできると信じているため、Scottの意見を受け入れようとしない。</p>
+</div>
+<section id="CFA2252-R-s03-01-04-02">
+<h5>Consequences of Illusion of Control</h5>
+<p>コントロールの錯覚バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L8">
+<li class="cfa-curriculum-list-item">ポートフォリオの分散が不十分になる。研究によれば、一部の投資家は自分がコントロールできると感じる企業、例えば勤務先企業に投資する傾向があり、その結果として集中ポジションを保有する。しかし実際には、ほとんどの投資家は勤務先企業に対してほとんど、または全くコントロールを持っていない。企業の業績が悪化した場合、これらの投資家は雇用喪失と投資損失の両方を被る可能性がある。</li>
+<li class="cfa-curriculum-list-item">過度な取引を行う。研究者は、ポートフォリオ回転率（portfolio turnover）が投資リターンと負の相関を持つことを発見している。</li>
+<li class="cfa-curriculum-list-item">過度に詳細な財務モデルや予測を構築する。FMPは投資判断の前に詳細なモデルを必要とし、これらのモデルによる予測が不確実性をコントロールすると信じる場合がある。しかし、投資対象や発行体、業界に対する理解が深まることは有益である一方で、モデルの複雑性が高まっても投資結果に内在するリスクや不確実性を制御することはできない。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s03-01-04-03">
+<h5>Detection of and Guidelines for Overcoming Illusion of Control Bias</h5>
+<p>投資家がまず認識すべき最も基本的な考え方は、投資が確率的活動（probabilistic activity）であるということである。最大規模の運用会社であっても、自らの投資結果をコントロールすることはほとんどできない。企業はマクロ経済や業界の力、さらには競合他社、顧客、供給業者の行動の影響を受ける。</p>
+<p>第二に、反対意見を求めることが望ましい。新たな投資を検討する際には、その投資に反対する要因について考えるべきである。「下方リスクは何か」「何がうまくいかない可能性があるか」「いつ売却するか」といった問いを自らに投げかける。対象銘柄に対して売り（sell）評価を持つ株式アナリストなど、反対の見解を持つ人物と話すことが有益である。</p>
+</section>
+</section>
+<section id="CFA2252-R-s03-01-05">
+<h4>後知恵バイアス（Hindsight Bias）</h4>
+<p>後知恵バイアスとは、過去の出来事が予測可能であり、予想して当然であったと信じる傾向を指す。この行動は、実際に起こった結果が起こらなかった結果よりも明確に認識されるという事実から生じる。同様に、人々は実際に何が起こったかという知識に影響され、自身の過去の予測を実際よりも正確であったと記憶する傾向がある。不十分な根拠に基づく意思決定でも良い結果が出た場合には優れた戦術的判断として記憶され、十分に根拠のある意思決定でも悪い結果が出た場合には回避可能な誤りとして評価されることがある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM4">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 4<span style="display: block;">Hindsight Bias</span></h5>
+<p>投資助言会社のアナリストであるBeverly Boloは、顧客に対するプレゼンテーションの中で、過去のマクロ経済の景気後退期における同社の投資成果について説明している。その中でBoloは、「直近の景気後退は、イールドカーブ（yield curve）やその他の先行指標（leading indicators）を見れば、開始の8か月前には明らかであった」と述べている。</p>
+<p>Boloの発言は後知恵バイアスを示している。景気後退は他の出来事と同様に、振り返れば明白に見えるが、実際には正確に予測されることはほとんどない。Boloは、これらの先行指標が景気後退を示唆した頻度と、その後実際に景気後退が発生した頻度を比較することで、説明を補強することができる。</p>
+</div>
+<section id="CFA2252-R-s03-01-05-02">
+<h5>Consequences of Hindsight Bias</h5>
+<p>後知恵バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L9">
+<li class="cfa-curriculum-list-item">投資結果を正しく予測した程度や、一般的な予測可能性を過大評価する。このバイアスは、後に説明される過信バイアス（overconfidence bias）と密接に関連している。</li>
+<li class="cfa-curriculum-list-item">運用者や証券のパフォーマンスを不当に評価する。証券市場で実際に起こった結果を基に評価が行われ、投資時点での期待ではなく事後的な結果と比較される。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s03-01-05-03">
+<h5>Detection of and Guidelines for Overcoming Hindsight Bias</h5>
+<p>後知恵バイアスは理解すれば認識可能である。FMPは「自分は歴史を書き換えていないか」「自分の過ちに対して正直であるか」といった問いを自らに投げかけるべきである。</p>
+<p>後知恵バイアスを防ぐために、FMPは投資判断およびその主要な理由を意思決定時またはその直後に文書として記録すべきである。記憶ではなくこれらの記録を参照することで、過去の意思決定をより正確に評価することができる。</p>
+</section>
+</section>
+</section>
+<section id="CFA2252-R-s03-02">
+<h3 class="dp-heading">処理エラー（Processing Errors）</h3>
+<p>処理エラーとは、情報が非論理的または非合理的に処理・利用されることを指す。信念固執バイアス（belief perseverance biases）とは異なり、処理エラーは記憶の誤りや確率の付与・更新に関する誤りとはあまり関係せず、むしろ情報そのものの処理方法における欠陥により密接に関連している。</p>
+<section id="CFA2252-R-s03-02-01">
+<h4>アンカリングと調整バイアス（Anchoring and Adjustment Bias）</h4>
+<p>アンカリングと調整バイアスとは、その後の推定、判断、意思決定を行う際に、最初に得た情報に依存することを指す。未知の大きさの値を推定する必要がある場合、人々は通常、ある初期値（「アンカー（anchor）」）から出発し、それを上方または下方に調整する。しかし、初期のアンカーがどのように選ばれたかにかかわらず、人々は十分に調整を行わない傾向があり、その結果として推定値はバイアスを含むものとなる。アンカリングと調整バイアスは保守性バイアス（conservatism bias）と密接に関連している。ベイズの定理（Bayes’ Rule）は、新しい情報をどのように既存の信念に組み込むべきかについての指針を提供する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM5">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 5<span style="display: block;">Anchoring and Adjustment Bias</span></h5>
+<p>Aiden Smytheは証券会社の株式リサーチアナリストである。Smytheは建設機械を製造するIndustrial Lift Plcを担当している。同社の事業はマクロ経済状況、特に非住宅建設活動（non-residential construction activity）に敏感である。昨年、Industrial Liftは非住宅建設活動が概ね好調であった中で、EPS1.00ポンドを報告した。Smytheは今年のEPS予想を更新している。過去2か月で非住宅建設活動は大幅に減少しており、一部のエコノミストは景気後退の可能性を懸念している。その結果、SmytheはEPSが前年水準から10%低下すると予測し、0.90ポンドの予想を公表した。</p>
+<p>Smytheの予想はアンカリングと調整を示している。Smytheのアンカーは前年のEPS1.00ポンドであり、基礎条件が大きく変化している可能性にもかかわらず、それに依存している。</p>
+</div>
+<section id="CFA2252-R-s03-02-01-02">
+<h5>Consequences of Anchoring and Adjustment Bias</h5>
+<p>アンカリングと調整バイアスの結果として、FMPは新しい情報を得ても、元の予想に過度に固執する可能性がある。この傾向は下方修正に限らず、上方修正においても同様に生じる。</p>
+</section>
+<section id="CFA2252-R-s03-02-01-03">
+<h5>Detection of and Guidelines for Overcoming Anchoring and Adjustment Bias</h5>
+<p>FMPが取るべき主な行動は、アンカリングと調整バイアスの存在を明らかにするような問いを意識的に自らに投げかけることである。例えば、「私は合理的な分析に基づいてこの株式を保有しているのか、それとも購入価格や過去の高値といったアンカーに固執しているのか」「この予測は過去の観測値に基づいているのか、それとも将来の予想条件に基づいているのか」といった問いである。</p>
+<p>ある期間の企業の売上や利益は、その期間の条件を反映している。将来の条件が過去と異なる場合、売上や利益も異なる可能性が高く、ときには大きく異なる。同様に、証券価格はある時点における投資家の将来に対する認識を反映しており、特定の投資家の取得原価や過去の市場水準など過去に基づく条件はしばしば無関係である。FMPは投資推奨の根拠を検討し、それが過去の予想や「デフォルト値」にアンカーされていないかを確認すべきである。</p>
+</section>
+</section>
+<section id="CFA2252-R-s03-02-02">
+<h4>メンタル・アカウンティング・バイアス（Mental Accounting Bias）</h4>
+<p>メンタル・アカウンティング・バイアスとは、貨幣が代替可能（fungible）であるにもかかわらず、意思決定に影響を与える形で資金を「口座（accounts）」ごとに心理的に分けてしまうことを指す（Thaler 1980）。伝統的ファイナンス理論ではFMPはポートフォリオ全体をリスク・リターンの観点から総合的に評価すると仮定するが、Statman（1999, 2008）は、複数の投資の相互作用を扱うことの困難さからメンタル・アカウンティングが生じると主張している。投資家はポートフォリオをピラミッド型の階層構造で構築し、各層が特定の財務目標に対応する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM6">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 6<span style="display: block;">Mental Accounting Bias</span></h5>
+<p>個人投資家のKendra Liuは、製薬会社New Horizons Ltd.の株式を保有している。同社の研究開発パイプラインにある医薬品が臨床試験で予想外の成功を収め、株価が一夜にして倍増した。Liuは保有株の半分を売却し、その資金で小型バイオテクノロジー企業Cutting Edge Ltd.の株式を購入した。Liuはこの投資を「高リスク・高リターンの賭け」と考えており、全損の可能性があると認識しているが、この資金はもともと期待していなかった利益であるため、投資に抵抗を感じていない。</p>
+<p>Liuの投資はメンタル・アカウンティング・バイアスを示している。彼女はNew Horizonsからの利益を、その出所に基づいて心理的に別の口座に分類しているが、資金は本来代替可能である。Liuはこの資金をポートフォリオ全体戦略と整合的な形で投資すべきである。</p>
+</div>
+<section id="CFA2252-R-s03-02-02-02">
+<h5>Consequences of Mental Accounting Bias</h5>
+<p>メンタル・アカウンティング・バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L10">
+<li class="cfa-curriculum-list-item">低相関の資産を組み合わせることによるリスク低減機会を見落とす。ポートフォリオの異なる層や心理的口座間での相殺的ポジションは、全体として非最適なパフォーマンスにつながる可能性がある。</li>
+<li class="cfa-curriculum-list-item">インカム（income）からのリターンとキャピタルゲイン（capital appreciation）からのリターンを非合理的に区別する。多くの投資家は元本を維持する必要性を感じつつ、その元本が生み出すインカムを消費することに焦点を当てる。その結果、多くのFMPはインカムを追求し、知らず知らずのうちに元本をリスクにさらす。</li>
+<li class="cfa-curriculum-list-item">資産やポートフォリオを元本（principal）と投資収益（returns）に非合理的に二分する。一部のFMPは、元本よりも収益部分（インカムまたはキャピタルゲイン）に対してより大きなリスクを取ることができると考える。この状況はカジノ用語で「ハウスマネーでプレイする（playing with house money）」と呼ばれる。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s03-02-02-03">
+<h5>Detection of and Guidelines for Overcoming Mental Accounting Bias</h5>
+<p>メンタル・アカウンティング行動を検出し克服する有効な方法は、その欠点を認識することである。主な欠点は、投資間の相関が考慮されず、意図しないリスクが生じることである。FMPはすべての資産を1つのスプレッドシートにまとめ（見出しや口座ラベルなしで）、全体の資産配分を把握すべきである。この作業により、予想以上の現金残高など、全体として見ることで初めて気づく情報が得られることが多い。その後の論理的なステップは、すべての資産を考慮したポートフォリオ戦略を構築することである。</p>
+</section>
+</section>
+<section id="CFA2252-R-s03-02-03">
+<h4>フレーミング・バイアス（Framing Bias）</h4>
+<p>フレーミング・バイアスとは、質問の提示方法や文脈（frame）によって人の回答が異なる情報処理バイアスである。ある意思決定問題は複数の方法で提示することが可能である。</p>
+<p>例えば、「4社に1社のスタートアップが成功する」という利益の文脈（gain context）で提示される場合と、「4社中3社が失敗する」という損失の文脈（loss context）で提示される場合がある。前者ではFMPは前向きな見方をし、ベンチャー投資を行う可能性があるが、後者ではそうしない可能性がある。</p>
+<p>ナロー・フレーミング（narrow framing）は、狭い参照枠に基づいて情報を評価することであり、全体像を見失い特定の要素のみに焦点を当てることを意味する。例えば、投資家が企業の経営陣のみに注目し、業界特性、ファンダメンタルズ、バリュエーションといった重要な要素を見落とす場合である。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM7">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 7<span style="display: block;">Effects of Framing Bias</span></h5>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>意思決定のフレームは投資家行動において広く見られる。リスク許容度アンケート（risk tolerance questionnaires）は、フレーミング・バイアスがどのように発生するか、またFMPがその影響を認識すべきであることを示す例となる。</p>
+<p>例えば、投資家が自分のリスクカテゴリーを判断するためにリスク許容度アンケートに回答するとする。このリスクカテゴリーは資産配分や適切な投資タイプを決定する。以下の情報が提供される。</p>
+<p style="padding-left: 20px">10年間にわたり、ポートフォリオABCは年平均リターン10%、年標準偏差16%を記録している。リターンが正規分布（normal distribution）に従うと仮定すると、ある年にリターンが平均値の±1標準偏差内に収まる確率は67%、±2標準偏差内は95%、±3標準偏差内は99.7%である。したがって、ポートフォリオABCの年間リターンは、67%の確率で−6%から26%の間、95%の確率で−22%から42%の間、99.7%の確率で−38%から58%の間に収まる。</p>
+<p>以下の2つの質問は仮想ポートフォリオABC、DEF、XYZに関するものである。リスクとリターンは両方の質問で同じであるが、情報の提示方法が異なる。</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA2252-R-L11">
+<li class="cfa-curriculum-list-item">次の表に基づき、どの投資ポートフォリオがあなたのリスク許容度と長期的リターンの希望に適合するか。</li>
+<li class="cfa-curriculum-list-item">次の表に基づき、どの投資ポートフォリオがあなたのリスク許容度と長期的リターンの希望に適合するか。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<p>投資家は、質問1と質問2で異なるポートフォリオを選択する可能性がある。ポートフォリオXYZは、2標準偏差を用いてリターンの範囲を定義しリスクを示す最初の質問では、標準偏差のみを示す2番目の質問よりも魅力的に見える可能性がある。また、2番目の質問では、リターンが先に提示され、その後にリスクの尺度が提示されている。このように、質問の提示方法や順序は回答に大きな影響を与える可能性がある。FMPは、フレーミング（framing）が投資選択に与える影響を十分に認識すべきである。</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="CFA2252-R-s03-02-03-02">
+<h5>Consequences of Framing Bias</h5>
+<p>フレーミング・バイアス（framing bias）の結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L13">
+<li class="cfa-curriculum-list-item">リスク許容度に関する質問の提示方法によってリスク許容度を誤って特定する。利益の文脈（gain frame）ではよりリスク回避的となり、損失の文脈（loss frame）ではよりリスク選好的となる。この誤認は非最適なポートフォリオにつながる可能性がある。</li>
+<li class="cfa-curriculum-list-item">短期的な価格変動に注目し、意思決定プロセスにおいて長期的な考慮を無視する可能性がある。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s03-02-03-03">
+<h5>Detection of and Guidelines for Overcoming Framing Bias</h5>
+<p>フレーミング・バイアスは、「この意思決定は純利益（net gain）または純損失（net loss）に焦点を当てた結果か」といった問いを自らに投げかけることで検出される。前述のとおり、意思決定を潜在的な純損失として捉える投資家はよりリスクの高い投資を選択する傾向があり、潜在的な純利益として捉える場合にはより低リスクの投資を選択する傾向がある。意思決定を行う際、FMPはすでに発生した利益や損失への言及を排除し、投資の将来見通しに焦点を当て、できる限り中立的かつ開かれた姿勢で投資関連の状況を解釈すべきである。</p>
+</section>
+</section>
+<section id="CFA2252-R-s03-02-04">
+<h4>利用可能性バイアス（Availability Bias）</h4>
+<p>利用可能性バイアスとは、人々が結果の確率や現象の重要性を、情報がどれだけ容易に想起されるかに基づいて推定する情報処理バイアスである。利用可能性バイアスにはさまざまな要因があるが、FMPに特に関連するものとして、想起容易性（retrievability）、分類（categorization）、経験の狭さ（narrow range of experience）、および共鳴（resonance）の4つが挙げられる。</p>
+<p>想起容易性（retrievability）：ある答えや考えが他のものよりも素早く思い浮かぶ場合、それが現実でなくても正しいと判断されやすい。</p>
+<p>分類（categorization）：問題解決の際、人々は関連すると考える探索集合（search sets）から情報を集める。問題ごとに異なる探索集合が必要であり、それはしばしば馴染みのある分類に基づく。探索対象の特徴付けが難しい場合、適切な探索集合を設定できず、事象の確率推定にバイアスが生じる可能性がある。</p>
+<p>経験の狭さ（narrow range of experience）：推定を行う際に、多様な視点を考慮せず、限られた経験の範囲のみを用いる傾向である。例えば、ある国で成功した製品やサービスが世界的にも成功すると仮定する場合である。</p>
+<p>共鳴（resonance）：状況が自身の個人的状況とどれほど似ているかに影響される傾向である。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM8">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 8<span style="display: block;">Availability Bias</span></h5>
+<p>ポートフォリオマネージャーは、アナリストに対して「強い成長ポテンシャル（strong growth potential）」を持つ企業のリストを調査・提示するよう依頼する。マネージャーは、競合と異なる製品やサービスを提供しつつ顧客に対して魅力的な価値提案（value proposition）を持ち、大きな市場において小さなシェアを有する企業を探すよう提案する。</p>
+<p>アナリストは過去の職務経験からテクノロジー企業、特にソフトウェア企業に精通している。また、これらの基準に適合すると考えるソフトウェア企業に関するニュース記事を多く目にしている。アナリストは過去2四半期において高い売上成長率を示したテクノロジー企業を対象にスクリーニングを開始する。他のセクターにも該当企業が存在する可能性を認識しているものの、基準が定性的かつ曖昧であるため、スクリーニング条件として明確に設定できない。</p>
+<p>このアナリストの行動は、馴染みのあるテクノロジー企業のみに焦点を当てている点で利用可能性バイアスを示している。アナリストは同僚や外部リソースを活用し、すべてのセクターを含むよう探索範囲を広げるとともに、スクリーニング基準を創造的に具体化する必要がある。</p>
+</div>
+<section id="CFA2252-R-s03-02-04-02">
+<h5>Consequences of Availability Bias</h5>
+<p>利用可能性バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L14">
+<li class="cfa-curriculum-list-item">投資機会集合（investment opportunity set）を制限する。この制限は、馴染みのある分類に基づくためであり、株式や債券、特定の国やセクターの証券に限定される可能性がある。</li>
+<li class="cfa-curriculum-list-item">広告やニュース報道の量に基づいて投資や投資顧問、投資信託を選択する。例えば、投資先として考えられる投資信託会社を挙げるよう求められると、多くの人は広告を多く出しているファンドのみを挙げる。投資信託の選択は、投資家の目的やリスク・リターン特性に適合するかどうかを含む複数の要因に基づくべきである。</li>
+<li class="cfa-curriculum-list-item">分散投資を怠る。これは限られた経験に基づいて意思決定を行うために生じる可能性がある。例えば、特定の業界で働く投資家がその業界への投資を過大にする場合である。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s03-02-04-03">
+<h5>Detection of and Guidelines for Overcoming Availability Bias</h5>
+<p>利用可能性バイアスを克服するためには、適切な投資方針（investment policy strategy）を策定し、投資判断の前に十分な調査と分析を行い、長期的な過去データに注目する必要がある。「どのように投資対象を選定したか」「業界や国への親しみやすさに基づいて選んだのか」「記事やリサーチレポートで見たから選んだのか」「企業の製品が好きだから選んだのか」といった問いは、分類、経験の狭さ、共鳴といった利用可能性バイアスの要因を特定するのに役立つ。利用可能性バイアスは、メディアで大きく取り上げられる出来事を実際以上に重要と認識させる可能性がある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM9">
+<h6 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 9</h6>
+<section>
+<p>以下の情報は問題1〜5に関連する。</p>
+<p>Luca Gerberは最近、スイスの中規模民間財団であるLudwigs Family Charityの最高投資責任者（chief investment officer）に就任した。それ以前は著名なヘルスケア業界のアナリストであった。Ludwigs家の財産は主に起業によって築かれたものである。Gerhard Ludwigsは、小細胞肺がん研究に特化したバイオテクノロジー企業ABC Innovations（ABC）を創業した。同財団のポートフォリオの15%はABCに投資されている。</p>
+<p>Gerberは当初、ABCへの15%の投資は高いと感じた。しかし検討の結果、Ludwigs家の関与と過去の成功を考慮して適切であると判断した。Gerberは、小型スタートアップ企業に不慣れであるため、ABCへの投資を注意深く監視することを心に留めた。残りの85%は高品質な大型製薬企業の株式に投資されている。Gerberはこの配分を適切と考え、自身のヘルスケア業界に関する優れた知識を活用できることに満足している。</p>
+<p>過去2年間、ABCは小細胞肺がんの再発治療薬の開発を目的としたプロジェクトMに取り組んできた。しかし第2相試験は2度延期され、第1相試験の結果もいくつかの懸念を示している。直近2回の決算説明会で、CEOはプロジェクトMの見通しについて非常に慎重な発言をしている。株価は過去6か月で20%以上下落した。Gerberはこれらの遅延は一時的なものであり、過去の成功から問題は解決されると考えている。1年以内に第2相試験が開始されると予想し、その時には株価が52週高値の80スイスフランに達すると考えている。</p>
+<p>株式を保有する決定をした直後、GerberはABCの主任科学者による論文を読む。その論文はプロジェクトMの科学的結果について述べており、「依然として大きな課題はあるが、小細胞肺がんの治療が実現可能であるという前向きな兆候が見られている」と結論付けている。Gerberは科学的内容の理解に苦労したが、この結論を読んで安心感を得た。</p>
+<p>その後すぐに、ABCはプロジェクトMの中止を発表し、初期段階で失敗の兆候があったことを理由に挙げた。この発表を受けて株価は50%下落した。Gerberは衝撃を受け、過去の発言を振り返ると、同社がプロジェクトの問題について多くの警告を発していたことに気づき、失敗は予測可能であったように感じた。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">1. </span>
+<p>財団のポートフォリオがバイオテクノロジーおよび製薬企業に100%集中していることに対するGerberの評価は、どのバイアスの例である可能性が最も高いか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. フレーミング（Framing）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。利用可能性バイアス（availability bias）の結果として、FMPの経験の狭さに基づき投資機会集合が制限されることがある。Gerberの過去の経験により、自身がよく知るセクターに集中したポートフォリオを適切と認識した可能性が高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 利用可能性（Availability）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。利用可能性バイアス（availability bias）の結果として、FMPの経験の狭さに基づき投資機会集合が制限されることがある。Gerberの過去の経験により、自身がよく知るセクターに集中したポートフォリオを適切と認識した可能性が高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 後知恵（Hindsight）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。利用可能性バイアス（availability bias）の結果として、FMPの経験の狭さに基づき投資機会集合が制限されることがある。Gerberの過去の経験により、自身がよく知るセクターに集中したポートフォリオを適切と認識した可能性が高い。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">2. </span>
+<p>ABCの過去のプロジェクトでの成功を踏まえ、研究上の遅延は一時的なものに過ぎないとするGerberの信念は、どのバイアスの例である可能性が最も高いか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 利用可能性（Availability）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。保守性バイアス（conservatism bias）は、特に情報が複雑である場合に、新しい情報が提示されても見解を維持したり、更新が遅れたりすることにつながる。プロジェクトMの成功確率の評価を低下させるべき臨床試験の遅延という複雑な情報に直面しても、Gerberは当初の見解を維持することを選択した。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. メンタル・アカウンティング（Mental accounting）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。保守性バイアス（conservatism bias）は、特に情報が複雑である場合に、新しい情報が提示されても見解を維持したり、更新が遅れたりすることにつながる。プロジェクトMの成功確率の評価を低下させるべき臨床試験の遅延という複雑な情報に直面しても、Gerberは当初の見解を維持することを選択した。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 保守性（Conservatism）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。保守性バイアス（conservatism bias）は、特に情報が複雑である場合に、新しい情報が提示されても見解を維持したり、更新が遅れたりすることにつながる。プロジェクトMの成功確率の評価を低下させるべき臨床試験の遅延という複雑な情報に直面しても、Gerberは当初の見解を維持することを選択した。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">3. </span>
+<p>バイオテクノロジー業界における第2相試験の平均成功確率、特に遅延を経験した試験の成功確率を調査することは、Gerberがどの行動バイアスを最も緩和するために用いることができた戦略であるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 後知恵（Hindsight）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。代表性バイアス（representativeness bias）の一形態にベースレート無視（base-rate neglect）があり、これは「参照クラス（reference class）」における発生率といった一般的な情報を無視し、個別具体的な情報を優先することである。Gerberは第2相試験の成功に関するベースレートを考慮していなかった。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 代表性（Representativeness）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。代表性バイアス（representativeness bias）の一形態にベースレート無視（base-rate neglect）があり、これは「参照クラス（reference class）」における発生率といった一般的な情報を無視し、個別具体的な情報を優先することである。Gerberは第2相試験の成功に関するベースレートを考慮していなかった。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. フレーミング（Framing）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。代表性バイアス（representativeness bias）の一形態にベースレート無視（base-rate neglect）があり、これは「参照クラス（reference class）」における発生率といった一般的な情報を無視し、個別具体的な情報を優先することである。Gerberは第2相試験の成功に関するベースレートを考慮していなかった。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">4. </span>
+<p>ABCの主任科学者による論文を読む際のGerberのアプローチは、どの行動バイアスを示していると最も適切に説明できるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 代表性（Representativeness）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。確認バイアス（confirmation bias）は、自身の既存の信念を裏付ける情報を探し、矛盾する情報を無視する傾向を指す。Gerberは科学的結果や論文全体のメッセージを十分に解釈せず、自身の既存の信念を裏付ける安心感を与える結論部分のみに注目した。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 確認（Confirmation）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。確認バイアス（confirmation bias）は、自身の既存の信念を裏付ける情報を探し、矛盾する情報を無視する傾向を指す。Gerberは科学的結果や論文全体のメッセージを十分に解釈せず、自身の既存の信念を裏付ける安心感を与える結論部分のみに注目した。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. メンタル・アカウンティング（Mental accounting）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。確認バイアス（confirmation bias）は、自身の既存の信念を裏付ける情報を探し、矛盾する情報を無視する傾向を指す。Gerberは科学的結果や論文全体のメッセージを十分に解釈せず、自身の既存の信念を裏付ける安心感を与える結論部分のみに注目した。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">5. </span>
+<p>ABCの過去を再検討した際のGerberの結論は、どの行動バイアスの例である可能性が最も高いか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 確認（Confirmation）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。後知恵バイアス（hindsight bias）は、現在の知識を用いて過去を選択的に解釈することで生じる。Gerberは投資期間中にさまざまなバイアス軽減策を講じるべきであったが、小型バイオテクノロジー企業への投資は本質的に確率的活動である。もしプロジェクトMが成功していた場合、Gerberはそれを自身の投資能力の証拠とみなしていた可能性があり、それもまたバイアスである。Gerberにとって最も有益な過去の検証は、どのような軽減策や戦略が有効であったかを検討し、それを今後の投資に適用することである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 後知恵（Hindsight）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。後知恵バイアス（hindsight bias）は、現在の知識を用いて過去を選択的に解釈することで生じる。Gerberは投資期間中にさまざまなバイアス軽減策を講じるべきであったが、小型バイオテクノロジー企業への投資は本質的に確率的活動である。もしプロジェクトMが成功していた場合、Gerberはそれを自身の投資能力の証拠とみなしていた可能性があり、それもまたバイアスである。Gerberにとって最も有益な過去の検証は、どのような軽減策や戦略が有効であったかを検討し、それを今後の投資に適用することである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 保守性（Conservatism）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。後知恵バイアス（hindsight bias）は、現在の知識を用いて過去を選択的に解釈することで生じる。Gerberは投資期間中にさまざまなバイアス軽減策を講じるべきであったが、小型バイオテクノロジー企業への投資は本質的に確率的活動である。もしプロジェクトMが成功していた場合、Gerberはそれを自身の投資能力の証拠とみなしていた可能性があり、それもまたバイアスである。Gerberにとって最も有益な過去の検証は、どのような軽減策や戦略が有効であったかを検討し、それを今後の投資に適用することである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+</section>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist"><i aria-hidden="true" class="dp-icon fas fa-clipboard-list" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Reference List</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA2252-R-R9list">Statman, Meir (1999). “Behavioral Finance: Past Battles and Future Engagements.” <em>Financial Analysts Journal</em> vol. 55 (6):18–27. doi:<a href="https://doi.org/10.2469/faj.v55.n6.2311" target="_blank">10.2469/faj.v55.n6.2311</a></li>
+<li id="CFA2252-R-R10list">Statman, Meir（2008）「行動ファイナンスとは何か（What Is Behavioral Finance?）」『Handbook of Finance』所収、Fabozzi, Frank編、ニュージャージー州ホーボーケン：John Wiley &amp; Sons。</li>
+<li id="CFA2252-R-R11list">Thaler, Richard H. (1980). “Toward a Positive Theory of Economic Choice.” <em>Journal of Economic Behavior &amp; Organization</em> vol. 1 (1):39–60. doi:<a href="https://doi.org/10.1016/0167-2681(80)90051-7" target="_blank">10.1016/0167-2681(80)90051-7</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA2252-R-R11Content">Thaler, Richard H. (1980). “Toward a Positive Theory of Economic Choice.” <em>Journal of Economic Behavior &amp; Organization</em> vol. 1 (1):39–60. doi:<a href="https://doi.org/10.1016/0167-2681(80)90051-7" target="_blank">10.1016/0167-2681(80)90051-7</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA2252-R-R9Content">Statman, Meir (1999). “Behavioral Finance: Past Battles and Future Engagements.” <em>Financial Analysts Journal</em> vol. 55 (6):18–27. doi:<a href="https://doi.org/10.2469/faj.v55.n6.2311" target="_blank">10.2469/faj.v55.n6.2311</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA2252-R-R10Content">Statman, Meir (2008). “What Is Behavioral Finance?” In <em>Handbook of Finance</em>, ed. Fabozzi, Frank. Hoboken, NJ: John Wiley &amp; Sons.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CognitiveDissonanceContent">
+<p>新しい情報が既存の信念や認知と衝突する際に生じる精神的不快感。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ConservatismBiasContent">
+<p>新しい情報を十分に取り入れず、従来の見解や予測を維持する信念固執バイアスの一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CognitiveCostContent">
+<p>新しい情報を処理し、信念を更新する際に必要となる労力。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ConfirmationBiasContent">
+<p>既存の信念を裏付ける情報をより重要と見なす傾向をもたらす認知バイアスの一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RepresentativenessBiasContent">
+<p>過去の経験や分類に基づいて新しい情報を分類する傾向を持つ信念固執バイアスの一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BaseRateNeglectContent">
+<p>分類のベースレートや確率が十分に考慮されない代表性バイアスの一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SampleSizeNeglectContent">
+<p>小さなサンプルサイズが母集団（または「真のデータ」）を代表すると誤って仮定する代表性バイアスの一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="IllusionOfControlBiasContent">
+<p>実際には不可能であるにもかかわらず、結果をコントロールまたは影響できると信じるバイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="HindsightBiasContent">
+<p>過去を実際よりも良い意思決定をしていたかのように誤って記憶させる認知バイアスの一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AnchoringAndAdjustmentBiasContent">
+<p>心理的ヒューリスティック（heuristic）の使用が確率の推定方法に影響を与える情報処理バイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MentalAccountingBiasContent">
+<p>資金がどの心理的口座（mental account）に割り当てられているかに基づいて、同額の資金であっても異なるものとして扱う情報処理バイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FungibleContent">
+<p>同一の種類の他のものと自由に交換可能であり、互換性または代替可能性を持つこと。貨幣やコモディティ（commodities）が最も一般的な例である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FramingBiasContent">
+<p>質問の提示方法（framed）に応じて回答が異なる情報処理バイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AvailabilityBiasContent">
+<p>結果がどれだけ容易に想起されるかに基づき、ヒューリスティック（heuristic）を用いて確率を推定する情報処理バイアス。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_146060_502_Behavioral_Bias_Categories.html" >← 前へ</a>
+  <span class="title">5.03 | Cognitive Errors</span>
+  <a href="courses_1872_modules_items_146070_504_Emotional_Biases.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

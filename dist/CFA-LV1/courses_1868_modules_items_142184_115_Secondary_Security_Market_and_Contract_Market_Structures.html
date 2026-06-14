@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.15 | Secondary Security Market and Contract Market Structures</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s15" title="1.15 | Secondary Security Market and Contract Market Structures">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.15｜セカンダリー証券市場および契約市場構造（Secondary Security Market and Contract Market Structures）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">プライマリー市場（primary markets）とセカンダリー市場（secondary markets）を定義し、セカンダリー市場がどのようにプライマリー市場を支えるかを説明せよ。</li>
+<li class="cfa-curriculum-los-item">クォート主導市場（quote-driven）、注文主導市場（order-driven）、およびブローカー市場（brokered markets）において、証券、契約（contracts）、および通貨がどのように取引されるかを説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>取引（trading）は、買い手が売り手を探し、売り手が買い手を探すという双方向探索（bilateral search）の成功した結果である。この探索のコストを低減するために、多様な市場構造が発展してきた。取引相手（counterparty）を見つけるコストが低い場合、市場は流動的（liquid）である。</p>
+<p>証券および契約の取引は、多様な市場構造で行われる。これらの構造は、いつ取引を成立させられるか、誰が取引を手配するか、どのようにそれを行うか、そしてトレーダーがどのように取引機会や成立した取引について知るかによって異なる。本節では、証券および契約の取引に用いられるさまざまな市場構造を紹介する。まず取引セッション（trading sessions）、次に執行メカニズム（execution mechanisms）、最後に市場情報システムについて検討する。</p>
+<section id="CFA0161-R-s15-01">
+<h3 class="dp-heading">取引セッション（Trading Sessions）</h3>
+<p>市場は、コール市場（call markets）または連続取引市場（continuous trading markets）として組織される。コール市場では、特定の時間と場所で市場が開かれたときにのみ取引が成立する。これに対し、連続取引市場では、市場が開いている間はいつでも取引の成立および執行が可能である。</p>
+<p>コール市場では、すべてのトレーダー（またはその注文）が同時かつ同一の場所に存在するため、買い手は売り手を容易に見つけることができ、その逆も同様である。そのため、コール市場は呼び出し時には非常に高い流動性を持つ可能性があるが、取引セッションの間は完全に非流動的である。一方、連続取引市場では、トレーダーはいつでも取引を成立・執行できるが、買い手と売り手（またはその注文）が同時に存在しない場合、取引の成立が困難になることがある。</p>
+<p>多くのコール市場は、単一価格オークション（single price auctions）を用いて買い手と売り手をマッチングする。このオークションでは、市場はすべての買い注文と売り注文を表す注文簿（order books）を構築する。その後、市場は総取引量を最大化する単一の取引価格を選択する。注文簿は供給曲線と需要曲線を表し、その交点が取引価格を決定する。</p>
+<p>コール市場は通常1日に1回だけ開催されるが、より頻繁に開催される市場もある。</p>
+<p>多くの連続取引市場は、取引開始時にコール市場オークションを実施する。プレオープン期間（pre-opening period）中にトレーダーはコールに向けて注文を提出し、寄付（opening）時に可能な取引が成立する。その後、連続取引セッションが続く。また、一部の連続取引市場では、終了時にもコールが行われる。この場合、引け値（closing call）でのみ取引を希望するトレーダーは、成行注文（market order）または引け成行・指値注文（limit-on-close orders）を提出する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM26">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例26 コール市場と連続取引市場</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>コール市場の主な利点は、連続取引市場と比較して何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s15-01-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>すべてのトレーダーを同じ時間・場所に集めることで、コール市場は買い手と売り手がお互いを見つけやすくする。一方、連続市場では、買い手と売り手（またはその注文）が同時に存在しない場合、取引は成立しない。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>連続取引市場の主な利点は、コール市場と比較して何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s15-01-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>連続取引市場では、意思のある買い手と売り手は市場が開いている間はいつでも取引できる。一方、コール市場では、市場が開かれたときにのみ取引が可能である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA0161-R-s15-02">
+<h3 class="dp-heading">執行メカニズム（Execution Mechanisms）</h3>
+<p>市場構造の主な3つのタイプは、クォート主導市場（quote-driven markets）（価格主導市場（price-driven）またはディーラー市場（dealer markets）とも呼ばれる）、注文主導市場（order-driven markets）、およびブローカー市場（brokered markets）である。クォート主導市場では、顧客はディーラーと取引する。注文主導市場では、取引所、ブローカー、または代替取引システム（alternative trading system）が運営する注文マッチングシステムが、トレーダーの提出した注文に基づきルールに従って取引を成立させる。多くの取引所や電子通信ネットワーク（ECNs）は注文主導市場を採用している。ブローカー市場では、ブローカーが顧客間の取引を仲介する。ブローカー市場は、不動産、知的財産（intellectual properties）、または大口の証券取引など、個別性の高い資産の取引で一般的である。多くの取引システムは、これら複数の市場構造を併用している。</p>
+<section id="CFA0161-R-s15-02-01">
+<h4>クォート主導市場（Quote-Driven Markets）</h4>
+<p>世界的に見ると、株式以外の多くの取引はクォート主導市場で行われている。ほとんどすべての債券や通貨、そして多くの現物商品（spot commodities）がこの市場で取引される。トレーダーは、顧客がディーラーの提示する価格（quote）で取引するため、これをクォート主導（または価格主導、ディーラー）市場と呼ぶ。取引される資産に応じて、ディーラーは商業銀行（commercial banks）、投資銀行、ブローカー・ディーラー、または自己勘定取引会社（proprietary trading houses）に所属する。</p>
+<p>クォート主導市場は店頭市場（over-the-counter, OTC markets）とも呼ばれる。これは、かつて証券がディーラーのオフィスのカウンター越しに取引されていたことに由来する。現在では、多くのOTC取引は専用のコンピュータ通信ネットワーク、電話、またはインスタントメッセージングシステムを通じて行われる。</p>
+</section>
+<section id="CFA0161-R-s15-02-02">
+<h4>注文主導市場（Order-Driven Markets）</h4>
+<p>注文主導市場は、買い注文と売り注文をマッチングするルールに基づいて取引を成立させる。注文は顧客またはディーラーによって提出される。ほとんどすべての取引所は注文主導型の取引システムを採用しており、すべての自動取引システムは注文主導型である。</p>
+<p>ルールによって買い手と売り手がマッチングされるため、トレーダーは見知らぬ相手と取引することが多い。そのため、注文主導市場では、取引契約が履行されることを保証する手続きが必要である。そうでなければ、不誠実なトレーダーが、市場条件の変化によって不利になった場合に決済を行わない契約を結ぶ可能性がある。</p>
+<p>注文主導市場のメカニズムは、2つのルール体系によって特徴づけられる。すなわち、注文マッチングルール（order matching rules）と価格決定ルール（trade pricing rules）である。注文マッチングルールは買い注文と売り注文を対応づけ、価格決定ルールはその取引がどの価格で成立するかを決定する。</p>
+<section id="CFA0161-R-s15-02-02-01">
+<h5>Order Matching Rules</h5>
+<p>注文主導取引システムは、価格およびしばしばその他の補助的基準に基づいて買い注文と売り注文を順位付けし、それに従ってマッチングを行う。最も順位の高い買い注文と売り注文がマッチングされる。買い手が売り手の希望価格以上を支払う意思がある場合、システムは買い数量と売り数量の小さい方で取引を成立させる。残余数量があれば、反対側の次の注文とマッチングされ、このプロセスはこれ以上取引が成立しなくなるまで続く。</p>
+<p>注文優先順位（order precedence hierarchy）は、どの注文が先に処理されるかを決定する。最初のルールは価格優先（price priority）であり、最も高い買い価格と最も低い売り価格の注文が優先される。これらは最も積極的な価格の注文である。同一価格内での順位付けは、二次的優先ルールによって決定される。多くの取引システムは時間優先（time precedence）を用い、最初に到着した注文が優先される。また、非表示注文（hidden orders）や部分表示注文が許可されるシステムでは、同一価格では表示された数量が非表示数量より優先される。したがって、完全な優先順位は、価格優先、表示優先、そして同一表示条件における時間優先となる。これらのルールは、トレーダーに価格改善、注文の表示、早期参加のインセンティブを与え、市場の流動性を高める。</p>
+</section>
+<section id="CFA0161-R-s15-02-02-02">
+<h5>Trade Pricing Rules</h5>
+<p>注文がマッチングされた後、取引システムは価格決定ルールを用いて取引価格を決定する。注文主導市場で用いられる主なルールには、統一価格ルール（uniform pricing rule）、差別価格ルール（discriminatory pricing rule）、および派生価格ルール（derivative pricing rule）がある。</p>
+<p>コール市場では通常、統一価格ルールが用いられる。このルールでは、すべての取引が同一の価格で成立し、総取引量を最大化する価格が選択される。</p>
+<p>連続取引市場では、差別価格ルール（discriminatory pricing rule）が用いられる。このルールでは、先に到着している注文（standing order）の指値価格（limit price）が取引価格を決定する。このルールにより、大口注文を出すトレーダーは、より積極的な価格の注文をその指値で優先的に約定させ、その後、より不利な価格の注文を順に約定させることができる。このルールがなければ、大口トレーダーは自ら注文を分割して価格差別を行うことになる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM27">
+<h6 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i>
+                  Example 27<span style="display: block;">Filling a Large Order in a Continuous Trading
+                                                  Market</span>
+</h6>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>大口注文が到着する前の東京証券取引所（Tokyo Stock Exchange）の注文簿には、以下の指値注文が存在している：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0161-R-Te">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Buyer</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">買い数量（Bid Size）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">指値価格（円）（Limit Price (¥)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">売り数量（Offer Size）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">売り手（Seller）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">タクミ（Takumi）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ヒロト（Hiroto）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Shou</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">Hina</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">サクラ（Sakura）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">Miku</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ツバサ（Tsubasa）は、指値100.5円で15契約を購入する当日注文（day order）を提出した。彼は誰と取引し、平均取引価格はいくらで、その後の指値注文簿（limit order book）はどのようになるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s15-02-02-02-01-01">
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>ツバサの買い注文は、まず最も積極的な価格の売り注文であるヒナ（Hina）の4契約の注文と約定する。4契約が100.4円で取引され、ヒナの注文は完全に執行され、ツバサにはまだ11契約が残る。</p>
+<p>次に最も積極的な価格の売り注文はサクラ（Sakura）の6契約の注文である。次の取引は100.5円で6契約が成立し、サクラの注文は完全に執行され、ツバサにはまだ5契約が残る。</p>
+<p>The next most aggressively priced sell order is
+                                                  Miku’s order at ¥100.6. No further
+                                                  trade is possible, however, because her limit sell
+                                                  price is above Tsubasa’s limit buy price.
+                                                  Tsubasa’s average trade price is
+                                                  <span class="cfa-curriculum-display-inline-formula">
+<math display="inline" id="m3_d4e2379_d706e184">
+<mrow>
+<mtext>¥</mtext>
+<mn>100.46</mn>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>4</mn>
+<mo>×</mo>
+<mtext>¥</mtext>
+<mn>100.4</mn>
+<mo>+</mo>
+<mn>6</mn>
+<mo>×</mo>
+<mtext>¥100</mtext>
+<mtext>.5</mtext>
+</mrow>
+<mrow>
+<mn>4</mn>
+<mo>+</mo>
+<mn>6</mn>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</math>
+</span>.</p>
+<p>ツバサは当日注文（day order）を発行しているため、残りの注文は買い側として100.5円で注文簿に残る。その後の注文簿には以下の注文が存在する：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0161-R-Tf">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Buyer</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">買い数量（Bid Size）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">指値価格（円）（Limit Price (¥)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">売り数量（Offer Size）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">売り手（Seller）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">タクミ（Takumi）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ヒロト（Hiroto）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Shou</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.4</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ツバサ（Tsubasa）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">Miku</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>もしツバサが即時取消注文（immediate-or-cancel order）を発行していた場合、残りの5契約はキャンセルされていた。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>クロッシング・ネットワーク（crossing networks）は派生価格ルール（derivative pricing rule）を用いる。クロッシング・ネットワークとは、他の市場で得られる価格で取引する意思のある買い手と売り手をマッチングする取引システムである。多くのシステムでは、主に取引される取引所で公表される最良の買い気配（best bid）と売り気配（ask）の中間値（midpoint）で取引を成立させる。この価格決定方法は、価格が他の市場から導出されるため、派生価格ルールと呼ばれる。特に、この価格はクロッシング・ネットワークに提出された注文には依存しない。一部のクロッシング・ネットワークはコール市場として組織され、他は連続取引市場として組織されている。最も重要なクロッシング市場は株式取引システムであるPOSITである。</p>
+</section>
+</section>
+<section id="CFA0161-R-s15-02-03">
+<h4>ブローカー市場（Brokered Markets）</h4>
+<p>第3の執行メカニズムはブローカー市場（brokered market）であり、ブローカーが顧客間の取引を仲介する。ブローカーは、資産がユニークであり関心を持つ主体が限られているため、取引相手を見つけることが難しい商品について市場を組織する。これらの資産は一般に取引頻度が低く、在庫として保有するコストも高い。このような資産の例には、大口株式、不動産、美術品、知的財産（intellectual properties）、事業会社、酒類販売免許（liquor licenses）、タクシー営業権（taxi medallions）などがある。ディーラーは通常これらの資産を在庫として保有できない、または保有したがらないため、マーケットメイクを行わない。このような資産について注文主導市場を組織することも合理的ではない。なぜなら、注文を出すトレーダーが少なすぎるためである。</p>
+<p>これらの市場で成功するブローカーは、現在または将来取引意思を持つ可能性のあるすべての主体を把握しようとする。彼らは多くの時間を電話や対面の会合に費やし、ネットワークを構築する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM28">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i>
+               Example 28<span style="display: block;">Quote-Driven, Order-Driven, and Brokered
+                                                Markets</span>
+</h5>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>クォート主導市場（quote-driven）、注文主導市場（order-driven）、およびブローカー市場（brokered markets）の主な利点は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s15-02-03-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>クォート主導市場では、ディーラーが流動性を提供する。注文主導市場では、トレーダー同士が互いに流動性を提供する。ブローカー市場では、ディーラーがマーケットメイクを行わない場合や、トレーダーが注文を提示しない場合に、ブローカーが取引相手を見つけるのを支援する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="CFA0161-R-s15-03">
+<h3 class="dp-heading">市場情報システム（Market Information Systems）</h3>
+<p>市場は、公衆に提供するデータの種類および量において異なる。市場が気配値や注文に関するリアルタイムデータを公開する場合、トレーダーはその市場をプレトレード透明性（pre-trade transparent）があると呼ぶ。取引成立後に価格や数量を速やかに公開する場合、その市場はポストトレード透明性（post-trade transparent）があると呼ばれる。</p>
+<p>バイサイド（buy-side）のトレーダーは透明性を重視する。なぜなら、取引管理、市場価値の理解、予想および実際の取引コストの推定が容易になるからである。一方、ディーラーは不透明な市場（opaque markets）での取引を好む傾向がある。頻繁に取引を行う彼らは、他の参加者よりも情報優位性を持つためである。不透明な市場では、最良価格を見つけることが難しいため、ビッド・アスク・スプレッド（bid–ask spreads）は広くなり、取引コストも高くなる傾向がある。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CallMarketContent">
+<p>特定の時間と場所（すなわち市場が呼び出されるとき）にのみ取引が行われる市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ContinuousTradingMarketContent">
+<p>市場が開いている間はいつでも取引の成立および執行が可能な市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="QuoteDrivenMarketContent">
+<p>自己勘定（principal）で行動するディーラーが取引を仲介する市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OrderDrivenMarketsContent">
+<p>トレーダーが提出した注文に基づき、ルールによって取引を成立させる市場（通常はオークション市場）。純粋な形ではディーラーを利用しない。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BrokeredMarketContent">
+<p>ブローカーが顧客間の取引を仲介する市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OrderPrecedenceHierarchyContent">
+<p>取引注文の執行に関して、どの注文が他の注文より先に執行されるかを決定する一連のルール。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PricePriorityContent">
+<p>最も高い買い価格の注文と最も低い売り価格の注文が最初に執行されるという原則。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SecondaryPrecedenceRulesContent">
+<p>同一時点に出された注文の順位付け方法を決定するルール。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DiscriminatoryPricingRuleContent">
+<p>連続市場で用いられる価格決定ルールで、最初に到着した注文または気配の指値価格が取引価格を決定するもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CrossingNetworksContent">
+<p>他の市場から得られる価格で取引する意思のある買い手と売り手をマッチングする取引システム。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DerivativePricingRuleContent">
+<p>クロッシング・ネットワークで用いられる価格決定ルールで、資産の主要市場における現在価格から価格を導出するもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BrokeredMarketContent">
+<p>ブローカーが顧客間の取引を仲介する市場。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142182_114_Primary_Security_Markets.html" >← 前へ</a>
+  <span class="title">1.15 | Secondary Security Market and Contract Market Structures</span>
+  <a href="courses_1868_modules_items_142186_116_Well-functioning_Financial_Systems.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

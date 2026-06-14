@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.15 | Other Benchmarks</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Return Attribution and Benchmarks › Module 2: Introduction to Benchmarks</nav>
+<h1 class="page-title screenreader-only">2.15 | Other Benchmarks</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0146-R-s15-R-1" title="2.15 | Other Benchmarks"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：ベンチマーク入門 2.15｜その他のベンチマーク（Other Benchmarks）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul id="CIPM0146-R-s15-los-1">
+<li class="cfa-curriculum-los-item">ヘッジファンド・ベンチマーク、負債ベース・ベンチマーク、およびヘッジ付きベンチマークの利用における考慮事項を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>本レッスンでは、カスタム・ベンチマークやピアグループ、マーケットインデックス、スタイルインデックス以外のベンチマークの種類を紹介する。</p>
+<section id="CIPM0146-R-s15-01-01">
+<h3 class="dp-heading">ヘッジファンド・ベンチマーク（Hedge Fund Benchmarks）</h3>
+<p>ヘッジファンドは非伝統的な戦略を追求できるため、伝統的なファンドよりも複雑である。株式や債券のような資産クラスを表すのではなく、市場の非効率性を利用するマネジャーの戦略を反映する。投資ユニバースは事実上無制限であり、ファンド間で大きく異なり、時間とともに戦略や資産配分も変化する。これらの特性により、単一の基準で評価することは困難である。ヘッジファンドはしばしば絶対リターン（absolute return）を目標とするとされるが、この説明は実際の実績やリスクを考慮すると誤解を招く場合が多い。</p>
+<p>ヘッジファンドは高レバレッジ、空売り、デリバティブの利用などを行うため、ベンチマークの構築が難しい。レバレッジはリターンとリスクを増幅し、ロング・ショート戦略ではリスク低減やリターン増加が可能である。これらの利用は時間とともに変化するため、一定のベンチマークを維持することが難しい。</p>
+<p>また、ヘッジファンドは透明性が低く、モニタリングが難しく、流動性も低い。そのため、パフォーマンス評価は困難である。従来型資産運用とは対照的に、広範なマーケットインデックスはヘッジファンドのベンチマークとして不適切である。</p>
+<p>無リスク金利（risk-free rate）にスプレッド（例：3%〜6%）を加えたものをベンチマークとする考え方もあるが、多くのファンドは完全にリスクフリーではなく、レバレッジにより体系的リスクも増加するため、適切とは言い難い。</p>
+<p>マーケットインデックスや無リスク金利はヘッジファンドのリターンと相関が低く、ベンチマークとしての適合性基準を満たさない。そのため、HFRなどのプロバイダーによるマネジャーユニバースが利用されることが多い。</p>
+<p>しかし、マネジャーユニバース（ピアグループ）は測定可能性以外の基準を満たさない。</p>
+<p>ヘッジファンド・インデックスはサバイバーシップ・バイアス（survivorship bias）や自己申告バイアス（self-reporting bias）に影響される。成功したファンドのみが残ることでリターンは上方に歪む一方、大型成功ファンドが報告をやめる場合は下方バイアスも生じ得るが、一般には上方バイアスが支配的である。</p>
+<p>バックフィル・バイアス（backfill bias）も存在する。成功したファンドのみが過去データを含めて追加されるため、リターンが過大評価される。</p>
+<p>データの信頼性にも問題があり、流動性の低い資産の評価には主観が入り、価格の平滑化によりリスクが過小評価される（illiquidity bias）。</p>
+<p>インデックスの比較可能性にも問題がある。プロバイダーごとに手法が異なり、同じスタイルでも構成やパフォーマンスが異なる。</p>
+<p>マネジャーがスタイルを変更・誤報する可能性もあり、スタイル一致が困難である。</p>
+<p>加重方法にも問題がある。等加重は平均リターンを反映するが、実際の投資可能性を反映しない。一方、時価総額加重（capitalization weighting）の方が理論的には適切であるが、実務上は困難も伴う。</p>
+<p>総じて、ヘッジファンドのデータはバイアスを含み、マネジャーユニバースは有効なベンチマークとはならない。</p>
+<p>そのため、ファクターモデルベースやリターンベース、カスタム・ベンチマークなどが代替として用いられる。</p>
+<p>次に、負債ベース・ベンチマーク（liability-based benchmarks）を検討する。</p>
+</section>
+<section id="CIPM0146-R-s15-01-02">
+<h3 class="dp-heading">負債ベンチマーク（Liability Benchmarks）</h3>
+<p>これまでの資産ベース・ベンチマークとは異なり、負債ベンチマークは資産の目的、すなわち将来のキャッシュフローに焦点を当てる。Bernstein (2000) は、必要収益率を超えるリターンとそのボラティリティで評価すべきと主張している。</p>
+<p>実務では、確定給付年金（defined benefit pension plan）のように将来の支払い義務がある場合に用いられる。市場インデックスに勝っても負債を満たせなければ意味がないためである。固定収益部分では、デュレーションや信用リスクの不一致から時価総額加重インデックスは不適切な場合が多い。代替として個別債券ポートフォリオやLDIインデックス（liability-driven investment index）が用いられる。</p>
+<p>ベンチマーク構築には将来のキャッシュフロー予測が必要である。</p>
+<p>例えば年金では以下の情報が必要である：</p>
+<ul class="cfa-curriculum-list-bullet" id="CIPM0146-R-s15-L1">
+<li class="cfa-curriculum-list-item">労働者の平均退職年数</li>
+<li class="cfa-curriculum-list-item">退職者の割合</li>
+<li class="cfa-curriculum-list-item">平均寿命</li>
+<li class="cfa-curriculum-list-item">給付がインフレ連動かどうか</li>
+<li class="cfa-curriculum-list-item">早期退職制度の有無</li>
+<li class="cfa-curriculum-list-item">スポンサーの追加拠出能力（収益性や分散性）</li>
+<li class="cfa-curriculum-list-item">資産とスポンサー事業の相関（低いほど望ましい）</li>
+<li class="cfa-curriculum-list-item">プランが継続企業かどうか</li>
+</ul>
+<p>[1] これらの特性は年金プランのポートフォリオ構成、ひいてはその負債ベース・ベンチマークに影響を与える。</p>
+<p>[2] 年金プランの主たる目的は、負債を満たすリターンを創出し、それを満たせないリスクを最小化することである。これら二つの目的は異なるものであり、例えば資産が高いリターンを生んでも、ボラティリティが高く特定の年に必要額を下回れば、負債は満たされない。</p>
+<p>[3] 歴史的に年金基金はギャップリスク（gap risk：資産と負債の動きが異なるリスク）をほとんど取らなかった。主に年金（annuity）や債券への投資により負債を満たしていた。しかし規制変更やインフレ連動給付により資産配分は変化した。最近では Meder and Staub (2013) が、経済成長に伴い増加する負債は株式で模倣すべきと指摘した。例えば経済や企業が成長すれば賃金も増加し、将来の負債も増加する。このリスクを認識しないと、資産が不足する可能性がある。</p>
+<p>[4] 資産と負債の乖離を最小化するため、Meder and Staub (2013) は負債模倣資産（liability-mimicking assets）による構築を提案した。従来は金利リスク中心だったが、負債リスクを金利リスク、インフレリスク、経済成長リスクに分解すべきとした。この負債相対アプローチ（liability-relative approach）では、負債と高い相関を持つ資産を選択する。一方、資産のみアプローチでは低相関資産による効率性が重視される。負債相対アプローチは長期視点であり、金利変動のみには焦点を当てない。</p>
+<p>[5] 年金負債はまず非アクティブ参加者（退職者）とアクティブ参加者に分けられる。非アクティブの将来給付は固定（インフレ連動を除く）であり、名目債券ポートフォリオがベンチマークとなる。インフレ連動の場合はインフレ連動債（real return bonds）が用いられる。</p>
+<p>[6] アクティブ参加者の負債は過去サービス分と将来サービス分に分かれる。過去分は名目債券やインフレ連動債で対応する。将来分は賃金、勤務、加入者増加に依存する。賃金部分は経済成長とインフレに連動し、株式や債券でヘッジされる。他の部分は不確実性が高く通常はモデル化されない。またモデル不確実性などのノイズも存在する。</p>
+<p>[7] 総じて、最適なポートフォリオは名目債券、実質リターン債、株式の組み合わせである。配分は負債構成、インフレ連動性、成長性に依存する。若い労働力ほど株式比率は高くなる。インフレ連動給付が多いほどインフレ連動債が増える。ベンチマークを上回ることで負債達成が促進されるが、モデル化できないリスクは追加拠出を必要とする。目標は負債未達リスクを抑えつつベンチマークを上回ることである。</p>
+<figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0146-R-s15-Ba">
+<figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Knowledge Check: Other Benchmarks</figcaption>
+<div class="dp-content-block">
+<div class="dp-qc dp-qc-built"><fieldset>
+<div class="dp-qc-question"><legend>
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0146-R-s15-Q1"><legend><span class="cfa-curriculum-question-with-label">1. </span>
+<p>[8] 次のうち、ヘッジファンドのベンチマークとして最も適切なのはどれか？</p>
+</legend></div>
+</legend></div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-0" id="dp-qc-0-0" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-0">
+<p>[9] A. 無リスク金利が広く使用されている。</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse0-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>[10] Aは不正解。正解を選択して詳細を確認すること。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse0-1" id="dp-qc-0-1" name="dp-qc-0" type="radio" value="true"/><label for="dp-qc-0-1">
+<p>[11] B. マネジャーユニバースが広く使用されている。</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response dp-qc-correct" id="dpQcResponse0-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution">
+<section>
+<h4 class="cfa-curriculum-solution-title">[12] 解答</h4>
+<p>Bが正解。Aは誤りであり、ヘッジファンドの目的は無リスク金利ではない。Cも誤りであり、ヘッジファンドと市場インデックスの相関は高くない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-2" id="dp-qc-0-2" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-2">
+<p>[13] C. 市場インデックスは高相関のため広く使用されている。</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse0-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>[14] Cは不正解。正解を選択して詳細を確認すること。</p>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc dp-qc-built"><fieldset>
+<div class="dp-qc-question"><legend>
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0146-R-s15-Q2"><legend><span class="cfa-curriculum-question-with-label">2. </span>
+<p>[15] 次のうち、負債ベース・ベンチマークが最も適切なのはどれか？</p>
+</legend></div>
+</legend></div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-0" id="dp-qc-1-0" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-0">
+<p>[16] A. インカム志向投資家</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse1-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>[17] Aは不正解。正解を選択して詳細を確認すること。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse1-1" id="dp-qc-1-1" name="dp-qc-1" type="radio" value="true"/><label for="dp-qc-1-1">
+<p>[18] B. 確定給付年金（defined benefit pension plan）</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response dp-qc-correct" id="dpQcResponse1-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution">
+<section>
+<h4 class="cfa-curriculum-solution-title">[19] 解答</h4>
+<p>Bが正解。このような年金は将来給付を満たす必要がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-2" id="dp-qc-1-2" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-2">
+<p>[20] C. 債券市場のヘッジファンド</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse1-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>[21] Cは不正解。正解を選択して詳細を確認すること。</p>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div>
+</div>
+</figure>
+</section>
+<section id="CIPM0146-R-s15-01-03">
+<h3 class="dp-heading">[22] ヘッジ付きベンチマーク（Hedged Benchmarks）</h3>
+<p>[23] 多くの国際インデックス提供者は、基準通貨、現地通貨、為替ヘッジ後のリターンを公表する。多くはWM/Reutersロンドン午後4時のスポットレートを使用し、比較可能性を確保している。</p>
+<p>[24] ヘッジ付きベンチマークは資産保有者のニーズを反映する。為替リスクを低減するためにフォワード契約やデリバティブでヘッジする。多通貨アトリビューション分析にも有用である。</p>
+<p>[25] ヘッジ手法は様々であり、例えば月初に1カ月フォワードを売却する方法がある。この方法は完全ヘッジではなく残余為替リスクが残る。日次ヘッジでは市場変動に応じて調整される。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0146-R-s15-EXH3">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 3<span style="display: block;">Monthly Index Returns in Local Currency, in Base Currency (USD), and Hedged to Base Currency</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM0146-R-s15-EXH3-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM0146-R-s15-EXH3-title">[26] 展示3：現地通貨、基準通貨（USD）、ヘッジ後リターン（月次）</caption>
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">[27] 国</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">[28] ウェイト</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">[29] 現地通貨リターン</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">[30] 米ドルリターン</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">[31] 米ドル・ヘッジ後リターン</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">[32] オーストラリア</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.48%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.81</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.56</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">[33] フランス</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">[34] 23.31%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.03</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.53</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.17</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Japan</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">[35] 48.46%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.68</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.23</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.84</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">[36] シンガポール</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.16%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.88</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.19</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">[37] スイス</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">[38] 17.61%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.47</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.89</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.57</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.67</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.32</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.72</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>また、データから、日本の金利は当時米国よりも低かったはずであることが観察される。なぜなら、ヘッジ後リターンがローカルリターンよりも大きいからである。実質的には、フォワード為替契約（forward currency contract）の中で、投資家は低い金利で円を借り入れ、より高い金利で米ドルに再投資していることになる。逆に、オーストラリアの金利は米国よりも高かったはずである。なぜなら、オーストラリアのヘッジ後リターンはローカルリターンよりも低いからである。これは月次データであるため、金利差は（0.81% − 0.56%）× 12 = 3%となり、オーストラリアは米国よりも3%高いことになる。次に、不適切に選択されたベンチマーク（benchmark）がもたらす影響を検討する。</p>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist"><i aria-hidden="true" class="dp-icon fas fa-clipboard-list" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Reference List</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel0">参考文献（References）</h3>
+<div aria-labelledby="dpPanel0" class="dp-panel-content" id="dpPanel0Content" role="region" style="display: none;" tabindex="0">
+<ul id="CIPM0146-R-s15-ref1">
+<li id="CIPM0146-R-s15-R1list">Bailey, Jeffery V.（1992b）「ベンチマークの質の評価（Evaluating Benchmark Quality）」Financial Analysts Journal 48（3）：33–39。</li>
+<li id="CIPM0146-R-s15-R3list">Bailey, Jeffery V., Richards, Thomas M. および Tierney, David E.（2007）「ポートフォリオ・パフォーマンスの評価（Evaluating Portfolio Performance）」『投資ポートフォリオの管理：動的プロセス（Managing Investment Portfolios: A Dynamic Process）』第3版、Maginn, John、Tuttle, Donald、McLeavey, Dennis、Pinto, Jerald 編、ニュージャージー州ホーボーケン（Hoboken, NJ）：John Wiley &amp; Sons。</li>
+<li id="CIPM0146-R-s15-R2list">Bailey, Jeffery V. および Tierney, David E.（1998）『マルチマネージャー投資プログラムにおけるミスフィットリスクの管理（Controlling Misfit Risk in Multiple-Manager Investment Programs）』バージニア州シャーロッツビル（Charlottesville, VA）：CFA Institute リサーチ・ファウンデーション（Research Foundation of CFA Institute）。</li>
+<li id="CIPM0146-R-s15-R4list">Bernstein, Peter L.（2000）「控えめな提案：現代におけるポートフォリオ運用実務（A Modest Proposal: Portfolio Management Practice for Modern Times）」Economics &amp; Portfolio Strategy（4月15日）。</li>
+<li id="CIPM0146-R-s15-R5list">Lhabitant, Francois-Serge（2004）『ヘッジファンド（Hedge Funds）』ニュージャージー州ホーボーケン（Hoboken, NJ）：John Wiley &amp; Sons。</li>
+<li id="CIPM0146-R-s15-R6list">Meder, Aaron および Staub, Renato（2013）「年金負債と資産の連動（Linking Pension Liabilities to Assets）」『CFA Institute レベルIIIカリキュラム（CFA Institute Level III Curriculum）』バージニア州シャーロッツビル（Charlottesville, VA）：CFA Institute。</li>
+<li id="CIPM0146-R-s15-R7list">Waring, M. Barton および Siegel, Laurence（2006）「絶対リターン投資家の神話（The Myth of the Absolute Return Investor）」Financial Analysts Journal 62（2）：14–21。</li>
+<li id="CIPM0146-R-s15-R8list">Yau, Jot、Schneeweis, Thomas、Robinson, Thomas および Weiss, Lisa（2007）「オルタナティブ投資のポートフォリオ管理（Alternative Investments Portfolio Management）」『投資ポートフォリオの管理：動的プロセス（Managing Investment Portfolios: A Dynamic Process）』第3版、Maginn, John、Tuttle, Donald、McLeavey, Dennis、Pinto, Jerald 編、ニュージャージー州ホーボーケン（Hoboken, NJ）：John Wiley &amp; Sons。</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip0Content" role="tooltip" style="display: none;">
+<p>41 古典的な批判としては、Waring および Siegel（2006）の研究がある。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip3Content" role="tooltip" style="display: none;">
+<p>42 Lhabitant（2004）の第5章および Yau、Schneeweis、Robinson、Weiss（2007）は、ヘッジファンドのベンチマーク・バイアスに関する議論を提供しており、本節の多くはそれに基づいている。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip1Content" role="tooltip" style="display: none;">Bailey, Jeffery V. (1992b). “Evaluating Benchmark Quality.” <em>Financial Analysts Journal</em> 48 (3): 33–39.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip2Content" role="tooltip" style="display: none;">Bailey, Jeffery V., Richards, Thomas M. and Tierney, David E. (2007). “Evaluating Portfolio Performance.” In <em>Managing Investment Portfolios: A Dynamic Process</em>. 3rd ed., Maginn, John, Tuttle, Donald, McLeavey, Dennis and Pinto, JeraldHoboken, NJ: John Wiley &amp; Sons.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip4Content" role="tooltip" style="display: none;">Bailey, Jeffery V. and Tierney, David E. (1998). <em>Controlling Misfit Risk in Multiple-Manager Investment Programs</em>. Charlottesville, VA: Research Foundation of CFA Institute.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip5Content" role="tooltip" style="display: none;">Bailey, Jeffery V., Richards, Thomas M. and Tierney, David E. (2007). “Evaluating Portfolio Performance.” In <em>Managing Investment Portfolios: A Dynamic Process</em>. 3rd ed., Maginn, John, Tuttle, Donald, McLeavey, Dennis and Pinto, JeraldHoboken, NJ: John Wiley &amp; Sons.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip6Content" role="tooltip" style="display: none;">Bernstein, Peter L. (2000). “<em>A Modest Proposal: Portfolio Management Practice for Modern Times.</em>” Economics &amp; Portfolio Strategy (15 April).</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip7Content" role="tooltip" style="display: none;">Meder, Aaron and Staub, Renato (2013). “Linking Pension Liabilities to Assets.” In <em>CFA Institute Level III Curriculum</em>. Charlottesville, VA: CFA Institute.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip8Content" role="tooltip" style="display: none;">Meder, Aaron and Staub, Renato (2013). “Linking Pension Liabilities to Assets.” In <em>CFA Institute Level III Curriculum</em>. Charlottesville, VA: CFA Institute.</div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1367_modules_items_99631_214_Custom_Benchmarks.html" >← 前へ</a>
+  <span class="title">2.15 | Other Benchmarks</span>
+  <a href="courses_1367_modules_items_99634_216_Problems_in_Benchmark_Selection.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

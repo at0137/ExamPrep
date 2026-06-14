@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.09 | Measuring and Modifying Risk: Drivers and Metrics</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1642-R-s09" title="6.09 | Measuring and Modifying Risk: Drivers and Metrics">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：リスク管理入門 6.09 | リスクの測定と修正：ドライバーと指標</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">リスクエクスポージャーの測定および修正の方法を説明し、それらの方法を選択する際に考慮すべき要因を述べる</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>リスク管理の中核要素はリスクの測定と修正である。リスクは測定しなければ修正することはできない。リスク測定の主な目的は、現在取っている、または検討しているリスクが事前に定義されたリスク許容度（risk tolerance）と整合的であるかを判断することである。リスクの測定方法を理解するためには、リスクを生み出す基本的要因を理解することが重要である。</p>
+<section id="CFA1642-s009-01-01">
+<h3 class="dp-heading">ドライバー（drivers）</h3>
+<p>本節ではリスクの起源を示す。リスクは人生そのものの一部である。私たちは翌日に何が起こるかをすべて知ることはできず、ましてやより長期についてはなおさらである。親戚が重病であるという電話を受けるかもしれないし、魅力的な仕事の機会についてヘッドハンターから連絡を受けるかもしれない。名誉ある組織から表彰されることを知るかもしれないし、個人情報が盗まれていることに気づくかもしれない。誰もが前日に予期していなかった出来事を少なくとも一つは挙げることができるだろう。これらの出来事の多くは軽微であり、すぐに忘れられることが多いが、中には重大なものもある。良いものもあれば悪いものもある。既知の出来事の予測不能な結果（例えば面接後に内定が得られるか、医療検査で健康か病気かが判明するか）もあれば、長年連絡を取っていなかった友人からの電話や帰宅途中のパンクのように完全に予期されていない出来事もある。幸いにも人生におけるリスクの大半は軽微であるが、軽微でないものは非常に予測困難であり、金銭的、場合によっては身体的・精神的にも大きなコストを伴う可能性がある。</p>
+<p>概念的には、金融リスクは私たちが人生で直面する他のリスクと何ら変わらない。すべてのリスクは将来が不確実であることから生じる。金融リスクは主として経済リスクから発生し、経済リスクは人生の不確実性から生じる。</p>
+<p>金融市場は、投資家が世界および国内の経済状況、企業の属する産業、企業固有の特性に関する情報を取り込むにつれて変動する価格を生み出す。世界および国内のマクロ経済はそれを構成する企業によって動かされるが、その方向性や基本的ルールの多くは政府および中央銀行（central banks）などの準政府機関によって定められる。税制、規制、法律、金融政策および財政政策は、経済活動の程度と質に大きな影響を与える法的・経済的環境とルールを形成する。各国の政府や中央銀行が経済政策の調整を試みることは、調和していれば一定の成功をもたらす可能性があるが、そうでなければ企業が有利な扱いを求めて国を選択し、不利な扱いを回避するような行動をとる環境を生み出す可能性がある。19</p>
+<p>すべての経済は産業によって構成されている。政府の政策は産業にも影響を及ぼし、ある産業を促進する場合もあれば他の産業を抑制する場合もある。ある産業は安定しておりマクロ経済の変動に耐性がある一方、他の産業は非常に景気循環的である。</p>
+<p>世界および国内のマクロ経済や中央銀行の政策の不確実性は、経済や産業に対してしばしばシステマティック・リスク（systematic risk）として扱われるリスクを生み出す。中央銀行総裁の任命のような一見些細な出来事でさえ、投資家にとっては政策変更のシグナルと捉えられ、マクロ経済や特定の産業に大きな影響を与える可能性がある。</p>
+<p>さらに基本的なレベルでは、投資家は個別企業に固有の非システマティック・リスク（unsystematic risk）または固有リスク（idiosyncratic risk）に直面する。現代の投資分析では、分散ポートフォリオは非システマティック・リスクを負わないとされる。そのため、分散されたポートフォリオではこのリスクは重要でないと考えられがちである。しかし、このリスクは企業経営にとって重要であり、分散が不十分な投資家や特定企業を分析する金融アナリストにとっても重要である。また、一見非システマティックに見えるリスクが実際にはシステマティックである場合もある。例えば、大手銀行の信用リスク管理の失敗は、その銀行が「大きすぎて潰せない（too big to fail）」場合、世界的金融危機につながる可能性がある。</p>
+<p>要約すると、リスクの基本的ドライバーは、世界および国内のマクロ経済、産業、個別企業に由来する。リスク管理はこれらの一部を制御できるが、すべてを制御することはできない。例えば、企業のリスクマネージャーはデフォルト確率を低下させることはできても、金利の変動を制御することはできない。後者については、金利ボラティリティを所与として受け入れ、リスクエクスポージャーが目的とリスク許容度に整合するようにポジションを調整する必要がある。そのためにはまずリスクを測定しなければならない。</p>
+</section>
+<section id="CFA1642-s009-01-02">
+<h3 class="dp-heading">指標（metrics）</h3>
+<p>リスクにおける指標とは、リスクエクスポージャーの定量的測定を指す。最も基本的な指標は確率（probability）である。確率とは、ある結果や結果の系列、または結果の範囲が発生する相対頻度を示す尺度である。例えば、サイコロで6が出る確率は1/6、24時間以内に雨が降る確率は20%、中央銀行が金利を引き上げる確率は50%などである。サイコロの例は客観的確率であり、他は主観的確率である。重要なのは、確率だけではリスクの指標として不十分である点である。25%の損失確率だけでは十分な情報は得られない。</p>
+<p>標準偏差（standard deviation）は確率分布のばらつきを測る指標である。概念的には、ある割合の結果がどの範囲に収まるかを示す。正規分布（normal distribution）では約68%が±1標準偏差、95%が±2標準偏差、99%が±3標準偏差の範囲に収まる。標準偏差（ボラティリティ）は広く用いられているが、非正規分布には適さない場合があり、ファットテール（fat tails）を持つ分布では存在しないこともある。</p>
+<p>さらに、現代ポートフォリオ理論（modern portfolio theory）によれば、標準偏差は分散ポートフォリオにおいてリスクを過大評価する。投資家は分散によって個別リスクを排除できるため、非システマティック・リスクに対するプレミアムは期待されない。その結果、リスクはベータ（beta）で測定する方が適切とされる。ベータは市場ポートフォリオに対する感応度を示し、分散ポートフォリオにおける相対的リスクを表す。20</p>
+<p>ベータは株式には適しているが、他のリスクには別の指標が必要である。デリバティブはその一例であり、リスク管理のために用いられるが同時に別のリスクを引き受ける。例えばユーロ建てのルーブル購入コールオプションは為替リスクを伴う。多くのデリバティブは高レバレッジであるため、リスク測定が重要である。</p>
+<p>原資産の小さな価格変化に対するデリバティブ価格の感応度はデルタ（delta）である。大きな変化はガンマ（gamma）で捉えられる。デルタは一次リスク、ガンマは二次リスクである。21 ボラティリティ変化に対する感応度はベガ（vega）、金利変化に対する感応度はロー（rho）である。これらは総称してグリークス（the Greeks）と呼ばれる。</p>
+<p>他の資産クラスにも特有の指標があり、例えばデュレーション（duration）は債券の金利感応度を示す。金融商品の多様性により指標は多岐にわたり、資産クラス間で統一的な指標が求められた結果、バリュー・アット・リスク（value at risk）が開発された。</p>
+<p>バリュー・アット・リスク（value at risk：VaR）は損益分布の裾の大きさを測定する指標であり、金額・期間・確率の3要素で構成される。例えば1日・5%水準で£300万のVaRとは、1日に少なくとも£300万の損失が5%の確率で発生することを意味する。「少なくとも」という点が重要であり、VaRは最大損失ではなく最小の極端損失を示す。</p>
+<p>VaRは単純だが議論の多い指標であり、推定方法や仮定に依存するためモデルリスク（model risk）の影響を受ける。誤った仮定や入力は誤ったVaRを生む。過度な信頼は誤った安心感を与える可能性があるが、規制上は広く受け入れられているため他の指標と併用すべきである。</p>
+<p>VaRは最大損失を示さないため、条件付きVaR（conditional VaR：CVaR）が用いられる。これはVaRを超える損失の平均である。信用リスクではデフォルト時損失期待値（expected loss given default）も用いられる。</p>
+<p>VaRは極端損失を過小評価する可能性があり、実際の分布は正規分布よりも厚い裾を持つ。この問題に対応するため、極値理論（extreme value theory）が用いられる。</p>
+<p>VaRを補完する手法としてシナリオ分析（scenario analysis）とストレステスト（stress testing）がある。これらは極端な市場変動を仮定して損失を評価する手法である。</p>
+<p>信用リスクは格付会社（Moody’s Analytics、Standard &amp; Poor’s、Fitch Ratings）に依存するが、独自分析も重要である。流動性、収益性、レバレッジなどの指標が用いられる。</p>
+<p>信用リスクは事象が稀であるため測定が困難である。例えばリーマン・ブラザーズ（Lehman Brothers）は長年デフォルトしていなかったが2008年に破綻した。このため類似企業の集約が用いられる。</p>
+<p>デリバティブ価格には事前的リスク情報が含まれ、CDSなどがその例である。</p>
+<p>オペレーショナル・リスク（operational risk）は測定が難しく、事例データの集約が用いられる。</p>
+<p>規制や税制変更などのリスクも測定が難しく、主観的評価に依存する。</p>
+<p>市場リスクはデータが豊富で測定しやすいが、他のリスクは稀であり測定が難しい。それでもリスクマネージャーは評価を行い、リスクを調整する。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s09-FN1Content">
+<p>19 この慣行は規制アービトラージ（regulatory arbitrage）と呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s09-FN2Content">
+<p>20 分散可能リスクはプレミアムを生まないとされるが、分散しない投資家にとっては依然重要である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s09-FN3Content">
+<p>21 一次リスクと二次リスクの関係は、A→B→Cの影響関係で説明される。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s09-FN4Content">
+<p>22 金利オプションは原資産が金利であるため金利感応度が高い。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s09-FN5Content">
+<p>23 類似企業の集約は信用格付けの考え方と同様である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BetaContent">
+<p>投資またはポートフォリオが市場全体の変動に対してどれだけ感応的であるかを示す尺度。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DeltaContent">
+<p>原資産の価値の小さな変化に対するデリバティブ価格の感応度。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="GammaContent">
+<p>オプションのデルタが原資産価格の変化に対してどれだけ敏感かを示す数値的尺度。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="VegaContent">
+<p>原資産のボラティリティ変化に対するオプション価格の感応度を示す尺度。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RhoContent">
+<p>無リスク金利の小さな変化に対するデリバティブ価格の変化を示す尺度であり、ロー（rho）はオプションの金利感応度を測定する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DurationContent">
+<p>利回りの変化に対する債券価格の一次的（線形）変化を示す尺度であり、負の関係を持つ。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ValueAtRiskContent">
+<p>一定の確率水準のもとで、特定の期間に予想される損失の最小値を貨幣額で表した尺度。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="VaRContent">
+<p>バリュー・アット・リスク（value at risk）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CVaRContent">
+<p>条件付きVaR（conditional VaR）：テール損失を測る指標。統計分布においてVaRを超えるすべての損失の加重平均。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ExtremeValueTheoryContent">
+<p>極端な結果に主に焦点を当てる統計学の一分野。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ScenarioAnalysisContent">
+<p>ベースケースと代替的な結果を組み合わせ、より好ましいまたは不利なシナリオを評価プロセスに組み込む評価手法の一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="StressTestingContent">
+<p>稀で極めて不利な事象やシナリオの組み合わせにおける損失を推定する、シナリオ分析（scenario analysis）の一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CreditDefaultSwapCDSContent">
+<p>クレジット・デリバティブ（credit derivative）の一種であり、第三者に対する信用保護を求める信用保護の買い手（credit protection buyer）が、信用保護の売り手（credit protection seller）に対して定期的な支払いを行う。売り手は信用イベント（credit event）が発生するまで支払いを行わない。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_146171_608_Interactions_Between_Risks.html" >← 前へ</a>
+  <span class="title">6.09 | Measuring and Modifying Risk: Drivers and Metrics</span>
+  <a href="courses_1872_modules_items_146185_610_Risk_Modification_Prevention_Avoidance_and_Acceptance.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

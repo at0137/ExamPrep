@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.06 | Return Generating Models</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0160-R-s06" title="2.06 | Return Generating Models">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：ポートフォリオのリスクとリターン：パートII 2.06 | リターン生成モデル（Return Generating Models）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">リターン生成モデル（市場モデル（market model）を含む）を説明し、その用途を説明せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>前述のとおり、市場ポートフォリオを構築するには、利用可能なすべてのリスク資産を組み合わせる必要がある。これらの資産間の相関を把握することで、ポートフォリオのリスクを推定できる。また、完全に分散されたポートフォリオは、すべての資産クラスおよびそれらの資産クラスに属するほぼすべての資産を含むことも学んだ。市場ポートフォリオの構築に必要な作業は膨大である。例えば、1,000資産からなるポートフォリオの場合、1,000個のリターン推定値、1,000個の標準偏差推定値、そして499,500（1,000 × 999 ÷ 2）の相関が必要となる。この分析に関連して生じる他の問題として、本当に1,000すべての資産が必要なのか、またこれらの推定値に誤差がある場合にどうなるのか、という点がある。</p>
+<p>最適ポートフォリオを構築する別の方法は、より単純で実行しやすい。投資家はまず、S&amp;P500のような既知のポートフォリオから出発し、その後、各資産の標準偏差、期待リターン、およびポートフォリオのリスクとリターンへの影響に基づいて、資産を1つずつ追加していく。このプロセスは、追加される資産がポートフォリオのパフォーマンスに有意な影響を与えなくなるまで続けられる。この方法では、各資産についてシステマティックリスク（systematic risk）の推定のみが必要である。なぜなら、投資家は非システマティックリスク（nonsystematic risk）に対しては報酬を得られないからである。期待リターンは、本節で説明するリターン生成モデルを用いて計算できる。さらに、リターン生成モデルを用いることで、総分散をシステマティック分散と非システマティック分散に分解し、システマティックリスクとリターンの形式的な関係を確立することができる。次の節では、この議論を発展させ、代表的なリターン生成モデルとしてCAPM（capital asset pricing model）を導入する。</p>
+<section id="CFA0160-R-s06-01">
+<h3 class="dp-heading">リターン生成モデル（Return-Generating Models）</h3>
+<p>リターン生成モデルとは、特定のパラメータが与えられたときに証券の期待リターンを推定できるモデルである。もしリターンに関連する唯一のパラメータがシステマティックリスクであるならば、このモデルはシステマティックリスクの水準に基づいて任意の資産の期待リターンを推定する。</p>
+<p>他のモデルと同様に、期待リターンの推定の質は入力値の質とモデルの正確性に依存する。リターンを生成する適切な要因を特定することは難しいため、リターン生成モデルの最も一般的な形はマルチファクターモデル（multi-factor model）である。マルチファクターモデルは複数の変数を考慮してリターンを推定することを可能にし、マクロ経済要因、ファンダメンタル要因、統計的要因など、さまざまな種類の要因を用いて構築される。</p>
+<p>マクロ経済ファクターモデル（macroeconomic factor models）は、証券リターンと相関のある経済要因を使用する。これらの要因には、経済成長、金利、インフレ率、生産性、雇用、消費者信頼感などが含まれる。過去のリターンとの関係を推定してパラメータを求め、それを用いて期待リターンを計算する。ファンダメンタル・ファクターモデル（fundamental factor models）は、証券リターンと企業の基礎的要因（例：利益、利益成長、キャッシュフロー創出、研究開発投資、広告、特許数など）との関係を分析・利用する。最後に、統計的ファクターモデル（statistical factor model）では、過去およびクロスセクションのリターンデータを分析し、観測されたリターンの分散や共分散を説明する要因を特定する。ただし、これらの統計的要因は必ずしも経済的またはファンダメンタルな意味を持つとは限らない。例えば、アメリカンフットボールのスーパーボウル優勝チームが所属するカンファレンス（American Football ConferenceまたはNational Football Conference）が米国株式リターンの要因となる可能性はあるが、両者の間に明確な経済的関係は存在しない。また、データマイニング（data mining）は経済的意味を持たない多くの擬似的な要因を生み出す可能性がある。このような制約のため、アナリストはリターン生成モデルの特定と推定において、マクロ経済モデルやファンダメンタルモデルを好む傾向がある。</p>
+<p>一般的なリターン生成モデルは以下のように表される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___42"><math>
+<semantics>
+<mrow>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>i</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>−</mo>
+<msub>
+<mi>R</mi>
+<mi>f</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>j</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>k</mi>
+</munderover>
+<mrow>
+<msub>
+<mi>β</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>F</mi>
+<mi>j</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+</mstyle>
+<mo>=</mo>
+<msub>
+<mi>β</mi>
+<mrow>
+<mi>i</mi>
+<mn>1</mn>
+</mrow>
+</msub>
+<mrow>
+<mo>[</mo>
+<mrow>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>m</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>−</mo>
+<msub>
+<mi>R</mi>
+<mi>f</mi>
+</msub>
+</mrow>
+<mo>]</mo>
+</mrow>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>j</mi>
+<mo>=</mo>
+<mn>2</mn>
+</mrow>
+<mi>k</mi>
+</munderover>
+<mrow>
+<msub>
+<mi>β</mi>
+<mrow>
+<mi>i</mi>
+<mi>j</mi>
+</mrow>
+</msub>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>F</mi>
+<mi>j</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+</mstyle>
+</mrow>
+</semantics>
+</math></div>
+<p>このモデルにはk個の要因、E(F₁), E(F₂), …, E(F_k)が含まれる。係数β_ijは各要因に対応するファクターウェイト（factor loadings）である。モデルの左辺は期待超過リターン（すなわち無リスク金利を超える期待リターン）である。右辺は、そのリスクを引き受けるために必要なリターン（プレミアム）を生み出すリスク要因を示している。ここでは、市場リターンを表すE(R_m)という要因を分離している。すべてのモデルは主要な要因として市場ポートフォリオのリターンを含む。</p>
+<section id="CFA0160-R-s06-01-01">
+<h4>3ファクターおよび4ファクターモデル（Three-Factor and Four-Factor Models）</h4>
+<p>Eugene FamaおよびKenneth Frenchは、株式リターンのリターン生成モデルにはベータに加えて、企業の相対的な時価総額（「サイズ」）および簿価対市場価値比（book-to-market value）を含めるべきであると提案した。FamaとFrenchは、当時利用可能であった他のモデル、特にCAPMよりも、自らのモデルの方が過去リターンをより良く説明できることを示した。Mark Carhart（1997）は、このFama-Frenchモデルにモメンタム（momentum）という要因を追加し、過去の相対的な株式リターンとして定義した。</p>
+</section>
+<section id="CFA0160-R-s06-01-02">
+<h4>シングルインデックスモデル（The Single-Index Model）</h4>
+<p>リターン生成モデルの最も単純な形は、単一の要因のみを考慮する単一ファクター線形モデルである。最も一般的な実装はシングルインデックスモデルであり、以下の形で市場要因を使用する：</p>
+<p>シングルインデックスモデルは単純であるが、資本市場線（capital market line: CML）と整合的である。CMLは切片がR_f、傾きが[E(R_m) − R_f]/σ_mの線形関係であることを思い出そう。この式を変形し、切片を左辺に移し、項を整理し、添字をpから任意の証券iへ一般化すると、次のように書き換えられる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___43"><math>
+<semantics>
+<mrow>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>i</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>−</mo>
+<msub>
+<mi>R</mi>
+<mi>f</mi>
+</msub>
+<mo>=</mo>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>σ</mi>
+<mi>i</mi>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mi>σ</mi>
+<mi>m</mi>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mrow>
+<mo>[</mo>
+<mrow>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>m</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>−</mo>
+<msub>
+<mi>R</mi>
+<mi>f</mi>
+</msub>
+</mrow>
+<mo>]</mo>
+</mrow>
+</mrow>
+</semantics>
+</math></div>
+<p>ファクターローディング（factor loading）またはファクターウェイトσ_i/σ_mは、個別証券の総リスクと市場全体の総リスクの比率を表す。この概念をよりよく理解し、CMLがシングルインデックスモデルに帰着することを示すために、総リスクをその構成要素に分解する。</p>
+</section>
+</section>
+<section id="CFA0160-R-s06-02">
+<h3 class="dp-heading">シングルインデックスモデルにおける総リスクの分解（Decomposition of Total Risk for a Single-Index Model）</h3>
+<p>リターン生成モデル、特にシングルインデックスモデルの導入により、総分散をシステマティック分散と非システマティック分散に分解することが可能となる。シングルインデックスでは期待リターンではなく実現リターンを用いるとする。期待リターンと実現リターンの差は、市場以外の要因による変化として、以下の第2式における誤差項e_iで表される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___44"><em>E</em>(<em>R<sub>i</sub></em>) – <em>R<sub>f</sub> </em> = β<em><sub>i</sub> </em>[<em>E</em>(<em>R<sub>m</sub></em>) – <em>R<sub>f</sub></em>]</div>
+<p>and</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___45"><em>R<sub>i</sub> </em> – <em>R<sub>f</sub> </em> = β<em><sub>i</sub> </em>(<em>R<sub>m</sub> </em> – <em>R<sub>f</sub></em>) + <em>e<sub>i</sub></em></div>
+<p>実現リターンの分散は以下の式で表される（R_fは定数であることに注意）。また、この式における共分散項は、市場以外のリターンは市場と無相関であるという定義により、省略できる。その結果、総分散は以下の第2式のようにシステマティック分散と非システマティック分散に分解できる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___46"><math>
+<semantics>
+<mrow>
+<msubsup>
+<mi>σ</mi>
+<mi>i</mi>
+<mn>2</mn>
+</msubsup>
+<mo>=</mo>
+<msubsup>
+<mi>β</mi>
+<mi>i</mi>
+<mn>2</mn>
+</msubsup>
+<msubsup>
+<mi>σ</mi>
+<mi>m</mi>
+<mn>2</mn>
+</msubsup>
+<mo>+</mo>
+<msubsup>
+<mi>σ</mi>
+<mi>e</mi>
+<mn>2</mn>
+</msubsup>
+<mo>+</mo>
+<mn>2</mn>
+<mi>C</mi>
+<mi>o</mi>
+<mi>v</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>m</mi>
+</msub>
+<mo>,</mo>
+<msub>
+<mi>e</mi>
+<mi>i</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+</semantics>
+</math></div>
+<p>総分散 ＝ システマティック分散 ＋ 非システマティック分散</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___47"><math>
+<semantics>
+<mrow>
+<msubsup>
+<mi>σ</mi>
+<mi>i</mi>
+<mn>2</mn>
+</msubsup>
+<mo>=</mo>
+<msubsup>
+<mi>β</mi>
+<mi>i</mi>
+<mn>2</mn>
+</msubsup>
+<msubsup>
+<mi>σ</mi>
+<mi>m</mi>
+<mn>2</mn>
+</msubsup>
+<mo>+</mo>
+<msubsup>
+<mi>σ</mi>
+<mi>e</mi>
+<mn>2</mn>
+</msubsup>
+</mrow>
+</semantics>
+</math></div>
+<p>総リスクは以下のように表される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___48"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>σ</mi>
+<mi>i</mi>
+</msub>
+<mo>=</mo>
+<msqrt>
+<mrow>
+<msubsup>
+<mi>β</mi>
+<mi>i</mi>
+<mn>2</mn>
+</msubsup>
+<msubsup>
+<mi>σ</mi>
+<mi>m</mi>
+<mn>2</mn>
+</msubsup>
+<mo>+</mo>
+<msubsup>
+<mi>σ</mi>
+<mi>e</mi>
+<mn>2</mn>
+</msubsup>
+</mrow>
+</msqrt>
+</mrow>
+</semantics>
+</math></div>
+<p>よく分散されたポートフォリオ（市場ポートフォリオなど）では非システマティックリスクはゼロであるため、総リスクはシステマティックリスクのみとなり、β_i σ_mで表される。ここで前節で議論したCMLに戻り、市場が分散されたポートフォリオであるという仮定のもと、σ_iをβ_i σ_mで置き換えると、次のシングルインデックスモデルが得られる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___49"><math>
+<semantics>
+<mrow>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>i</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>−</mo>
+<msub>
+<mi>R</mi>
+<mi>f</mi>
+</msub>
+<mo>=</mo>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>σ</mi>
+<mi>i</mi>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mi>σ</mi>
+<mi>m</mi>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>×</mo>
+<mrow>
+<mo>[</mo>
+<mrow>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>m</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>−</mo>
+<msub>
+<mi>R</mi>
+<mi>f</mi>
+</msub>
+</mrow>
+<mo>]</mo>
+</mrow>
+<mo>=</mo>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>β</mi>
+<mi>i</mi>
+</msub>
+<msub>
+<mi>σ</mi>
+<mi>m</mi>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mi>σ</mi>
+<mi>m</mi>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>×</mo>
+<mrow>
+<mo>[</mo>
+<mrow>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>m</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>−</mo>
+<msub>
+<mi>R</mi>
+<mi>f</mi>
+</msub>
+</mrow>
+<mo>]</mo>
+</mrow>
+<mo>,</mo>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___50"><em>E</em>(<em>R<sub>i</sub></em>) – <em>R<sub>f</sub> </em> = β<em><sub>i</sub> </em>[<em>E</em>(<em>R<sub>m</sub></em>) – <em>R<sub>f</sub></em>]</div>
+<p>したがって、分散されたポートフォリオに対してのみ成立するCMLは、シングルインデックスモデルと完全に整合的である。</p>
+<p>要約すると、総分散はシステマティック分散と非システマティック分散に分解でき、CMLは分散されたポートフォリオに対してはシングルインデックスモデルと同一である。</p>
+</section>
+<section id="CFA0160-R-s06-03">
+<h3 class="dp-heading">リターン生成モデル：市場モデル（The Market Model）</h3>
+<p>シングルインデックスモデルの最も一般的な実装は市場モデルであり、市場リターンを単一の要因（インデックス）として用いる。原理的には市場モデルとシングルインデックスモデルは類似しているが、市場モデルの方が扱いやすく、通常はベータリスクの推定や異常リターン（abnormal returns）の計算に用いられる。市場モデルは以下の通りである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___51"><em>R<sub>i</sub> </em> = α<em><sub>i</sub> </em> + β<em><sub>i</sub>R<sub>m</sub> </em> + <em>e<sub>i</sub> </em></div>
+<p>前節と整合的にするため、α_i = R_f(1 − β_i)とする。切片α_iと傾き係数β_iは、過去の証券リターンと市場リターンを用いて推定できる。これらのパラメータ推定値は、将来期間における個別企業のリターンを予測するために用いられる。例えば、ウォルマート（Wal-Mart）の過去の日次リターンをS&amp;P500の日次リターンに対して回帰した結果、α_i = 0.0001、β_i = 0.9が得られたとする。このとき、ウォルマートの期待日次リターンは</p>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA0160-R-R1list">Carhart, Mark (1997). “On Persistence in Mutual Fund Performance.” <em>Journal of Finance</em>, vol. 52, no. 1:57–82. <a href="http://dx.doi.org/10.2307/2329556" target="_blank">http://dx.doi.org/10.2307/2329556</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0160-R-FN1Content">
+<p>1 Fama and French（1992）</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0160-R-R1Content">Carhart, Mark (1997). “On Persistence in Mutual Fund Performance.” <em>Journal of Finance</em>, vol. 52, no. 1:57–82. <a href="http://dx.doi.org/10.2307/2329556" target="_blank">http://dx.doi.org/10.2307/2329556</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ReturnGeneratingModelContent">
+<p>特定のパラメータおよびモデル内の独立変数の値の推定値に基づき、証券の期待リターンを推定できるモデル。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MultiFactorModelContent">
+<p>ある変数を複数の要因の値によって説明するモデル。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MarketModelContent">
+<p>株式リターンを従属変数、市場インデックスのリターンを独立変数とする回帰モデル。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_145838_205_Systematic_and_Nonsystematic_Risk.html" >← 前へ</a>
+  <span class="title">2.06 | Return Generating Models</span>
+  <a href="courses_1872_modules_items_145845_207_Calculation_and_Interpretation_of_Beta.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

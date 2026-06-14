@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.03 | Measures of Dispersion</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2463-R-s03-R-1" title="3.03 | Measures of Dispersion"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3：資産リターンの統計的測定 3.03｜分散の測定値（Measures of Dispersion）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">投資問題に対処するために、分散の測定値を計算し、解釈し、評価する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>投資において期待リターンまたは平均リターンの重要性に異論は少ないだろう。しかし、投資をより完全に理解するためには、リターンが平均の周りでどのように分散しているかも知る必要がある。分散（dispersion）とは中心傾向の周りのばらつきである。平均リターンがリターン（reward）を表すとすれば、分散はリスクと不確実性を表す。</p>
+<p>本レッスンでは、最も一般的な分散の測定値であるレンジ（range）、平均絶対偏差（mean absolute deviation, MAD）、分散（variance）、標準偏差（standard deviation）を検討する。これらはすべて絶対分散（absolute dispersion）の測定値である。絶対分散とは、基準点やベンチマークと比較せずに存在するばらつきの大きさを指す。</p>
+<section id="CFA2463-R-s03-01-01">
+<h3 class="dp-heading">レンジ（Range）</h3>
+<p>レンジは、頻度分布の構築について議論した際に既に登場した。分散の測定値の中で最も単純なものである。</p>
+<div class="cfa-curriculum-blockquote">
+<p>レンジの定義（Definition of Range）：レンジとは、データセットにおける最大値と最小値の差である：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-2">Range = Maximum value − Minimum value.<span class="cfa-curriculum-display-formula-number">2</span></div>
+</div>
+<p>レンジを報告する別の方法として、最大値と最小値の両方を示す方法がある。この方法は、レンジを「最大値から最小値まで」として示すため、より多くの情報を提供する。</p>
+<p>レンジの利点の一つは計算が容易であることである。一方で欠点は、分布から2つの情報（最大値と最小値）しか利用しない点である。そのため、データがどのように分布しているか（すなわち分布の形状）を把握することはできない。また、レンジは最大値と最小値の差であるため、分布を代表しない可能性のある極端な値（外れ値（outliers））に敏感である。</p>
+</section>
+<section id="CFA2463-R-s03-01-02">
+<h3 class="dp-heading">平均絶対偏差（Mean Absolute Deviations）</h3>
+<p>分散の測定値は、最大値と最小値だけでなく、分布内のすべての観測値を用いて計算することもできる。平均の周りの偏差の算術平均として分散を計算することも考えられるが、平均からの偏差の合計は常に0になるという問題がある。したがって、負の偏差が正の偏差と相殺される問題に対処する必要がある。</p>
+<p>一つの解決策は、平均絶対偏差（mean absolute deviation, MAD）のように、平均からの偏差の絶対値を用いることである。</p>
+<div class="cfa-curriculum-blockquote">
+<p>MADの公式（MAD Formula）：サンプルにおけるMADは次のとおりである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-3"><math> <semantics> <mrow> <mtext>MAD</mtext> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </msubsup> <mfenced close="|" open="|"> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mrow> </mfenced> </mrow> <mi>n</mi> </mfrac> </mstyle> </mrow> </semantics> </math>,<span class="cfa-curriculum-display-formula-number">3</span></div>
+<p>where <span class="cfa-curriculum-display-inline-formula"> <math id="m2"> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </math> </span> is the sample mean, <em>n</em> is the number of observations in the sample, and the | | indicate the absolute value of what is contained within these bars.</p>
+</div>
+<p>MADはサンプル内のすべての観測値を使用するため、分散の測定値としてレンジより優れている。ただし技術的な欠点として、次に紹介するサンプル分散と比較して、数学的に扱いにくい点がある。</p>
+</section>
+<section id="CFA2463-R-s03-01-03">
+<h3 class="dp-heading">サンプル分散とサンプル標準偏差（Sample Variance and Sample Standard Deviation）</h3>
+<p>正負の偏差が相殺される問題への第二のアプローチは、それらを二乗することである。二乗偏差に基づく分散と標準偏差は、最も広く使用される分散の測定値である。分散は平均からの偏差の二乗の平均として定義される。標準偏差は分散の平方根である。</p>
+<section id="CFA2463-R-s03-01-03-01">
+<h4>サンプル分散（Sample Variance）</h4>
+<p>投資においては、関心のある母集団の平均が不明であることが多いため、母集団から抽出されたサンプルの平均を用いて推定する。このとき対応する分散の測定値はサンプル分散または標準偏差である。</p>
+<div class="cfa-curriculum-blockquote">
+<p>サンプル分散の公式（Sample Variance Formula）：サンプル分散 s² は次のとおりである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-4"><math> <semantics> <mrow> <msup> <mi>s</mi> <mn>2</mn> </msup> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </msubsup> <msup> <mrow> <mfenced> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> <mrow> <mi>n</mi> <mo>−</mo> <mn>1</mn> </mrow> </mfrac> </mstyle> </mrow> </semantics> </math>,<span class="cfa-curriculum-display-formula-number">4</span></div>
+<p>where <span class="cfa-curriculum-display-inline-formula"> <math id="m4"> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </math> </span> is the sample mean and <em>n</em> is the number of observations in the sample.</p>
+</div>
+<p>分散の計算では、偏差を二乗することで、負の偏差が正の偏差と相殺される問題が解消される。</p>
+<p>サンプル分散では、nではなくサンプルサイズから1を引いた値（n − 1）で割ることで、統計的性質が改善される。この n − 1 は自由度（degrees of freedom）とも呼ばれる。母分散を s² によって推定するためには、まずサンプル平均を計算する必要があり、この平均自体も推定値である。そのため、サンプル平均を求めた後は、サンプルには独立な情報は n − 1 個しか残らない。すなわち、サンプル平均と n − 1 個の観測値が分かれば、残り1つの観測値を計算することができる。</p>
+</section>
+<section id="CFA2463-R-s03-01-03-02">
+<h4>サンプル標準偏差（Sample Standard Deviation）</h4>
+<p>分散は平均に対応する単位の二乗で表されるため、元の単位に戻す方法が必要である。標準偏差は分散の平方根であり、この問題を解決し、分散よりも解釈が容易である。</p>
+<p>サンプル標準偏差の有用な性質として、サンプル分散とは異なり、データと同じ単位で表される点がある。例えば、データセットが指数の日次リターンの百分率であれば、平均と標準偏差はいずれも百分率で表される一方、分散は百分率の二乗で表される。</p>
+<div class="cfa-curriculum-blockquote">
+<p>サンプル標準偏差の公式（Sample Standard Deviation Formula）：サンプル標準偏差 s は次のとおりである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-5"><math> <semantics> <mrow> <mi>s</mi> <mo>=</mo> <msqrt> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </msubsup> <msup> <mrow> <mfenced> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> <mrow> <mi>n</mi> <mo>−</mo> <mn>1</mn> </mrow> </mfrac> </mstyle> </mrow> </msqrt> </mrow> </semantics> </math>,<span class="cfa-curriculum-display-formula-number">5</span></div>
+<p>where <span class="cfa-curriculum-display-inline-formula"> <math id="m6"> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </math> </span> is the sample mean and <em>n</em> is the number of observations in the sample.</p>
+</div>
+<p>標準偏差は算術平均の周りの分散の測定値であるため、データを要約する際には通常、算術平均と標準偏差を併せて提示する。また、データが時系列の変化率を表す場合には、幾何平均（geometric mean）（すなわち複利成長率を表す）を提示することも有用である。</p>
+</section>
+</section>
+<section id="CFA2463-R-s03-01-04">
+<h3 class="dp-heading">下方偏差（Downside Deviation）と変動係数（Coefficient of Variation）</h3>
+<p>資産の分散や標準偏差は、しばしばその資産のリスクの尺度として解釈される。これらは平均より上方および下方のリターン（すなわち上振れリスクと下振れリスク）の両方を考慮する。しかし、投資家は通常、下方リスク（downside risk）—例えば平均を下回るリターンや、ある最低目標リターンを下回るリターン—に主に関心を持つ。そのため、アナリストは下方リスクの測定値を開発してきた。</p>
+<section id="CFA2463-R-s03-01-04-01">
+<h4>下方偏差（Downside Deviation）</h4>
+<p>実務においては、平均以外の特定の水準を下回るリターンに関心を持つことがある。例えば、年率6.0％を目標リターン（最低許容リターン）とする場合、特に6.0％未満のリターンに注目する。このとき、ターゲット下方偏差（target downside deviation）、またはターゲット半分散（target semideviation）は、目標値（例えば6.0％）を下回る観測値（ここではリターン）のばらつきを測定する指標である。サンプルにおけるターゲット半分散を計算するには、まず目標値を設定し、その目標を下回る観測値を特定する。次に、それらの目標からの負の偏差の二乗の合計を求め、その合計をサンプルの観測数から1を引いた値で割り、最後に平方根を取る。</p>
+<div class="cfa-curriculum-blockquote">
+<p>サンプル・ターゲット半分散の公式（Sample Target Semideviation Formula）：ターゲット半分散 s_target は次のとおりである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-6"><math> <semantics> <mrow> <msub> <mi>S</mi> <mrow> <mi>T</mi> <mi>a</mi> <mi>r</mi> <mi>g</mi> <mi>e</mi> <mi>t</mi> </mrow> </msub> <mtext> </mtext> <mo>=</mo> <msqrt> <mrow> <munderover> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mtext>for all</mtext> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>≤</mo> <mi>B</mi> </mrow> <mi>n</mi> </munderover> <mstyle displaystyle="true"> <mfrac> <mrow> <msup> <mrow> <mfenced> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mi>B</mi> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> <mrow> <mi>n</mi> <mo>−</mo> <mn>1</mn> </mrow> </mfrac> </mstyle> </mrow> </msqrt> </mrow> </semantics> </math>,<span class="cfa-curriculum-display-formula-number">6</span></div>
+<p>ここで B は目標値、n はサンプルの観測数である。これを例3で示す。</p>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2463-R-s03-EXM-1-3">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 3<span style="display: block;">Calculating Target Downside Deviation</span></h5>
+<section>
+<p>図表11に示されているポートフォリオの月次リターンを考える：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-EXH-1-13">
+<h6 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 11<span style="display: block;">Monthly Portfolio Returns</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Month</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（％）（Return）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">1月（January）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">2月（February）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">March</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">April</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">May</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">June</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">July</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">8月（August）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">9月（September）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">10月（October）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11月（November）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">12月（December）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label" data-interactive-id="nEAbNqnGOFRZ" data-interactive-title="Quick Check 1" data-interactive-type="Quick Check"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>目標リターンが3％の場合のターゲット下方偏差（target downside deviation）を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Month</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">観測値（Observation）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">3％目標からの偏差（Deviation from the 3% Target）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">目標を下回る偏差（Deviations below the Target）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">目標を下回る偏差の二乗（Squared Deviations below the Target）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">1月（January）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">2月（February）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">March</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">16</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">April</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">49</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">May</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">June</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">July</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">8月（August）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">9月（September）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">10月（October）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11月（November）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">12月（December）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Sum</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>84</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-"><strong>Target semideviation</strong> = <math> <semantics> <mrow> <msqrt> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>84</mn> </mrow> <mrow> <mfenced> <mrow> <mn>12</mn> <mo>−</mo> <mn>1</mn> </mrow> </mfenced> </mrow> </mfrac> </mstyle> </mrow> </msqrt> </mrow> </semantics> </math> = 2.7634%.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label" data-interactive-id="zlsEunlU3qH9" data-interactive-title="Quick Check 2" data-interactive-type="Quick Check"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>目標リターンが4％であった場合、問1の解答と異なるか。計算を用いずに、どのように異なるかを説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>目標リターンが高くなると、既存の偏差はより大きくなり、目標を下回る偏差およびその二乗に含まれる値も増える。そのため、ターゲット半分散（target semideviation）はより大きくなる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>ターゲット下方偏差はサンプル標準偏差とどのように関係するか。例4では、例3のデータを用いて、ターゲット下方偏差と標準偏差の違いを示す。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2463-R-s03-EXM-1-4">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 4<span style="display: block;">Comparing the Target Downside Deviation with the Standard Deviation</span></h5>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label" data-interactive-id="FSlUjkCvIe3e" data-interactive-title="Quick Check 3" data-interactive-type="Quick Check"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>例3のデータを用いて、サンプル標準偏差を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Month</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">観測値（Observation）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">平均からの偏差（Deviation from the Mean）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">偏差の二乗（Squared Deviation）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">1月（January）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.75</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7.5625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">2月（February）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.75</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.5625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">March</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3.25</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10.5625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">April</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−6.25</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">39.0625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">May</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.75</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.0625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">June</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−0.25</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.0625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">July</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2.25</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5.0625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">8月（August）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.75</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.0625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">9月（September）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.75</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.5625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">10月（October）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2.25</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5.0625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11月（November）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.75</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">14.0625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">12月（December）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.75</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7.5625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Sum</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">27</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">96.2500</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-___1">The sample standard deviation is <math> <semantics> <mrow> <msqrt> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>96.2500</mn> </mrow> <mrow> <mn>11</mn> </mrow> </mfrac> </mstyle> </mrow> </msqrt> </mrow> </semantics> </math> = 2.958%.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label" data-interactive-id="VeFkkI9hf5zc" data-interactive-title="Quick Check 4" data-interactive-type="Quick Check"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>例3のデータを用いて、目標が2％の場合のターゲット下方偏差（target downside deviation）を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-T-1-c">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Month</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">観測値（Observation）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2％目標からの偏差（Deviation from the 2% Target）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">目標を下回る偏差（Deviations below the Target）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">目標を下回る偏差の二乗（Squared Deviations below the Target）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">1月（January）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">2月（February）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">March</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">April</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">36</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">May</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">June</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">July</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">8月（August）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">9月（September）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">10月（October）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11月（November）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">12月（December）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Sum</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>53</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-___2">The target semideviation with 2 percent target = <math> <semantics> <mrow> <msqrt> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>53</mn> </mrow> <mrow> <mn>11</mn> </mrow> </mfrac> </mstyle> </mrow> </msqrt> </mrow> </semantics> </math> = 2.195 percent.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label" data-interactive-id="AYk4zaf6ZJ5X" data-interactive-title="Quick Check 5" data-interactive-type="Quick Check"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>標準偏差、目標2％の場合のターゲット下方偏差、および目標3％の場合のターゲット下方偏差を比較せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>標準偏差は平均からの偏差に基づいており、平均は27％ / 12 = 2.25％である。標準偏差は平均からのすべての偏差を含み、平均未満のものだけではない。その結果、サンプル標準偏差は2.958％となる。</p>
+<p>2％の目標を下回る4つの観測値のみを考慮すると、ターゲット半分散（target semideviation）は2.195％となる。これは、ターゲット半分散が下方リスク（すなわち目標を下回る偏差）のみを捉えるため、サンプル標準偏差よりも小さい。3％の目標に対するターゲット半分散を考慮すると、3％未満の観測値が5つとなるため、ターゲット半分散はより大きくなり、2.763％となる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA2463-R-s03-01-04-02">
+<h4>変動係数（Coefficient of Variation）</h4>
+<p>先に述べたように、標準偏差は分散よりも解釈しやすい。なぜなら標準偏差は観測値と同じ単位で表されるからである。しかし、データセットの平均が大きく異なる場合や、異なる測定単位を持つ場合には、標準偏差が示す相対的なばらつきの程度を解釈することが難しいことがある。この節では、そのような状況で有用な相対分散（relative dispersion）の測定値である変動係数（coefficient of variation）を説明する。相対分散とは、基準値またはベンチマークに対するばらつきの大きさである。</p>
+<p>変動係数は、上述のような状況（すなわち平均が大きく異なる、または単位が異なるデータセット）において有用である。</p>
+<div class="cfa-curriculum-blockquote">
+<p>変動係数の公式（Coefficient of Variation Formula）：変動係数（CV）は、観測値の標準偏差を平均値で割ったものである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-7"><math> <semantics> <mrow> <mi>C</mi> <mi>V</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mtext>s</mtext> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mfrac> </mstyle> </mrow> </semantics> </math>,<span class="cfa-curriculum-display-formula-number">7</span></div>
+<p>where <em>s</em> is the sample standard deviation and <span class="cfa-curriculum-display-inline-formula"> <math id="m12"> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </math> </span> is the sample mean.</p>
+</div>
+<p>When the observations are returns, for example, the CV measures the amount of risk (standard deviation) per unit of reward (mean return). An issue that may arise, especially when dealing with returns, is that if <span class="cfa-curriculum-display-inline-formula"> <math id="m13"> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </math> </span> is negative, the statistic is meaningless.</p>
+<p>CVは倍率（例：2倍）または百分率（例：200％）として表すことができる。観測値のばらつきの大きさを平均値に対する相対値として表すことで、CVは異なるデータセット間での分散の直接比較を可能にする。スケール調整を反映するため、CVは無次元量（scale-free measure）（すなわち単位を持たない）である。</p>
+<p>例5では、標準偏差が大きく異なるデータセットを比較するためのCVの有用性を、2つの仮想的な企業サンプルを用いて示す。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2463-R-s03-EXM-1-5">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 5<span style="display: block;">Coefficient of Variation of Returns on Assets</span></h5>
+<section>
+<p>あるアナリストが、2つの業界について、それぞれ10社の総資産利益率（ROA）を百分率で収集したとする：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-EXH-1-14">
+<h6 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 12<span style="display: block;">Returns on Assets for Two Industries</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">企業（Company）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">業界A（Industry A）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">業界B（Industry B）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−10</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">18</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">20</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">22</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>これらのデータは図表13に示されているようにグラフで表すことができる：</p>
+<div class="cfa-curriculum-exhibit-figure" id="CFA2463-R-s03-EXH-1-15">
+<h6 class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 13<span style="display: block;">Returns on Assets Depicted Graphically</span></h6>
+<div class="cfa-curriculum-graphic"><img alt="The return on assets (R O A) for 10 companies for industries A and B. The R O A for industry A for companies 1 through 10 are negative 5, negative 3, negative 1, 2, 4, 6, 7, 9, 10 and 11, respectively for each company." data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1864/files/459974" data-api-returntype="File" id="CFA2463-R-s03-EXH-1-15" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto;"/></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label" data-interactive-id="VTIFQpjJ0NBP" data-interactive-title="Quick Check 6" data-interactive-type="Quick Check"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>各業界の平均ROAを計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>両業界の算術平均ROAは、10個の観測値の合計がいずれも40であるため、40 / 10 = 4％である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label" data-interactive-id="etKjRwFKPvth" data-interactive-title="Quick Check 7" data-interactive-type="Quick Check"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>各業界のROAの標準偏差を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>式5を用いると、業界Aの標準偏差は5.60、業界Bは12.12である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label" data-interactive-id="IcCmYkmDogBm" data-interactive-title="Quick Check 8" data-interactive-type="Quick Check"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>各業界のROAの変動係数（CV）を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>式7を用いると、業界AのCVは5.60 / 4 = 1.40、業界BのCVは12.12 / 4 = 3.03である。</p>
+<p>2つの業界は算術平均ROAが同じであるにもかかわらず、分散は大きく異なっており、業界Bの総資産利益率は業界Aよりもはるかにばらつきが大きい。この違いは両業界の変動係数（CV）にも反映されており、業界BのCVの方が大きい。この解釈としては、平均リターン当たりのリスクは業界Bの方が業界Aよりも2倍以上（2.16 = 3.03 / 1.40）大きいということである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2463-R-s03-B-1-a">
+<h5 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Question Set</h5>
+<section>
+<p>図表14に示されているように、10年間のMSCIワールド指数（MSCI World Index）のトータルリターンを考える：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-EXH-1-16">
+<h6 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 14<span style="display: block;">MSCI World Index Total Returns</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年1（Year 1）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.25％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">年6（Year 6）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.79％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年2（Year 2）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.02％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">年7（Year 7）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.34％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年3（Year 3）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20.65％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">年8（Year 8）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−5.02％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年4（Year 4）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.57%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">年9（Year 9）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.54％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年5（Year 5）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−40.33％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">年10（Year 10）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.37％</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc" data-interactive-id="rzfznkxjXFH5" data-interactive-title="Quick Check 9" data-interactive-type="Quick Check">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2463-R-s03-Q9"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>年6から年10におけるMSCIワールド指数のトータルリターンの平均絶対偏差（mean absolute deviation, MAD）は次のうちどれに最も近いか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 10.20％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正解である。MADは次のように計算される：</p>
+<ul class="cfa-curriculum-list-step">
+<li class="cfa-curriculum-steplist-item"><strong>Step 1: </strong>
+<p>Sum annual returns and divide by <em>n</em> to find the arithmetic mean <span class="cfa-curriculum-display-inline-formula"> <math id="m14"> <mrow> <mfenced> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mfenced> </mrow> </math> </span> of 16.40 percent.</p>
+</li>
+<li class="cfa-curriculum-steplist-item"><strong>Step 2: </strong>
+<p>各年のリターンとステップ1で求めた平均との差の絶対値を計算し、それらを合計してnで割ることでMADを求める。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-___3"><math> <semantics> <mrow> <mtext>MAD</mtext> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </msubsup> <mfenced close="|" open="|"> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mrow> </mfenced> </mrow> <mi>n</mi> </mfrac> </mstyle> <mo>,</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-___4"><math> <semantics> <mrow> <mtext>MAD</mtext> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>50.98</mn> <mtext>%</mtext> </mrow> <mn>5</mn> </mfrac> </mstyle> </mrow> </semantics> </math> = 10.20%.</div>
+</li>
+</ul>
+<p>これらの計算は以下の表に示されている：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-T-1-d">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Year </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ステップ1（Step 1）</th>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ステップ2（Step 2）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（Return）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m17"> <mrow> <mfenced close="|" open="|"> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mrow> </mfenced> </mrow> </math> </span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年6（Year 6）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.79％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.39％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年7（Year 7）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.34％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.06%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年8（Year 8）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−5.02％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.42％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年9（Year 9）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.54％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.14%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年10（Year 10）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.37％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.97％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Sum:</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">82.02％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50.98％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><em>n:</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m18"> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </math> </span>:</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.40％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.20％</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-T-1-e"></div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 12.74％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正解である。MADは次のように計算される：</p>
+<ul class="cfa-curriculum-list-step">
+<li class="cfa-curriculum-steplist-item"><strong>Step 1: </strong>
+<p>Sum annual returns and divide by <em>n</em> to find the arithmetic mean <span class="cfa-curriculum-display-inline-formula"> <math id="m14"> <mrow> <mfenced> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mfenced> </mrow> </math> </span> of 16.40 percent.</p>
+</li>
+<li class="cfa-curriculum-steplist-item"><strong>Step 2: </strong>
+<p>各年のリターンとステップ1で求めた平均との差の絶対値を計算し、それらを合計してnで割ることでMADを求める。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-___3"><math> <semantics> <mrow> <mtext>MAD</mtext> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </msubsup> <mfenced close="|" open="|"> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mrow> </mfenced> </mrow> <mi>n</mi> </mfrac> </mstyle> <mo>,</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-___4"><math> <semantics> <mrow> <mtext>MAD</mtext> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>50.98</mn> <mtext>%</mtext> </mrow> <mn>5</mn> </mfrac> </mstyle> </mrow> </semantics> </math> = 10.20%.</div>
+</li>
+</ul>
+<p>これらの計算は以下の表に示されている：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-T-1-d">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Year </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ステップ1（Step 1）</th>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ステップ2（Step 2）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（Return）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m17"> <mrow> <mfenced close="|" open="|"> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mrow> </mfenced> </mrow> </math> </span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年6（Year 6）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.79％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.39％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年7（Year 7）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.34％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.06%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年8（Year 8）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−5.02％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.42％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年9（Year 9）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.54％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.14%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年10（Year 10）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.37％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.97％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Sum:</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">82.02％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50.98％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><em>n:</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m18"> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </math> </span>:</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.40％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.20％</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-T-1-e"></div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 16.40％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正解である。MADは次のように計算される：</p>
+<ul class="cfa-curriculum-list-step">
+<li class="cfa-curriculum-steplist-item"><strong>Step 1: </strong>
+<p>Sum annual returns and divide by <em>n</em> to find the arithmetic mean <span class="cfa-curriculum-display-inline-formula"> <math id="m14"> <mrow> <mfenced> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mfenced> </mrow> </math> </span> of 16.40 percent.</p>
+</li>
+<li class="cfa-curriculum-steplist-item"><strong>Step 2: </strong>
+<p>各年のリターンとステップ1で求めた平均との差の絶対値を計算し、それらを合計してnで割ることでMADを求める。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-___3"><math> <semantics> <mrow> <mtext>MAD</mtext> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </msubsup> <mfenced close="|" open="|"> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mrow> </mfenced> </mrow> <mi>n</mi> </mfrac> </mstyle> <mo>,</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2463-R-s03-E-1-___4"><math> <semantics> <mrow> <mtext>MAD</mtext> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>50.98</mn> <mtext>%</mtext> </mrow> <mn>5</mn> </mfrac> </mstyle> </mrow> </semantics> </math> = 10.20%.</div>
+</li>
+</ul>
+<p>これらの計算は以下の表に示されている：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-T-1-d">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Year </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ステップ1（Step 1）</th>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ステップ2（Step 2）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（Return）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m17"> <mrow> <mfenced close="|" open="|"> <mrow> <msub> <mi>X</mi> <mi>i</mi> </msub> <mo>−</mo> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </mrow> </mfenced> </mrow> </math> </span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年6（Year 6）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.79％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.39％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年7（Year 7）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.34％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.06%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年8（Year 8）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−5.02％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.42％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年9（Year 9）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.54％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.14%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年10（Year 10）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.37％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.97％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Sum:</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">82.02％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50.98％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><em>n:</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m18"> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> </math> </span>:</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.40％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.20％</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-T-1-e"></div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label" data-interactive-id="EcWCuqpbwFUn" data-interactive-title="Quick Check 10" data-interactive-type="Quick Check"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>過去12か月におけるポートフォリオAおよびポートフォリオBの図表15の統計量を考える：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2463-R-s03-EXH-1-17">
+<h6 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 15<span style="display: block;">Portfolio A and Portfolio B Statistics</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">ポートフォリオA（Portfolio A）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">ポートフォリオB（Portfolio B）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">平均リターン（Average Return）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">幾何平均リターン（Geometric Return）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.85%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">?</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">標準偏差（Standard Deviation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ポートフォリオBの幾何平均リターンは次のうちどれである可能性が最も高いか：</p>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 2.85％未満</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正解である。分布のばらつきが大きいほど、算術平均と幾何平均の差は大きくなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 2.85％と等しい</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正解である。分布のばらつきが大きいほど、算術平均と幾何平均の差は大きくなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 2.85％より大きい</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正解である。分布のばらつきが大きいほど、算術平均と幾何平均の差は大きくなる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DispersionContent">
+<p>中心傾向の周りにおける母集団またはサンプルの観測値のばらつき。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AbsoluteDispersionContent">
+<p>基準値やベンチマークと比較せずに存在するばらつきの大きさ。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RangeContent">
+<p>データセットにおける最大値と最小値の差。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MeanAbsoluteDeviationContent">
+<p>サンプルに関して、サンプル平均からの偏差の絶対値の平均。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="VarianceContent">
+<p>確率変数の期待値からの偏差の二乗の期待値（確率加重平均）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="StandardDeviationContent">
+<p>分散の正の平方根であり、元のデータと同じ単位で表される分散の測定値。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SampleVarianceContent">
+<p>平均の周りの偏差の二乗の合計を自由度で割ったもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SampleStandardDeviationContent">
+<p>サンプル分散の正の平方根。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DownsideRiskContent">
+<p>損失の可能性。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TargetSemideviationContent">
+<p>下方リスクの測定値であり、目標値を下回る観測値の偏差の二乗の平均の平方根として計算される（ターゲット下方偏差（target downside deviation）とも呼ばれる）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RelativeDispersionContent">
+<p>基準値またはベンチマークに対するばらつきの大きさ。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CoefficientOfVariationContent">
+<p>観測値の標準偏差を平均値で割った比率。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144299_302_Measures_of_Central_Tendency_and_Location.html" >← 前へ</a>
+  <span class="title">3.03 | Measures of Dispersion</span>
+  <a href="courses_1864_modules_items_144309_304_Measures_of_Shape_of_a_Distribution.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

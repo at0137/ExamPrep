@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1006-R-s01" title="8.01 | Introduction">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール8：オプションの価格決定と評価（Pricing and Valuation of Options）8.01｜導入（Introduction）</h2>
+</header>
+<p>オプション契約は条件付請求権（contingent claims）であり、一方のカウンターパーティが取引の決済が行われるかどうか、またいつ行われるかを決定する。契約時点で双方にとって価値がゼロであるフォワード契約とは異なり、オプションの買い手は将来あらかじめ定められた価格で原資産を取引する権利の対価として売り手にプレミアムを支払う。オプションの条件付という性質は、その価格および時間の経過に伴う価値に影響を与える。</p>
+<p>最初のレッスンでは、オプションの価値と原資産のスポット価格との関係に関連する、条件付請求権に特有の3つの特徴を検討する。すなわち、行使価値（exercise value）または本源的価値（intrinsic value）、原資産のスポット価格と行使価格との関係であるマネネス（moneyness）、および時間価値（time value）である。次に、フォワード契約で導入された裁定およびレプリケーションの概念が、非対称なペイオフ特性を持つ条件付請求権に適用された場合にどのように異なるかを検討する。最後に、オプションの価値を決定する要因を特定し説明する。これらのレッスンは、満期時にのみ行使可能なヨーロピアン・オプション（European options）に焦点を当てる。</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA1006-s01-B-1-b">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title">学習モジュールの概要（Learning Module Overview）</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1006-s01-L1">
+<li class="cfa-curriculum-list-item">オプションの価値は、行使価値（exercise value）と時間価値（time value）から構成される。行使価値は、オプションが直ちに行使可能であると仮定した場合の価値であり、時間価値は時間の経過および原資産価格の変動性によって満期時の行使の収益性が高まる可能性を反映する。</li>
+<li class="cfa-curriculum-list-item">オプションのマネネス（moneyness）は、原資産価格と行使価格との関係を表す。原資産価格が行使価格と等しい場合、プットまたはコールオプションは「アット・ザ・マネー（at the money）」である。オプションは、「イン・ザ・マネー（in the money）」である場合（コールでは原資産価格が行使価格を上回り、プットでは下回る場合）に行使される可能性が高く、「アウト・オブ・ザ・マネー（out of the money）」である場合には行使される可能性が低い。</li>
+<li class="cfa-curriculum-list-item">非対称なペイオフ特性により、オプションには無裁定価格の上限および下限が存在する。下限は行使価格の現在価値と原資産価格の関数であり、上限はコールの場合は原資産価格、プットの場合は行使価格である。</li>
+<li class="cfa-curriculum-list-item">フォワード契約と同様に、オプション契約のレプリケーションは、原資産のロング（コールの場合）またはショート（プットの場合）ポジションと現金の借入または貸付の組み合わせを用いる。オプションのレプリケーション取引は、原資産の一定割合に基づいており、これはオプションのマネネスと密接に関連している。</li>
+<li class="cfa-curriculum-list-item">原資産価格、行使価格、満期までの時間、無リスク金利、原資産価格のボラティリティ、および原資産保有に関連する収益またはコストは、オプション価値を決定する主要な要因である。</li>
+<li class="cfa-curriculum-list-item">原資産価格のボラティリティおよび満期までの時間の変化は、通常、プットおよびコールのオプション価値に同方向の影響を与える。一方で、行使価格、無リスク金利、および原資産保有に関連する収益またはコストの変化は、コールとプットで逆方向の影響を与える。</li>
+</ul>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA1006-s01-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">学習モジュール自己評価（Learning Module Self-Assessment）</h3>
+<p>これらの初期問題は、本学習モジュールに対する現在の理解度を測ることを目的としている。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1006-s01-Q1">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>次のうち、コールオプションの価値の下限を正しく説明しているものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 原資産価格 − 行使価格の現在価値</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>正解はCである。コール価格の下限は「原資産価格 − 行使価格の現在価値」または0のいずれか大きい方である。Aは誤りであり、原資産価格が行使価格の現在価値を下回る場合には下限がゼロとなる点を考慮していない。Bは誤りであり、現在価値の概念を含んでいない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 原資産価格 − 行使価格、または0のいずれか大きい方</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>正解はCである。コール価格の下限は「原資産価格 − 行使価格の現在価値」または0のいずれか大きい方である。Aは誤りであり、原資産価格が行使価格の現在価値を下回る場合には下限がゼロとなる点を考慮していない。Bは誤りであり、現在価値の概念を含んでいない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 原資産価格 − 行使価格の現在価値、または0のいずれか大きい方</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>正解はCである。コール価格の下限は「原資産価格 − 行使価格の現在価値」または0のいずれか大きい方である。Aは誤りであり、原資産価格が行使価格の現在価値を下回る場合には下限がゼロとなる点を考慮していない。Bは誤りであり、現在価値の概念を含んでいない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>次のレプリケーション戦略に関する記述を、それに対応するデリバティブ商品と対応付けよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1006-s01-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">1. 時点t＝0において、無リスク金利で貸し付けを行い、原資産をS₀で売却する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">A. コールオプションでもプットオプションでもないレプリケーション戦略</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">2. レプリケーション戦略は契約時に実行され、満期までの間に調整を行わずに決済される。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">B. プットオプションのレプリケーション戦略</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">3. 時点t＝Tにおいて、原資産をSₜで売却し、Xの借入を返済する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">C. 行使された場合のコールオプションのレプリケーション戦略</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<ol class="cfa-curriculum-list-decimal" id="CFA1006-s01-L2">
+<li class="cfa-curriculum-list-item">Bが正しい。時点t＝0において、プットオプションのレプリケーション戦略は無リスク金利で貸し付けを行い、原資産をS₀で売却する。</li>
+<li class="cfa-curriculum-list-item">Aが正しい。コールおよびプットオプションはいずれも非線形のペイオフ特性を持つため、そのレプリケーション戦略は行使確率の変化に応じて時間の経過とともに調整が必要である。</li>
+<li class="cfa-curriculum-list-item">Cが正しい。コールオプションが行使された場合のレプリケーション戦略では、時点t＝Tにおいて借入額Xを返済し、原資産をSₜで売却する。</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1006-s01-Q3">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>満期まで残り3か月のヨーロピアン・コールオプション（European call option）で、追加的なキャッシュフローのない株式を原資産とし、行使価格（X）がGBP50、無リスク金利が2%、現在の原資産価格（Sₜ）がGBP57.50であるとする。現在のコールオプション価格がGBP10である場合、オプションの正しい行使価値および時間価値を最もよく示すものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 行使価値＝GBP7.50；時間価値＝GBP2.50</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>正解はBである。オプションの価値は行使価値と時間価値の和で構成される。コールオプションの行使価値はMax(0, Sₜ − PV(X))であり、以下のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-">
+<math>
+<semantics>
+<mrow>
+<mtext>Call Option Exercise Value</mtext>
+<mo>=</mo>
+<mtext>Max</mtext>
+<mfenced>
+<mrow>
+<mn>0</mn>
+<mo>,</mo>
+<mtext> </mtext>
+<msub>
+<mi>S</mi>
+<mi>t</mi>
+</msub>
+<mo>−</mo>
+<mi>X</mi>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mfenced>
+<mrow>
+<mi>T</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+</mfenced>
+</mrow>
+</msup>
+</mrow>
+</mfenced>
+</mrow>
+</semantics>
+</math>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-___1">Max(0, GBP 57.50 − GBP
+                  50(1.02)<sup>−0.25</sup>)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-7.75">= GBP 7.75</div>
+<p>行使価値は正である。これは現在の原資産価格が行使価格の現在価値を上回っているためである。時間価値はオプション価格と行使価値との差であり、満期時のペイオフが有利な価格変動により現在の行使価値を上回る可能性を反映する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-___2">
+<math>
+<semantics>
+<mrow>
+<mtext>Call Option Time Value</mtext>
+<mo>=</mo>
+<msub>
+<mi>c</mi>
+<mi>t</mi>
+</msub>
+<mo>−</mo>
+<mi>M</mi>
+<mi>a</mi>
+<mi>x</mi>
+<mfenced>
+<mrow>
+<mn>0</mn>
+<mo>,</mo>
+<mtext> </mtext>
+<msub>
+<mi>S</mi>
+<mi>t</mi>
+</msub>
+<mo>−</mo>
+<mi>X</mi>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mfenced>
+<mrow>
+<mi>T</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+</mfenced>
+</mrow>
+</msup>
+</mrow>
+</mfenced>
+</mrow>
+</semantics>
+</math>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-7.75___1">= GBP 2.25 (= GBP 10 − GBP
+                  7.75)</div>
+<p>時間価値は常に正であり、満期（t＝T）に向かってゼロへと減少する。Aは誤りであり、行使価値の計算に現在価値の項が含まれていない。Cは誤りであり、オプションの行使価値がゼロであることを示唆している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 行使価値＝GBP7.75；時間価値＝GBP2.25</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>正解はBである。オプションの価値は行使価値と時間価値の和で構成される。コールオプションの行使価値はMax(0, Sₜ − PV(X))であり、以下のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-">
+<math>
+<semantics>
+<mrow>
+<mtext>Call Option Exercise Value</mtext>
+<mo>=</mo>
+<mtext>Max</mtext>
+<mfenced>
+<mrow>
+<mn>0</mn>
+<mo>,</mo>
+<mtext> </mtext>
+<msub>
+<mi>S</mi>
+<mi>t</mi>
+</msub>
+<mo>−</mo>
+<mi>X</mi>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mfenced>
+<mrow>
+<mi>T</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+</mfenced>
+</mrow>
+</msup>
+</mrow>
+</mfenced>
+</mrow>
+</semantics>
+</math>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-___1">Max(0, GBP 57.50 − GBP
+                  50(1.02)<sup>−0.25</sup>)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-7.75">= GBP 7.75</div>
+<p>行使価値は正である。これは現在の原資産価格が行使価格の現在価値を上回っているためである。時間価値はオプション価格と行使価値との差であり、満期時のペイオフが有利な価格変動により現在の行使価値を上回る可能性を反映する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-___2">
+<math>
+<semantics>
+<mrow>
+<mtext>Call Option Time Value</mtext>
+<mo>=</mo>
+<msub>
+<mi>c</mi>
+<mi>t</mi>
+</msub>
+<mo>−</mo>
+<mi>M</mi>
+<mi>a</mi>
+<mi>x</mi>
+<mfenced>
+<mrow>
+<mn>0</mn>
+<mo>,</mo>
+<mtext> </mtext>
+<msub>
+<mi>S</mi>
+<mi>t</mi>
+</msub>
+<mo>−</mo>
+<mi>X</mi>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mfenced>
+<mrow>
+<mi>T</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+</mfenced>
+</mrow>
+</msup>
+</mrow>
+</mfenced>
+</mrow>
+</semantics>
+</math>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-7.75___1">= GBP 2.25 (= GBP 10 − GBP
+                  7.75)</div>
+<p>時間価値は常に正であり、満期（t＝T）に向かってゼロへと減少する。Aは誤りであり、行使価値の計算に現在価値の項が含まれていない。Cは誤りであり、オプションの行使価値がゼロであることを示唆している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 行使価値＝GBP0；時間価値＝GBP10</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>正解はBである。オプションの価値は行使価値と時間価値の和で構成される。コールオプションの行使価値はMax(0, Sₜ − PV(X))であり、以下のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-">
+<math>
+<semantics>
+<mrow>
+<mtext>Call Option Exercise Value</mtext>
+<mo>=</mo>
+<mtext>Max</mtext>
+<mfenced>
+<mrow>
+<mn>0</mn>
+<mo>,</mo>
+<mtext> </mtext>
+<msub>
+<mi>S</mi>
+<mi>t</mi>
+</msub>
+<mo>−</mo>
+<mi>X</mi>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mfenced>
+<mrow>
+<mi>T</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+</mfenced>
+</mrow>
+</msup>
+</mrow>
+</mfenced>
+</mrow>
+</semantics>
+</math>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-___1">Max(0, GBP 57.50 − GBP
+                  50(1.02)<sup>−0.25</sup>)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-7.75">= GBP 7.75</div>
+<p>行使価値は正である。これは現在の原資産価格が行使価格の現在価値を上回っているためである。時間価値はオプション価格と行使価値との差であり、満期時のペイオフが有利な価格変動により現在の行使価値を上回る可能性を反映する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-___2">
+<math>
+<semantics>
+<mrow>
+<mtext>Call Option Time Value</mtext>
+<mo>=</mo>
+<msub>
+<mi>c</mi>
+<mi>t</mi>
+</msub>
+<mo>−</mo>
+<mi>M</mi>
+<mi>a</mi>
+<mi>x</mi>
+<mfenced>
+<mrow>
+<mn>0</mn>
+<mo>,</mo>
+<mtext> </mtext>
+<msub>
+<mi>S</mi>
+<mi>t</mi>
+</msub>
+<mo>−</mo>
+<mi>X</mi>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mfenced>
+<mrow>
+<mi>T</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+</mfenced>
+</mrow>
+</msup>
+</mrow>
+</mfenced>
+</mrow>
+</semantics>
+</math>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1006-s01-E-1-7.75___1">= GBP 2.25 (= GBP 10 − GBP
+                  7.75)</div>
+<p>時間価値は常に正であり、満期（t＝T）に向かってゼロへと減少する。Aは誤りであり、行使価値の計算に現在価値の項が含まれていない。Cは誤りであり、オプションの行使価値がゼロであることを示唆している。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>次の原資産価格と行使価格の関係を、それに対応するプットオプションと対応付けよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1006-s01-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">1. Sₜ＝100、X＝100</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">A. アット・ザ・マネーのプットオプション</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">2. Sₜ＝110、X＝100</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">B. イン・ザ・マネーのプットオプション</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">3. Sₜ＝90、X＝100</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">C. アウト・オブ・ザ・マネーのプットオプション</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>プットオプションは、Sₜ＜Xのときイン・ザ・マネー、Sₜ＝Xのときアット・ザ・マネー、Sₜ＞Xのときアウト・オブ・ザ・マネーである。したがって：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA1006-s01-L3">
+<li class="cfa-curriculum-list-item">Aが正しい。Sₜ＝X＝100であるため、これはアット・ザ・マネーのプットオプションである。</li>
+<li class="cfa-curriculum-list-item">Cが正しい。Sₜ＞Xであるため、これはアウト・オブ・ザ・マネーのプットオプションである。</li>
+<li class="cfa-curriculum-list-item">Bが正しい。Sₜ＜Xであるため、これはイン・ザ・マネーのプットオプションである。</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">5. </span>
+<p>オプション価値に影響を与える要因の変化（他の要因は一定とする）と、それに対応するオプション価値の変化を対応付けよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1006-s01-T-1-c">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">1. 行使価格（X）の上昇</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">A. コールオプションとプットオプションの両方の価値を低下させる</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">2. 原資産価格（Sₜ）の上昇</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">B. コールオプションの価値を低下させる</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">3. 原資産価格のボラティリティの低下</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">C. プットオプションの価値を低下させる</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<ol class="cfa-curriculum-list-decimal" id="CFA1006-s01-L4">
+<li class="cfa-curriculum-list-item">Bが正しい。行使価格が高くなるとコールオプションの価値は低下する。満期時の原資産価格（Sₜ）が一定である場合、コールオプションの決済価値であるMax(0, Sₜ − X)はXが高いほど小さくなる。</li>
+<li class="cfa-curriculum-list-item">Cが正しい。原資産価格（Sₜ）が上昇するとプットオプションの価値は低下する。プットオプションは原資産を売る権利であるため、その決済価値であるMax(0, X − Sₜ)はSₜの上昇に伴い減少する。</li>
+<li class="cfa-curriculum-list-item">Aが正しい。原資産価格のボラティリティが低下すると、コールオプションおよびプットオプションの両方の価値は低下する。原資産価格の変動性が低下すると、コールまたはプットにおいてより高い正の行使価値が得られる可能性が低下する一方で、オプションが行使されずに満期を迎えるケースには影響しない。</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1006-s01-Q6">
+<span class="cfa-curriculum-question-with-label">6. </span>
+<p>次のうち、他の条件が一定であるとき、原資産から得られる収益が予期せず減少した場合にコールオプションの価値がどのように変化するかを正しく説明しているものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. コールオプションの価値は上昇する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。収益やその他の非現金的便益（例えばコンビニエンスイールド（convenience yield））は原資産の保有者には帰属するが、原資産に基づいて価値が決まるデリバティブの保有者には帰属しない。原資産に収益がある場合のコールオプションは、同一の原資産で収益がない場合のコールオプションより価値が低い。したがって、原資産の収益が減少するとコールオプションの価値は上昇する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. コールオプションの価値は低下する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。収益やその他の非現金的便益（例えばコンビニエンスイールド（convenience yield））は原資産の保有者には帰属するが、原資産に基づいて価値が決まるデリバティブの保有者には帰属しない。原資産に収益がある場合のコールオプションは、同一の原資産で収益がない場合のコールオプションより価値が低い。したがって、原資産の収益が減少するとコールオプションの価値は上昇する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. コールオプションの価値は変化しない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。収益やその他の非現金的便益（例えばコンビニエンスイールド（convenience yield））は原資産の保有者には帰属するが、原資産に基づいて価値が決まるデリバティブの保有者には帰属しない。原資産に収益がある場合のコールオプションは、同一の原資産で収益がない場合のコールオプションより価値が低い。したがって、原資産の収益が減少するとコールオプションの価値は上昇する。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1870_modules_items_145441_Learning_Outcomes_Pricing_and_Valuation_of_Options.html" >← 前へ</a>
+  <span class="title">8.01 | Introduction</span>
+  <a href="courses_1870_modules_items_145448_802_Option_Value_relative_to_the_Underlying_Spot_Price.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

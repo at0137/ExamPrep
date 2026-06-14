@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2438-R-s01-R-1" title="8.01 | Introduction">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール8：変動利付証券（floating-rate instruments）の利回りおよび利回りスプレッド指標 8.01｜導入（Introduction）</h2>
+</header>
+<p>これまでのレッスンでは、固定クーポン（fixed coupon）を持ち、満期が1年以上の債券についての価格付け（pricing）、利回り（yields）、およびスプレッド（spreads）を扱った。次の2つのレッスンでは、固定ではなく変動するクーポンを持つ証券である変動利付証券（floating-rate instruments）と、当初満期が1年以下の証券であるマネーマーケット証券（money market instruments）を含めて議論を拡張する。これら両方の証券は、投資家および発行体にとって重要である。変動利付証券は、キャッシュフローを金利変動に応じて調整することで、固定利付証券よりも価格リスク（price risk）が小さく、特定のエクスポージャーのヘッジや資産・負債のキャッシュフローのマッチングに用いられる。多くのローンは変動利付証券である。マネーマーケット証券は、多様な発行体にとって重要な短期資金調達手段である。満期までの期間が短いことは、投資家にとって再投資（reinvest）が、発行体にとって借換え（refinance）が比較的迅速に行えることを意味し、これにより金利リスク（interest rate risk）が低減される。</p>
+<p>Most of the examples and exhibits used throughout the reading can be <a class="instructure_file_link instructure_scribd_file inline_disabled" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1802/files/382201" data-api-returntype="File" data-canvas-previewable="true" href="https://learn.cfainstitute.org/courses/1802/files/382201?wrap=1" id="382204" target="_blank" title="Interactive Spreadsheet Download">downloaded as a Microsoft Excel workbook</a>. Each worksheet in the workbook is labeled with the corresponding example or exhibit number in the text.</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA2438-R-s01-Ba">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title">学習モジュール概要（Learning Module Overview）</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2438-R-s01-L1">
+<li class="cfa-curriculum-list-item">変動利付証券とは、観測可能な市場参照レート（MRR, market reference rate）にクォーテッド・マージン（quoted margin）を加えた利率によって利息が決定される債務証券である。利払いは、事前に定められた日にリセットされ、その時点のMRRの変化を反映する。</li>
+<li class="cfa-curriculum-list-item">クォーテッド・マージン（quoted margin）は、参照レートに対する上乗せまたは下乗せのスプレッドである。必要マージン（required margin）はディスカウント・マージン（discount margin）とも呼ばれ、投資家が要求するスプレッドである。</li>
+<li class="cfa-curriculum-list-item">必要マージンは、「ボトムアップ（bottom-up）」すなわち発行体および証券固有のリスクを反映しており、前のレッスンで扱った固定利付債の利回りスプレッドと類似している。フローター（floater）が額面（par）で取引される場合、クォーテッド・マージンと必要マージンは一致する。</li>
+<li class="cfa-curriculum-list-item">マネーマーケット証券は当初満期が1年以下であり、長期証券とは異なる慣行（conventions）でクォートされる。クォートはディスカウントレート（discount rate）またはアドオンレート（add-on rate）ベースで行われる。</li>
+<li class="cfa-curriculum-list-item">マネーマーケットのディスカウントレートは、利息収入を額面（満期価値, maturity value）で除したものである。購入価格が額面を下回る場合、この指標は投資家の収益率を過小評価し、その逆の場合は過大評価する。</li>
+<li class="cfa-curriculum-list-item">従来のマネーマーケット指標は、長期証券との比較可能性を高めるために変換することができる。</li>
+</ul>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2438-R-s01-Bb">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">学習モジュール自己評価（Learning Module Self-Assessment）</h3>
+<p>これらの初期問題は、本モジュールに対する現在の理解度を測ることを目的としている。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2438-R-s01-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>以下の情報は、3か月の市場参照レート（MRR）を参照レートとする、額面で発行された3つの変動利付債（floating-rate notes, FRNs）に関するものである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2438-R-s01-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">変動利付債（Floating-Rate Note）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">クォーテッド・マージン（Quoted Margin）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ディスカウント・マージン（Discount Margin）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">FRN 1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">140 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">128 bps</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">FRN 2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">145 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">145 bps</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">FRN 3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">150 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">165 bps</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>与えられた情報に基づき、次回のリセット日にディスカウントで価格付けされるFRNを特定せよ。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. FRN 1</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。FRN 3は、クォーテッド・マージン150bpsがディスカウント・マージン165bpsより低いため、次回のリセット日にディスカウントで価格付けされる。ディスカウント額は、四半期ごとに15bps（150bps − 165bps）不足する将来の利払いの現在価値である。</p>
+<p>Bは誤りである。FRN 2は、クォーテッド・マージンとディスカウント・マージンが等しいため、次回のリセット日に額面で価格付けされる。</p>
+<p>Aは誤りである。FRN 1は、クォーテッド・マージン140bpsがディスカウント・マージン128bpsより大きいため、プレミアムで価格付けされる。プレミアム額は、四半期ごとに12bps（140bps − 128bps）の超過利払いの現在価値である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. FRN 2</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。FRN 3は、クォーテッド・マージン150bpsがディスカウント・マージン165bpsより低いため、次回のリセット日にディスカウントで価格付けされる。ディスカウント額は、四半期ごとに15bps（150bps − 165bps）不足する将来の利払いの現在価値である。</p>
+<p>Bは誤りである。FRN 2は、クォーテッド・マージンとディスカウント・マージンが等しいため、次回のリセット日に額面で価格付けされる。</p>
+<p>Aは誤りである。FRN 1は、クォーテッド・マージン140bpsがディスカウント・マージン128bpsより大きいため、プレミアムで価格付けされる。プレミアム額は、四半期ごとに12bps（140bps − 128bps）の超過利払いの現在価値である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. FRN 3</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。FRN 3は、クォーテッド・マージン150bpsがディスカウント・マージン165bpsより低いため、次回のリセット日にディスカウントで価格付けされる。ディスカウント額は、四半期ごとに15bps（150bps − 165bps）不足する将来の利払いの現在価値である。</p>
+<p>Bは誤りである。FRN 2は、クォーテッド・マージンがディスカウント・マージンと等しいため、次回のリセット日に額面で価格付けされる。</p>
+<p>Aは誤りである。FRN 1は、クォーテッド・マージン140bpsがディスカウント・マージン128bpsより大きいため、プレミアムで価格付けされる。プレミアム額は、四半期ごとに12bps（140bps − 128bps）の追加、すなわち「超過（excess）」利払いの現在価値である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2438-R-s01-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>リセット日において、発行体の信用リスクの変化により必要マージン（required margin）が30bpsに低下した場合、クォーテッド・マージンが50bpsのFRNはどのように価格付けされるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. ディスカウント（discount）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。必要マージンは発行体の信用リスクを反映する。これが低下したということは、発行体の信用リスクが改善したことを意味し、すなわち市場が要求するスプレッドが低下したことを示す。必要マージンがクォーテッド・マージンを下回っているため、このフローター（floater）はプレミアムで価格付けされる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. プレミアム（premium）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。必要マージンは発行体の信用リスクを反映する。これが低下したということは、発行体の信用リスクが改善したことを意味し、すなわち市場が要求するスプレッドが低下したことを示す。必要マージンがクォーテッド・マージンを下回っているため、このフローターはプレミアムで価格付けされる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. ディスカウントまたはプレミアム（discount or premium）（デュレーションに依存）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。必要マージンは発行体の信用リスクを反映する。これが低下したということは、発行体の信用リスクが改善したことを意味し、すなわち市場が要求するスプレッドが低下したことを示す。必要マージンがクォーテッド・マージンを下回っているため、このフローターはプレミアムで価格付けされる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2438-R-s01-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>365日ベースの銀行預金証書（certificate of deposit）は、当初元本が9,650万米ドル（USD 96.5 million）であり、満期時の償還額は1億米ドル（USD 100 million）である。決済日から満期までの日数は270日である。この預金証書のアドオンレート（add-on rate）に最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 3.63%。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。アドオンレートは約4.90%である。アドオンレートは次式で計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>Y</mi>
+<mi>e</mi>
+<mi>a</mi>
+<mi>r</mi>
+</mrow>
+<mrow>
+<mi>D</mi>
+<mi>a</mi>
+<mi>y</mi>
+<mi>s</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>F</mi>
+<mi>V</mi>
+<mo>−</mo>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>365</mn>
+</mrow>
+<mrow>
+<mn>270</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100</mn>
+<mo>−</mo>
+<mn>96.5</mn>
+</mrow>
+<mrow>
+<mn>96.5</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mn>0.04903</mn>
+<mo>=</mo>
+<mn>4.90</mn>
+<mi>%</mi>
+<mo>.</mo>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 4.82%。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。アドオンレートは約4.90%である。アドオンレートは次式で計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>Y</mi>
+<mi>e</mi>
+<mi>a</mi>
+<mi>r</mi>
+</mrow>
+<mrow>
+<mi>D</mi>
+<mi>a</mi>
+<mi>y</mi>
+<mi>s</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>F</mi>
+<mi>V</mi>
+<mo>−</mo>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>365</mn>
+</mrow>
+<mrow>
+<mn>270</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100</mn>
+<mo>−</mo>
+<mn>96.5</mn>
+</mrow>
+<mrow>
+<mn>96.5</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mn>0.04903</mn>
+<mo>=</mo>
+<mn>4.90</mn>
+<mi>%</mi>
+<mo>.</mo>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 4.90%。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。アドオンレートは約4.90%である。アドオンレートは次式で計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>Y</mi>
+<mi>e</mi>
+<mi>a</mi>
+<mi>r</mi>
+</mrow>
+<mrow>
+<mi>D</mi>
+<mi>a</mi>
+<mi>y</mi>
+<mi>s</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>F</mi>
+<mi>V</mi>
+<mo>−</mo>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>365</mn>
+</mrow>
+<mrow>
+<mn>270</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100</mn>
+<mo>−</mo>
+<mn>96.5</mn>
+</mrow>
+<mrow>
+<mn>96.5</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mn>0.04903</mn>
+<mo>=</mo>
+<mn>4.90</mn>
+<mi>%</mi>
+<mo>.</mo>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2438-R-s01-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>90日物のコマーシャルペーパー（commercial paper）が、360日ベースでディスカウントレート0.120%でクォートされている。額面100あたりで価格が支払われるとすると、この証券の債券等価利回り（bond equivalent yield）に最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.107%。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。債券等価利回りは約0.120%である。まず証券の価格を計算し、その後アドオンレート（AOR, add-on rate）または債券等価利回りを計算する。</p>
+<p>コマーシャルペーパーの価格（PV）は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E___1"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mi>F</mi>
+<mi>V</mi>
+<mo>×</mo>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>−</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>D</mi>
+<mi>a</mi>
+<mi>y</mi>
+<mi>s</mi>
+</mrow>
+<mrow>
+<mi>Y</mi>
+<mi>e</mi>
+<mi>a</mi>
+<mi>r</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mi>D</mi>
+<mi>R</mi>
+<mo stretchy="false">)</mo>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mn>100</mn>
+<mo>×</mo>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>−</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>90</mn>
+</mrow>
+<mrow>
+<mn>360</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mn>0.0012</mn>
+<mo stretchy="false">)</mo>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mn>99.97.</mn>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+<p>PVを用いてアドオンレートまたは債券等価利回りを計算する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E___2"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>Y</mi>
+<mi>e</mi>
+<mi>a</mi>
+<mi>r</mi>
+</mrow>
+<mrow>
+<mi>D</mi>
+<mi>a</mi>
+<mi>y</mi>
+<mi>s</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>F</mi>
+<mi>V</mi>
+<mo>−</mo>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>360</mn>
+</mrow>
+<mrow>
+<mn>90</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100</mn>
+<mo>−</mo>
+<mn>99.97</mn>
+</mrow>
+<mrow>
+<mn>99.97</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mn>0.0012</mn>
+<mo>=</mo>
+<mn>0.12</mn>
+<mi>%</mi>
+<mo>.</mo>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 0.120%。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。債券等価利回りは約0.120%である。まず証券の価格を計算し、その後アドオンレートまたは債券等価利回りを計算する。</p>
+<p>コマーシャルペーパーの価格（PV）は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E___1"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mi>F</mi>
+<mi>V</mi>
+<mo>×</mo>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>−</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>D</mi>
+<mi>a</mi>
+<mi>y</mi>
+<mi>s</mi>
+</mrow>
+<mrow>
+<mi>Y</mi>
+<mi>e</mi>
+<mi>a</mi>
+<mi>r</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mi>D</mi>
+<mi>R</mi>
+<mo stretchy="false">)</mo>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mn>100</mn>
+<mo>×</mo>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>−</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>90</mn>
+</mrow>
+<mrow>
+<mn>360</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mn>0.0012</mn>
+<mo stretchy="false">)</mo>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mn>99.97.</mn>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+<p>PVを用いてアドオンレートまたは債券等価利回りを計算する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E___2"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>Y</mi>
+<mi>e</mi>
+<mi>a</mi>
+<mi>r</mi>
+</mrow>
+<mrow>
+<mi>D</mi>
+<mi>a</mi>
+<mi>y</mi>
+<mi>s</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>F</mi>
+<mi>V</mi>
+<mo>−</mo>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>360</mn>
+</mrow>
+<mrow>
+<mn>90</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100</mn>
+<mo>−</mo>
+<mn>99.97</mn>
+</mrow>
+<mrow>
+<mn>99.97</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mn>0.0012</mn>
+<mo>=</mo>
+<mn>0.12</mn>
+<mi>%</mi>
+<mo>.</mo>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 0.135%。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。債券等価利回りは約0.120%である。まず証券の価格を計算し、その後アドオンレートまたは債券等価利回りを計算する。</p>
+<p>コマーシャルペーパーの価格（PV）は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E___1"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mi>F</mi>
+<mi>V</mi>
+<mo>×</mo>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>−</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>D</mi>
+<mi>a</mi>
+<mi>y</mi>
+<mi>s</mi>
+</mrow>
+<mrow>
+<mi>Y</mi>
+<mi>e</mi>
+<mi>a</mi>
+<mi>r</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mi>D</mi>
+<mi>R</mi>
+<mo stretchy="false">)</mo>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mn>100</mn>
+<mo>×</mo>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>−</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>90</mn>
+</mrow>
+<mrow>
+<mn>360</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mn>0.0012</mn>
+<mo stretchy="false">)</mo>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mn>99.97.</mn>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+<p>PVを用いてアドオンレートまたは債券等価利回りを計算する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E___2"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>Y</mi>
+<mi>e</mi>
+<mi>a</mi>
+<mi>r</mi>
+</mrow>
+<mrow>
+<mi>D</mi>
+<mi>a</mi>
+<mi>y</mi>
+<mi>s</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>F</mi>
+<mi>V</mi>
+<mo>−</mo>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<mi>P</mi>
+<mi>V</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>360</mn>
+</mrow>
+<mrow>
+<mn>90</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100</mn>
+<mo>−</mo>
+<mn>99.97</mn>
+</mrow>
+<mrow>
+<mn>99.97</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mi>A</mi>
+<mi>O</mi>
+<mi>R</mi>
+<mo>=</mo>
+<mn>0.0012</mn>
+<mo>=</mo>
+<mn>0.12</mn>
+<mi>%</mi>
+<mo>.</mo>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>固定利付アナリスト（fixed-income analyst）は、2つの証券を評価している。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2438-R-s01-L2">
+<li class="cfa-curriculum-list-item">180日物のタイの銀行預金証書（certificate of deposit, CD）は、360日ベースでディスカウントレート5.95%でクォートされており、債券等価利回り（bond equivalent yield）は6.218%である。</li>
+<li class="cfa-curriculum-list-item">180日物のタイの企業によるコマーシャルペーパー（commercial paper, CP）は、365日ベースでアドオンレート（add-on rate）6.10%でクォートされており、債券等価利回りは6.100%である。</li>
+</ul>
+<p>6か月物のタイ国庫短期証券（Thai T-bill）が4.36%でクォートされていると仮定すると、どの証券が最も高い信用リスク（credit risk）を有している可能性が高いか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>タイの銀行CDである。タイ国庫短期証券（Thai T-bill）に対するスプレッドは、CDが186bps、CPが174bpsである。それぞれの証券のリターンを比較し、タイ国庫短期証券に対するスプレッドを導出するために、債券等価利回り（bond equivalent yield）を用いる。</p>
+<p>タイの銀行CDのスプレッドは次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E___3">6.218% – 4.36% = 186 bps.</div>
+<p>タイの企業CPのスプレッドは次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2438-R-s01-E___4">6.10% – 4.36% = 174 bps.</div>
+<p>したがって、タイの銀行CDはタイの企業CPよりも高い信用リスクを有している。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146161_Learning_Outcomes_Yield_and_Yield_Spread_Measures_for_Floating-Rate_Instruments.html" >← 前へ</a>
+  <span class="title">8.01 | Introduction</span>
+  <a href="courses_1869_modules_items_146177_802_Yield_and_Yield_Spread_Measures_for_Floating-Rate_Notes.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.04 | Free Cash Flow Measures</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2421-R-s04-R-1" title="5.04 | Free Cash Flow Measures"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール5：キャッシュ・フロー計算書の分析 II 5.04｜フリー・キャッシュ・フロー指標</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">企業フリー・キャッシュ・フロー（free cash flow to the firm, FCFF）、株主向けフリー・キャッシュ・フロー（free cash flow to equity, FCFE）、およびパフォーマンスおよびカバレッジに関するキャッシュ・フロー比率（performance and coverage cash flow ratios）を計算し解釈すること</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>前述のとおり、営業キャッシュ・フローが設備投資を賄うのに十分であることが望ましい。営業キャッシュ・フローが設備投資を上回る部分は一般にフリー・キャッシュ・フロー（free cash flow）と呼ばれる。企業またはその株式の評価を目的とする場合、アナリストは企業フリー・キャッシュ・フロー（free cash flow to the firm, FCFF）や株主向けフリー・キャッシュ・フロー（free cash flow to equity, FCFE）といった他のキャッシュ・フロー指標を算出し利用することがある。</p>
+<p>FCFFは、すべての営業費用（法人所得税を含む）を支払い、運転資本および固定資本への必要な投資を行った後に、負債および株主の両方の投資家に利用可能なキャッシュ・フローである。FCFFは当期純利益から次のように算出できる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2421-R-s04-E-1-">FCFF = NI + NCC + Int(1 – Tax rate) – FCInv – WCInv</div>
+<p>ここで：</p>
+<ul class="cfa-curriculum-definition-list">
+<li>NI ＝ 当期純利益（Net income）</li>
+<li>NCC ＝ 非現金費用（Non-cash charges）（減価償却費および償却費など）</li>
+<li>Int ＝ 利息費用（Interest expense）</li>
+<li>FCInv ＝ 設備投資（Capital expenditures）（設備などの固定資本）</li>
+<li>WCInv ＝ 運転資本投資（Working capital expenditures）</li>
+</ul>
+<p>利息を加算し戻す理由は、FCFFが負債資本および株主資本の提供者の双方に利用可能なキャッシュ・フローであるためである。なお、FCFFは営業活動によるキャッシュ・フローから次のようにも算出できる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2421-R-s04-E-1-___1">FCFF = CFO + Int(1 – Tax rate) – FCInv.</div>
+<p>CFOは、US GAAPまたはIFRSにおける営業活動によるキャッシュ・フローを表す（ただし、利息支払が営業活動に含まれている場合）。利息支払が財務活動に含まれている場合には、CFOをInt(1 − 税率)で調整する必要はない。IFRSにおいて、受取利息および受取配当が投資活動に分類されている場合、それらはFCFFを算出するためにCFOに加算する必要がある。さらに、配当支払いが営業活動で控除されている場合には、FCFF算出の際にこれを加算し戻す必要がある。</p>
+<p>2018年におけるAcmeの限界税率を34％と仮定すると、Acme CorporationのFCFFの算出（図表3のデータに基づく）は図表7に示される。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2421-R-s04-EXH-1-7">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 7<span style="display: block;">FCFF for Acme Corporation</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">CFO</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD2,606</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">加算：支払利息 ×（1 − 法人税率）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">{USD258 × [1 − 0.34]}</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">170</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">減算：固定資本への純投資（USD1,300 − USD762）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(538)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">FCFF</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD2,238</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>a 法人税率0.34 ＝（税金費用 ÷ 税引前利益）＝（$1,139 ÷ $3,349）</p>
+</div>
+<p>FCFEは、すべての営業費用および借入コスト（元本および利息）を支払い、運転資本および固定資本への必要な投資を行った後に、普通株主に利用可能なキャッシュ・フローである。FCFEは次のように算出できる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2421-R-s04-E-1-___2">FCFE = CFO – FCInv + Net borrowing.</div>
+<p>純借入が負の場合、借入金の返済額が新規借入額を上回る。この場合、FCFEは次のように表される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2421-R-s04-E-1-___3">FCFE = CFO – FCInv – Net debt repayment.</div>
+<p>Acme CorporationのFCFEの算出（同様に図表3のデータに基づく）は図表8に示される。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2421-R-s04-EXH-1-8">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 8<span style="display: block;">FCFE for Acme Corporation</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">CFO</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD2,606</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">減算：固定資本への純投資（USD1,300 − USD762）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(538)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">減算：負債の返済</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(500)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">FCFE</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD1,568</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>正のFCFEは、企業の営業キャッシュ・フローが設備投資および負債返済に必要な額を上回っていることを意味する。このキャッシュは所有者への分配に利用可能である。</p>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FreeCashFlowContent">
+<p>企業を継続企業として維持するために必要なすべての投資を行った後に投資家に利用可能となる実際のキャッシュ（これを企業フリー・キャッシュ・フローともいう）；企業価値を損なうことなく投資家（株主や債券保有者など）に分配可能な内部生成資金。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143580_503_Ratios_and_Common-Size_Analysis.html" >← 前へ</a>
+  <span class="title">5.04 | Free Cash Flow Measures</span>
+  <a href="courses_1867_modules_items_143586_505_Cash_Flow_Statement_Analysis_Cash_Flow_Ratios.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

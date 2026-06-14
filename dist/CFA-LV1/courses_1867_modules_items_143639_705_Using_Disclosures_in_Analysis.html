@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.05 | Using Disclosures in Analysis</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2424-R-s05-R-1" title="7.05 | Using Disclosures in Analysis">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール7：長期資産の分析（Analysis of Long-Term Assets）7.05｜開示情報の分析への活用（Using Disclosures in Analysis）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">有形固定資産（property, plant, and equipment）および無形資産（intangible assets）に関する財務諸表の開示を分析し解釈する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>固定資産の分析に用いられる比率には、固定資産回転率（fixed asset turnover ratio）やいくつかの資産年齢比率（asset age ratios）が含まれる。固定資産回転率（総収益を平均純固定資産で除したもの）は、総収益とPPE（property, plant, &amp; equipment）への投資との関係を示す。この比率が高いほど、企業は一定の固定資産投資からより多くの売上を生み出していることになる。固定資産回転率が高いことは、一般に効率性が高い指標と解釈される。</p>
+<p>資産年齢比率は一般に、取得原価（historical cost）と減価償却（depreciation）の関係に依拠する。再評価モデル（revaluation model）（IFRSでは認められているがUS GAAPでは認められていない）の下では、帳簿価額（carrying amount）が減価後の取得原価と大きく異なる場合、帳簿価額、累計減価償却（accumulated depreciation）、および減価償却費（depreciation expense）の関係は異なる。したがって、以下の資産年齢比率に関する議論は主として取得原価モデル（cost model）で報告されるPPEに適用される。</p>
+<p>資産年齢および残存耐用年数（remaining useful life）は、企業が生産能力を維持するために再投資を必要とする度合いを示す重要な指標である。資産が古く、残存年数が短いほど、企業は生産能力維持のためにより多くの再投資が必要となる可能性がある。企業の資産基盤の平均年齢は、累計減価償却額を減価償却費で除することで推定できる。また、平均残存耐用年数は、純PPEを減価償却費で除することで推定できる。これらの推定は、取得原価基準で計上された資産に関する以下の関係を反映しているにすぎない：取得原価総額から累計減価償却を差し引いたものが純PPEである；また、定額法（straight-line depreciation）の下では、取得原価総額から残存価値（salvage value）を差し引いたものを推定耐用年数で除したものが年間減価償却費である。同様に、取得原価総額から残存価値を差し引いたものを年間減価償却費で除すると、推定耐用年数となる。定額法および残存価値ゼロ（単純化のため）を仮定すると、以下の関係が得られる：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2424-R-s05-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">推定総耐用年数（Estimated total useful life）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">取得後経過年数（年齢）（Time elapsed since purchase (Age)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">推定残存年数（Estimated remaining life）</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">取得原価 ÷ 年間減価償却費</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">推定総耐用年数</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">取得原価</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">累計減価償却</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">純PPE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>同様に（Equivalently）</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2424-R-s05-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">推定総耐用年数</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">設備の推定年齢（Estimated age of equipment）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">推定残存年数</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">取得原価 ÷ 年間減価償却費</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">累計減価償却 ÷ 年間減価償却費</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">純PPE ÷ 年間減価償却費</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>これらの推定の適用は、単一の減価償却資産を持つ企業の仮想例で説明できる。資産の取得原価が当初USD100、推定耐用年数が10年、残存価値がUSD0とする。毎年、企業はUSD10の減価償却費を計上するため、累計減価償却額は資産取得後の年数にUSD10を乗じた額となる（資産が7年経過した時点では累計減価償却額はUSD70となる）。同様に、資産の年齢は累計減価償却額を年間減価償却費で除した値に等しい。</p>
+<p>実務上、このような推定を高い精度で行うことは困難である。企業は定額法以外の減価償却方法を用いることもあり、また耐用年数や残存価値が異なる多数の資産（すでに完全に減価償却された資産も含む）を保有しているため、この手法はあくまで推定値を提供するにすぎない。さらに、固定資産に関する開示はしばしば非常に一般的である。その結果、これらの推定は主として追加的な調査が必要な領域を特定するために有用である可能性がある。</p>
+<p>さらに別の指標として、企業の現在の生産能力への再投資を比較するものがある。年間資本的支出（capital expenditures）と年間減価償却費を比較することで、生産能力が維持されているかどうかの指標が得られる。これは、PPEが減価償却される速度に対して、企業がどの程度の速度でPPEを更新しているかを示す非常に一般的な指標である。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2424-R-s05-EXM6">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例6：固定資産の開示を用いた企業間の固定資産回転率および減価償却資産の平均年齢の比較（Using Fixed Asset Disclosure to Compare Companies’ Fixed Asset Turnover and Average Age of Depreciable Assets）</h3>
+<section>
+<p>以下の3つの国際通信企業の有形固定資産（property, plant, and equipment）を考える：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2424-R-s05-L1">
+<li class="cfa-curriculum-list-item">以前に取り上げたOrange SAは、1997年以降、ユーロネクスト・パリ（Euronext Paris）（銘柄コードORA）およびニューヨーク証券取引所（New York Stock Exchange）（銘柄コードORAN）に上場している。2017年12月31日時点で、フランス政府は株式資本の22.95%を保有している。</li>
+<li class="cfa-curriculum-list-item">BCE Inc.はカナダ最大の通信会社であり、カナダ全土で無線、有線、インターネット、テレビ、および法人向け通信サービスを提供している。BCEの株式はトロント証券取引所（Toronto Stock Exchange）およびニューヨーク証券取引所（New York Stock Exchange）（TSX, NYSE: BCE）に上場している。</li>
+<li class="cfa-curriculum-list-item">Verizon Communications Inc.は、米国を拠点とするグローバルな通信、情報、およびエンターテインメント製品・サービスの提供企業であり、消費者、企業、および政府機関にサービスを提供している。Verizonの株式はニューヨーク証券取引所（New York Stock Exchange）およびNASDAQグローバルセレクト市場（NASDAQ Global Select Market）（銘柄コードVZ）に上場している。図表6：各社の財務諸表からの抜粋情報 Orange BCE Inc Verizon 通貨（単位：百万）ユーロ カナダドル 米ドル 期末PPE取得原価合計 97,092 69,230 246,498 期末累計減価償却 70,427 45,197 157,930 期末純PPE 26,665 24,033 88,568 期首純PPE 25,912 22,346 84,751 売上高 41,096 22,719 126,034 年間減価償却費 4,708 3,037 14,741 資本的支出 5,677 4,149 17,247 PPEに含まれる土地 分離表示なし 分離表示なし 806 会計基準 IFRS IFRS US GAAP PPE測定 取得原価 取得原価 取得原価 減価償却方法 定額法 定額法 定額法 出所：各社2017年年次財務報告書</li>
+</ul>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>図表5（Exhibit 5）の各社のデータに基づき、PPEの総耐用年数、年齢、および残存耐用年数を推定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>以下の表は、各社のPPEについて、推定総耐用年数、推定年齢、および推定残存耐用年数を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2424-R-s05-Tc">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">推定値（Estimates）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">Orange</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">BCE Inc</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">Verizon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">推定総耐用年数（年）（Estimated total useful life (years)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">22.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">16.7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">推定年齢（年）（Estimated age (years)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10.7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">推定残存耐用年数（年）（Estimated remaining life (years)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>計算はVerizonのデータ（単位：百万ドル）を用いて示される。PPEの推定総耐用年数は、PPEの取得原価合計USD246,498を年間減価償却費USD14,741で除することで求められ、16.7年となる。推定年齢および推定残存耐用年数は、それぞれ累計減価償却額USD157,930および純PPE USD88,568を年間減価償却費USD14,741で除することで求められ、それぞれ10.7年および6.0年となる。</p>
+<p>理想的には、本例で示された資産耐用年数の推定は、減価償却されない土地（land）を除外して行うべきである（情報が利用可能な場合）。しかし、OrangeおよびBCEはいずれも土地と建物（Land and Buildings）を合算して報告している。そのため、上表において土地が個別に開示されていると考えられるVerizonを用いて、土地を調整した推定を例示する。土地を除外する計算例として、Verizonの土地を除外すると、非土地PPEの推定総耐用年数は16.7年となる［（取得原価USD246,498から土地USD806を控除）÷年間減価償却費USD14,741］。土地はVerizonのPPEに占める割合が小さいため、土地を含めた場合と比較して推定値はほとんど変わらない。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>推定総耐用年数、年齢、および残存耐用年数の推定値を解釈せよ。3社間の比較に影響を与える可能性のある項目は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>推定総耐用年数から、OrangeおよびBCEはVerizonよりもはるかに長い期間にわたってPPEを減価償却していることが示唆される。Orangeは20.6年、BCEは22.8年であるのに対し、Verizonは16.7年である。</p>
+<p>設備の推定年齢から、Verizonは最も新しいPPEを保有しており、その推定年齢は10.7年であることが示される。また、推定値から、Orangeの資産の耐用年数の約73%が経過していることが示唆される（15.0年 ÷ 20.6年、または同様にEUR70,427百万 ÷ EUR97,092百万）。これに対し、BCEおよびVerizonのPPEの耐用年数の経過割合は、それぞれ約65%および64%である。</p>
+<p>企業間比較に影響を与える要因には、事業の違い（例えば、事業構成の違いや買収・売却活動の違い）が含まれる。この結果は、各社の注記（footnotes）で開示されている耐用年数や資産構成とある程度比較可能であるが、開示内容の違い（例えば、資産区分の違い）が比較に影響を与える可能性がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>各社の2017年の減価償却費は、その年の資本的支出と比較してどのようになっているか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>3社すべてにおいて、資本的支出は減価償却費を上回っている。最も近い10%単位に丸めると、減価償却費に対する資本的支出の割合は、Orangeが120%、BCEが140%、Verizonが120%である。3社とも、PPEの減価償却速度よりも速いペースでPPEを更新しており、これは比較的古い資産基盤と整合的である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>各社の固定資産回転率を計算し、比較せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>固定資産回転率は、総収益を平均純PPEで除して算出される。Orangeの固定資産回転率は1.6（= 41,096 ÷ ((26,665 + 25,912) / 2)）である。BCEの固定資産回転率は1.0、Verizonは1.5である。</p>
+<p>OrangeおよびVerizonは、BCEと比較して、固定資産投資1単位あたりより多くの売上を生み出していることを示しており、固定資産回転率が高い。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143636_704_Presentation_and_Disclosure.html" >← 前へ</a>
+  <span class="title">7.05 | Using Disclosures in Analysis</span>
+  <a href="courses_1867_modules_items_143642_Real_World_Applications_Bloombergs_Field_Search.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

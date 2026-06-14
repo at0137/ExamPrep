@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.05 | Uses of Market Indexes</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0162-R-s05" title="2.05 | Uses of Market Indexes">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：証券市場指数（Security Market Indexes） 2.05｜市場指数の用途（Uses of Market Indexes）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">証券市場指数（security market indexes）の用途を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>指数は当初、特定の証券市場（security market）がある日にどのようなパフォーマンスを示したかを把握するために作られた。現代の金融理論（modern financial theory）の発展に伴い、投資管理（investment management）におけるその用途は大きく拡大した。指数の主な用途には以下が含まれる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0162-R-L7">
+<li class="cfa-curriculum-list-item">市場センチメント（market sentiment）の指標；</li>
+<li class="cfa-curriculum-list-item">リターン、システマティック・リスク（systematic risk）、およびリスク調整後パフォーマンス（risk-adjusted performance）を測定およびモデル化するための代理変数（proxies）；</li>
+<li class="cfa-curriculum-list-item">アセットアロケーションモデル（asset allocation models）における資産クラス（asset classes）の代理変数（proxies）；</li>
+<li class="cfa-curriculum-list-item">アクティブ運用ポートフォリオ（actively managed portfolios）のベンチマーク（benchmarks）；および</li>
+<li class="cfa-curriculum-list-item">インデックスファンド（index funds）や上場投資信託（exchange-traded funds, ETFs）などの投資商品のモデルポートフォリオ（model portfolios）。</li>
+</ul>
+<p>証券市場指数（security market indexes）を利用する投資家は、自身のニーズに最も適した指数を選択するために、さまざまな指数がどのように構築されているかを理解しておく必要がある。</p>
+<section id="CFA0162-R-s05-01">
+<h3 class="dp-heading">市場センチメントの指標（Gauges of Market Sentiment）</h3>
+<p>株式市場指数（stock market indexes）の本来の目的は、投資家の信頼感（investor confidence）または市場センチメント（market sentiment）の指標を提供することであった。市場参加者の集合的な意見を示す指標として、指数は投資家の態度や行動を反映する。ダウ・ジョーンズ工業平均（Dow Jones Industrial Average）は長い歴史を持ち、メディアで頻繁に引用され、依然として人気のある市場センチメントの指標である。しかし、この指数は毎日取引される数千の米国株のうちわずか30銘柄で構成されているため、投資家全体の態度や「市場」全体を正確に反映しているとは限らない。</p>
+</section>
+<section id="CFA0162-R-s05-02">
+<h3 class="dp-heading">リターン、システマティック・リスク、およびリスク調整後パフォーマンスの測定およびモデル化のための代理変数（Proxies for Measuring and Modeling Returns, Systematic Risk, and Risk-Adjusted Performance）</h3>
+<p>資本資産価格モデル（capital asset pricing model, CAPM）は、ベータ（beta）を市場全体に対する証券のシステマティック・リスクとして定義する。CAPMにおける市場ポートフォリオ（market portfolio）はすべてのリスク資産で構成される。市場ポートフォリオのパフォーマンスを表すために、投資家は広範な指数を用いる。例えば、東証株価指数（Tokyo Price Index, TOPIX）やS&amp;P 500は、それぞれ日本および米国における市場ポートフォリオの代理として機能し、システマティック・リスクおよび市場リターンの測定やモデル化に用いられる。</p>
+<p>証券市場指数は、リスク調整後パフォーマンスを測定する際の市場の代理としても機能する。アクティブ運用ポートフォリオのベータ（beta）は、投資家が同じシステマティック・リスク水準を持つパッシブな代替ポートフォリオを構築することを可能にする。例えば、グローバル株式のアクティブ運用ポートフォリオのベータがMSCI World Indexに対して0.95である場合、投資家はポートフォリオの95％をMSCI World Indexファンドに投資し、残り5％を現金（cash）で保有することで、同じシステマティック・リスクを持つパッシブポートフォリオを構築できる。アルファ（alpha）は、アクティブ運用ポートフォリオのリターンとパッシブポートフォリオのリターンの差であり、リスク調整後リターンまたは投資パフォーマンスの指標である。アルファは、運用者の能力（またはその欠如）、取引コスト（transaction costs）、および手数料（fees）に起因する可能性がある。</p>
+</section>
+<section id="CFA0162-R-s05-03">
+<h3 class="dp-heading">アセットアロケーションモデルにおける資産クラスの代理変数（Proxies for Asset Classes in Asset Allocation Models）</h3>
+<p>指数は特定の証券グループのリスクおよびリターン特性を示すため、アセットアロケーションモデルにおいて資産クラスの代理変数として重要な役割を果たす。指数は、異なる資産クラスのリスクおよびリターンをモデル化するために使用される過去データを提供する。</p>
+</section>
+<section id="CFA0162-R-s05-04">
+<h3 class="dp-heading">アクティブ運用ポートフォリオのベンチマーク（Benchmarks for Actively Managed Portfolios）</h3>
+<p>投資家は、アクティブ運用ポートフォリオマネージャーのパフォーマンスを評価するために、しばしば指数をベンチマークとして使用する。ベンチマークとして選択される指数は、運用者が採用する投資戦略を反映している必要がある。例えば、グローバルな小型株（small-capitalization stocks）に投資するアクティブ運用者は、FTSEグローバル小型株指数（FTSE Global Small Cap Index）のようなベンチマークで評価されるべきである。この指数は2018年8月時点で、47か国にわたる約4,400の流動性の高い小型株で構成されている。</p>
+<p>ベンチマークとして用いる指数の選択は重要である。不適切な指数を用いると、アクティブ運用者の投資パフォーマンスに関して誤った結論を導く可能性がある。例えば、小型株運用者が小型株指数には劣後したが、広範な株式市場指数には勝っていたとする。投資家が広範な市場指数をベンチマークとして用いた場合、その運用者は手数料に見合う成果を上げており、継続または追加資産の運用を任せるべきであると結論づける可能性がある。一方、小型株指数をベンチマークとして用いると、全く異なる結論に至る可能性がある。</p>
+</section>
+<section id="CFA0162-R-s05-05">
+<h3 class="dp-heading">投資商品のモデルポートフォリオ（Model Portfolios for Investment Products）</h3>
+<p>指数はまた、新たな投資商品の開発の基盤としても機能する。アクティブ運用ポートフォリオのベンチマークとして指数を用いることにより、一部の投資家は、ベンチマークそのものに投資すべきであると考えるようになった。CAPMの結論である「投資家は市場ポートフォリオを保有すべきである」という考えに基づき、広範な市場指数ファンドが市場ポートフォリオの代理として開発された。</p>
+<p>投資運用会社（investment management firms）は当初、機関投資家（institutional investors）向けに指数ポートフォリオを開発・運用していた。その後、投資信託会社（mutual fund companies）は個人投資家向けにインデックスファンドを提供し始めた。さらに、投資運用会社は上場投資信託（exchange-traded funds, ETFs）を導入した。これらはインデックス投資信託と同様に運用されるが、株式のように取引される。</p>
+<p>最初のETFは既存の指数に基づいていた。ETFの人気が高まるにつれて、指数提供者はETFを組成する特定の目的のために新たな指数を開発し、その結果、対応するETFを持つ多数の狭く定義された指数が誕生した。例えば、VanEck Vectors Vietnam ETFは、投資家がベトナムの株式市場に投資することを可能にする。</p>
+<p>投資家のニーズに応じた指数の選択肢は非常に広範である。指数提供者は、投資家のニーズに応える新たな指数の開発機会を常に模索している。</p>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142220_204_Index_Management_Rebalancing_and_Reconstitution.html" >← 前へ</a>
+  <span class="title">2.05 | Uses of Market Indexes</span>
+  <a href="courses_1868_modules_items_142225_206_Equity_indexes.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

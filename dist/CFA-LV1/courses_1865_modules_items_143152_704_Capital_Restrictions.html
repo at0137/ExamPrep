@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.04 | Capital Restrictions</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2415-R-s04-R-1" title="7.04 | Capital Restrictions">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール7：資本フローと為替市場 7.04 | 資本規制（Capital Restrictions）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">政府が課す資本規制の一般的な目的を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>政府は様々な理由で資本の流入・流出を制限する。例えば、雇用や地域開発に関する目標を達成するため、あるいは戦略的または防衛関連の目的を持つ場合がある。多くの国では、外国人が自国に投資する場合や自国民が海外に投資する場合に承認を必要とする。外国人による国内投資の管理は、投資可能な金額や投資可能な産業の種類に制限をもたらす。例えば、防衛や通信などの戦略的産業は所有権制限の対象となることが多い。資本流出の制限には、資本、利子、利益、ロイヤリティ支払、ライセンス料の送還制限などが含まれることがある。特に外貨不足の経済においては、自国民が海外に投資する能力が制限される場合があり、海外投資から得た収益の送還期限が設けられることもある。</p>
+<p>経済学者は、金融資本の自由な移動は有益であると考える。なぜなら、資本を最も高いリターンが期待できる場所に投資できるからである。資本の流入は、国内貯蓄だけでは達成できない水準で生産能力に投資することを可能にし、より高い成長率の達成を助ける。また、現地経済に進出する外国企業の長期投資は、必要な資本だけでなく、新しい技術、技能、高度な生産・経営手法をもたらし、現地企業への波及効果を生む。外国企業による投資は、部品を現地調達する場合、現地サプライヤーのネットワークを形成する可能性がある。これらのサプライヤーは、外国企業との密接な協力関係を通じて高度な訓練や波及効果を受ける。一方で、市場で外国企業の競争が増すと、国内企業は効率化を迫られる可能性がある。逆に、競争に負けた国内企業が市場から退出することで、国内産業が損なわれる可能性もある。</p>
+<p>マクロ経済危機時には、資本の流動性が高いと、特に流入の大部分が生産資産への外国直接投資ではなく、株式・債券・その他流動資産への短期ポートフォリオ資金である場合に、資本逃避（capital flight）が起こりやすい。このような状況では、資本規制は固定為替レート目標など他の政策手段と併用されることが多い。資本規制と固定為替レート目標は補完的な手段である。なぜなら、完全な資本移動性がある体制では、政府は標準的な金融政策や財政政策だけでは国内外の政策目標を同時に達成できないからである。資本の自由な流れを制限することで、資本規制は対外収支をコントロールする手段を提供し、従来のマクロ政策手段は他の目的に用いられる。</p>
+<p>現代の資本規制は、第一次世界大戦で戦費調達の方法として交戦国によって開発された。戦争開始時、主要国は資本流出（すなわち外国資産の購入や海外への貸付）を制限した。これらの制限は、資本を国内に留めることで歳入を増やし、富の課税を容易にし、利子収入を生み出した。また、資本規制は低金利を維持するのに役立ち、政府の負債にかかる借入コストを低減した。第一次世界大戦以降、資本流出の規制は他国でも類似の目的で用いられ、主に開発途上国では、政府の歳入確保や国内経済における信用配分のために利用された。広義には、資本規制とは資本フローを制限または誘導する政策であり、税金、価格または量の規制、資産の国際取引の全面的禁止などの形を取る場合がある。価格規制は、国際投資のリターンに対する特別税、特定取引への課税、または法定準備金要件（外国人が国内銀行口座に預金する際に一定割合を中央銀行に最低期間ゼロ金利で預けることを義務付ける）などの形を取る場合がある。資本フローの量的制限には、新規または既存の外国債権者からの借入に上限を課したり、特別な承認を求めたりするルールが含まれることがある。行政上の管理も、特定の資産取引について政府機関の承認を必要とすることで、国境を越えた資本移動に影響を与える場合がある。</p>
+<p>資本規制を効果的に実施するには、潜在的な抜け穴を塞ぐために措置を拡大する必要がある場合、非自明な管理コストが伴うことがある。資本規制による国内金融市場の保護は、必要な政策調整の遅れや民間部門の国際環境変化への適応の妨げにもなりうる。最も重要なのは、規制が市場にネガティブな印象を与え、結果として国外資金へのアクセスが困難・高コストになる可能性があることである。</p>
+<p>資本規制の有効性に関する研究では、国際通貨基金（IMF）は資本流入と流出の制限を分けて検討した。著者らは、資本流入規制を効果的にするためには（すなわち回避されないためには）、規制対象を包括的にし、強力に実施する必要があると結論づけた。規制の遵守を継続的に拡張・修正・監視するには相当な管理コストがかかる。流入規制は一部の国では効果的であったが、規制の影響を他の政策（健全性規制の強化、為替変動の柔軟化、金融政策の調整など）の影響と区別することは困難であった。資本流出の場合、金融危機時に規制を課すことは混合的な結果をもたらすことがあり、一部の国では一時的な緩和に留まり、他国（例：マレーシア）では経済再構築のための十分な時間を確保することができた。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2415-R-s04-EXM-1-5">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例5 歴史的事例—資本規制：1998–2001年のマレーシア（Malaysia）の資本規制</h3>
+<section>
+<p>1997年7月のタイ・バーツ（Thai baht）の切り下げ後、東南アジアでは大規模な資本流出が発生し、現地株式・不動産価格の下落と為替レートの低下を引き起こした。資本流出に対抗するため、IMFは域内多くの国に金利引き上げを促し、外国投資家にとって資産をより魅力的にした。しかし、金利上昇は国内経済に重くのしかかった。このジレンマに対応して、マレーシアは1998年9月1日に資本規制を導入した。この規制は、国内口座と外国口座間の送金禁止、オフショア向け信用供与の停止、1999年9月1日までの投資送還禁止、マレーシア・リンギット（Malaysian ringgit, MYR）の米ドルに対する為替レート固定（3.8 MYR/USD）を含んだ。1999年2月には、資本送還禁止に代わり資本フロー課税制度が導入された。詳細は複雑であるが、結果として短期資本流入を抑制しつつ長期取引を許可した。資本規制により、マレーシアは金融政策の独立性を回復し、金利を引き下げても通貨価値の下落を避けられることを目指した。流出規制により投機的な資本流出が抑制され、金利は大幅に引き下げられた。同時に、資本規制の下で、当局は銀行および企業の再編を進め、1999年と2000年に強い経済回復を達成した。経済・金融の安定が回復すると、ポートフォリオ流出に対する管理は二層の価格ベースの退出制度に置き換えられ、最終的には2001年5月に撤廃された。マレーシアの資本規制は経済安定化に寄与したが、長期的にはMSCI先進国株式指数からの除外というコストを伴い、機関投資家向け資産運用業界で重要なベンチマークを失う結果となった。また、新興国市場に分類されることにより、マレーシア市場は投資家にとって安全性の高い先進国株式市場と同等には見られなくなった。その結果、多くの市場アナリストは、マレーシアが純粋な長期資本流入を呼び込むのが困難になったと指摘した。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>どのような経済状況でマレーシアの資本規制は導入されたか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">答えを確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>東南アジア危機の結果、マレーシアは大規模な純資本流出に見舞われ、国内金利水準が上昇した。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>マレーシアの資本規制の最終的な目的は何か？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">答えを確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>この規制は、資本フローを制限・誘導し、政府が金利を引き下げ、銀行および企業の再編を進められるように設計された。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>この国の資本規制はどの程度成功したか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">答えを確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>資本規制はマレーシア経済の安定化に寄与したが、投資家のマレーシア金融市場に対する認識の変化や、MSCI先進国株式指数からの除外に繋がった。この状況により、マレーシア株式の国際需要が低下し、純長期資本流入を呼び込むのが困難になった。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1865_modules_items_143147_703_Exchange_Rate_Regimes_Ideals_and_Historical_Perspective.html" >← 前へ</a>
+  <span class="title">7.04 | Capital Restrictions</span>
+  <a href="courses_1865_modules_items_143160_Glossary_Capital_Flows_and_the_FX_Market.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

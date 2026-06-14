@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2437-R-s01-R-1" title="7.01 | Introduction"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール7：固定利付債の利回りおよび利回りスプレッド指標（Yield and Yield Spread Measures for Fixed-Rate Bonds）7.01｜導入（Introduction）</h2>
+</header>
+<p>これまでのレッスンでは、債券価格と最終利回り（yield-to-maturity, YTM）との関係、およびクーポン率や残存期間（time-to-maturity）などの他の特性との関係を示した。最終利回りおよびその他の利回り指標を解釈・算出する上で重要な2つの考慮事項は、利息の複利計算頻度（compounding frequency）と、キャッシュフローの金額やタイミングに影響を与える可能性のある組み込みオプション（embedded options）の存在である。本モジュールではこれらの点を検討し、さらに利回りの分析を拡張して、利回りをベンチマーク金利（benchmark rate）と比較するスプレッド指標を導入し、特定のリスクを取ることに対して投資家がどの程度補償されるかを明らかにする。</p>
+<p>Most of the examples and exhibits used throughout the reading can be <a class="instructure_file_link instructure_scribd_file inline_disabled" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1802/files/438936" data-api-returntype="File" data-canvas-previewable="true" href="https://learn.cfainstitute.org/courses/1802/files/438936?wrap=1" id="438936" target="_blank" title="Download Excel workbook">downloaded as a Microsoft Excel workbook</a>. Each worksheet in the workbook is labeled with the corresponding example or exhibit number in the text.</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA2437-R-s01-Ba">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title">学習モジュールの概要（Learning Module Overview）</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2437-R-s01-L1">
+<li class="cfa-curriculum-list-item">最終利回り（yield-to-maturity）は、満期やクーポンが異なる債券を単一の指標で比較することを可能にする。利回りの決定および解釈において重要な要因の一つは、複利計算の頻度（periodicity）である。</li>
+<li class="cfa-curriculum-list-item">その他の条件が同じであれば、複利計算の頻度が高いほど将来価値または収益は大きくなる。したがって、より低い利率でより頻繁に複利計算することは、より高い利率でより少ない頻度で複利計算することと同等となり得る。頻繁な複利計算が低い利率を補うためである。</li>
+<li class="cfa-curriculum-list-item">組み込みオプション（embedded options）を有する債券の価格および利回りは、オプション価値を反映するよう調整が必要である。オプション調整後スプレッド（option-adjusted yield spread）および最悪利回り（yield-to-worst）は、オプション価値を反映した指標である。</li>
+<li class="cfa-curriculum-list-item">債券の利回り指標およびその変化は、ベンチマーク金利（benchmark rate）と、それに対するスプレッドに分解することができる。ベンチマーク金利は市場内のすべての債券に影響を与えるマクロ経済的な「トップダウン（top-down）」要因を反映し、一方でスプレッドは信用リスク、流動性、課税などの発行体固有の「ボトムアップ（bottom-up）」要因を捉える。</li>
+<li class="cfa-curriculum-list-item">同一のリスク特性を持つ証券について、最終利回り（yield-to-maturity）と残存期間（time-to-maturity）の関係をグラフで示すイールドカーブ（yield curve）と同様に、ベンチマーク金利およびスプレッドも残存期間に対してグラフ化することができ、信用スプレッドの期間構造（term structure of credit spreads）を示すことができる。</li>
+</ul>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2437-R-s01-Bb">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">学習モジュール自己評価（Learning Module Self-Assessment）</h3>
+<section>
+<p>これらの最初の問題は、本学習モジュールに対する現在の理解度を測ることを目的としている。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>次の語を用いて空欄を埋め、文章を完成させよ：</p>
+<p>年率換算された（annualized）</p>
+<p>複利計算された（compounded）</p>
+<p>標準化された（standardized）</p>
+<p>資本市場証券（capital market securities）の利回りおよび満期1年未満のマネーマーケット金利（money market rates）はいずれも＿＿＿＿＿＿である。しかし、マネーマーケット金利は＿＿＿＿＿＿ではない。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>資本市場証券の利回りおよび満期1年未満のマネーマーケット金利はいずれも年率換算されている（annualized）。しかし、マネーマーケット金利は複利計算されていない（not compounded）。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2437-R-s01-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>満期3年のソブリン（sovereign）非コーラブル（non-callable）債が、額面100あたり106.24で価格付けされている。この債券は年率2％のクーポンを半年ごとに支払う。この債券の年率最終利回り（yield-to-maturity）として最も近いものはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.077%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。この債券は半年ごとにクーポンを支払うため、半年ベースの最終利回りは以下の式でrを解くことで求められる。また、Microsoft Excel（Microsoft Excel）やGoogle Sheets（Google Sheets）のIRRまたはYIELD関数を用いることもできる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s01-E"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mn>106.24</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>5</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>101</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>6</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <mi>r</mi> <mo>=</mo> <mo>−</mo> <mn>0.00038596.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>利回りは半年ベースで表現されているため、2倍して年率換算する必要があり、その結果は−0.000772、すなわち−0.077％となる。</p>
+<p>Bは誤り。これは年率ではなく半年ベースの利回りである。</p>
+<p>Cは誤り。1.883％は当該債券のカレント・イールド（current yield）であり、最終利回りではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 0.039%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。この債券は半年ごとにクーポンを支払うため、半年ベースの最終利回りは以下の式でrを解くことで求められる。また、Microsoft Excel（Microsoft Excel）やGoogle Sheets（Google Sheets）のIRRまたはYIELD関数を用いることもできる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s01-E"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mn>106.24</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>5</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>101</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>6</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <mi>r</mi> <mo>=</mo> <mo>−</mo> <mn>0.00038596.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>利回りは半年ベースで表現されているため、2倍して年率換算する必要があり、その結果は−0.000772、すなわち−0.077％となる。</p>
+<p>Bは誤り。これは年率ではなく半年ベースの利回りである。</p>
+<p>Cは誤り。1.883％は当該債券のカレント・イールド（current yield）であり、最終利回りではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 1.883%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。この債券は半年ごとにクーポンを支払うため、半年ベースの最終利回りは以下の式でrを解くことで求められる。また、Microsoft Excel（Microsoft Excel）やGoogle Sheets（Google Sheets）のIRRまたはYIELD関数を用いることもできる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s01-E"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mn>106.24</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>5</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>101</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>6</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <mi>r</mi> <mo>=</mo> <mo>−</mo> <mn>0.00038596.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>利回りは半年ベースで表現されているため、2倍して年率換算する必要があり、その結果は−0.000772、すなわち−0.077％となる。</p>
+<p>Bは誤り。これは年率ではなく、半年ベースの利回りであるため。</p>
+<p>Cは誤り。1.883％は当該債券のカレント・イールド（current yield）であり、最終利回り（yield-to-maturity）ではないため。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>固定利付証券アナリスト（fixed-income analyst）が、同一満期を持つ3つの社債について以下のデータを得た。関連する国債ベンチマーク利率（government bond benchmark rate）は、半年複利ベース（semiannual bond equivalent basis）で1.10％である。各債券のGスプレッド（G-spread）を計算せよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s01-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">債券A</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">債券B</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">債券C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">最終利回り（yield-to-maturity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.271%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.213%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.178%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン頻度および仮定される周期性（coupon frequency and assumed periodicity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">年次（Annual）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">半年（Semiannual）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">四半期（Quarterly）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>債券BのGスプレッドは（0.01213 − 0.011）＝11.3bpsである。</p>
+<p>債券AおよびCのGスプレッドを計算する前に、最終利回りをまず周期2（半年ベース）に変換する必要がある。債券Aの半年換算利回り（semiannual equivalent yield）は1.267％である：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s01-E___1"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <msup> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mi>m</mi> </msub> </mrow> <mi>m</mi> </mfrac> </mstyle> </mrow> </mfenced> <mi>m</mi> </msup> <mo>=</mo> <msup> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mi>n</mi> </msub> </mrow> <mi>n</mi> </mfrac> </mstyle> </mrow> </mfenced> <mi>n</mi> </msup> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <msup> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.01271</mn> </mrow> <mn>1</mn> </mfrac> </mstyle> </mrow> </mfenced> <mn>1</mn> </msup> <mo>=</mo> <msup> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> <mn>2</mn> </mfrac> </mstyle> </mrow> </mfenced> <mn>2</mn> </msup> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>=</mo> <mn>0.01267</mn> <mo>=</mo> <mn>1.267</mn> <mi>%</mi> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>したがって、そのGスプレッドは（0.01267 − 0.011）＝16.7bpsである。</p>
+<p>債券Cの半年換算利回りは1.1797％である：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s01-E___2"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <msup> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mi>m</mi> </msub> </mrow> <mi>m</mi> </mfrac> </mstyle> </mrow> </mfenced> <mi>m</mi> </msup> <mo>=</mo> <msup> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mi>n</mi> </msub> </mrow> <mi>n</mi> </mfrac> </mstyle> </mrow> </mfenced> <mi>n</mi> </msup> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <msup> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.01178</mn> </mrow> <mn>4</mn> </mfrac> </mstyle> </mrow> </mfenced> <mn>4</mn> </msup> <mo>=</mo> <msup> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> <mn>2</mn> </mfrac> </mstyle> </mrow> </mfenced> <mn>2</mn> </msup> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>=</mo> <mn>0.011797</mn> <mo>=</mo> <mn>1.1797</mn> <mi>%</mi> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>したがって、そのGスプレッドは（0.011797 − 0.011）＝8bpsである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2437-R-s01-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>債券が組み込みコールオプション（embedded call option）を持ち、その価値が正である場合、オプション調整後価格（option-adjusted price）は、フラットプライス（flat price）と比較して最も可能性が高いのはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 低い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。コールオプションの価値は、オプションなし債（option-free bond）の価格からコーラブル債（callable bond）の価格を差し引いたものである。コールオプションの価値が正である場合、オプション調整後価格はフラットプライスよりも低くなる。</p>
+<p>Bは誤り。コールオプションの価値が正である場合、オプション調整後価格はフラットプライスと同じではなく、低くなるため。</p>
+<p>Cは誤り。コールオプションの価値が正である場合、オプション調整後価格はフラットプライスより高くなるのではなく、低くなるため。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 同じ。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。コールオプションの価値は、オプションなし債の価格からコーラブル債の価格を差し引いたものである。コールオプションの価値が正である場合、オプション調整後価格はフラットプライスよりも低くなる。</p>
+<p>Bは誤り。コールオプションの価値が正である場合、オプション調整後価格はフラットプライスと同じではなく、低くなるため。</p>
+<p>Cは誤り。コールオプションの価値が正である場合、オプション調整後価格はフラットプライスより高くなるのではなく、低くなるため。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。コールオプションの価値は、オプションなし債の価格からコーラブル債の価格を差し引いたものである。コールオプションの価値が正である場合、オプション調整後価格はフラットプライスよりも低くなる。</p>
+<p>Bは誤り。コールオプションの価値が正である場合、オプション調整後価格はフラットプライスと同じではなく、低くなるため。</p>
+<p>Cは誤り。コールオプションの価値が正である場合、オプション調整後価格はフラットプライスより高くなるのではなく、低くなるため。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146098_Learning_Outcomes_Yield_and_Yield_Spread_Measures_for_Fixed-Rate_Bonds.html" >← 前へ</a>
+  <span class="title">7.01 | Introduction</span>
+  <a href="courses_1869_modules_items_146108_702_Periodicity_and_Annualized_Yields.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

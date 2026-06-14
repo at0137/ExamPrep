@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.06 | Market Pricing Anomalies - Time Series and Cross-Sectional</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0163-R-s06" title="3.06 | Market Pricing Anomalies - Time Series and Cross-Sectional">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3：市場効率性（Market Efficiency）3.06｜市場の価格アノマリー（Market Pricing Anomalies）—時系列およびクロスセクション（Time Series and Cross-Sectional）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">市場アノマリー（market anomalies）を説明できること。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>多くの証拠は市場が効率的であることを示しているが、研究者は見かけ上の市場の非効率性、すなわちアノマリーを多数特定している。これらの市場アノマリーが持続的である場合、それは市場効率性の概念に対する例外となる。研究者は、資産または証券の価格変化が市場で既知の関連情報や新たに公表された情報と直接結び付けられない場合、市場アノマリーが存在する可能性があると結論づける。</p>
+<p>市場の非効率性やアノマリーの存在を支持する証拠の妥当性は、十分に長い期間にわたって一貫している必要がある。そうでなければ、検出されたアノマリーは単にサンプル期間の選択による産物である可能性が高い。利益機会のあるアノマリーを広範に探索する過程において、多くの発見はデータマイニング（data mining）（またはデータスヌーピング（data snooping））と呼ばれるプロセスの産物である可能性がある。一般的に受け入れられている研究手法では、まず経済的根拠に基づいた仮説を立て、その後、客観的に選択されたデータを用いて仮説を検証する。しかしデータマイニングではこのプロセスが逆転し、仮説を先に立てるのではなく、データを分析することで仮説を導き出す。これは様々な方法や異なる実証的手法を用いてデータを分析し、望ましい結果（この場合は利益を生むアノマリー）を支持する証拠が見つかるまで続けられる。</p>
+<p>研究者は過去のデータを用いて異常リターンを生み出したであろう取引戦略を見つけることができるか。答えはイエスである。十分なデータスヌーピングを行えば、偶然によって過去に機能した取引戦略を発見できる。しかし、効率的市場においては、そのような戦略が将来にわたって一貫して異常リターンを生み出す可能性は低い。また、アノマリーが超過リターンを生むように見える場合でも、リスクや取引コストなどを考慮すると、それを利益として実現することは一般に困難である。</p>
+<p>よく知られたアノマリーのいくつかは図表3（Exhibit 3）に示されている。この一覧は網羅的ではないが、アノマリーの広がりを示している。いくつかのアノマリーは後続の節でより詳細に説明される。アノマリーは、それを特定した研究手法に基づいて分類される。時系列アノマリー（time-series anomalies）は時系列データを用いて特定され、クロスセクション・アノマリー（cross-sectional anomalies）は企業間の特性の違いに基づく横断的分析によって特定される。その他のアノマリーは、イベントスタディ（event studies）など様々な方法で特定される。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0163-R-EXH3">
+<h3 class="cfa-curriculum-exhibit-table-title">図表3：観察された価格アノマリーの例（Sampling of Observed Pricing Anomalies）</h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">時系列（Time Series）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">クロスセクション（Cross-Sectional）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Other</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">1月効果（January effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">規模効果（Size effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">クローズドエンドファンドのディスカウント（Closed-end fund discount）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">曜日効果（Day-of-the-week effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">バリュー効果（Value effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">予想外利益（Earnings surprise）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">週末効果（Weekend effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">株価純資産倍率（Book-to-market ratios）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">新規株式公開（Initial public offerings）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">月末効果（Turn-of-the-month effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">株価収益率効果（P/E ratio effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ディストレスト証券効果（Distressed securities effect）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">祝日効果（Holiday effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">バリューラインの謎（Value Line enigma）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">株式分割（Stock splits）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">時間帯効果（Time-of-day effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">スーパーボウル効果（Super Bowl）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">モメンタム（Momentum）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">過剰反応（Overreaction）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="CFA0163-R-s06-01">
+<h3 class="dp-heading">時系列アノマリー（Time-Series Anomalies）</h3>
+<p>文献で確認されている時系列アノマリーの主な2つのカテゴリーは、(1)カレンダー・アノマリー（calendar anomalies）と(2)モメンタムおよび過剰反応アノマリー（momentum and overreaction anomalies）である。</p>
+<section id="CFA0163-R-s06-01-01">
+<h4>カレンダー・アノマリー（Calendar Anomalies）</h4>
+<p>1980年代に、多くの研究者が1月の株式市場リターンが他の月と比較して有意に高いことを報告し、その異常リターンの大部分が1月最初の5営業日に発生しているとした。このパターンは1月効果（January effect）として知られ、1980年代に初めて報告されて以来、世界中の多くの株式市場で観察されている。このアノマリーは年初効果（turn-of-the-year effect）とも呼ばれ、特に小型株（small market capitalization stocks）のリターンで顕著に見られるため、「1月の小型株効果（small firm in January effect）」とも呼ばれる。23</p>
+<p>1月効果は、新しい関連情報やニュースに起因しない超過リターンであるため、効率的市場仮説に反する。このアノマリーについては、タックスロス売り（tax-loss selling）など複数の説明が提案されている。研究者は、投資家が税負担を軽減するために、12月に「損失銘柄（loser securities）」を売却してキャピタルロスを確定し、それをキャピタルゲインと相殺するためではないかと推測している。関連する説明として、これらの損失銘柄は高ボラティリティの小型株である傾向があるとされる。24 このような12月の売却増加は株価を押し下げ、1月初旬に相対的に割安となった株式が買われることで、価格が再び上昇する。この結果、1月にリターンが高くなる。しかし、証拠によれば、タックスロス売りは1月の異常リターンの一部を説明するに過ぎず、すべてを説明するものではない。</p>
+<p>別の説明として、いわゆる「ウィンドウドレッシング（window dressing）」がある。これはポートフォリオマネジャーが12月31日以前にリスクの高い証券を売却する慣行である。多くのポートフォリオマネジャーは12月31日時点の保有銘柄を年次報告書として提示するため、ポートフォリオをより低リスクに見せる目的でリスク資産を売却する。その後、12月31日以降に再びリスクの高い証券を購入して高いリターンを狙う。しかし、この仮説もタックスロス売りと同様に、アノマリーの一部しか説明できない。</p>
+<p>最近の株式および債券リターンに関する証拠は、1月効果が持続的ではなく、したがって価格アノマリーではないことを示唆している。リスクを適切に調整すると、1月効果は異常リターンを生み出さない。25</p>
+<p>曜日効果（day-of-the-week effect）や週末効果（weekend effect）など、他のカレンダー効果も確認されている。26 これらのアノマリーは図表4（Exhibit 4）にまとめられている。27 しかし、後に説明される規模効果（size effect）と同様に、これらのアノマリーの多くは時間とともに消滅している。一つの見方は、アノマリーが利用されることでアービトラージされ、効果が消滅したというものである。一方で、より高度な統計手法が価格の非効率性を検出できなくなっている可能性も指摘されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0163-R-EXH4">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 4<span style="display: block;">Calendar-Based Anomalies</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">アノマリー（Anomaly）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">観察結果（Observation）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">月末効果（Turn-of-the-month effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">月末の最終取引日および翌月最初の3営業日にリターンが高くなる傾向がある。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">曜日効果（Day-of-the-week effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">月曜日の平均リターンは負であり、他の4営業日の平均リターン（いずれも正）よりも低い。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">週末効果（Weekend effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">週末のリターンは平日のリターンよりも低い傾向がある。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">祝日効果（Holiday effect）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">市場の祝日前日の株式リターンは、他の日よりも高くなる傾向がある。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="CFA0163-R-s06-01-02">
+<h4>モメンタムおよび過剰反応アノマリー（Momentum and Overreaction Anomalies）</h4>
+<p>モメンタム・アノマリー（momentum anomalies）は短期的な株価パターンに関係する。この種のアノマリーを最初に特定した研究の一つは、Werner DeBondtとRichard Thalerによるものであり、投資家は予想外の公開情報の公表に対して過剰反応（overreact）すると主張した。28 その結果、好材料（bad材料）を公表した企業の株価は過大評価（過小評価）される。このアノマリーは過剰反応効果（overreaction effect）として知られている。彼らはこの効果を利用して、「負け銘柄（loser）」ポートフォリオを購入し、「勝ち銘柄（winner）」ポートフォリオを売却する戦略を提案した。銘柄は過去3〜5年間のトータルリターンに基づいて勝者または敗者として分類された。その結果、後続期間において敗者ポートフォリオは市場を上回り、勝者ポートフォリオは市場を下回ることが確認された。同様のパターンは多くの（ただしすべてではない）世界の株式市場および債券市場でも観察されている。このアノマリーに対する批判の一つは、観察された結果が統計的な問題による可能性があるという点である。</p>
+<p>短期的に高いリターンを示した証券が、その後の期間でも高いリターンを継続する傾向がある場合、これは弱形式効率性に反する。29 株式リターンにおけるモメンタムの存在を支持する実証的証拠は、世界の多くの株式市場で広く確認されている。もし投資家がモメンタムに基づいて取引し、異常利益を得ることができるならば、このアノマリーは弱形式の効率的市場仮説に反する。なぜなら、これは過去の価格情報のみを用いて利用可能な価格パターンを示しているからである。30</p>
+<p>一部の研究者は、モメンタムの存在は合理的であり、市場効率性と矛盾しないと主張している。これは、株主へのキャッシュフローの期待成長率にショックが生じ、そのショックが合理的かつ短期的な系列相関（serial correlation）を引き起こす可能性があるためである。31 つまり、株式リターンにモメンタムが存在することは非合理性を意味するのではなく、成長率ショックに対する価格調整を反映している可能性がある。</p>
+</section>
+</section>
+<section id="CFA0163-R-s06-02">
+<h3 class="dp-heading">クロスセクション・アノマリー（Cross-Sectional Anomalies）</h3>
+<p>金融市場において最も研究されているクロスセクション・アノマリーの2つは、規模効果（size effect）とバリュー効果（value effect）である。</p>
+<section id="CFA0163-R-s06-02-01">
+<h4>規模効果（Size Effect）</h4>
+<p>規模効果は、小型株（small-cap companies）の株式がリスク調整後で大型株（large-cap companies）の株式を上回る傾向があるという観察に基づく。1981年の初期研究以降、多くの研究者が小型株効果（small-company effect）を報告した。しかし、その後の研究ではこの効果は確認されなかった。32 規模効果が後続研究で確認されなかった理由の一つは、もしそれが真のアノマリーであれば、投資家がそれを利用することでリターンが低下するためである。しかし、当初観察された効果自体が偶然の産物であり、実際には非効率性ではなかった可能性もある。</p>
+</section>
+<section id="CFA0163-R-s06-02-02">
+<h4>バリュー効果（Value Effect）</h4>
+<p>多くの国際的な実証研究は、一般に株価収益率（P/E）が平均より低く、株価純資産倍率（M/B）が平均より低く、配当利回り（dividend yield）が平均より高いといった特徴を持つバリュー株（value stocks）が、長期的にグロース株（growth stocks）を一貫して上回ってきたことを示している。33 この効果が持続する場合、バリュー株アノマリーは準強形式の市場効率性に反する。なぜなら、この分類に用いられるすべての情報は公開情報であるためである。</p>
+<p>ファーマとフレンチ（Fama and French）は、株式リターンを予測するための3ファクターモデル（three-factor model）を開発した。34 このモデルは、資本資産価格モデル（capital asset pricing model, CAPM）で用いられる市場リターンに加えて、企業規模（株式の市場価値）および株式の簿価対時価比（book-to-market ratio）を含む。これはバリュー指標である。ファーマ＝フレンチモデルは、CAPMでは考慮されないリスク要因を捉える。彼らは、この3ファクターモデルを用いるとバリュー株アノマリーが消失することを示した。</p>
+</section>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA0163-R-R10list">Capaul, Carlo, Rowley, Ian and Sharpe, William (1993). “International Value and Growth Stock Returns.” <em>Financial Analysts Journal</em>, vol.  49:27–36. <a href="http://dx.doi.org/10.2469/faj.v49.n1.27" target="_blank">http://dx.doi.org/10.2469/faj.v49.n1.27</a>
+</li>
+<li id="CFA0163-R-R13list">DeBondt, Werner and Thaler, Richard (1985). “Does the Stock Market Overreact?” <em>Journal of Finance</em>, vol.  40, no. 3:793–808. <a href="http://dx.doi.org/10.2307/2327804" target="_blank">http://dx.doi.org/10.2307/2327804</a>
+</li>
+<li id="CFA0163-R-R21list">Fama, Eugene F. and French, Kenneth R. (1995). “Size and Book-to-Market Factors in Earnings and Returns.” <em>Journal of Finance</em>, vol.  50, no. 1:131–155. <a href="http://dx.doi.org/10.2307/2329241" target="_blank">http://dx.doi.org/10.2307/2329241</a>
+</li>
+<li id="CFA0163-R-R22list">Fama, Eugene F. and French, Kenneth R. (1998). “Value versus Growth: The International Evidence.” <em>Journal of Finance</em>, vol.  53:1975–1999. <a href="http://dx.doi.org/10.1111/0022-1082.00080" target="_blank">http://dx.doi.org/10.1111/0022-1082.00080</a>
+</li>
+<li id="CFA0163-R-R23list">Fama, Eugene F. and French, Kenneth R. (2008). “Dissecting Anomalies.” <em>Journal of Finance</em>, vol.  63, no. 4:1653–1678. <a href="http://dx.doi.org/10.1111/j.1540-6261.2008.01371.x" target="_blank">http://dx.doi.org/10.1111/j.1540-6261.2008.01371.x</a>
+</li>
+<li id="CFA0163-R-R29list">Jacobs, Bruce I. and Levy, Kenneth N. (1988). “Calendar Anomalies: Abnormal Returns at Calendar Turning Points.” <em>Financial Analysts Journal</em>, vol.  44, no. 6:28–39. <a href="http://dx.doi.org/10.2469/faj.v44.n6.28" target="_blank">http://dx.doi.org/10.2469/faj.v44.n6.28</a>
+</li>
+<li id="CFA0163-R-R31list">Jegadeesh, Narayan and Titman, Sheridan (2001). “Profitability of Momentum Strategies: An Evaluation of Alternative Explanations.” <em>Journal of Finance</em>, vol.  56:699–720. <a href="http://dx.doi.org/10.1111/0022-1082.00342" target="_blank">http://dx.doi.org/10.1111/0022-1082.00342</a>
+</li>
+<li id="CFA0163-R-R32list">Johnson, Timothy C. (2002). “Rational Momentum Effects.” <em>Journal of Finance</em>, vol.  57, no. 2:585–608. <a href="http://dx.doi.org/10.1111/1540-6261.00435" target="_blank">http://dx.doi.org/10.1111/1540-6261.00435</a>
+</li>
+<li id="CFA0163-R-R35list">Kim, Dongcheol (2006). “On the Information Uncertainty Risk and the January Effect.” <em>Journal of Business</em>, vol.  79, no. 4:2127–2162. <a href="http://dx.doi.org/10.1086/503659" target="_blank">http://dx.doi.org/10.1086/503659</a>
+</li>
+<li id="CFA0163-R-R42list">Roll, Richard (1983). “On Computing Mean Returns and the Small Firm Premium.” <em>Journal of Financial Economics</em>, vol.  12:371–386. <a href="http://dx.doi.org/10.1016/0304-405X(83)90055-7" target="_blank">http://dx.doi.org/10.1016/0304-405X(83)90055-7</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN23Content">
+<p>23 債券リターンにも1月効果が存在する証拠があり、特にハイイールド社債で顕著であり、株式の小型株効果に類似している。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN24Content">
+<p>24 Roll（1983）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN25Content">
+<p>25 例えばKim（2006）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN26Content">
+<p>26 これらの異常パターンのいくつかについてはJacobs and Levy（1988）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN27Content">
+<p>27 週末効果は、週末をまたぐリターンパターンを指す：金曜日に異常に高いリターンがあり、月曜日に異常に低いリターンが続く。この効果は特に金曜日と月曜日のリターンを結びつける曜日効果の一種である。なお、2009年の米国では週末効果が逆転し、2009年3月以降の上昇の80％が週の最初の取引日に発生した。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN28Content">
+<p>28 DeBondt and Thaler（1985）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN29Content">
+<p>29 このパターンは、DeBondtとThalerが示した長期的なリバーサル（reversal）パターンとは対照的である。理論的には、両者は関連している可能性がある。すなわち、短期的には好調な企業の株価が過度に上昇し、その後（3〜5年の期間で）価格が修正されて低パフォーマンスとなる可能性がある。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN30Content">
+<p>30 Jegadeesh and Titman（2001）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN31Content">
+<p>31 Johnson（2002）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN32Content">
+<p>32 多くの研究が小型株効果を報告しているが、これらは初期研究と同様の期間およびデータを使用している。真のアノマリーかどうかを判断する鍵はアウト・オブ・サンプル検証における持続性である。Fama and French（2008）は、規模効果はマイクロキャップ株（microcap stocks）にのみ見られ、小型株や大型株には見られないこと、そしてこれらのマイクロキャップ株が規模効果を示す研究に大きな影響を与えている可能性を指摘している。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN33Content">
+<p>33 例えばCapaul, Rowley, and Sharpe（1993）およびFama and French（1998）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN34Content">
+<p>34 Fama and French（1995）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R42Content">Roll, Richard (1983). “On Computing Mean Returns and the Small Firm Premium.” <em>Journal of Financial Economics</em>, vol.  12:371–386. <a href="http://dx.doi.org/10.1016/0304-405X(83)90055-7" target="_blank">http://dx.doi.org/10.1016/0304-405X(83)90055-7</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R35Content">Kim, Dongcheol (2006). “On the Information Uncertainty Risk and the January Effect.” <em>Journal of Business</em>, vol.  79, no. 4:2127–2162. <a href="http://dx.doi.org/10.1086/503659" target="_blank">http://dx.doi.org/10.1086/503659</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R29Content">Jacobs, Bruce I. and Levy, Kenneth N. (1988). “Calendar Anomalies: Abnormal Returns at Calendar Turning Points.” <em>Financial Analysts Journal</em>, vol.  44, no. 6:28–39. <a href="http://dx.doi.org/10.2469/faj.v44.n6.28" target="_blank">http://dx.doi.org/10.2469/faj.v44.n6.28</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R13Content">DeBondt, Werner and Thaler, Richard (1985). “Does the Stock Market Overreact?” <em>Journal of Finance</em>, vol.  40, no. 3:793–808. <a href="http://dx.doi.org/10.2307/2327804" target="_blank">http://dx.doi.org/10.2307/2327804</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R31Content">Jegadeesh, Narayan and Titman, Sheridan (2001). “Profitability of Momentum Strategies: An Evaluation of Alternative Explanations.” <em>Journal of Finance</em>, vol.  56:699–720. <a href="http://dx.doi.org/10.1111/0022-1082.00342" target="_blank">http://dx.doi.org/10.1111/0022-1082.00342</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R32Content">Johnson, Timothy C. (2002). “Rational Momentum Effects.” <em>Journal of Finance</em>, vol.  57, no. 2:585–608. <a href="http://dx.doi.org/10.1111/1540-6261.00435" target="_blank">http://dx.doi.org/10.1111/1540-6261.00435</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R23Content">Fama, Eugene F. and French, Kenneth R. (2008). “Dissecting Anomalies.” <em>Journal of Finance</em>, vol.  63, no. 4:1653–1678. <a href="http://dx.doi.org/10.1111/j.1540-6261.2008.01371.x" target="_blank">http://dx.doi.org/10.1111/j.1540-6261.2008.01371.x</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R10Content">Capaul, Carlo, Rowley, Ian and Sharpe, William (1993). “International Value and Growth Stock Returns.” <em>Financial Analysts Journal</em>, vol.  49:27–36. <a href="http://dx.doi.org/10.2469/faj.v49.n1.27" target="_blank">http://dx.doi.org/10.2469/faj.v49.n1.27</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R22Content">Fama, Eugene F. and French, Kenneth R. (1998). “Value versus Growth: The International Evidence.” <em>Journal of Finance</em>, vol.  53:1975–1999. <a href="http://dx.doi.org/10.1111/0022-1082.00080" target="_blank">http://dx.doi.org/10.1111/0022-1082.00080</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R21Content">Fama, Eugene F. and French, Kenneth R. (1995). “Size and Book-to-Market Factors in Earnings and Returns.” <em>Journal of Finance</em>, vol.  50, no. 1:131–155. <a href="http://dx.doi.org/10.2307/2329241" target="_blank">http://dx.doi.org/10.2307/2329241</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MarketAnomalyContent">
+<p>市場で既知の関連情報や新たに公表された情報と直接結び付けられない証券価格またはリターンの変化。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DataMiningContent">
+<p>統計的に有意なパターンを見つけるためにデータセットを広範に探索してモデルを決定する手法。データスヌーピング（data snooping）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DataSnoopingContent">
+<p>統計的に有意な結果（例えばp値が十分に小さい、またはt統計量が十分に大きい）を得るために、複数のシミュレーションを実行し最良の結果を安易に採用するなど、データを無意識または意図的に操作する行為。pハッキング（p-hacking）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="JanuaryEffectContent">
+<p>株式市場の1月のリターンが他の月よりも有意に高く、特に1月最初の5営業日に異常リターンが集中するというカレンダー・アノマリー。年初効果（turn-of-the-year effect）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TurnOfTheYearEffectContent">
+<p>株式市場の1月のリターンが他の月よりも有意に高く、特に1月最初の5営業日に異常リターンが集中するというカレンダー・アノマリー。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142263_305_Implications_of_the_Efficient_Market_Hypothesis.html" >← 前へ</a>
+  <span class="title">3.06 | Market Pricing Anomalies - Time Series and Cross-Sectional</span>
+  <a href="courses_1868_modules_items_142266_307_Other_Anomalies_Implications_of_Market_Pricing_Anomalies.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

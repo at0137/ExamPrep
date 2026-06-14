@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.03 | Fixed-Income Contingency Provisions</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2432-R-s03-R-1" title="2.03 | Fixed-Income Contingency Provisions">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：債券（Fixed-Income）のキャッシュフローと種類 2.03｜債券の偶発条項（Fixed-Income Contingency Provisions）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">債券（fixed-income instrument）における一般的なキャッシュフロー構造を説明し、発行体および投資家に利益をもたらすキャッシュフローの偶発条項（contingency provision）を比較せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>偶発条項（contingency provision）とは、特定の事象や状況が発生した場合に行動を可能にする法的契約上の条項である。債券における最も一般的な偶発条項は、発行体または債券保有者が、インデンチャー（indenture）で定められた行動を取る権利（ただし義務ではない）を伴うものである。これらの債券の偶発条項は、オプション契約に類似しているが債券から分離して取引することができないため、しばしば組み込みオプション（embedded option）と呼ばれる。これらの組み込みオプションの価値は、当該条項を有する債券と、同一発行体による条項なしの債券の価値を比較することで評価される。最も一般的な偶発条項付き債券には、コーラブル債（callable bond）、プッタブル債（putable bond）、および転換社債（convertible bond）がある。</p>
+<section id="CFA2432-R-s03-01-01">
+<h3 class="dp-heading">コーラブル債（Callable Bonds）</h3>
+<p>コーラブル債（callable bond）の発行体は、指定された満期日前に債券の全部または一部を償還（コール（call））する権利を有する。コーラブル債と非コーラブル債を比較する発行体は、通常、市場金利が低下した場合に債務を借り換える柔軟性を求める。固定価格コール（fixed-price call）は、発行体に将来のあらかじめ定められた価格で債券を買い戻す権利を与えるものであり、前モジュールで紹介されたVivivyu Inc.の債券について図表9に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2432-R-s03-EXH-1-9">
+<h4 class="cfa-curriculum-exhibit-table-title">図表9 Vivivyu（VIVU）コーラブル債条件</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">6.5％ Vivivyu Inc.（VIVU）7年コーラブル社債（Notes）目論見書概要（Prospectus Summary）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">発行体（Issuer）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Vivivyu Incorporated</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">決済日（Settlement Date）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">［T + 3営業日（Business Days）］</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">満期日（Maturity Date）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">［決済日から7年後］</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px; ">元本額（Principal Amount）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">4億米ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">利息（Interest）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">固定クーポン6.5％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">利息支払い（Interest Payment）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">［決済日］から6か月後に開始し、満期日まで半年ごとに支払い、最終支払いは満期日に行う</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">優先順位（Seniority）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">本債券（Notes）は、VIVUの担保付（secured）かつ劣後していない（unsubordinated）債務であり、他のすべての同様の債務と同順位（pari passu）である。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">コール条項（Call Provision）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">発行体は、［満期日］前の任意の営業日において、［決済日］から3年経過後より、元本額に対する割合で示されたコール価格スケジュール（Call Price Schedule）に基づき、未払利息を加えた価格で債券の全部または一部を償還することができる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">コール価格スケジュール（Call Price Schedule）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">決済後3〜4年：103.25％</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>コーラブル債は通常、コール特性を行使できない期間であるコール保護期間（call protection period）を定める。コール期間（call period）（すなわちコールが可能な期間）においては、発行体が債券をコールした場合に支払う固定価格であるコール価格（call price）がスケジュールで示される。</p>
+<p>例えば、VIVU債は最初の3年間はコールできないが、その後の1年間は額面100米ドルに対して103.25米ドルでコールされ得る。VIVUは最終の4年間において、時間の経過とともに低下する固定価格でコールする権利を有する。投資家は、債券がコール可能となる3年目以降、再投資リスク（reinvestment risk）に直面するほか、固定されたコール価格以上の価格上昇が制限される。</p>
+<p>コール特性の価値は、利回り（yield to maturity, YTM）とクーポンとの関係に依存する。YTMがクーポン率を上回る場合、発行体がコール特性を行使するインセンティブは小さい。この場合、借り換えコストを示すYTMが既存クーポンを上回るためである。したがって、コーラブル債は金利変動に対する価格挙動において、非コーラブル債とほぼ同様に振る舞う。一方、コーラブル債のYTMがクーポン率を下回ると、その価格は実質的に固定コール価格で上限が設定されるが、非コーラブル債の価格は引き続き上昇する。投資家は、不確実な満期と価格上昇の制約（コールリスク（call risk））に対する補償として、類似の非コーラブル債よりも高い利回りを要求する。</p>
+<p>一部の債券には、固定価格コールとは異なるメイクホールコール（make-whole call）と呼ばれる特性があり、発行体が債券を買い戻す際に投資家へ補償を行う。この特性は主に高格付け債に見られ、発行体に市場での買い戻しよりも柔軟性を提供するが、通常は同様の満期を持つソブリン債のYTMに基づく高い価格を支払う必要がある。この価格は通常市場価格を大きく上回るため、メイクホールコールはほとんど行使されず、経済的影響は限定的である。</p>
+</section>
+<section id="CFA2432-R-s03-01-02">
+<h3 class="dp-heading">プッタブル債（Putable Bonds）</h3>
+<p>プット条項（put provision）は、債券保有者に対して、指定された日にあらかじめ定められた価格で発行体へ債券を売却する権利を与える。プット価格は通常、額面金額である。プッタブル債は、償還日において事前に定められた売却価格を保証するため、債券保有者に利益をもたらす。発行後に金利が上昇し債券価格が下落した場合、保有者は債券を発行体に売却（プット）し、より高い市場金利で再投資することができる。この結果、発行体は当初予定より早く、より高い利回りで借り換えを余儀なくされる。</p>
+<p>プット条項は債券保有者に価値をもたらすため、プッタブル債の価格は同等の非プッタブル債よりも高くなる。したがって、プット条項付き債券の利回りは、同等の非プッタブル債よりも低くなる。この低い利回りは、投資家に付与されたプットオプションの価値に対する発行体への補償である。</p>
+<p>プッタブル債のYTMがクーポン率を下回る場合（すなわち価格がプット価格を上回る場合）、プット特性の価値は低くなり、金利変動に対する価格挙動はオプションなしの債券と類似する。一方、YTMがクーポン率を上回る場合、プット価格は債券価格の下限（price floor）として機能する。</p>
+</section>
+<section id="CFA2432-R-s03-01-03">
+<h3 class="dp-heading">転換社債（Convertible Bonds）</h3>
+<p>転換社債（convertible bond）は、発行体の発行済普通株式（common equity）に関連する偶発条項を持つ債務証券である。これは、将来において一定の転換価格（conversion price）で発行体の普通株式に交換する権利を債券保有者に与える。株価が上昇するにつれて、この転換特性の価値は投資家にとって増加する。コーラブル債やプッタブル債が債務の早期償還の権利を伴うのに対し、転換特性は行使されると債務を株式に置き換える。</p>
+<p>図表10は、イタリアの上場企業であるZTG BioTech S.p.a.の転換社債を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2432-R-s03-EXH-1-10">
+<h4 class="cfa-curriculum-exhibit-table-title">図表10 ZTG BioTech S.p.a. 転換社債条件</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">1.25％ ZTG Biotech（ZTGB）5年転換社債（Notes）条件概要（Term Sheet）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">発行体（Issuer）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ZTG Biotech S.p.a.</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">決済日（Settlement Date）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">［T + 3営業日（Business Days）］</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">満期日（Maturity Date）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">［決済日から5年後。ただし転換（conversion）により早期償還される場合を除く］</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px; ">元本額（Principal Amount）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">3億ユーロ</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">利息（Interest）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">年率1.25％の固定クーポンで、決済日から1年後に支払い開始し、以降毎年支払い、最終クーポンは満期時に支払われる</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">優先順位（Seniority）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">本債券（Notes）はZTGBの無担保債務（unsecured obligation）であり、他の無担保債務と同順位（pari passu）である</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">転換条項（Conversion Provision）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">投資家は自己の裁量により、転換期間（Conversion Period）中の任意の時点において、転換価格（Conversion Price）で元本額の全部または一部、もしくはその時点での残存元本を株式に転換する権利を有する</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">現在株価（Current Share Price）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ZTGB普通株1株当たり28.00ユーロ</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">転換価格（Conversion Price）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ZTGB普通株1株当たり42.00ユーロ</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">転換期間（Conversion Period）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">決済日から1年後以降、満期日までの任意の営業日</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ZTGBの転換社債における年率1.25％のクーポンは、同一満期の標準的なZTGB債に対して投資家が期待する利回り（YTM）を大きく下回っている。債券保有者は、転換権（conversion right）と引き換えに、非常に低い（あるいはゼロの）満期利回りを受け入れることが多い。ZTGB債の投資家は、1株42.00ユーロでZTGB普通株に転換する権利を有しており、これは現在株価28.00ユーロに対して50％のプレミアムに相当する［= (42.00 − 28.00) / 28.00］。転換比率（conversion ratio）は、一定の額面に対して転換可能な株式数を表す：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2432-R-s03-E-1-2">Conversion ratio = Convertible bond par value/Conversion price.<span class="cfa-curriculum-display-formula-number">2</span>
+</div>
+<p>例えば、ZTGB債が額面1,000ユーロ単位で取引される場合、</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2432-R-s03-L1">
+<li class="cfa-curriculum-list-item">転換比率は1,000ユーロ ÷ 42ユーロ = 23.81となり、</li>
+<li class="cfa-curriculum-list-item">1,000ユーロ単位のZTGB債を保有する投資家は、転換期間中にこの債券を23.81株のZTGB株式に転換する権利を有する。</li>
+</ul>
+<p>任意の時点における転換特性の価値を推定する一つの方法は、転換社債の価格と、即時に転換した場合の価値を比較することである。この転換価値（conversion value）は次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2432-R-s03-E-1-3">Conversion value = Conversion ratio × Current share price.<span class="cfa-curriculum-display-formula-number">3</span>
+</div>
+<p>例えば、ZTGBの発行から1年後に株価が35.00ユーロで取引されていると仮定する。この場合、ZTGB債の保有者は1,000ユーロ単位を833.35ユーロ（= 23.81 × 35.00ユーロ）の転換価値に変換できる。転換社債が額面（または市場価格1,000ユーロ）で取引されている場合、投資家は株式に転換するよりも、利息と元本を受け取るために債券を保有する方を選好する。一般に、転換社債の価格は発行体の株価に応じて変動する。株価が転換価格を大きく下回る場合、転換社債の価格は標準的な非転換債に近づく。一方、株価が転換価格を大きく上回る場合、債券価格は転換価値により近づく。</p>
+<p>転換社債の利用は、成長企業において一般的である。これらの企業は、利息支払いや元本返済に十分なキャッシュフローを持たない場合がある一方で、将来より高い転換価格で株式を発行する意思を持っている。転換社債にはしばしばコール条項（call provision）などの追加特性も含まれ、発行体は債券を早期償還することで株価上昇による投資家の利益を制限することができる。</p>
+<p>一部の発行体は、債券にワラント（warrant）を付与する場合がある。ワラントは組み込みではなく「付随する」オプションであり、満期までの期間において一定の行使価格で発行体の株式を購入する権利を債券保有者に与える。ワラントは債券投資家の利回り向上の手段として用いられ、ドイツ取引所（Deutsche Börse）や香港証券取引所（Hong Kong Stock Exchange）などの金融市場で単独に取引される。</p>
+<p>いくつかの欧州銀行は、偶発転換債（contingent convertible bond, CoCo）と呼ばれる転換社債を発行しており、これには偶発的な元本減額条項（contingent write-down provision）が含まれる。通常の転換社債が株価上昇時に転換されるのに対し、CoCoは下落局面で転換される。また、この転換は投資家の裁量ではなく、特定の事象が発生した場合に自動的に行われる。例えば、銀行のコアTier1資本比率（core Tier 1 capital ratio）（損失吸収のための中核自己資本の割合を示す指標）が最低規制水準を下回った場合などである。銀行の損失により自己資本が規制最低水準を下回ると、CoCoは債務を株式に転換し、資本を増強してデフォルトの可能性を低下させる。CoCoは、金融システム全体の破綻リスクであるシステミックリスク（systemic risk）を抑制するために導入された。このため、CoCoは類似の債券よりも高い利回りを提供する。なお、転換は特定の規制資本要件の違反という事象によって引き起こされるものであり、株価や債券価格の水準によるものではない。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2432-R-s03-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット（Question Set）</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2432-R-s03-Q1">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>他の条件が同じである場合、発行体にとって最も有利な債券はどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 偶発条項を持たない債券。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。固定価格コール（fixed-price call）は、発行体に将来あらかじめ定められた価格で債券を買い戻す権利を与えるものであり、金利が低下した場合に発行体にとって有利である。</p>
+<p>Aは誤り。偶発条項を持たない債券はオプションなし債（option-free bond）であり、固定価格コール条項を持つ債券ほど発行体に有利ではない。</p>
+<p>Cは誤り。メイクホールコール（make-whole call）は、発行体が同様の満期を持つソブリン債の利回りに一定のスプレッドを加えた価格で債券を買い戻す特性であるが、通常はほとんど行使されず、発行体や投資家への経済的影響は限定的である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 固定価格コール条項（fixed-price call provision）を持つ債券。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。固定価格コール（fixed-price call）は、発行体に将来あらかじめ定められた価格で債券を買い戻す権利を与えるものであり、金利が低下した場合に発行体にとって有利である。</p>
+<p>Aは誤り。偶発条項を持たない債券はオプションなし債（option-free bond）であり、固定価格コール条項を持つ債券ほど発行体に有利ではない。</p>
+<p>Cは誤り。メイクホールコール（make-whole call）は、発行体が通常、同様の満期を持つソブリン債の利回り（yield to maturity, YTM）にあらかじめ定められたスプレッドを加えた価格で債券を買い戻すことができる偶発特性である。メイクホールコールはほとんど行使されず、発行体や投資家に対する経済的影響は小さい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. メイクホールコール条項（make-whole call provision）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。固定価格コール（fixed-price call）は、発行体に将来あらかじめ定められた価格で債券を買い戻す権利を与え、金利が低下した場合に発行体にとって有利である。</p>
+<p>Aは誤り。偶発条項を持たない債券はオプションなし債（option-free bond）であり、固定価格コール条項を持つ債券ほど発行体に有利ではない。</p>
+<p>Cは誤り。メイクホールコール（make-whole call）は、発行体が通常、同様の満期を持つソブリン債の利回り（YTM）にあらかじめ定められたスプレッドを加えた価格で債券を買い戻すことができる偶発特性である。メイクホールコールはほとんど行使されず、発行体や投資家に対する経済的影響は小さい。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2432-R-s03-Q2">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>同一クーポン率を持つコーラブル債（callable bond）およびプッタブル債（putable bond）の価格が、オプションなしの同等債券と最も類似した挙動を示すのは、それぞれのYTMが次の場合である：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. クーポン率より上、かつクーポン率より下。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。コーラブル債のYTMがクーポン率を上回る場合、コール特性の価値は低くなり、価格の金利変動に対する挙動は非コーラブル債と類似する。一方、プッタブル債のYTMがクーポン率を下回る場合、プット特性の価値は低くなり、価格はオプションなし債と類似した挙動を示す。</p>
+<p>Bは誤り。これは正しい関係の逆である。</p>
+<p>Cは誤り。両者のYTMがともにクーポン率に近い場合、コールおよびプット特性が行使される価格水準に近づくため、価格変動の大きさは非コーラブル債より小さくなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. クーポン率より下、かつクーポン率より上。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。コーラブル債のYTMがクーポン率を上回る場合、コール特性の価値は低くなり、価格の金利変動に対する挙動は非コーラブル債と類似する。一方、プッタブル債のYTMがクーポン率を下回る場合、プット特性の価値は低くなり、価格はオプションなし債と類似した挙動を示す。</p>
+<p>Bは誤り。これは正しい関係の逆である。</p>
+<p>Cは誤り。両者のYTMがともにクーポン率に近い場合、コールおよびプット特性が行使される価格水準に近づくため、価格変動の大きさは非コーラブル債より小さくなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 両方ともクーポン率に近い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。コーラブル債のYTMがクーポン率を上回る場合、コール特性の価値は低くなり、価格の金利変動に対する挙動は非コーラブル債と類似する。一方、プッタブル債のYTMがクーポン率を下回る場合、プット特性の価値は低くなり、価格はオプションなし債と類似した挙動を示す。</p>
+<p>Bは誤り。これは正しい関係の逆である。</p>
+<p>Cは誤り。両者のYTMがともにクーポン率に近い場合、コールおよびプット特性が行使される価格水準に近づくため、価格変動の大きさは非コーラブル債より小さくなる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2432-R-s03-Q3">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>転換社債（convertible bond）がその転換価値（conversion value）に最も近い動きを示すのは、発行体の株価が次の場合である：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 転換価格（conversion price）を下回る場合。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。一般に、転換社債の価格は発行体の株価に応じて変動する。株価が転換価格を大きく上回る場合、債券価格は転換価値により近づく。</p>
+<p>Aは誤り。株価が転換価格を大きく下回る場合、転換社債の価格は非転換債に近づく。</p>
+<p>Bは誤り。この場合、転換社債は非転換債と転換社債の性質が混在した価格特性を持つ。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 転換価格と等しい場合。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。一般に、転換社債の価格は発行体の株価に応じて変動する。株価が転換価格を大きく上回る場合、債券価格は転換価値により近づく。</p>
+<p>Aは誤り。株価が転換価格を大きく下回る場合、転換社債の価格は非転換債に近づく。</p>
+<p>Bは誤り。この場合、転換社債は非転換債と転換社債の性質が混在した価格特性を持つ。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 転換価格を上回る場合。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。一般に、転換社債の価格は発行体の株価に応じて変動する。株価が転換価格を大きく上回る場合、債券価格は転換価値により近づく。</p>
+<p>Aは誤り。株価が転換価格を大きく下回る場合、転換社債の価格は非転換債に近づく。</p>
+<p>Bは誤り。この場合、転換社債は非転換債と転換社債の性質が混在した価格特性を持つ。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>右欄の説明と左欄の適切な債券を対応させなさい。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2432-R-s03-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">A. 転換社債（convertible bond）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">I. 転換は自動的に行われる</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">B. 偶発転換債（contingent convertible, CoCo bond）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">II. 転換は投資家の裁量で行われる</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">III. 株価が上昇した場合に転換されやすい</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">IV. 株価が下落した場合に転換されやすい</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2432-R-s03-L2">
+<li class="cfa-curriculum-list-item">IIとIIIが正しい。標準的な転換社債（convertible bond）は、発行体の株式に転換する権利を付与し、転換は投資家の裁量で行われ、株価が上昇した場合に転換されやすい。</li>
+<li class="cfa-curriculum-list-item">IとIVが正しい。偶発転換債（contingent convertible, CoCo bond）は下方局面で転換され、銀行の資本が規制上の最低水準を下回るなどの特定の事象が発生した場合に自動的に転換される。</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2432-R-s03-Q5">
+<span class="cfa-curriculum-question-with-label">5. </span>
+<p>直近のキャッシュアウトフローを抑えたい発行体が最も発行しやすい債券はどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. プッタブル債（putable bond）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。他の条件が同じであれば、転換社債（convertible bond）は最も低い利息支払いとなる。債券保有者は、転換権と引き換えに非常に低い（あるいはゼロの）満期利回り（YTM）を受け入れることが多い。プッタブル債は、プットオプションが投資家にとって有利であるため、コーラブル債よりも低い利回りとなるが、コーラブル債およびプッタブル債の利回りは転換社債と比較して高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. コーラブル債（callable bond）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。他の条件が同じであれば、転換社債（convertible bond）は最も低い利息支払いとなる。債券保有者は、転換権と引き換えに非常に低い（あるいはゼロの）満期利回り（YTM）を受け入れることが多い。プッタブル債は、プットオプションが投資家にとって有利であるため、コーラブル債よりも低い利回りとなるが、コーラブル債およびプッタブル債の利回りは転換社債と比較して高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 転換社債（convertible bond）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。他の条件が同じであれば、転換社債（convertible bond）は最も低い利息支払いとなる。債券保有者は、転換権と引き換えに非常に低い（あるいはゼロの）満期利回り（YTM）を受け入れることが多い。プッタブル債は、プットオプションが投資家にとって有利であるため、コーラブル債よりも低い利回りとなるが、コーラブル債およびプッタブル債の利回りは転換社債と比較して高い。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CallableBondContent">
+<p>発行体に、あらかじめ定められた日付に指定された価格で債券を投資家から買い戻す権利を与える組み込みコールオプション（embedded call option）を含む債券。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FixedPriceCallContent">
+<p>発行体に将来あらかじめ定められた価格で債券を買い戻す権利を与える偶発条項（contingency provision）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CallProtectionPeriodContent">
+<p>コーラブル債の発行体がコールオプションを行使することができない期間。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CallPeriodContent">
+<p>コーラブル債の発行体がコールオプションを行使できる期間。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CallPriceContent">
+<p>コーラブル債の発行体が投資家から債券を購入する権利を有する価格。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CallRiskContent">
+<p>コーラブル債に関連する、不確実な満期および価格上昇の制限。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PutableBondsContent">
+<p>債券保有者に、指定された日付にあらかじめ定められた価格で発行体へ債券を売却する権利を与える債券。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ConvertibleBondContent">
+<p>債券保有者に、発行体の普通株式の一定数と交換する権利を与える債券。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ConversionPriceContent">
+<p>転換期間中に転換社債が普通株式に完全に交換される際の、あらかじめ定められた株価。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ConversionRatioContent">
+<p>一定の額面に対して、転換社債またはノート保有者が受け取ることができる普通株式の数。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ConversionValueContent">
+<p>転換社債の価格と、債券を株式に転換した場合の価値を比較することによって得られる、現在の偶発特性の価値。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="WarrantContent">
+<p>一定期間にわたり、あらかじめ定められた価格で企業が発行する追加の普通株式を購入する権利を付与する債務特性または証券。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ContingentConvertibleBondsContent">
+<p>発行体の自己資本が規制上の最低要件を下回るなどの特定の事象が発生した場合に、自動的に株式へ転換される債券。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_145837_202_Fixed-Income_Cash_Flow_Structures.html" >← 前へ</a>
+  <span class="title">2.03 | Fixed-Income Contingency Provisions</span>
+  <a href="courses_1869_modules_items_145847_204_Legal_Regulatory_and_Tax_Considerations.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

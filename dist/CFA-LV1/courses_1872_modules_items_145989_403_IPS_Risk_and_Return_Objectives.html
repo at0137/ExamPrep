@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.03 | IPS Risk and Return Objectives</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0184-R-s03" title="4.03 | IPS Risk and Return Objectives">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール4：ポートフォリオ計画および構築の基礎（Basics of Portfolio Planning and Construction）4.03｜IPSにおけるリスクおよびリターンの目標（IPS Risk and Return Objectives）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">IPSの主要な構成要素を説明する</li>
+<li class="cfa-curriculum-los-item">リスクおよびリターンの目標（risk and return objectives）を説明し、それらがどのように顧客のために策定され得るかを説明する</li>
+<li class="cfa-curriculum-los-item">投資家の財務的リスク許容度（financial risk tolerance）を分析する際に、リスクを取る意思（willingness）と能力（capacity）の違いを説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>顧客のためにポートフォリオを構築する際には、そのポートフォリオのリスクが顧客にとって適切であることを確保することが重要である。IPSは顧客のリスク許容度（risk tolerance）を明確に記載すべきである。リスク目標（risk objectives）は、顧客のリスク許容度を反映したポートフォリオのリスクに関する仕様である。定量的なリスク目標は、絶対的（absolute）、相対的（relative）、またはその両方の組み合わせで表される。</p>
+<p>絶対的リスク目標（absolute risk objective）の例としては、元本の損失を一切被らないこと、あるいは任意の12か月期間において元本の一定割合以上を失わないことが挙げられる。これらの目標は、投資市場のパフォーマンス（良好であれ不良であれ）とは無関係であり、それ自体で完結しているという意味で絶対的である。このような目標の達成は、リスクを取らないこと、例えば信用力のある銀行の保険付き定期預金（certificate of deposit）に投資することによって可能となる。しかし、リスク資産への投資を行う場合には、これらの記述はより実務的（operational）にするために確率的表現に置き換えることができる。例えば、「任意の12か月期間において元本の4%を超える損失を出さない」という目標は、「95%の確率で、任意の12か月期間においてポートフォリオの損失が4%を超えない」という形で表現できる。絶対的リスクの指標には、リターンの分散（variance）や標準偏差（standard deviation）、バリュー・アット・リスク（value at risk）が含まれる。</p>
+<p>一部の顧客は、相対的リスク目標（relative risk objectives）を用いることを選択する。この場合、リスクは適切なリスク基準とみなされる1つまたは複数のベンチマーク（benchmarks）に対する相対的なものとして定義される。例えば、英国の大型株（large-cap UK equities）への投資は、FTSE100指数（FTSE 100 Index）のような株式市場指数をベンチマークとすることができる。米国の大型株（large-cap US equities）にはS&amp;P500指数（S&amp;P 500 Index）が用いられる場合があり、現金類似の特性を持つ投資には短期国債利回り（Treasury bill rate）がベンチマークとして用いられることがある。ベンチマークに対するリスクの指標としては、トラッキングリスク（tracking risk）またはトラッキングエラー（tracking error）が用いられる。実務上、このようなリスク目標は、顧客の総合的な資産管理活動が複数の部分的なマンデート（partial mandates）に分割されている場合に用いられる。</p>
+<p>他の顧客は、IPSのリスク目標を設定する際に、投資家の資産と負債の両方を考慮する。将来の財務的義務の規模、タイミング、および／または確実性が既知である場合、IPSは負債主導型投資（liability-driven investment：LDI）と呼ばれるアプローチに基づいて設計されることがある。LDIの例としては、生命保険会社（life insurance companies）、確定給付年金制度（defined benefit pension plans）、または退職後の個人の予算が挙げられる。例えば、年金制度は期日どおりに年金支払いを行う必要があり、そのリスク目標はそれを達成できない確率を最小化することである。関連するリターン目標としては、複数年の投資期間にわたって負債の現在価値を算出する際に用いられる割引率（discount rate）を上回ることが挙げられる。</p>
+<p>政策ポートフォリオ（policy portfolio）（すなわち、長期的な資産クラスのウェイトおよびヘッジ比率の特定された組み合わせ）が用いられる場合、リスク目標は、各資産クラスに対応する指数またはベンチマークを用いて算出されるベンチマーク・リターンに対して、ポートフォリオのリターンが±X%の範囲内に収まることを目標とする形で表されることがある。この目標もまた、確率的な表現として解釈する方が有用であり、例えば「所定の期間において、ポートフォリオのリターンがベンチマーク・リターンの±X%の範囲内に収まる確率が95%である」といった形で表される。例1でこの内容を確認する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0184-R-EXM1">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例1 リスク目標の種類（Types of Risk Objectives）</h3>
+<section>
+<p>日本のある機関投資家（institutional investor）は、評価額1,000億円（¥10 billion）のポートフォリオを保有している。この投資家は、第1のリスク目標として、今後12か月間において100億円（¥1 billion）を超える損失を被らないことを挙げている。第2のリスク目標として、ベンチマークであるTOPIX株価指数（TOPIX stock market index）のリターンに対して±4%の範囲内のリターンを達成することを指定している。この情報に基づき、以下に答えよ。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<ol class="cfa-curriculum-list-lower-alpha" id="CFA0184-R-L4-Q1-L1">
+<li class="cfa-curriculum-list-item">第1のリスク目標を絶対的または相対的に分類せよ。</li>
+<li class="cfa-curriculum-list-item">このリスク目標を実務的な形でどのように再表現できるかの例を示せ。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<ol class="cfa-curriculum-list-lower-alpha" id="CFA0184-R-L8">
+<li class="cfa-curriculum-list-item">これは絶対的リスク目標（absolute risk objective）である。</li>
+<li class="cfa-curriculum-list-item">このリスク目標は、12か月の95%バリュー・アット・リスク（value at risk）が100億円（¥1 billion）を超えないことと規定することで、実務的に再表現できる。</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<ol class="cfa-curriculum-list-lower-alpha" id="CFA0184-R-L4-Q2-L1">
+<li class="cfa-curriculum-list-item">第2のリスク目標を絶対的または相対的に分類せよ。</li>
+<li class="cfa-curriculum-list-item">このリスク目標を定量化する指標を特定せよ。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<ol class="cfa-curriculum-list-lower-alpha" id="CFA0184-R-L9">
+<li class="cfa-curriculum-list-item">これは相対的リスク目標（relative risk objective）である。</li>
+<li class="cfa-curriculum-list-item">このリスク目標は、トラッキングリスク（tracking risk）を用いて定量化できる。例えば、リターンが正規分布（normal distribution）に従うと仮定すると、期待トラッキングリスクが2%であれば、約95%の確率で指数リターンから±4%の範囲内に収まることを意味する。トラッキングリスクは1標準偏差（one standard deviation）の指標であることに注意する。</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>顧客の全体的なリスク許容度（risk tolerance）は、リスクを負担する能力（ability to bear (accept) risk）と、いわゆるリスクに対する態度（risk attitude）、すなわちリスクを取る意思（willingness to take risk）の関数である。表現を簡潔にするため、以降ではリスクを負担する能力とリスクを取る意思をリスク許容度の2つの構成要素と呼ぶ。リスクを負担する能力が平均以上であり、かつリスクを取る意思も平均以上である場合、リスク許容度は平均以上となる。逆に、リスクを負担する能力およびリスクを取る意思がともに平均以下である場合、リスク許容度は平均以下となる。これらの関係は図表1（Exhibit 1）に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0184-R-EXH1">
+<h3 class="cfa-curriculum-exhibit-table-title">図表1 リスク許容度（Exhibit 1 Risk Tolerance）</h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; ">リスクを取る意思（Willingness to Take Risk）</th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">リスクを負担する能力（Ability to Bear Risk）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">平均以下（Below Average）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">平均以上（Above Average）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">平均以下（Below Average）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">平均以下のリスク許容度（Below-average risk tolerance）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">判定が必要（Resolution needed）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">平均以上（Above Average）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">判定が必要（Resolution needed）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">平均以上のリスク許容度（Above-average risk tolerance）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>リスクを負担する能力（ability to bear risk）は、主に客観的な要因、すなわち投資期間（time horizon）、期待所得（expected income）、および負債に対する資産水準（level of wealth relative to liabilities）によって測定される。例えば、20年の投資期間を持つ投資家は、他の条件が同じであれば、2年の投資期間を持つ投資家よりもリスクを負担する能力が高いと考えられる。この違いは、20年の期間では損失を回復したり状況を調整したりする余地が2年の場合よりも大きいためである。</p>
+<p>同様に、資産が負債を十分に上回っている投資家は、資産と将来の支出がより拮抗している投資家よりもリスクを負担する能力が高い。例えば、大きな投資損失を被った後でも快適な生活水準を維持できる富裕な個人は、比較的高いリスク負担能力を有している。また、資産が負債を大きく上回る余剰（surplus）を有する年金制度（pension plan）も、比較的高いリスク負担能力を有している。</p>
+<p>リスクを取る意思（willingness to take risk）、すなわちリスク態度（risk attitude）は、顧客の心理や場合によっては現在の状況に基づく、より主観的な要因である。個人のリスク態度に関連する要因の一覧については議論の余地があるが、性格タイプ（personality type）、自尊心（self-esteem）、独立的思考への傾向（inclination to independent thinking）などの心理的要因がリスク態度と相関していると考えられている。ある人々は金融および投資のリスクを取ることに快適さを感じる一方で、他の人々はそれを苦痛に感じる。リスク許容度（risk tolerance）を測定する単一の合意された方法は存在しないが、リスクを取る意思は顧客との対話や心理測定質問票（psychometric questionnaire）への回答を通じて把握することができる。例えば、ファイナンシャル・プランニングの研究者であるジョン・グレイブル（John Grable）らは、一定の技術的検証を経た13項目および5項目のリスク態度質問票を開発している。5項目の質問票は図表2（Exhibit 2）に示されている。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA0184-R-EXH2">
+<h3 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">図表2 5項目のリスク評価ツール（Exhibit 2 A Five-Item Risk Assessment Instrument）</h3>
+<ol class="cfa-curriculum-list-decimal" id="CFA0184-R-L10">
+<li class="cfa-curriculum-list-item">投資は理解するには難しすぎる。強く同意する（Strongly agree）／やや同意する（Tend to agree）／やや不同意（Tend to disagree）／強く不同意（Strongly disagree）</li>
+<li class="cfa-curriculum-list-item">株式市場よりも銀行口座にお金を預ける方が安心である。強く同意する（Strongly agree）／やや同意する（Tend to agree）／やや不同意（Tend to disagree）／強く不同意（Strongly disagree）</li>
+<li class="cfa-curriculum-list-item">「リスク」という言葉を聞くと、すぐに「損失（loss）」という言葉が思い浮かぶ。強く同意する（Strongly agree）／やや同意する（Tend to agree）／やや不同意（Tend to disagree）／強く不同意（Strongly disagree）</li>
+<li class="cfa-curriculum-list-item">株式や債券で利益を得ることは運に基づいている。強く同意する（Strongly agree）／やや同意する（Tend to agree）／やや不同意（Tend to disagree）／強く不同意（Strongly disagree）</li>
+<li class="cfa-curriculum-list-item">投資においては、リターンよりも安全性の方が重要である。強く同意する（Strongly agree）／やや同意する（Tend to agree）／やや不同意（Tend to disagree）／強く不同意（Strongly disagree）</li>
+</ol>
+<p>出所（Source）：Grable and Joo（2004）</p>
+</div>
+<p>回答a）、b）、c）、d）はそれぞれ1、2、3、4として符号化され、合計される。最低スコアは5、最高スコアは20であり、スコアが高いほどリスク許容度（risk tolerance）が高いことを示す。米国の大規模大学の教職員から抽出された2つの無作為標本（n = 406）では、平均スコアは12.86、標準偏差は3.01、中央値（median score）は13であった。</p>
+<p>図表2（Exhibit 2）の最初の質問のように、リスク態度（risk attitude）は心理的要因だけでなく、金融知識の水準や理解度、意思決定スタイルといった非心理的要因とも関連している可能性があることに注意する。</p>
+<p>アドバイザー（adviser）は、顧客のリスクを受け入れる能力（ability to accept risk）が、リスクを取る意思（willingness to take risk）と整合しているかどうかを検討する必要がある。例えば、20年の投資期間を持つ富裕な投資家はリスクを取る能力があり、かつリスクを取ることに対しても快適である場合、これらの要因は整合している。一方で、この富裕な投資家がリスクを取る意思が低い場合、両者の間に不一致（conflict）が生じる。</p>
+<p>リスクを取る能力と意思の不一致は、機関投資家（institutional context）においても生じ得る。さらに、同一組織内の異なるステークホルダー（stakeholders）が異なる見解を持つ場合もある。例えば、十分に資金が積み立てられている年金制度（pension plan）の受託者（trustees）は、制度の財政状態を守るために低リスクのアプローチを望む可能性があり、受益者（beneficiaries）も同様の見解を持つかもしれない。一方で、スポンサー（sponsor）は将来の拠出コストを削減するために、より高リスク・高リターンのアプローチを望む場合がある。受託者が年金受益者に対する受託者責任（fiduciary responsibility）を負っており、スポンサーと受益者の利益が対立する場合には、受託者は受益者の最善の利益のために行動すべきである。</p>
+<p>リスクを取る能力と意思がともに整合している場合、投資アドバイザーの作業は最も容易である。リスクを取る能力が平均以下であり、意思が平均以上である場合、投資家のリスク許容度は全体として平均以下と評価されるべきである。リスクを取る能力が平均以上である一方で意思が平均以下である場合、ポートフォリオマネージャーまたはアドバイザーは顧客に助言し、その不一致とその含意を説明することができる。例えば、顧客が高いリスク負担能力を有すると考えられる理由を説明し、リスクを取らないことによる期待リターンの低下といった結果を示すことができる。ただし、投資アドバイザーは、誤認や誤計算に起因しない限り、顧客のリスクを取る意思を変えようとすべきではない。人格の要素を変えることは投資アドバイザーの役割の範囲外である。慎重なアプローチは、能力と意思のうち低い方に基づいてリスク許容度を判断し、その意思決定を文書化することである。</p>
+<p>例2は、投資顧客の分析を通じてIPSの主要要素を作成する一連の事例の最初のものである。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0184-R-EXM2">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2 アンリ・ガスコンのケース：リスク許容度（The Case of Henri Gascon: Risk Tolerance）</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>アンリ・ガスコン（Henri Gascon）は、パリに本拠を置くフランスの大手石油会社で働くエネルギートレーダーである。彼は30歳で、5歳の息子を持つ既婚者である。ガスコンは自身の財務状況を見直す時期だと考え、ファイナンシャルアドバイザーに相談した。その結果、以下の点が確認された。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0184-R-L16">
+<li class="cfa-curriculum-list-item">ガスコンの年収25万ユーロ（€250,000）は、家計支出を十分に賄う以上である。</li>
+<li class="cfa-curriculum-list-item">ガスコンは自身のアパートを完全に所有しており、100万ユーロ（€1,000,000）の貯蓄を有している。</li>
+<li class="cfa-curriculum-list-item">ガスコンは自身の職が比較的安定していると認識している。</li>
+<li class="cfa-curriculum-list-item">ガスコンは金融に関する十分な知識を有しており、株式市場（equity markets）が長期的にはプラスのリターンをもたらすと確信している。</li>
+<li class="cfa-curriculum-list-item">リスク許容度質問票において、ガスコンは「株式や債券で利益を得ることは運に基づいている」および「投資においてはリターンよりも安全性の方が重要である」という記述に強く不同意（Strongly disagree）と回答している。</li>
+<li class="cfa-curriculum-list-item">ガスコンは、自身の貯蓄の大部分を退職後の資金として使用する予定であり、50歳での引退を希望している。</li>
+</ul>
+<p>与えられた情報のみに基づき、次の記述のうち最も適切なものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. ガスコンはリスクを取る能力は低いが、リスクを取る意思は高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-02-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。ガスコン（Gascon）は支出に対して高い収入、高水準の資産、安定した職業、および20年の投資期間（time horizon）を有している。これらの情報は高いリスク負担能力（ability to take risk）を示唆する。同時に、ガスコンは金融市場に関する知識と自信を有しており、質問票への回答もリスク許容度（risk tolerance）を示唆している。この結果は、彼がリスクを取る意思（willingness to take risk）も高いことを示している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. ガスコンはリスクを取る能力は高いが、リスクを取る意思は低い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-02-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。ガスコン（Gascon）は支出に対して高い収入、高水準の資産、安定した職業、および20年の投資期間（time horizon）を有している。これらの情報は高いリスク負担能力（ability to take risk）を示唆する。同時に、ガスコンは金融市場に関する知識と自信を有しており、質問票への回答もリスク許容度（risk tolerance）を示唆している。この結果は、彼がリスクを取る意思（willingness to take risk）も高いことを示している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. ガスコンはリスクを取る能力とリスクを取る意思のいずれも高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s03-02-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。ガスコン（Gascon）は支出に対して高い収入、高水準の資産、安定した職業、および20年の投資期間（time horizon）を有している。これらの情報は高いリスク負担能力（ability to take risk）を示唆する。同時に、ガスコンは金融市場に関する知識と自信を有しており、質問票への回答もリスク許容度（risk tolerance）を示唆している。この結果は、彼がリスクを取る意思（willingness to take risk）も高いことを示している。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0184-R-EXM3">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例3 ジャック・ガスコンのケース：リスク許容度（The Case of Jacques Gascon: Risk Tolerance）</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>マリー・ガスコン（Marie Gascon）は、ファイナンシャルアドバイザーのサービスに非常に満足しており、兄のジャック（Jacques）にも同じアドバイザーに相談することを勧めた。ジャックはそれが良い考えだと思った。ジャックはパリに拠点を置く自営業のコンピュータコンサルタントで、40歳、離婚しており、12歳から16歳までの4人の子供がいる。ファイナンシャルアドバイザーは、ジャックの状況について以下の点を把握した。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0184-R-L18">
+<li class="cfa-curriculum-list-item">ジャックのコンサルティング収入は年平均40,000ユーロ（€40,000）であるが、かなり変動が大きい。</li>
+<li class="cfa-curriculum-list-item">ジャックは元妻と子供たちのために年間10,000ユーロ（€10,000）を支払う義務がある。</li>
+<li class="cfa-curriculum-list-item">ジャックは自身のアパートに100,000ユーロ（€100,000）の住宅ローンがあり、10,000ユーロ（€10,000）の貯蓄を有している。</li>
+<li class="cfa-curriculum-list-item">ジャックは金融に関する十分な知識を有しており、株式市場（equity markets）が長期的には非常に高いリターンをもたらすと考えている。</li>
+<li class="cfa-curriculum-list-item">リスク許容度質問票において、ジャックは「銀行口座に預ける方が株式市場よりも安心である」および「『リスク』という言葉を聞くとすぐに『損失』が思い浮かぶ」という記述に強く不同意（Strongly disagree）と回答している。</li>
+<li class="cfa-curriculum-list-item">ジャックは、自身の貯蓄の大部分を子供たちの大学進学の支援に充てる必要があると考えている。</li>
+</ul>
+<p>与えられた情報のみに基づき、正しい記述はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. ジャックはリスクを取る能力は低いが、リスクを取る意思は高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s03-03-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。ジャックは特に高い収入ではなく、収入は不安定であり、住宅ローンおよび扶養費の支払いにより比較的高い支出を抱えている。投資期間は子供の年齢および大学進学支援の意向を考慮すると約2年から6年である。このような綱渡り的な財務状況と短い投資期間は、リスクを取る能力が低いことを示唆する。一方で、金融市場に対する期待やリスク許容度質問票の回答は、リスクを取る意思が高いことを示している。ファイナンシャルアドバイザーは、彼の財務状況がどれほど微妙なバランスにあるかを説明し、より高いリスクを取りたいという意向にもかかわらず、比較的慎重なポートフォリオが適切である可能性を示唆すべきである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. ジャックはリスクを取る能力は高いが、リスクを取る意思は低い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-03-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。ジャックは特に高い収入ではなく、収入は不安定であり、住宅ローンおよび扶養費の支払いにより比較的高い支出を抱えている。投資期間は子供の年齢および大学進学支援の意向を考慮すると約2年から6年である。このような綱渡り的な財務状況と短い投資期間は、リスクを取る能力が低いことを示唆する。一方で、金融市場に対する期待やリスク許容度質問票の回答は、リスクを取る意思が高いことを示している。ファイナンシャルアドバイザーは、彼の財務状況がどれほど微妙なバランスにあるかを説明し、より高いリスクを取りたいという意向にもかかわらず、比較的慎重なポートフォリオが適切である可能性を示唆すべきである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. ジャックはリスクを取る能力とリスクを取る意思のいずれも高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-03-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。ジャックは特に高い収入ではなく、収入は不安定であり、住宅ローンおよび扶養費の支払いにより比較的高い支出を抱えている。投資期間は子供の年齢および大学進学支援の意向を考慮すると約2年から6年である。このような綱渡り的な財務状況と短い投資期間は、リスクを取る能力が低いことを示唆する。一方で、金融市場に対する期待やリスク許容度質問票の回答は、リスクを取る意思が高いことを示している。ファイナンシャルアドバイザーは、彼の財務状況がどれほど微妙なバランスにあるかを説明し、より高いリスクを取りたいという意向にもかかわらず、比較的慎重なポートフォリオが適切である可能性を示唆すべきである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+<section id="CFA0184-R-s03-04">
+<h3 class="dp-heading">リターン目標（Return Objectives）</h3>
+<p>顧客のリターン目標はさまざまな方法で表現することができる。リスク目標と同様に、リターン目標も絶対的（absolute）または相対的（relative）に表現される。</p>
+<p>絶対的目標の例として、顧客は特定のパーセンテージのリターンを達成したいと考える場合がある。この目標は名目リターン（nominal rate of return）として表される場合もあれば、実質（インフレ調整後、inflation-adjusted）ベースで表される場合もある。</p>
+<p>あるいは、リターン目標は相対的に、例えばベンチマーク・リターン（benchmark return）に対して表現されることもある。ベンチマークには、S&amp;P500指数（S&amp;P 500）やFTSE100指数（FTSE 100）のような株式市場指数、あるいは市場基準金利（market reference rate：MRR）のような短期金利が用いられることがある。相対的リターン目標の例としては、ベンチマーク指数を年間1%上回ることを目指すといった表現がある。</p>
+<p>一部の機関投資家は、同業他社グループ（peer group）や運用者ユニバース（universe）に対してリターン目標を設定する場合もある。例えば、大学基金（endowment）が類似機関のリターンの上位50%に入ることを目指したり、プライベートエクイティ（private equity）のマンデートが同ユニバースの上位四分位（top quartile）を目指したりするケースである。しかし、このような目標は、他者の投資戦略やリターン算出方法に関する情報が限られている場合には問題となり得る。また、すべての機関が「平均以上」になることは不可能であることにも留意する必要がある。さらに、優れたベンチマークは投資可能（investable）であるべき、すなわち投資家が再現可能であるべきであるが、ピアベンチマークは通常この条件を満たさない。</p>
+<p>いずれの場合も、リターン要件（return requirement）は手数料控除前（before fees）または控除後（after fees）で表現され得る。どの手数料基準が用いられているかについて、運用者と顧客の双方が明確に理解していることが重要である。また、投資家が課税対象である場合、リターンは税引前（pre-tax）または税引後（post-tax）のいずれかで表現することができる。課税対象の投資家にとっては、基本的には税引後ベースでリターンを定義・分析する。</p>
+<p>リターン目標は必要リターン（required return）、すなわち将来の特定の目標（例えば一定水準の退職後所得）を達成するために投資家が得る必要のあるリターンとして設定されることもある。</p>
+<p>運用者またはアドバイザーは、リターン目標が現実的であることを確保しなければならない。リターン目標が名目（nominal）（測定上は便利）なのか実質（real）（通常は目標との関連性が高いインフレ調整後）なのかについて、顧客と運用者が合意していることが重要である。また、それは顧客のリスク目標と整合的でなければならず（高い期待リターンは通常高いリスクなしには達成できない）、さらに現在の経済および市場環境とも整合的である必要がある。例えば、インフレ率が10%であれば名目15%のリターンは可能かもしれないが、インフレ率が3%の場合にはその達成は困難である。</p>
+<p>顧客が非現実的なリターン期待を持っている場合、運用者またはアドバイザーは、現在の市場環境および顧客のリスク許容度（risk tolerance）の範囲内で達成可能な水準について助言する必要がある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0184-R-EXM4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例4 マリー・ガスコンのケース：リターン目標（The Case of Marie Gascon: Return Objectives）</h4>
+<section>
+<p>リスク許容度の評価を終えた後、マリー・ガスコン（Marie Gascon）は、ファイナンシャルアドバイザーとともに退職後の所得ニーズについて議論を始める。彼女は20年後の50歳での引退を希望している。彼女の給与は現在および将来の支出を満たしているが、年金基金への追加拠出はできないと考えている。ガスコンは、緊急資金として10万ユーロ（€100,000）を現金で保有し、残りの90万ユーロ（€900,000）を退職資金として投資する。</p>
+<p>ガスコンは、現在価値ベースで税引前200万ユーロ（€2,000,000）が退職後の所得ニーズを満たすのに十分であると見積もっている。ファイナンシャルアドバイザーは、今後20年間の平均インフレ率を年2%と予想している。フランスでは、年金基金への拠出および運用収益は非課税であるが、年金給付は退職時に課税される。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>以下のうち、ガスコンが退職時までに名目ベース（20年後の貨幣価値）で蓄積する必要がある金額に最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. €900,000</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-04-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。年率2%のインフレのもとでは、現在価値200万ユーロ（€2,000,000）は20年後の名目価値で2,971,895ユーロ（€2,971,895）に相当する［€2,000,000 × (1 + 2%)^20］。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. €2,000,000</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-04-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。年率2%のインフレのもとでは、現在価値200万ユーロ（€2,000,000）は20年後の名目価値で2,971,895ユーロ（€2,971,895）に相当する［€2,000,000 × (1 + 2%)^20］。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. €3,000,000</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s03-04-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。年率2%のインフレのもとでは、現在価値200万ユーロ（€2,000,000）は20年後の名目価値で2,971,895ユーロ（€2,971,895）に相当する［€2,000,000 × (1 + 2%)^20］。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>以下のうち、ガスコンが退職後の所得目標を達成するために年金ポートフォリオで達成すべき年間リターンに最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 2.0%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-04-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。90万ユーロ（€900,000）を年率6.2%で20年間運用すると、2,997,318ユーロ（€2,997,318）となり、必要額をわずかに上回る。（6.2%は、€2,997,318 / €900,000 = (1 + X)^20 を満たすXとして求められる。）</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 6.2%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s03-04-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。90万ユーロ（€900,000）を年率6.2%で20年間運用すると、2,997,318ユーロ（€2,997,318）となり、必要額をわずかに上回る。（6.2%は、€2,997,318 / €900,000 = (1 + X)^20 を満たすXとして求められる。）</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 8.1%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-04-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。90万ユーロ（€900,000）を年率6.2%で20年間運用すると、2,997,318ユーロ（€2,997,318）となり、必要額をわずかに上回る。（6.2%は、€2,997,318 / €900,000 = (1 + X)^20 を満たすXとして求められる。）</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0184-R-FN2Content">
+<p>バリュー・アット・リスク（value at risk）とは、特定の確率水準において、一定期間中に予想される損失の最小額を金額で表した指標である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0184-R-FN3Content">
+<p>トラッキングリスク（tracking risk）（トラッキングエラー（tracking error）とも呼ばれる）とは、ポートフォリオのリターンとベンチマークのリターンとの差の標準偏差（standard deviation）である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ValueAtRiskContent">
+<p>特定の確率水準において、一定期間中に予想される損失の最小額を金額で表した指標。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TrackingRiskContent">
+<p>ポートフォリオのリターンとベンチマークのリターンとの差の標準偏差。トラッキングエラー（tracking error）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TrackingErrorContent">
+<p>ポートフォリオのリターンとそのベンチマークのリターンとの差の標準偏差であり、アクティブリスク（active risk）の同義語である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LiabilityDrivenInvestingContent">
+<p>投資業界における用語であり、主に機関投資家の文脈において、投資家の負債の資金調達に焦点を当てたアセット・アロケーションを指す。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_145985_402_The_Investment_Policy_Statement.html" >← 前へ</a>
+  <span class="title">4.03 | IPS Risk and Return Objectives</span>
+  <a href="courses_1872_modules_items_145993_404_IPS_Constraints.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

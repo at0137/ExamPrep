@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2405-R-s01-R-1" title="7.01 | Introduction">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール7：推定と推論（Estimation and Inference）7.01 | 導入</h2>
+</header>
+<p>本ラーニングモジュールでは、標本（sample：母集団の一部）を通じて母集団（population：特定のグループの全構成員）に関する情報を得るためのさまざまな方法を紹介する。私たちが求める母集団に関する情報は通常、母数（parameter：データの母集団から計算される、または母集団を記述するために用いられる量）の値に関するものである。レッスン1では標本抽出（sampling）を導入し、標本を用いて母数を推定する方法を扱う。その際、標本統計量（sample statistics）を利用する。統計量（statistic）とは、標本データから計算される、または標本データを記述するために用いられる量である。</p>
+<p>標本が基礎となる母集団を代表していると仮定した場合、分析者は母集団母数の推定における標本誤差（sampling error）をどのように評価できるだろうか。レッスン2では、中心極限定理（Central Limit Theorem）が、多くの推定問題において標本平均の標本分布（sampling distribution）を理解する助けとなる。このことにより、標本平均がどの程度母集団平均に一致すると期待できるかについての指針が得られ、分析者は標本分布を用いて標本の精度を評価し、母数に関する仮説検定（hypothesis testing）を行うことができる。レッスン3ではさまざまな再標本化（resampling）手法を扱う。</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA2405-R-s01-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title">ラーニングモジュール概要</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2405-R-s01-L1">
+<li class="cfa-curriculum-list-item">標本抽出法には2つのタイプがあり、確率標本抽出（probability sampling）には単純無作為抽出（simple random sampling）や層化無作為抽出（stratified random sampling）が含まれ、非確率標本抽出（non-probability sampling）には便宜抽出（convenience sampling）や判断抽出（judgmental sampling）が含まれる。確率標本抽出は各標本が等しい確率で選ばれるのに対し、非確率標本抽出は代表性を欠くリスクが大きい。</li>
+<li class="cfa-curriculum-list-item">標本誤差（sampling error）とは、母集団の一部を用いることによって、統計量の観測値とそれが推定しようとする量との間に生じる差である。</li>
+<li class="cfa-curriculum-list-item">非確率標本抽出（non-probability sampling）は、固定された選択プロセスではなく、研究者の標本選択能力に依存する手法である。その利点として、迅速かつ低コストでデータ収集が可能であり、専門的判断（expert judgment）を活用して効率的に標本を選択できる点が挙げられる。</li>
+<li class="cfa-curriculum-list-item">
+<p>The Central Limit Theorem is defined as follows: Given a population described by any probability distribution with mean µ and finite variance σ<sup>2</sup>, the sampling distribution of the sample mean <strong>
+<em>
+<span class="cfa-curriculum-display-inline-formula">
+<math id="m1">
+<mrow>
+<mover accent="true">
+<mtext>X</mtext>
+<mo stretchy="true">¯</mo>
+</mover>
+</mrow>
+</math>
+</span>
+</em>
+</strong> computed from random samples of size n from this population will be approximately normal with mean µ (the population mean) and variance σ<sup>2</sup>/n (the population variance divided by n) when the sample size n is large.</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>標本平均の標準誤差（standard error）は、中心極限定理（Central Limit Theorem）を実務で適用する際の重要な量である。通常、以下のように計算される標本分散（sample variance）の平方根を用いて推定される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2405-R-s01-E-1-">
+<math>
+<semantics>
+<mrow>
+<msup>
+<mtext>s</mtext>
+<mn>2</mn>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msubsup>
+<mstyle displaystyle="true" mathsize="140%">
+<mo>∑</mo>
+</mstyle>
+<mrow>
+<mtext>i</mtext>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mtext>n</mtext>
+</msubsup>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<msub>
+<mtext>X</mtext>
+<mtext>i</mtext>
+</msub>
+<mo>−</mo>
+<mover accent="true">
+<mtext>X</mtext>
+<mo stretchy="true">¯</mo>
+</mover>
+</mrow>
+</mfenced>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+<mrow>
+<mtext>n</mtext>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math>.</div>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>The central limit theorem shows that when sampling from any distribution, the sample mean distribution will have these two properties when the sample size is large: (1) the distribution of the sample mean <strong>
+<em>
+<span class="cfa-curriculum-display-inline-formula">
+<math id="m3">
+<mrow>
+<mover accent="true">
+<mi>X</mi>
+<mo stretchy="true">¯</mo>
+</mover>
+</mrow>
+</math>
+</span>
+</em>
+</strong> will be approximately normal, and (2) the mean of the distribution of <strong>
+<em>
+<span class="cfa-curriculum-display-inline-formula">
+<math id="m4">
+<mrow>
+<mover accent="true">
+<mtext>X</mtext>
+<mo stretchy="true">¯</mo>
+</mover>
+</mrow>
+</math>
+</span>
+</em>
+</strong> will be equal to the mean of the population from which samples are drawn.</p>
+</li>
+<li class="cfa-curriculum-list-item">ブートストラップ（Bootstrap）は、元の標本と同じサイズの標本を繰り返し抽出する一般的な再標本化（resampling）手法であり、z統計量（z-statistic）やt統計量（t-statistic）のような解析的な公式を用いることなく、コンピュータシミュレーションによって統計的推論を行う。標本平均の標準誤差のような複雑な推定量に対しても、単純でありながら強力な手法として利用できる。</li>
+<li class="cfa-curriculum-list-item">ブートストラップ（Bootstrap）は精度の面で潜在的な利点を持つ。これらの利点により、資産配分（asset allocation）におけるヒストリカルシミュレーション（historical simulations）や、投資戦略のパフォーマンスをベンチマーク（benchmark）と比較評価する際など、金融分野で広く応用されている。</li>
+<li class="cfa-curriculum-list-item">ジャックナイフ（Jackknife）は別の再標本化（resampling）手法であり、元の観測データ標本から1つずつ観測値を除外して（置換せずに）標本を作成する。ジャックナイフは推定量のバイアス（bias）を低減するためによく用いられ、その他の用途としては推定量の標準誤差（standard error）や信頼区間（confidence interval）の算出がある。</li>
+</ul>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ParameterContent">
+<p>母集団データを記述するために計算される、または用いられる記述的指標であり、慣例的にギリシャ文字で表される。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144492_Learning_Outcomes_Estimation_and_Inference.html" >← 前へ</a>
+  <span class="title">7.01 | Introduction</span>
+  <a href="courses_1864_modules_items_144501_702_Sampling_Methods.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

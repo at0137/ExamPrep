@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1012-R-s01" title="10.01 | Introduction">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール10：1期間二項モデル（one-period binomial model）を用いたデリバティブの評価 10.01｜導入（Introduction）</h2>
+</header>
+<p>これまでのレッスンでは、無裁定（no arbitrage）の原理と複製（replication）を用いてデリバティブを評価・価格付けする方法を説明した。プット・コール・パリティ（put–call parity）は、プット・オプション（put option）、コール・オプション（call option）、原資産（underlying asset）、および無リスク資産（risk-free asset）の価格を結び付ける関係である。この関係は、原資産ポジションとフォワード契約のロングおよび無リスク債券の組合せが等価であることに基づき、フォワード契約にも拡張された。</p>
+<p>フォワード契約（forward commitments）は、将来の原資産価格について仮定を置くことなく価格付けが可能である。一方、オプションやその他の条件付請求権（contingent claims）の価格付けには、原資産の将来価格の推移（evolution）をモデル化する必要がある。最初のレッスンでは、ヨーロピアンのプットおよびコール・オプションを評価するための広く用いられている二項モデル（binomial model）を導入する。単純な1期間モデルを紹介し、これを複数期間に拡張することで、より複雑な条件付請求権の評価に用いることができる。第2のレッスンでは、デリバティブ価格付けにおけるリスク中立確率（risk-neutral probabilities）の使用を示す。</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA1012-s01-B-1-b">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title">学習モジュール概要（Learning Module Overview）</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1012-s01-L1">
+<li class="cfa-curriculum-list-item">1期間二項モデル（one-period binomial model）は、オプションのような条件付請求権（contingent claims）を評価するものであり、原資産は1期間（デリバティブ契約の満期に対応）において、R_u（上昇グロスリターン（up gross return））だけ上昇するか、R_d（下落グロスリターン（down gross return））だけ下落するかのいずれかであると仮定する。</li>
+<li class="cfa-curriculum-list-item">二項モデル（binomial model）は、オプションと原資産を組み合わせ、オプションと原資産の比率がヘッジ比率（hedge ratio）によって決定される無リスク・ポートフォリオ（risk-free portfolio）を構築する。</li>
+<li class="cfa-curriculum-list-item">このヘッジされたポートフォリオは、市場の無リスク利子率（risk-free rate of return）を獲得しなければならず、そうでなければ無リスク裁定利益（riskless arbitrage profit）の機会が生じる。</li>
+<li class="cfa-curriculum-list-item">無リスク・ヘッジング（risk-free hedging）によるデリバティブの評価は、実際の確率（actual probabilities）ではなく、リスク中立確率（risk-neutral probabilities）を用いてオプションの期待ペイオフを割引することと同値である。</li>
+<li class="cfa-curriculum-list-item">原資産価格が上昇または下落する実際（現実世界）の確率や、原資産の期待収益率は、オプションの価格付けには必要とされない。</li>
+<li class="cfa-curriculum-list-item">1期間二項モデル（one-period binomial model）は、複数期間に拡張することで、より複雑な条件付請求権の評価にも利用できる。</li>
+</ul>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA1012-s01-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">学習モジュール自己評価（Learning Module Self-Assessment）</h3>
+<p>これらの初期問題は、本学習モジュールに関する現在の理解度を測るためのものである。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1012-s01-Q1">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>次のうち、オプション評価のための二項モデル（binomial model）を最も正しく説明しているのはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. このモデルは、株価の上昇または下落に関する実際の確率（actual probabilities）を用いる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。フォワード契約とは異なり、オプションのような条件付請求権（contingent claims）は非対称なペイオフ（asymmetric payoffs）を持つため、原資産価格の将来の動きをモデル化する必要がある。この将来価格のモデル化により、オプションと原資産を組み合わせて無リスク・ポートフォリオを構築できる。このポートフォリオのコスト（オプションと原資産の比率はヘッジ比率で決定される）が、オプションの無裁定価格を決定する。Aは誤りであり、実際の上昇・下落確率はモデルに影響しない。Cも誤りであり、オプションは非対称ペイオフを持つため、フォワードや先物（futures）のような対称的ペイオフの金融商品とは異なる方法でモデル化する必要がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. このモデルは、ヘッジ比率（hedge ratio）に従ってオプションと原資産を組み合わせることで無リスク・ポートフォリオを構築できると仮定する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。フォワード契約とは異なり、オプションのような条件付請求権（contingent claims）は非対称なペイオフ（asymmetric payoffs）を持つため、原資産価格の将来の動きをモデル化する必要がある。この将来価格のモデル化により、オプションと原資産を組み合わせて無リスク・ポートフォリオを構築できる。このポートフォリオのコスト（オプションと原資産の比率はヘッジ比率で決定される）が、オプションの無裁定価格を決定する。Aは誤りであり、実際の上昇・下落確率はモデルに影響しない。Cも誤りであり、オプションは非対称ペイオフを持つため、フォワードや先物（futures）のような対称的ペイオフの金融商品とは異なる方法でモデル化する必要がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. このモデルは、フォワード契約や先物契約（futures contracts）の評価に用いられるモデルと類似している。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。フォワード契約とは異なり、オプションのような条件付請求権（contingent claims）は非対称なペイオフ（asymmetric payoffs）を持つため、原資産価格の将来の動きをモデル化する必要がある。この将来価格のモデル化により、オプションと原資産を組み合わせて無リスク・ポートフォリオを構築できる。このポートフォリオのコスト（オプションと原資産の比率はヘッジ比率で決定される）が、オプションの無裁定価格を決定する。Aは誤りであり、実際の上昇・下落確率はモデルに影響しない。Cも誤りであり、オプションは非対称ペイオフを持つため、フォワードや先物（futures）のような対称的ペイオフの金融商品とは異なる方法でモデル化する必要がある。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1012-s01-Q2">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>1期間二項モデル（one-period binomial model）を用いてコール・オプションを価格付けする場合、原資産の上昇の実際の確率が増加すると、コール・オプションの価格はどうなるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 低下する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>正解はBである。コール・オプションの価格は変化しない。二項モデルにおいては、上昇または下落の実際（現実世界）の確率は、オプションの無裁定価格に影響を与えない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 変化しない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>正解はBである。コール・オプションの価格は変化しない。二項モデルにおいては、上昇または下落の実際（現実世界）の確率は、オプションの無裁定価格に影響を与えない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 上昇する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>正解はBである。コール・オプションの価格は変化しない。二項モデルにおいては、上昇または下落の実際（現実世界）の確率は、オプションの無裁定価格に影響を与えない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>次の要因の変化が、1期間二項モデル（one-period binomial model）に基づくプット・オプションの無裁定価格にどのような影響を与えるかを特定せよ：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1012-s01-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">1. 上昇の確率q（probability of an upward price movement）が増加する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">A. プット・オプションの価格は変化しない</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">2. 上昇要因（up factor）と下落要因（down factor）の差、R_u − R_d が増加する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">B. プット・オプションの価格は上昇する</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">3. 価格のリスク中立確率（risk-neutral probability）、πが増加する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">C. プット・オプションの価格は低下する</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>1. 正解はAである。上昇の確率q（probability of an upward price movement）は、1期間二項オプション価格モデルにおいて価値に影響を与えない。したがって、この変化はプット・オプションの価格に影響を与えず、価格は変わらない。</p>
+<p>2. 正解はBである。上昇要因と下落要因の差R_u − R_dが拡大すると、取り得る価格の範囲が広がり、オプションがイン・ザ・マネー（in the money）となる可能性が高まる。したがって、この変化はプット・オプションの価格を上昇させる。</p>
+<p>3. 正解はCである。リスク中立確率πは、原資産価格が上昇する確率を表す。πが増加すると、プット・オプションがイン・ザ・マネーとなる可能性は低下する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1012-s01-Q4">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>1期間二項モデル（one-period binomial model）では、原資産価格が現在の$16.00から期間終了時に$20.00または$12.00のいずれかに変化すると仮定する。この期間の無リスク利子率が5%である場合、価格上昇のリスク中立確率に最も近い値はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.50</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。$16.00から$20.00への上昇、または$16.00から$12.00への下落は次のように表される：</p>
+<p>R_u = $20.00 / $16.00 = 1.25、R_d = $12.00 / $16.00 = 0.75。</p>
+<p>価格上昇のリスク中立確率（π）を用いると：</p>
+<p>π = (1 + r − R_d) / (R_u − R_d)</p>
+<p>= (1 + 0.05 − 0.75) / (1.25 − 0.75) = 0.3 / 0.5 = 0.60。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 0.60</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。$16.00から$20.00への上昇、または$16.00から$12.00への下落は次のように表される：</p>
+<p>R_u = $20.00 / $16.00 = 1.25、R_d = $12.00 / $16.00 = 0.75。</p>
+<p>価格上昇のリスク中立確率（π）を用いると：</p>
+<p>π = (1 + r − R_d) / (R_u − R_d)</p>
+<p>= (1 + 0.05 − 0.75) / (1.25 − 0.75) = 0.3 / 0.5 = 0.60。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 0.625</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。$16.00から$20.00への上昇、または$16.00から$12.00への下落は次のように表される：</p>
+<p>R_u = $20.00 / $16.00 = 1.25、R_d = $12.00 / $16.00 = 0.75。</p>
+<p>価格上昇のリスク中立確率（π）を用いると：</p>
+<p>π = (1 + r − R_d) / (R_u − R_d)</p>
+<p>= (1 + 0.05 − 0.75) / (1.25 − 0.75) = 0.3 / 0.5 = 0.60。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1870_modules_items_145508_Learning_Outcomes_Valuing_a_Derivative_Using_a_One-Period_Binomial_Model.html" >← 前へ</a>
+  <span class="title">10.01 | Introduction</span>
+  <a href="courses_1870_modules_items_145514_1002_Binomial_Valuation.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

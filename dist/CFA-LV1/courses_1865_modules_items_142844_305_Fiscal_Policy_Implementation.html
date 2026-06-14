@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.05 | Fiscal Policy Implementation</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2412-R-s06-R-1" title="3.05 | Fiscal Policy Implementation"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3：財政政策 3.05｜財政政策の実施</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">財政政策の実施方法と、その実施に伴う困難、ならびに財政政策が拡張的（expansionary）か収縮的（contractionary）かを説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>次に、財政政策の実施における主要な論点について議論する。</p>
+<section id="CFA2412-R-s06-01-01">
+<h3 class="dp-heading">財政赤字と財政スタンス</h3>
+<p>重要な問いの一つは、政府の財政スタンスを測る指標として、予算がどの程度有用かという点である。赤字の大きさは、実際に財政政策が拡張的か収縮的かを示しているのだろうか。この問いは、赤字が実際の財政政策の変更とは無関係な理由で変動しうるという点で、政策当局にとって明らかに重要である。例えば、前述の自動安定化装置（automatic stabilizers）は、財政政策の変更とは無関係に財政赤字を変動させる。景気後退は税収の減少と財政赤字の拡大をもたらす。このとき観察者は、財政政策が緩和され拡張的であると結論づけ、追加の政府対応は不要と判断する可能性がある。</p>
+<p>このため、経済学者はしばしば財政スタンスの指標として構造的財政赤字（structural budget deficit）に注目する。これは、経済が完全雇用（full employment、または潜在産出量）にある場合に存在するであろう赤字として定義される。したがって、例えば2009～2010年のように米国や欧州で労働力の約9～10％が失業していた高失業期を考えると、それらの国の財政赤字は、経済が完全雇用に回復すれば大幅に縮小すると予想される。この水準では、税収は増加し、社会移転は減少する。主要国の歴史データはExhibit 10に示されており、負の値は赤字、正の値は黒字を示す。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2412-R-s06-EXH-1-11">
+<h4 class="cfa-curriculum-exhibit-table-title">Exhibit 10 一般政府の循環調整済み財政収支（GDP比）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1995</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2000</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2005</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2008</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2010</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">オーストラリア</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ドイツ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–9.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Japan</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–6.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–8.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">イギリス</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–7.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">アメリカ合衆国</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–7.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–10.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">OECD</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–6.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>出所：OECD Economic Outlook, Volume 2018 Issue 1</p>
+</div>
+<p>実際の政府赤字が財政スタンスの良い指標ではないもう一つの理由は、実質金利と名目金利の区別、および財政赤字に適用されるインフレ調整の役割である。国民経済統計では債務の現金利払いを政府支出として扱うが、インフレによって債務の実質価値が減少するため、インフレ調整後（実質）の利払いのみを考える方が合理的である。所得税（income tax）、付加価値税（VAT）、社会給付（social benefits）といった自動安定化装置は重要である。産出と雇用が減少し税収が低下すると、失業給付の増加により純税収も減少する。これは財政刺激として機能し、乗数（multiplier）の大きさを縮小させ、最初に産出を減少させた要因に対する産出の反応を緩和する。このような自動安定化装置は、その性質上、政策変更を必要としない。すなわち、政策当局者が経済ショックの発生や対応方法を判断する必要がない。その結果、経済のショックへの感応度は自動的に低下し、雇用や産出の変動も抑えられる。</p>
+<p>これらの自動調整に加えて、政府は総需要に影響を与えるために裁量的財政調整（discretionary fiscal adjustments）も用いる。これは通常、経済の安定化を目的として、増税・減税や支出の削減・拡大を伴う。ここで自然に生じる疑問は、なぜ財政政策は総需要を完全に安定化し、常に完全雇用を実現できないのかという点である。</p>
+</section>
+<section id="CFA2412-R-s06-01-02">
+<h3 class="dp-heading">財政政策実行の困難性</h3>
+<p>財政政策は、実行上の困難を完全に克服できないため、総需要を完全に安定化させることはできない。</p>
+<p>第一に、政策当局は経済の仕組みに関する完全な情報を持っていない。データには大きなタイムラグがあるため、経済の減速を認識するまでに数か月を要する場合があり、さらにその後も大幅な改訂が行われることがある。これは認識ラグ（recognition lag）と呼ばれ、バックミラーを見ながら運転する問題に例えられる。その後、政策変更が決定されても、実施にはさらに数か月を要する。これは実行ラグ（action lag）である。例えば雇用や所得を増やすために公共投資を拡大する場合でも、計画から実施までに長い時間がかかる。最後に、これらの政策の効果が経済に現れるまでにも追加の時間が必要であり、これは効果ラグ（impact lag）と呼ばれる。これらの政策ラグは裁量的金融政策にも存在する。</p>
+<p>この過程における第二の時間的側面は、政策変更とは独立に経済がどの方向に進むかという不確実性である。例えば、政府支出の増加と同時に、予想外の設備投資の増加や輸出需要の拡大が起こる可能性がある。マクロ経済予測モデルは一般に精度が高いとは言えず、この文脈で政策決定の支援として信頼することはできない。また、裁量的財政政策が発表される（または実施中である）と、民間部門の行動が変化し、消費や投資が増加する可能性があり、これらは政府支出の増加効果を強化する。このため、完全雇用を達成するために必要な財政調整の規模を適切に設定することは困難となる。</p>
+<p>さらに、以下のようなより広範なマクロ経済上の問題も関係する。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2412-R-s06-L1">
+<li class="cfa-curriculum-list-item">政府が失業とインフレの双方を重視する場合、総需要を完全雇用水準へ引き上げることは、労働市場の逼迫と賃金・物価の上昇をもたらす可能性がある。不確実性の高い状況では、インフレを誘発する恐れがあるため、政策当局は財政政策のさらなる微調整に慎重になる可能性がある。</li>
+<li class="cfa-curriculum-list-item">財政赤字がすでにGDP比で大きい場合に、さらなる財政刺激が必要となると、その赤字拡大は政府資金調達時に金融市場から受け入れられない可能性がある。その結果、国債利回りが上昇し、赤字削減への政治的圧力が高まる。</li>
+<li class="cfa-curriculum-list-item">さらに、これらはすべて完全雇用水準を把握していることを前提としているが、それを正確に測定することは困難である。財政拡張は需要を押し上げるが、生産能力や労働供給の変化に伴い、完全雇用水準自体も変動する可能性がある。</li>
+<li class="cfa-curriculum-list-item">未利用資源が需要不足ではなく、労働供給の不足など供給側の要因によるものである場合、裁量的財政政策は需要を増加させず効果を持たない。その結果、インフレ圧力が高まるリスクがある。</li>
+<li class="cfa-curriculum-list-item">クラウディングアウト（crowding out）の問題も生じうる。政府が限られた貯蓄プールから資金を借り入れる場合、民間部門との資金競争により民間投資が減少し、結果として経済成長が抑制される可能性がある。また借入コストの上昇により、潜在的に収益性のある投資機会が放棄されることもある。この概念は現在も実証的な議論と研究の対象である。</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2412-R-s06-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2412-R-s06-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>次のうち最も不正確な記述はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 政策当局が利用できる経済データには大きなタイムラグがある。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。モデルによる経済予測には常に不確実性が伴うため、その示唆は明確でも正確でもない。財政政策が決定・実施された後でも、他の変数の予期しない変化により、完全な先見性があれば変更されていたであろう影響が経済に生じる可能性がある。なお、公的な経済データには大きなタイムラグが存在しうるため、財政判断を難しくする点は正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 経済モデルは常に経済の将来経路について明確な指針を提供する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。モデルによる経済予測には常に不確実性が伴うため、その示唆は明確でも正確でもない。財政政策が決定・実施された後でも、他の変数の予期しない変化により、完全な先見性があれば変更されていたであろう影響が経済に生じる可能性がある。なお、公的な経済データには大きなタイムラグが存在しうるため、財政判断を難しくする点は正しい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 外生的な経済変数の予期しない変化は、財政政策を安定化手段として用いることを困難にする。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。モデルによる経済予測には常に不確実性が伴うため、その示唆は明確でも正確でもない。財政政策が決定・実施された後でも、他の変数の予期しない変化により、完全な先見性があれば変更されていたであろう影響が経済に生じる可能性がある。なお、公的な経済データには大きなタイムラグが存在しうるため、財政判断を難しくする点は正しい。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2412-R-s06-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>次のうち最も不正確な記述はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 裁量的財政変更（discretionary fiscal changes）は経済の安定化を目的としている。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。新たな道路建設計画は裁量的であり、自動的なものではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 自動的財政安定化装置（automatic fiscal stabilizers）には、政府による追加的な道路建設計画が含まれる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。新たな道路建設計画は裁量的であり、自動的なものではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 財政政策の実施において、認識ラグ（recognition lag）はしばしば「バックミラーを見ながら運転すること」と表現される。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。新たな道路建設計画は裁量的であり、自動的なものではない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2412-R-s06-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>次のうち財政刺激（fiscal stimulus）に関して最も正確な記述はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 緩和的金融政策（accommodative monetary policy）は財政刺激の効果を弱める。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。異なるモデルは経済の仕組みについて異なる見解を持ち、財政刺激の効果についても異なる見解を示す。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 異なる統計モデルは財政刺激の影響について異なる予測を行う。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。異なるモデルは経済の仕組みについて異なる見解を持ち、財政刺激の効果についても異なる見解を示す。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 財政刺激が雇用に与える影響は常に正確に予測することができる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。異なるモデルは経済の仕組みについて異なる見解を持ち、財政刺激の効果についても異なる見解を示す。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2412-R-s06-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>次のうち最も正確な記述はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 財政赤字の増加は通常、拡張的である。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。政府支出の増加が、税収のさらに大きな増加を伴う場合には、必ずしも拡張的とは限らない点に注意すること。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 政府支出の増加は常に拡張的である。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。政府支出の増加が、税収のさらに大きな増加を伴う場合には、必ずしも拡張的とは限らない点に注意すること。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 構造的赤字（structural deficit）は常に完全雇用下の赤字よりも大きい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。政府支出の増加が、税収のさらに大きな増加を伴う場合には、必ずしも拡張的とは限らない点に注意すること。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RecognitionLagContent">
+<p>経済状態の変化を確認するまでの遅れに起因する、経済問題に対する政府対応のラグ。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ActionLagContent">
+<p>政策決定から実施までの遅れ。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ImpactLagContent">
+<p>政策行動の結果が遅れて経済に影響を及ぼすことに関連するラグ。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1865_modules_items_142837_304_Fiscal_Policy_Tools.html" >← 前へ</a>
+  <span class="title">3.05 | Fiscal Policy Implementation</span>
+  <a href="courses_1865_modules_items_142854_Glossary_Fiscal_Policy.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

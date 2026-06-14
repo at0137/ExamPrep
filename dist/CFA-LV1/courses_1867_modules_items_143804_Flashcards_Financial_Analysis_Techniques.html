@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flashcards: Financial Analysis Techniques</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2422-flashcards" title="Flashcards: Financial Analysis Techniques"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール11：財務分析手法（Financial Analysis Techniques）フラッシュカード（Flashcards）</h2></header><h3 class="dp-has-icon"><i aria-hidden="true" class="dp-icon fas fa-book-reader"></i></h3><p class="cfa-curriculum-flashcard-inst">下のカードをクリックすると、その用語の定義が表示される。次へ（next）または前へ（previous）をクリックしてカードを切り替える。</p><div class="flashcard-container"><div class="flashcard" id="flashcard1"><div class="front"><p>活動性比率（Activity ratios）</p></div><div class="back"><p>企業が主要な流動資産および運転資本（working capital）を時間の経過とともにどの程度適切に管理しているかを測定する比率。</p></div></div><div class="flashcard" id="flashcard2" style="display: none;"><div class="front"><p>資産活用比率（Asset utilization ratios）</p></div><div class="back"><p>売掛金の回収や在庫管理など、企業の日常業務をどの程度効率的に遂行しているかを測定する比率。</p></div></div><div class="flashcard" id="flashcard3" style="display: none;"><div class="front"><p>共通サイズ分析（Common-size analysis）</p></div><div class="back"><p>共通の分母または基準項目を用いて財務諸表項目を再表示し、トレンドや主要な差異を識別できるようにする手法。例として、すべての項目を売上高に対する割合で表した損益計算書がある。</p></div></div><div class="flashcard" id="flashcard4" style="display: none;"><div class="front"><p>クロスセクショナル分析（Cross-sectional analysis）</p></div><div class="back"><p>特定時点におけるグループ間での分析。</p></div></div><div class="flashcard" id="flashcard5" style="display: none;"><div class="front"><p>総資産負債比率（Debt-to-assets ratio）</p></div><div class="back"><p>総負債を総資産で割って計算されるソルベンシー比率。</p></div></div><div class="flashcard" id="flashcard6" style="display: none;"><div class="front"><p>資本構成負債比率（Debt-to-capital ratio）</p></div><div class="back"><p>総負債を総負債と株主資本の合計で割って計算されるソルベンシー比率。</p></div></div><div class="flashcard" id="flashcard7" style="display: none;"><div class="front"><p>負債資本比率（Debt-to-equity ratio）</p></div><div class="back"><p>総負債を株主資本で割って計算されるソルベンシー比率。</p></div></div><div class="flashcard" id="flashcard8" style="display: none;"><div class="front"><p>ディフェンシブ・インターバル比率（Defensive interval ratio）</p></div><div class="back"><p>流動資産からどの程度の日数、現金需要を満たせるかを推定する流動性比率。（現金＋短期市場性投資（short-term marketable investments）＋売掛金）を日次現金支出で割って計算される。</p></div></div><div class="flashcard" id="flashcard9" style="display: none;"><div class="front"><p>デュポン分析（Dupont analysis）</p></div><div class="back"><p>投資収益率（例えば自己資本利益率）を、他の財務比率の積として分解するアプローチ。</p></div></div><div class="flashcard" id="flashcard10" style="display: none;"><div class="front"><p>財務レバレッジ比率（Financial leverage ratio）</p></div><div class="back"><p>平均総資産を平均株主資本で割って計算される財務レバレッジの指標。</p></div></div><div class="flashcard" id="flashcard11" style="display: none;"><div class="front"><p>固定費カバレッジ（Fixed charge coverage）</p></div><div class="back"><p>営業利益が利息およびリース支払を何倍カバーしているかを測定するソルベンシー比率。（EBIT＋リース支払）を（利息支払＋リース支払）で割って計算される。</p></div></div><div class="flashcard" id="flashcard12" style="display: none;"><div class="front"><p>固定費カバレッジ比率（Fixed charge coverage ratio）</p></div><div class="back"><p>企業の利益が、負債返済、利息費用、リース費用などの固定費をどの程度カバーしているかを測定する指標。</p></div></div><div class="flashcard" id="flashcard13" style="display: none;"><div class="front"><p>売上総利益率（Gross profit margin）</p></div><div class="back"><p>売上総利益を売上高で割った比率。</p></div></div><div class="flashcard" id="flashcard14" style="display: none;"><div class="front"><p>インタレスト・カバレッジ（Interest coverage）</p></div><div class="back"><p>EBITを利息支払で割って計算されるソルベンシー比率。</p></div></div><div class="flashcard" id="flashcard15" style="display: none;"><div class="front"><p>インタレスト・カバレッジ比率（Interest coverage ratio）</p></div><div class="back"><p>発行体が負債を返済する能力を測定する指標であり、通常は営業利益またはEBITを利息費用で割った比率。</p></div></div><div class="flashcard" id="flashcard16" style="display: none;"><div class="front"><p>流動性比率（Liquidity ratios）</p></div><div class="back"><p>企業が短期的な債務を期限通りに履行する能力を測定する財務比率。</p></div></div><div class="flashcard" id="flashcard17" style="display: none;"><div class="front"><p>ネットキャッシュ（Net cash）</p></div><div class="back"><p>発行体の総負債から現金および市場性証券を差し引いたもの。この値が負の場合はネットキャッシュと呼ばれる。</p></div></div><div class="flashcard" id="flashcard18" style="display: none;"><div class="front"><p>ネットデット（Net debt）</p></div><div class="back"><p>発行体の総負債から現金および市場性証券を差し引いたもの。この値が正の場合はネットデットと呼ばれる。</p></div></div><div class="flashcard" id="flashcard19" style="display: none;"><div class="front"><p>営業効率性比率（Operating efficiency ratios）</p></div><div class="back"><p>売掛金の回収や在庫管理など、企業の日常業務をどの程度効率的に遂行しているかを測定する比率。</p></div></div><div class="flashcard" id="flashcard20" style="display: none;"><div class="front"><p>営業利益率（Operating profit margin）</p></div><div class="back"><p>営業利益（すなわち利息および税引前利益）を売上高で割って計算される収益性比率。営業利益率（operating margin）とも呼ばれる。</p></div></div><div class="flashcard" id="flashcard21" style="display: none;"><div class="front"><p>税引前利益率（Pretax margin）</p></div><div class="back"><p>税引前利益を売上高で割って計算される収益性比率。</p></div></div><div class="flashcard" id="flashcard22" style="display: none;"><div class="front"><p>収益性比率（Profitability ratios）</p></div><div class="back"><p>企業が資源（資産）からどの程度収益性の高い売上を生み出す能力を測定する比率。</p></div></div><div class="flashcard" id="flashcard23" style="display: none;"><div class="front"><p>総資産利益率（Return on assets, ROA）</p></div><div class="back"><p>純利益を平均総資産で割って計算される収益性比率であり、総資産1単位あたりどれだけの純利益を生み出しているかを示す。</p></div></div><div class="flashcard" id="flashcard24" style="display: none;"><div class="front"><p>自己資本利益率（Return on equity, ROE）</p></div><div class="back"><p>純利益を平均株主資本で割って計算される収益性比率。</p></div></div><div class="flashcard" id="flashcard25" style="display: none;"><div class="front"><p>投下資本利益率（Return on invested capital, ROIC）</p></div><div class="back"><p>株主および債権者が投下した資本の額に対する企業の収益性を測定する指標。</p></div></div><div class="flashcard" id="flashcard26" style="display: none;"><div class="front"><p>シナリオ分析（Scenario analysis）</p></div><div class="back"><p>ベースケースに代替的な結果を組み合わせ、評価プロセスにおいてより有利または不利なシナリオを取り入れる評価手法の一種。</p></div></div><div class="flashcard" id="flashcard27" style="display: none;"><div class="front"><p>感応度分析（Sensitivity analysis）</p></div><div class="back"><p>投資収益または評価に影響を与える1つまたは複数の主要変数の変化の影響を評価するための分析手法。</p></div></div><div class="flashcard" id="flashcard28" style="display: none;"><div class="front"><p>シミュレーション（Simulation）</p></div><div class="back"><p>ユーザーが指定した仮想的な環境において、目標変数（例えばポートフォリオ収益）がどのように振る舞うかを検討するための手法。</p></div></div><div class="flashcard" id="flashcard29" style="display: none;"><div class="front"><p>ソルベンシー（Solvency）</p></div><div class="back"><p>企業価値が、その資産の資金調達に用いられた負債の額面価値を上回っている状態を指す。</p></div></div><div class="flashcard" id="flashcard30" style="display: none;"><div class="front"><p>ソルベンシー比率（Solvency ratios）</p></div><div class="back"><p>企業が長期的な債務を履行する能力を測定する比率。</p></div></div></div><div class="controls"><div class="control-button" id="prevBtn">Previous Card</div><div class="control-button" id="nextBtn">Next Card</div></div></div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143800_Glossary_Financial_Analysis_Techniques.html" >← 前へ</a>
+  <span class="title">Flashcards: Financial Analysis Techniques</span>
+  <a href="courses_1867_modules_items_143806_Real_World_Applications_Bloombergs_Financial_Analysis_-_Dupont_Analysis.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

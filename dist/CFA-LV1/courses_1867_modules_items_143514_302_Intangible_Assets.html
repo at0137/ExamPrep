@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.02 | Intangible Assets</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2419-R-s02-R-1" title="3.02 | Intangible Assets">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3: 貸借対照表の分析 (Module 3: Analyzing Balance Sheets) 3.02 | 無形資産 (Intangible Assets)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">無形資産 (intangible assets) に関する財務報告および開示を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>無形資産とは、物理的実体を持たない識別可能な非貨幣性資産を指す。識別可能な資産は単独で取得できる（すなわち、企業から分離可能）場合や、契約上または法的権利・特典から生じる場合がある。一般的な例として、特許、ライセンス、商標、顧客リストがある。個別に識別できない最も一般的な無形資産は、事業結合で生じるのれん (goodwill) であり、次のレッスンでさらに説明する。</p>
+<p>IFRS (International Financial Reporting Standards, 国際財務報告基準) は、企業が無形資産を原価モデル (cost model) または再評価モデル (revaluation model) のいずれかで報告することを認めている。再評価モデルは、無形資産に活発な市場が存在する場合にのみ選択可能である。両方の測定モデルは、固定資産 (property, plant, and equipment, PP&amp;E) に関して説明されているものと本質的に同じである。US GAAP (米国会計基準) は原価モデルのみを認めている。</p>
+<p>各無形資産について、企業はその耐用年数が有限か無限かを評価する。償却および減損の原則は以下の通りである。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2419-R-s02-L1">
+<li class="cfa-curriculum-list-item">耐用年数が有限の無形資産は、耐用年数の最良推定値に基づき体系的に償却され、償却方法および耐用年数の見積りは少なくとも年1回見直される。</li>
+<li class="cfa-curriculum-list-item">耐用年数が有限の無形資産に関する減損原則は、固定資産 (PP&amp;E) と同じである。</li>
+<li class="cfa-curriculum-list-item">耐用年数が無限の無形資産は償却されない。代わりに、少なくとも年1回、その資産の耐用年数を無限と仮定することの妥当性を検討し、減損テストを行う。</li>
+</ul>
+<p>財務アナリストは、報告された無形資産の価値、特にのれん (goodwill) を慎重に扱うのが伝統である。そのため、財務諸表を評価する際、一部のアナリストは無形資産に割り当てられた簿価を除外し、純資本を同額減少させ（「有形簿価 (tangible book value)」を算出）、無形資産に関連する償却費または減損を税引前利益に加える。無形資産を任意にゼロ価値とすることは望ましくなく、アナリストは各無形資産を確認し、調整が必要かどうかを評価すべきである。無形資産に関する注記は、アナリストに有用な情報を提供する場合がある。これには耐用年数、償却率と方法、認識または取り消された減損損失に関する情報が含まれる。</p>
+<p>さらに、企業は内部で開発した無形資産を保有している場合があり、特定の条件下でのみ認識される。企業には、識別不能であるため貸借対照表に記録されない資産も存在する場合がある。これらの資産には、従業員の管理能力や技術力、市場シェア、ブランド認知度、顧客間での良好な評判などが含まれる場合がある。このような資産は価値があり、理論上、企業の株式が市場で取引される価格（または企業全体の株式が買収取引で売却される価格）に反映される。このような資産は、企業が売却された場合、取得者によってのれんとして認識されることがある。</p>
+<section id="CFA2419-R-s02-01-01">
+<h3 class="dp-heading">識別可能な無形資産 (Identifiable Intangibles)</h3>
+<p>IFRSでは、将来の経済的便益が企業にもたらされる可能性が高く、かつ資産の取得原価を信頼性高く測定できる場合、識別可能な無形資産は貸借対照表上で認識される。例として特許、商標、著作権、フランチャイズ、ライセンス、その他の権利がある。識別可能な無形資産は、企業内で作成されたものか、購入されたものかのいずれかである。内部で作成された無形資産のコストを算定することは困難で主観的である。このため、IFRSおよびUS GAAPでは、内部で作成された識別可能な無形資産は貸借対照表に報告せず費用計上することが一般的な要件となっている。</p>
+<p>IFRSでは、内部で作成された無形資産について、研究段階 (research phase) と開発段階 (development phase) を分けて特定する必要がある。研究段階では、新しい知識や製品を追求する活動を行う。開発段階は研究段階の後に行われ、試作品やモデルの設計・試験を含む。IFRSでは、研究段階で発生した内部無形資産の費用は損益計算書で費用計上し、開発段階で発生した費用は一定の基準（技術的実現可能性、結果資産の使用または販売可能性、プロジェクト完了可能性）を満たす場合、無形資産として資本化できる。</p>
+<p>US GAAPでは、内部で開発した無形資産および研究開発のほとんどの費用の資本化を禁止している。これらの費用はすべて費用計上される。通常、IFRSおよびUS GAAPで費用計上されるカテゴリには以下が含まれる。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2419-R-s02-L2">
+<li class="cfa-curriculum-list-item">内部で作成されたブランド、題字 (mastheads)、出版タイトル、顧客リスト</li>
+<li class="cfa-curriculum-list-item">創業費用 (start-up costs)</li>
+<li class="cfa-curriculum-list-item">研修費用 (training costs)</li>
+<li class="cfa-curriculum-list-item">管理費およびその他の一般的な間接費 (administrative and other general overhead costs)</li>
+<li class="cfa-curriculum-list-item">広告および販促費用 (advertising and promotion)</li>
+<li class="cfa-curriculum-list-item">移転および再編費用 (relocation and reorganization expenses)</li>
+<li class="cfa-curriculum-list-item">解雇およびその他の退職費用 (redundancy and other termination costs)</li>
+</ul>
+<p>内部で作成された無形資産とは対照的に、取得または購入された無形資産は、契約上の権利（ライセンス契約など）、その他の法的権利（特許など）、または分離・販売可能性（顧客リストなど）がある場合、資本化され、個別に識別可能な無形資産として報告される。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2419-R-s02-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">無形資産の測定 (Measuring Intangible Assets)</h4>
+<section>
+<p>自動車メーカーのAlpha Inc. (Alpha Inc., モータービークルメーカー) には、年間に次のプロジェクトに取り組む研究部門がある。</p>
+<ul class="cfa-curriculum-list-step">
+<li class="cfa-curriculum-steplist-item">プロジェクト1: 従来のハンドルのように操作せず、運転者の指の動きに反応する操舵機構を見つけることを目的とした研究</li>
+<li class="cfa-curriculum-steplist-item">プロジェクト2: 機械的ではなく電子制御される溶接装置の試作品設計。この装置は技術的に実現可能で、販売可能かつ生産可能であると判断されている。</li>
+</ul>
+<p>研究部門の費用概要（千ユーロ単位）:</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s02-EXH-1-1">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 1<span style="display: block;">Summary of Expenses</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: top; padding: 8px; ">一般</th>
+<th style="text-align: center; vertical-align: top; padding: 8px; ">プロジェクト1 (Project 1)</th>
+<th style="text-align: center; vertical-align: top; padding: 8px; ">プロジェクト2 (Project 2)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">材料およびサービス (Material and services)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">128</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">935</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">620</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Labor</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">直接労務費 (Direct labor)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">— </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">630</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">320</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">管理職員 (Administrative personnel)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">720</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">— </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> —</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">設計、建設、試験 (Design, construction, and testing)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">270</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">450</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">470</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>管理職員費用の5％は各プロジェクト（プロジェクト1および2）に配賦可能である。IFRSおよびUS GAAPの下で、Alpha (Alpha Inc.) のプロジェクト1および2の費用の会計処理を説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答例 (Solution)</h4>
+<p>IFRSの下では、プロジェクト1および2の内部開発費の資本化は以下の通りである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s02-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">資産として資本化される金額（千ユーロ単位） (Amount Capitalized as an Asset in thousands of euros)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">プロジェクト1:</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">研究段階 (research stage) に分類されるため、すべての費用は費用計上される</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">プロジェクト2:</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">開発段階 (development stage) に分類されるため、費用は資本化可能。ただし、管理費用は資本化されない点に注意。</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">(620 + 320 + 470) = 1,410</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>US GAAPの下では、内部開発無形資産および研究開発費のほとんどの費用の資本化が禁止されているため、これらの費用は資本化されず、すべて費用計上される。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>SAPおよびAppleの貸借対照表情報（図2および図3）を考慮する。SAPの2017年貸借対照表では無形資産 (intangible assets) が29億6,700万ユーロ (EUR2,967 million) で、Appleの2017年貸借対照表では取得無形資産 (acquired intangible assets, net) が22億9,800万米ドル (USD2,298 million) となっている。SAPの財務諸表注記では、無形資産の種類（ソフトウェアおよびデータベースライセンス、自社製品に組み込む購入ソフトウェア、顧客契約、取得済み商標ライセンス）を開示しており、のれん以外の購入無形資産はすべて耐用年数有限で、経済的便益の予想消費に基づくか、または耐用年数推定に基づく定額法で償却され、耐用年数は2～20年であると示している。Appleの注記では、取得無形資産は主に特許およびライセンスで構成され、ほぼ全額が耐用年数有限かつ償却可能であり、2017年時点で残存加重平均償却期間は3.4年であると開示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s02-EXH-1-2">
+<h4 class="cfa-curriculum-exhibit-table-title">図2 (Exhibit 2) SAPグループ連結財政状態計算書 (非流動資産詳細抜粋) (SAP Group Consolidated Statements of Financial Position, Excerpt: Non-Current Assets Detail, 単位: 百万ユーロ, in millions of EUR)</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px; "></th>
+<th colspan="2" style="text-align: center; vertical-align: top; padding: 8px; ">12月31日時点 (As of 31 December)</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px; ">資産 (Assets)</th>
+<th style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>2017</strong>
+</th>
+<th style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>2016</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">流動資産合計 (Total current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11,930</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11,564</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">のれん (Goodwill)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">21,274</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">23,311</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">無形資産 (Intangible assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,967</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3,786</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">有形固定資産 (Property, plant and equipment, PP&amp;E)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,967</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,580</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他金融資産 (Other financial assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,155</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,358</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金およびその他債権 (Trade and other receivables)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">118</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">126</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他非金融資産 (Other non-financial assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">621</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">532</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">税金資産 (Tax assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">443</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">450</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">繰延税金資産 (Deferred tax assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,022</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">571</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">非流動資産合計 (Total non-current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,567</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32,713</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">総資産 (Total assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42,497</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">44,277</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">流動負債合計 (Total current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10,210</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9,674</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">非流動負債合計 (Total non-current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6,747</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,205</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">負債合計 (Total liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">16,958</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17,880</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">純資本合計 (Total equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">25,540</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">26,397</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">純資本および負債合計 (Total equity and liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42,497ユーロ (€42,497)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">44,277ユーロ (€44,277)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>出典: SAPグループ 2017年年次報告書 (Source: SAP Group 2017 annual report)</p>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s02-EXH-1-3">
+<h4 class="cfa-curriculum-exhibit-table-title">図3 (Exhibit 3) Apple, Inc. 連結貸借対照表 (非流動資産詳細抜粋) (Apple, Inc. Consolidated Balance Sheets, Excerpt: Non-Current Assets Detail, 単位: 百万米ドル, in millions of US dollars)</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">資産 (Assets)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">2017年9月30日時点 (30 September 2017)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">2016年9月24日時点 (24 September 2016)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">流動資産合計 (Total current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">128,645</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">106,869</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">長期有価証券 (Long-term marketable securities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">194,714</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">170,430</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">有形固定資産（純額） (Property, plant and equipment, net)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">33,783</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27,010</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">のれん (Goodwill)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,717</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,414</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">取得無形資産（純額） (Acquired intangible assets, net)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,298</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3,206</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他非流動資産 (Other non-current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10,162</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,757</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">[その他の資産] ([All other assets])</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">246,674</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">214,817</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">総資産 (Total assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">375,319</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">321,686</td>
+</tr>
+<tr>
+<td colspan="4" style="text-align: left; vertical-align: top; padding: 8px; ">負債および株主資本 (Liabilities and shareholders’ equity)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">流動負債合計 (Total current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100,814</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">79,006</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">非流動負債合計 ([Total non-current liabilities])</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">140,458</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">114,431</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">負債合計 (Total liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">241,272</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">193,437</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">株主資本合計 (Total shareholders’ equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">134,047</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">128,249</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">負債および株主資本合計 (Total liabilities and shareholders’ equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">375,319</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">321,686</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注: この抜粋で示されている斜体の小計は、企業が作成した財務諸表の表面には明示的に表示されていない。</p>
+<p>出典: Apple Inc. 2017年年次報告書 (Form 10K) (Source: Apple Inc. 2017 annual report, Form 10K)</p>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2419-R-s02-FN-1-1Content">
+<p>国際会計基準第38号、無形資産 (International Accounting Standard 38, Intangible Assets), パラグラフ8</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2419-R-s02-FN-1-2Content">
+<p>国際会計基準第38号、無形資産、パラグラフ51–67</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="IntangibleAssetsContent">
+<p>特許や商標など、物理的形態を持たない資産 (Assets without a physical form)</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143512_301_Introduction.html" >← 前へ</a>
+  <span class="title">3.02 | Intangible Assets</span>
+  <a href="courses_1867_modules_items_143516_303_Goodwill.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

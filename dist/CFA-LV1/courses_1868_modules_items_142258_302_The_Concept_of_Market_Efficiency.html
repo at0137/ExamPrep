@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.02 | The Concept of Market Efficiency</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0163-R-s02" title="3.02 | The Concept of Market Efficiency">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3：市場効率性（Market Efficiency）3.02｜市場効率性の概念（The Concept of Market Efficiency）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">市場効率性（market efficiency）および関連概念を説明し、それらが投資実務家（investment practitioners）にとって重要である理由を説明できること。</li>
+<li class="cfa-curriculum-los-item">市場価値（market value）と本源的価値（intrinsic value）を対比できること。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<section id="CFA0163-R-s02-01">
+<h3 class="dp-heading">効率的市場の記述（The Description of Efficient Markets）</h3>
+<p>情報効率的市場（informationally efficient market）（効率的市場（efficient market））とは、資産価格が新しい情報を迅速かつ合理的に反映する市場である。したがって、効率的市場とは、資産価格が過去および現在のすべての情報を反映している市場である。3</p>
+<p>本節では、この定義をさらに発展させ、資産価格が情報を織り込むまでに必要な時間枠（time frame）を明確にするとともに、市場効率性の前提の下で想定される情報開示（information releases）の要素について説明する。また、市場価値と本源的価値の違いを論じ、これらの値の間の非効率性や乖離がどのようにしてアクティブ投資における収益機会を生み出すかを示す。金融市場は一般に完全に効率的でも完全に非効率的でもなく、その中間の範囲に位置すると考えられるため、市場効率性の程度に寄与する要因およびそれを阻害する要因について説明する。最後に、トレーダーが市場の非効率性を特定し活用する際に負担するコストが、市場効率性の解釈にどのように影響するかを示す。</p>
+<p>投資運用者およびアナリストは、市場がどの程度効率的であるかが収益機会（市場の非効率性）の数に影響を与えるため、市場効率性に関心を持つ。効率的市場においては、継続的に優れたリスク調整後リターン（risk-adjusted returns）（すべての費用控除後）を得ることはできない。4 効率的市場では、低コスト（例えば、取引コストや情報収集コスト）であることから、優れたリスク調整後リターンを追求しないパッシブ投資戦略（passive investment strategy）（すなわち広範な市場ポートフォリオの購入と保有）が、アクティブ投資戦略（active investment strategy）よりも好まれる場合がある。一方で、非常に非効率的な市場では、アクティブ投資戦略が（戦略実行に伴うすべての費用控除後で）パッシブ投資戦略と比較して優れたリスク調整後リターンを達成できる機会が存在する可能性がある。非効率的市場では、アクティブ投資戦略がリスク調整後ベースでパッシブ投資戦略を上回る可能性がある。効率的市場の特性を理解し、特定の市場の効率性を評価できることは、投資アナリストおよびポートフォリオ・マネジャーにとって重要である。</p>
+<p>効率的市場とは、資産価格が情報を迅速に反映する市場である。しかし、「迅速に」とはどの程度の時間枠を意味するのか。取引（trades）は、情報が資産の取引価格に織り込まれるメカニズムである。非効率性を利用するために取引を実行するのに必要な時間は、価格調整の速さを判断する基準となり得る。5 資産価格が情報を織り込むまでの時間は、少なくともトレーダーがその資産で取引を実行するのに必要な最短時間と同程度でなければならない。外国為替市場（foreign exchange）や先進国の株式市場（developed equity markets）などでは、特定の情報に対する市場効率性は1分以下といった非常に短い時間枠で研究されている。もし価格調整の時間枠の中で多くのトレーダーが低リスクで利益を得ることが可能であれば、その市場は比較的非効率的であるといえる。これらの考察から、市場効率性は連続的な概念（continuum）として捉えることができる。</p>
+<p>最後に重要な点として、効率的市場では、価格は投資家によって完全には予想されていない情報の要素、すなわち「予期しない（unexpected）」または「サプライズ（surprise）」の部分にのみ反応すると考えられる。投資家は予期しない情報を処理し、それに応じて期待（例えば、将来キャッシュフロー、リスク、必要収益率（required rate of return）に関する期待）を修正する。修正された期待は、資産の売買を通じて価格に反映される。ニュースを処理し、現在の市場価格ではリスクに対する十分な補償が得られないと判断する市場参加者は、その資産を売却または空売り（sell short）する傾向がある。一方で反対の見解を持つ参加者は買い手となる。このようにして、市場は期待の修正後にさまざまな意見の均衡をとる価格を形成する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0163-R-EXM2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2：債券のデフォルトに対する価格反応（Price Reaction to the Default on a Bond Issue）</h4>
+<section>
+<p>投機的格付け（speculative-grade）の債券発行体が、債券市場の開始直前に、次回の利払い（interest payment）を履行できずデフォルトすると発表したとする。この発表において、発行体は発表に至る期間中に金融メディアで報じられていたさまざまな情報を確認した。発行体の発表前に、金融ニュースメディアは以下の点を報じていた：(1) 会社のサプライヤーが現金決済のみでの納入を要求しており、企業の流動性（liquidity）が低下していること、(2) 発行体の財務状況が悪化し、次回の利払いを行うための現金を欠いている可能性が高いこと、(3) 公募資本市場（public capital markets）は企業に対して閉ざされているが、利払いを行い少なくとも9か月間事業を継続するための銀行融資（private loan）について交渉中であること。もし発行体がデフォルトした場合、アナリストのコンセンサスでは、債券保有者は額面1ドル当たり約0.36～0.38ドルを回収すると見込まれている。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>債券市場が効率的である場合、この債券の市場価格はデフォルト後の価値を完全に反映するタイミングとして最も可能性が高いのは次のうちどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 発表に至る期間中。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-01-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。発表によりデフォルトに関する不確実性は解消された。発表前の期間においては、債券価格にはデフォルト確率が織り込まれていたが、デフォルト後の価値を完全には反映していなかった。銀行融資によってデフォルトを回避できる可能性は、この発表によって初めて排除された。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 発表日の市場開始後の最初の取引価格。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0163-R-s02-01-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。発表によりデフォルトに関する不確実性は解消された。発表前の期間においては、債券価格にはデフォルト確率が織り込まれていたが、デフォルト後の価値を完全には反映していなかった。銀行融資によってデフォルトを回避できる可能性は、この発表によって初めて排除された。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 発行体が実際に利払い日に支払いを履行できなかった時点。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-01-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。発表によりデフォルトに関する不確実性は解消された。発表前の期間においては、債券価格にはデフォルト確率が織り込まれていたが、デフォルト後の価値を完全には反映していなかった。銀行融資によってデフォルトを回避できる可能性は、この発表によって初めて排除された。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>債券市場が効率的である場合、投資家が発行体の発表において最も注目する可能性が高い情報は、発行体が以下のどれであったかである。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 銀行融資の交渉に失敗した。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0163-R-s02-01-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。融資交渉の失敗はこの発表で初めて明らかになり、それはデフォルトを意味する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 次回の利払いを行うための現金を欠いていた。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-01-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。融資交渉の失敗はこの発表で初めて明らかになり、それはデフォルトを意味する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. サプライヤーへの支払いが現金のみで求められていた。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-01-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。融資交渉の失敗はこの発表で初めて明らかになり、それはデフォルトを意味する。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA0163-R-s02-02">
+<h3 class="dp-heading">市場価値と本源的価値（Market Value versus Intrinsic Value）</h3>
+<p>市場価値（market value）とは、資産が現在売買される価格である。本源的価値（intrinsic value）（ファンダメンタル価値（fundamental value）とも呼ばれる）とは、投資家がその資産の投資特性を完全に理解していると仮定した場合に付される価値を広義に指す。6 例えば債券の場合、その情報には、利率（クーポン）（coupon rate）、元本（principal value）、利払および元本償還のタイミング、債券契約（indenture）のその他の条件、デフォルトリスクの正確な理解、市場の流動性、その他個別要因が含まれる。さらに、金利の期間構造（term structure of interest rates）や各種市場プレミアム（デフォルトリスクなど）も、債券の本源的価値を算出する割引キャッシュフロー（discounted cash flow）モデルに組み込まれる（このような推計には割引キャッシュフローモデルがよく用いられる）。ここで「推計（estimate）」という言葉が使われるのは、実務上、本源的価値は推計可能ではあるが確実には分からないためである。</p>
+<p>投資家が市場を高度に効率的であると考える場合、市場価格は本源的価値を正確に反映していると通常は受け入れる。市場価格と本源的価値の乖離は、収益性のあるアクティブ投資の基礎となる。アクティブ投資家は、市場で本源的価値より低く評価されている資産を購入し、本源的価値より高く評価されている資産を売却または空売りすることを目指す。</p>
+<p>投資家が市場を比較的非効率的であると考える場合、独自に本源的価値の推計を行おうとする可能性がある。投資家およびアナリストにとっての課題は、本源的価値の推計である。配当割引モデル（dividend discount model）を含む多くの理論やモデルが用いられるが、いずれも将来キャッシュフローの大きさ、タイミング、およびリスクに関する判断を必要とする。資産の将来キャッシュフローが複雑であるほど、本源的価値の推計は困難になる。これらの複雑性と市場価値の推計は、資産の売買を通じて市場に反映される。資産の市場価値は需給の交点、すなわち少なくとも1人の投資家が購入するのに十分低く、かつ少なくとも1人の投資家が売却するのに十分高い水準を表す。評価に関連する情報は継続的に投資家に流入するため、本源的価値の推計は変化し、それに伴って市場価値も変化する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0163-R-EXM3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例3：本源的価値（Intrinsic Value）</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>ある証券の本源的価値が市場価値よりも低いとアナリストが推計した場合、その証券は次のうちどれと考えられるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 過小評価（undervalued）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-02-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。市場はその資産を真の価値よりも高く評価している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 適正評価（fairly valued）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-02-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。市場はその資産を真の価値よりも高く評価している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 過大評価（overvalued）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0163-R-s02-02-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。市場はその資産を真の価値よりも高く評価している。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>資産の市場価値が平均的に本源的価値と等しい、またはほぼ等しい市場は、どのような投資にとって最も適しているといえるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. アクティブ投資（active investment）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-02-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。市場が効率的である場合、アクティブ投資によって優れたリスク調整後リターンを得ることは期待されない。そのため、このような市場ではアクティブ投資に伴う追加コストは正当化されない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. パッシブ投資（passive investment）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0163-R-s02-02-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。市場が効率的である場合、アクティブ投資（active investment）は優れたリスク調整後リターン（risk-adjusted returns）を得ることが期待されない。そのため、このような市場ではアクティブ投資に伴う追加コストは正当化されない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. アクティブ投資とパッシブ投資の両方（both active and passive investment）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-02-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。市場が効率的である場合、アクティブ投資は優れたリスク調整後リターンを得ることが期待されない。そのため、このような市場ではアクティブ投資に伴う追加コストは正当化されない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>ある資産の将来キャッシュフローが正確に推計されているとする。その資産が取引されている市場は、多くの証拠に基づいて効率的であるとあなたは考えているが、その資産の本源的価値（intrinsic value）の推計は市場価値（market value）を適度に上回っている。このとき、最も可能性の高い結論は次のうちどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 資産のリスクを過大評価した（overestimated the asset’s risk）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-02-01-03">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。リスクが過小評価されている場合、期待キャッシュフローの現在価値を算出するために用いられる割引率（discount rate）が低くなりすぎ、本源的価値の推計が高くなりすぎる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 資産のリスクを過小評価した（underestimated the asset’s risk）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0163-R-s02-02-01-03">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。リスクが過小評価されている場合、期待キャッシュフローの現在価値を算出するために用いられる割引率が低くなりすぎ、本源的価値の推計が高くなりすぎる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 市場の非効率性を特定した（identified a market inefficiency）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0163-R-s02-02-01-03">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。リスクが過小評価されている場合、期待キャッシュフローの現在価値を算出するために用いられる割引率が低くなりすぎ、本源的価値の推計が高くなりすぎる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA0163-R-R12list">Chordia, Tarun, Roll, Richard and Subrahmanyam, Avanidhar (2005). “Evidence on the Speed of Convergence to Market Efficiency.” <em>Journal of Financial Economics</em>, vol.  76, no. 2:271–292. <a href="http://dx.doi.org/10.1016/j.jfineco.2004.06.004" target="_blank">http://dx.doi.org/10.1016/j.jfineco.2004.06.004</a>
+</li>
+<li id="CFA0163-R-R17list">Fama, Eugene F.（1976）『ファイナンスの基礎（Foundations of Finance）』ニューヨーク：ベーシック・ブックス（Basic Books）。</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN3Content">
+<p>3 この定義は、いくつかの教育上のポイントを説明するために便利である。この文脈における「効率的（efficient）」という語の意味を最も簡潔に説明する定義は、Fama（1976）に見られる：「効率的な資本市場とは、情報処理において効率的な市場である」（p.134）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN4Content">
+<p>4 この文脈における「優れた（superior）」の専門用語は、資産のリスク（資本市場理論においては、分散されたポートフォリオのリスクへの寄与によって測定される）を考慮した上で期待されるリターンを上回るという意味での正の異常リターン（positive abnormal）である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN5Content">
+<p>5 市場効率性の初期理論はこの速度を定量化していないが、基本的な考え方は、異常利益（abnormal profits）を継続的に得ることが不可能となるほど十分に速いというものである。Chordia, Roll, and Subrahmanyam（2005）は、ニューヨーク証券取引所（New York Stock Exchange, NYSE）における情報への価格調整は5分から60分の間であると示唆している。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0163-R-FN6Content">
+<p>6 本源的価値（intrinsic value）は、しばしば資産の将来に期待されるすべてのキャッシュフローの現在価値として定義される。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R17Content">Fama, Eugene F. (1976). <em>Foundations of Finance</em>. New York: Basic Books.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0163-R-R12Content">Chordia, Tarun, Roll, Richard and Subrahmanyam, Avanidhar (2005). “Evidence on the Speed of Convergence to Market Efficiency.” <em>Journal of Financial Economics</em>, vol.  76, no. 2:271–292. <a href="http://dx.doi.org/10.1016/j.jfineco.2004.06.004" target="_blank">http://dx.doi.org/10.1016/j.jfineco.2004.06.004</a>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="InformationallyEfficientMarketContent">
+<p>資産価格が新しい情報を迅速かつ合理的に反映する市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="EfficientMarketContent">
+<p>資産価格が新しい情報を迅速かつ合理的に反映する市場。情報効率的市場（informationally efficient market）も参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PassiveInvestmentContent">
+<p>投資家が市場や証券の短期的なパフォーマンスの変化に基づいてポートフォリオを変更せず、買い持ち（buy-and-hold）を行う投資手法。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ActiveInvestmentContent">
+<p>投資家が特定のベンチマーク（benchmark）を上回ることを目指す投資手法。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MarketValueContent">
+<p>資産または証券が公開市場において現在売買される価格。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="IntrinsicValueContent">
+<p>オプションが任意の時点で行使された場合にオプション買い手が得る利益（単位当たり）。オプションの行使価値（exercise value）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FundamentalValueContent">
+<p>これらの戦略は、ファンダメンタル分析（fundamental analysis）を用いて過小評価され人気のない企業を特定し、将来の収益およびキャッシュフローの成長を伴う企業再建（corporate turnaround）の可能性により、より高い評価につながることを期待する。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142256_301_Introduction.html" >← 前へ</a>
+  <span class="title">3.02 | The Concept of Market Efficiency</span>
+  <a href="courses_1868_modules_items_142260_303_Factors_Affecting_Market_Efficiency_Including_Trading_Costs.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

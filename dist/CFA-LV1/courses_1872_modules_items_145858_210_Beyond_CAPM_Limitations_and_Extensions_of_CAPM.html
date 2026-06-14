@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.10 | Beyond CAPM: Limitations and Extensions of CAPM</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0160-R-s10" title="2.10 | Beyond CAPM: Limitations and Extensions of CAPM">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：ポートフォリオのリスクとリターン：パートII 2.10 | CAPMを超えて：CAPMの限界と拡張（Beyond CAPM: Limitations and Extensions of CAPM）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">CAPMおよび証券市場線（SML）の応用を説明し、実演せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>一般に、リターン生成モデル（return-generating models）は、資産の特性が与えられたときにその資産のリターンを推定することを可能にする。リターン推定に必要な資産特性はモデルによって指定される。資産のリターンを推定することは投資意思決定において重要である。また、これらのモデルはポートフォリオ、証券、または運用者のパフォーマンスを評価するためのベンチマークとしても重要である。リターン生成モデルはセクション3.2.1で簡単に紹介され、そのうちの一つであるCAPMはセクション4で詳細に議論された。</p>
+<p>本節の目的は、CAPMが重要な概念およびモデルである一方で、唯一のリターン生成モデルではないことを理解させることである。本節では、CAPMの限界を再確認し、それらの限界に対処するリターン生成モデルの概要を紹介する。</p>
+<section id="CFA0160-R-s10-01">
+<h3 class="dp-heading">CAPMの限界（Limitations of the CAPM）</h3>
+<p>CAPMには理論的および実務的な限界がある。理論的限界はモデルの構造に内在するものであり、実務的限界はモデルの実装に伴って生じるものである。</p>
+<section id="CFA0160-R-s10-01-01">
+<h4>CAPMの理論的限界（Theoretical Limitations of the CAPM）</h4>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0160-R-L21">
+<li class="cfa-curriculum-list-item">単一ファクターモデル（single-factor model）：CAPMではシステマティックリスク、すなわちベータリスクのみが価格付けされる。したがって、リターンを推定する際には他の投資特性を考慮すべきではないとされる。その結果、理解しやすく適用しやすい一方で、非常に制約的で柔軟性に欠ける。</li>
+<li class="cfa-curriculum-list-item">単一期間モデル（single-period model）：CAPMは単一期間モデルであり、複数期間にわたる影響や将来の投資目的を考慮しない。その結果、近視眼的で非最適な投資意思決定につながる可能性がある。例えば、現在のリターンを最大化するために利息支払いを履行しないことが最適に見える場合でも、次期には負の影響をもたらす可能性がある。このように、CAPMのような単一期間モデルは、時間とともに変化し複数期間にわたる要因を捉えることができない。</li>
+</ul>
+</section>
+<section id="CFA0160-R-s10-01-02">
+<h4>CAPMの実務的限界（Practical Limitations of the CAPM）</h4>
+<p>理論的限界に加えて、CAPMの実装にはいくつかの実務上の問題がある。以下にその一部を示す。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0160-R-L22">
+<li class="cfa-curriculum-list-item">市場ポートフォリオ（market portfolio）：CAPMにおける真の市場ポートフォリオは、金融資産および非金融資産を含むすべての資産を含む。これは人的資本や閉鎖経済内の資産など、投資不可能な資産も含むことを意味する。Richard Rollは、真の市場ポートフォリオが観測不可能であるため、CAPMは検証不可能であると指摘した。</li>
+<li class="cfa-curriculum-list-item">市場ポートフォリオの代理（proxy）：真の市場ポートフォリオが存在しないため、市場参加者は通常代理指標を用いる。しかし、これらの代理は分析者や投資家の国などによって異なり、同一資産に対して異なるリターン推定を生み出す。これはCAPMの前提に反する。</li>
+<li class="cfa-curriculum-list-item">ベータの推定：ベータ推定には長期間（3〜5年）のリターン履歴が必要であるが、過去の状態が現在や将来を正確に反映しているとは限らない。一般にCAPMは事前モデル（ex ante model）であるにもかかわらず、実際には事後データ（ex post data）を用いて適用される。また、推定期間やデータ頻度（例：日次・月次）によってベータは異なるため、同一資産でも異なるリターン推定が得られる可能性がある。</li>
+<li class="cfa-curriculum-list-item">CAPMの予測力の低さ：CAPMが優れたモデルであれば、その推定リターンは実現リターンと強く関連するはずである。しかし、実証的な支持は弱く、資産リターンはシステマティックリスクだけでは説明できないことが示されている。したがって、CAPMによるリターン予測の精度の低さは重大な制約である。</li>
+<li class="cfa-curriculum-list-item">投資家期待の同質性：CAPMは単一の最適リスクポートフォリオおよび単一の証券市場線を導くために、投資家の期待が同質であることを仮定する。この仮定がなければ、多数の最適ポートフォリオおよび多数の証券市場線が存在することになる。実際には、同じ情報から異なる最適ポートフォリオが導かれる可能性がある。</li>
+</ul>
+</section>
+</section>
+<section id="CFA0160-R-s10-02">
+<h3 class="dp-heading">CAPMの拡張（Extensions to the CAPM）</h3>
+<p>CAPMの限界を踏まえ、それらの問題に対処するために他のモデルが提案されてきた。これらの新しいモデルも独自の限界を持つ。本節では理論モデルと実務モデルの2種類に分類し、それぞれの例を示す。</p>
+<section id="CFA0160-R-s10-02-01">
+<h4>理論モデル（Theoretical Models）</h4>
+<p>理論モデルはCAPMと同様の原理に基づきつつ、リスク要因の数を拡張したものである。その代表例がStephen Rossによる裁定価格理論（arbitrage pricing theory: APT）である。CAPMと同様に、APTも期待リターンとリスクの線形関係を提案する：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___83"><em>E</em>(<em>R<sub>p</sub></em>) = <em>R<sub>F</sub> </em> + λ<sub>1</sub>β<em><sub>p</sub></em><sub>,1</sub> + ... + λ<em><sub>K</sub> </em>β<em><sub>p</sub></em><sub>,</sub><em><sub>K</sub> </em></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>E(R_p) = ポートフォリオpの期待リターン</li>
+<li>R_F = 無リスク利子率</li>
+<li>λ_j = 要因jのリスクプレミアム（無リスク利子率を超える期待リターン）</li>
+<li>β_p,j = ポートフォリオの要因jに対する感応度</li>
+<li>K = リスク要因の数</li>
+</ul>
+<p>ただしCAPMと異なり、APTでは複数のリスク要因を許容する。また、無リスク利子率以外のリスク要因は資産間で共通である必要はなく、資産ごとに異なり得る。資産市場における無裁定条件（no-arbitrage condition）を用いて、リスク要因およびそのベータを決定する。</p>
+<p>APTは理論的には洗練され柔軟でありCAPMより優れているが、リスク要因が明示されていないため、実務ではあまり用いられない。要因の特定やベータの推定が困難であるため、実務的にはCAPMが好まれる。</p>
+</section>
+<section id="CFA0160-R-s10-02-02">
+<h4>実務モデル（Practical Models）</h4>
+<p>CAPMのベータリスクがリターンを説明できない場合、どの要因が説明するのか。この問いに答えるため、実務モデルは広範な実証研究に基づいて構築される。セクション3.2.1で述べたように、その代表例がFama and French（1992）およびCarhart（1997）による4ファクターモデルである。</p>
+<p>過去リターンとさまざまな要因との関係の分析に基づき、Fama and French（1992）は、システマティックリスクだけでなく、3つの要因がリターンをよりよく説明すると提案した。それらは、企業規模（size）、簿価対市場価値比（book-to-market value）、およびベータである。Carhart（1997）が過去リターンに基づくモメンタム（momentum）を追加したことで、このモデルは次のように表される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___84"><math>
+<semantics>
+<mrow>
+<mi>E</mi>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>i</mi>
+<mi>t</mi>
+</mrow>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+<mo>=</mo>
+<msub>
+<mi>α</mi>
+<mi>i</mi>
+</msub>
+<mo>+</mo>
+<msub>
+<mi>β</mi>
+<mrow>
+<mi>i</mi>
+<mo>,</mo>
+<mi>M</mi>
+<mi>K</mi>
+<mi>T</mi>
+</mrow>
+</msub>
+<mi>M</mi>
+<mi>K</mi>
+<msub>
+<mi>T</mi>
+<mi>t</mi>
+</msub>
+<mo>+</mo>
+<msub>
+<mi>β</mi>
+<mrow>
+<mi>i</mi>
+<mo>,</mo>
+<mi>S</mi>
+<mi>M</mi>
+<mi>B</mi>
+</mrow>
+</msub>
+<mi>S</mi>
+<mi>M</mi>
+<msub>
+<mi>B</mi>
+<mi>t</mi>
+</msub>
+<mo>+</mo>
+<msub>
+<mi>β</mi>
+<mrow>
+<mi>i</mi>
+<mo>,</mo>
+<mi>H</mi>
+<mi>M</mi>
+<mi>L</mi>
+</mrow>
+</msub>
+<mi>H</mi>
+<mi>M</mi>
+<msub>
+<mi>L</mi>
+<mi>t</mi>
+</msub>
+<mo>+</mo>
+<msub>
+<mi>β</mi>
+<mrow>
+<mi>i</mi>
+<mo>,</mo>
+<mi>U</mi>
+<mi>M</mi>
+<mi>D</mi>
+</mrow>
+</msub>
+<mi>U</mi>
+<mi>M</mi>
+<msub>
+<mi>D</mi>
+<mi>t</mi>
+</msub>
+</mrow>
+</semantics>
+</math></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>E(R_i) = 1か月物Tビル（T-bill）リターンを超える資産リターン</li>
+<li>MKT = 市場ポートフォリオの超過リターン</li>
+<li>SMB = 小型株と大型株のリターン差（size要因）</li>
+<li>HML = 高い簿価対市場価値比を持つ株式と低い簿価対市場価値比を持つ株式のリターン差（バリュー株（value）対グロース株（growth））</li>
+<li>UMD = 前年の勝ち銘柄と負け銘柄のリターン差（モメンタム（momentum））</li>
+</ul>
+<p>過去データの分析によれば、MKTの係数は統計的に有意にゼロと異ならないことが示されており、これは株式リターンが市場と無関係であることを示唆している。株式リターンを説明する要因は、サイズ（小型企業が大型企業を上回る）、簿価対市場価値比（バリュー企業がグラマー企業を上回る）、およびモメンタム（過去の勝ち銘柄が負け銘柄を上回る）である。</p>
+<p>4ファクターモデルは、CAPMよりも資産リターンの予測において優れていることが確認されており、米国株のリターン推定に広く用いられている。</p>
+<p>ここで2点指摘しておく。第一に、このモデルはCAPMのような市場均衡理論に基づいていない。第二に、このモデルが将来にわたって有効であり続ける保証はない。</p>
+</section>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA0160-R-R1list">Carhart, Mark (1997). “On Persistence in Mutual Fund Performance.” <em>Journal of Finance</em>, vol. 52, no. 1:57–82. <a href="http://dx.doi.org/10.2307/2329556" target="_blank">http://dx.doi.org/10.2307/2329556</a></li>
+<li id="CFA0160-R-R2list">Fama, Eugene and French, Kenneth (1992). “The Cross-Section of Expected Stock Returns.” <em>Journal of Finance</em>, vol. 47, no. 2:427–466. <a href="http://dx.doi.org/10.2307/2329112" target="_blank">http://dx.doi.org/10.2307/2329112</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0160-R-FN3Content">
+<p>3 Roll（1977）</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0160-R-FN4Content">
+<p>4 Fama and French（1992）を参照</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0160-R-FN5Content">
+<p>5 Ross（1976）</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0160-R-R2Content">Fama, Eugene and French, Kenneth (1992). “The Cross-Section of Expected Stock Returns.” <em>Journal of Finance</em>, vol. 47, no. 2:427–466. <a href="http://dx.doi.org/10.2307/2329112" target="_blank">http://dx.doi.org/10.2307/2329112</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0160-R-R1Content">Carhart, Mark (1997). “On Persistence in Mutual Fund Performance.” <em>Journal of Finance</em>, vol. 52, no. 1:57–82. <a href="http://dx.doi.org/10.2307/2329556" target="_blank">http://dx.doi.org/10.2307/2329556</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0160-R-R2Content">Fama, Eugene and French, Kenneth (1992). “The Cross-Section of Expected Stock Returns.” <em>Journal of Finance</em>, vol. 47, no. 2:427–466. <a href="http://dx.doi.org/10.2307/2329112" target="_blank">http://dx.doi.org/10.2307/2329112</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA0160-R-R1Content">Carhart, Mark (1997). “On Persistence in Mutual Fund Performance.” <em>Journal of Finance</em>, vol. 52, no. 1:57–82. <a href="http://dx.doi.org/10.2307/2329556" target="_blank">http://dx.doi.org/10.2307/2329556</a></div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_145854_209_Capital_Asset_Pricing_Model_Applications.html" >← 前へ</a>
+  <span class="title">2.10 | Beyond CAPM: Limitations and Extensions of CAPM</span>
+  <a href="courses_1872_modules_items_145864_211_Portfolio_Performance_Appraisal_Measures.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

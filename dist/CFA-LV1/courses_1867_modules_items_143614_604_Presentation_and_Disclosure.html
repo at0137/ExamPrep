@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.04 | Presentation and Disclosure</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2423-R-s04-R-1" title="6.04 | Presentation and Disclosure"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：棚卸資産の分析 (Analysis of Inventories) 6.04｜表示および開示 (Presentation and Disclosure)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">棚卸資産に関する表示および開示を説明し、企業の棚卸資産開示およびその他の情報源を検討する際にアナリストが考慮すべき論点を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>棚卸資産の評価方法の選択は財務諸表に影響を与える。影響を受ける財務諸表項目には、売上原価 (cost of sales)、売上総利益 (gross profit)、純利益 (net income)、棚卸資産 (inventories)、流動資産 (current assets)、および総資産 (total assets) が含まれる。したがって、棚卸資産評価方法の選択は、これらの項目を含む財務比率にも影響を与える。流動比率 (current ratio)、総資産利益率 (return on assets)、売上総利益率 (gross profit margin)、および棚卸資産回転率 (inventory turnover) などの比率も影響を受ける。その結果として、アナリストは企業のパフォーマンスを時系列で評価する場合や、業界または競合他社と比較する場合に、棚卸資産評価方法の違いを慎重に考慮しなければならない。さらに、棚卸資産の帳簿価額を正味実現可能価額または現在の再調達原価に調整することによっても、財務諸表項目および比率は影響を受ける可能性がある。</p>
+<section id="CFA2423-R-s04-01-01">
+<h3 class="dp-heading">表示および開示 (Presentation and Disclosure)</h3>
+<p>IFRSは、棚卸資産に関して以下の財務諸表開示を要求している：</p>
+<ol class="cfa-curriculum-list-lower-alpha" id="CFA2423-R-s04-L1">
+<li class="cfa-curriculum-list-item">棚卸資産の測定に採用された会計方針（使用されたコスト計算方式（棚卸資産評価方法）を含む）；</li>
+<li class="cfa-curriculum-list-item">棚卸資産の帳簿価額の合計および企業に適した区分（例：商品 (merchandise)、原材料 (raw materials)、生産資材 (production supplies)、仕掛品 (work in progress)、製品 (finished goods)）ごとの帳簿価額；</li>
+<li class="cfa-curriculum-list-item">売却費用控除後の公正価値 (fair value less costs to sell) で計上されている棚卸資産の帳簿価額；</li>
+<li class="cfa-curriculum-list-item">当期に費用として認識された棚卸資産の金額（売上原価）；</li>
+<li class="cfa-curriculum-list-item">当期に費用として認識された棚卸資産の評価減の金額；</li>
+<li class="cfa-curriculum-list-item">当期に売上原価の減少として認識された評価減の戻入れの金額；</li>
+<li class="cfa-curriculum-list-item">棚卸資産の評価減の戻入れを引き起こした状況または事象；および</li>
+<li class="cfa-curriculum-list-item">負債の担保として差し入れられている棚卸資産の帳簿価額。</li>
+</ol>
+<p>US GAAPにおける棚卸資産関連の開示はこれらと類似しているが、(f)および(g)の要件は該当しない。これは、US GAAPでは過年度の棚卸資産評価減の戻入れが認められていないためである。さらにUS GAAPでは、棚卸資産に適用される重要な見積りおよびLIFO棚卸資産の清算から生じる重要な収益の開示が要求される。</p>
+</section>
+<section id="CFA2423-R-s04-01-02">
+<h3 class="dp-heading">棚卸資産に関する比率 (Inventory Ratios)</h3>
+<p>棚卸資産管理の効率性および有効性を評価するためによく用いられる3つの比率は、棚卸資産回転率、棚卸資産保有日数、および売上総利益率である。これらの比率は企業の棚卸資産評価方法の選択に直接影響される。ただし、他にも多くの比率が間接的に影響を受けることに留意すべきである。これには、棚卸資産が流動資産の構成要素であるため流動比率、売上原価が純利益算出の主要要素であり棚卸資産が総資産の構成要素であるため総資産利益率、さらには事業開始以来の累積純利益が利益剰余金の構成要素であるため負債資本比率 (debt-to-equity ratio) も含まれる。</p>
+<p>棚卸資産回転率は、企業が年間に棚卸資産を何回販売（回転）したかを測定する。回転率が高いほど、棚卸資産が年間に多く販売され、棚卸資産への相対的な資源投資が少ないことを示す。棚卸資産保有日数は、期間の日数を棚卸資産回転率で除して計算できる。したがって、棚卸資産回転率と棚卸資産保有日数は逆の関係にある。ただし、棚卸資産回転率は年間平均棚卸資産を用いて計算される場合がある一方で、棚卸資産保有日数は期末棚卸資産に基づいて計算されることがある。一般に、これらの指標は業界基準と比較し、年次での変化も検討する必要がある。</p>
+<p>高い棚卸資産回転率と低い棚卸資産保有日数は、非常に効果的な在庫管理を示す可能性がある。一方で、高い回転率と低い保有日数は、在庫水準が不十分であるか、棚卸資産の評価減が行われている可能性も示す。特に製造業においては、原材料在庫の不足は販売機会の損失や生産上の問題を引き起こす可能性がある。どの説明がより妥当かを判断するために、アナリストは企業の棚卸資産回転率や売上成長率を業界と比較し、財務諸表の開示を確認することができる。低成長と高い回転率の組み合わせは在庫不足を示唆する可能性がある。棚卸資産の評価減は在庫管理の不備を反映している可能性がある。一方、評価減が少なく売上成長率が業界並みまたはそれ以上であれば、高い回転率は在庫管理の効率性の高さを示していると解釈できる。</p>
+<p>業界水準と比較して低い棚卸資産回転率と高い棚卸資産保有日数は、回転の遅い在庫または陳腐化した在庫の兆候である可能性がある。この場合も、売上成長率の推移や業界比較、財務諸表開示の確認が追加的な洞察を提供する。</p>
+<p>売上総利益率は売上高に対する売上総利益の比率であり、売上のうち売上原価をカバーした後に純利益に寄与する割合を示す。競争の激しい業界の企業は、競争が少ない業界の企業よりも一般に売上総利益率が低い。企業の売上総利益率は製品の性質にも依存する。高級品を販売する企業は、日用品を販売する企業よりも一般に売上総利益率が高い。ただし、高級品を販売する企業の棚卸資産回転率は、日用品を販売する企業よりも大幅に低い可能性が高い。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2423-R-s04-EXM4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 4<span style="display: block;">Single Company Illustration</span></h4>
+<p>仮想の通信会社であるJollof Inc.の連結財務諸表および注記の抜粋を示す。図表4には連結損益計算書の抜粋、図表5には連結貸借対照表の抜粋、図表6には連結財務諸表注記のうち3つの抜粋が含まれる。</p>
+<p>注記1(a)では、Jollofの製品在庫および仕掛品が取得原価または正味実現可能価額のいずれか低い方で評価されることが開示されている。注記2(a)では、棚卸資産および仕掛品の評価減が税引前利益に与えた影響が、2017年に239百万ユーロの純減、2016年に156百万ユーロの純減、2015年に65百万ユーロの純減であったことが開示されている。棚卸資産の減損損失は2015年から2017年にかけて着実に増加しており、図表6の注記3(b)で開示されている評価引当金の変動（追加 (additions)／戻入れ (reversals)）の構成要素として含まれている。また、Jollofは注記3(b)で2017年、2016年、および2015年12月31日時点の評価引当金を開示しており、引当金の配分の詳細は注記3(a)に含まれている。549百万ユーロの評価引当金は、棚卸資産に対する528百万ユーロと建設契約の仕掛品に対する21百万ユーロの合計である。さらに、注記3(a)における2017年12月31日時点の棚卸資産の純額1,845百万ユーロ（建設契約を除く）は、図表5に示されている2017年12月31日時点の棚卸資産および仕掛品の純額と一致していることにも留意する。</p>
+<p>棚卸資産評価引当金は、貸借対照表に計上されている棚卸資産（取得原価または正味実現可能価額のいずれか低い方で測定）の評価減の累計額を表す。したがって、アナリストは、貸借対照表上の棚卸資産の帳簿価額に評価引当金を加えることで、棚卸資産の歴史的原価を算出することができる。評価引当金は2015年から2017年にかけて、金額および総棚卸資産に対する割合の両面で増加している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2423-R-s04-EXH4">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 4<span style="display: block;">Jollof Inc. Consolidated Income Statements (in millions of euros)</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">12月31日終了年度</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高 (Revenues)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14,267</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14,945</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10,317</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上原価 (Cost of sales)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(9,400)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(10,150)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(6,900)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益 (Gross profit)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,867</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,795</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,417</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">販売費および一般管理費 (Administrative and selling expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2,598)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2,908)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,605)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">研究開発費 (Research and development costs)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2,316)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2,481)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,235)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">事業再編費用 (restructuring costs)、資産の減損 (impairment of assets)、連結子会社の処分による損益 (gain/(loss) on disposal of consolidated entities)、および退職後給付制度の改定 (post-retirement benefit plan amendments) 前の営業活動からの利益 (Income from operating activities before restructuring costs, impairment of assets, gain/(loss) on disposal of consolidated entities, and post-retirement benefit plan amendments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(47)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(594)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">577</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">事業再編費用 (Restructuring costs)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(472)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(719)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(594)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産の減損 (Impairment of assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(3,969)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2,473)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(118)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">連結子会社の処分による損益 (Gain/(loss) on disposal of consolidated entities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(6)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">退職後給付制度の改定 (Post-retirement benefit plan amendments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">217</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業活動からの利益（損失） (Income (loss) from operating activities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(4,455)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(3,569)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(122)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">継続事業からの利益（損失） (Income (loss) from continuing operations)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(4,373)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(3,433)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(184)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非継続事業からの利益（損失） (Income (loss) from discontinued operations)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">512</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">133</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当期純利益（損失） (Net income (loss))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(4,345)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2,921)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">51</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2423-R-s04-EXH5">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 5<span style="display: block;">Jollof Inc. Consolidated Balance Sheets (in millions of euros)</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">12月31日</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非流動資産合計 (Total non-current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10,703</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,913</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21,559</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産および仕掛品（純額） (Inventories and work in progress, net)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,845</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,877</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,898</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">建設契約に係る顧客からの未収金 (Amounts due from customers on construction contracts)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">416</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">591</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">517</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売掛金および関連勘定（純額） (Trade receivables and related accounts, net)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,637</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,497</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,257</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">前受金および工事進行に基づく受領金 (Advances and progress payments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">83</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">92</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">73</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産合計 (Total current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12,238</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11,504</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13,629</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産 (Total assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22,941</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28,417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35,188</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利益剰余金、公正価値およびその他の準備金 (Retained earnings, fair value, and other reserves)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(7,409)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(3,210)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2,890)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⁝</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株主資本合計 (Total shareholders’ equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,388</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,830</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13,711</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年金、退職金およびその他の退職後給付 (Pensions, retirement indemnities, and other post-retirement benefits)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,038</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,735</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,577</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">発行社債および長期借入金 (Bonds and notes issued, long-term)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,302</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,794</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,117</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の長期債務 (Other long-term debt)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">56</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">123</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金負債 (Deferred tax liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">968</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,170</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の非流動負債 (Other non-current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">372</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">307</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">232</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非流動負債合計 (Total non-current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8,736</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,471</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11,219</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">引当金 (Provisions)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,036</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,155</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,987</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期債務の流動部分 (Current portion of long-term debt)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">921</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">406</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">975</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">顧客からの預り金および前受金 (Customers’ deposits and advances)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">780</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">711</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">654</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">建設契約に係る顧客への未払金 (Amounts due to customers on construction contracts)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">158</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">342</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">229</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">買掛金および関連勘定 (Trade payables and related accounts)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,840</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,792</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,383</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売却目的で保有する処分グループに関連する負債 (Liabilities related to disposal groups held for sale)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,349</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動法人税負債 (Current income tax liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">155</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">55</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の流動負債 (Other current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,926</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,651</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債合計 (Total current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,817</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,117</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10,257</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債および株主資本合計 (Total liabilities and shareholders’ equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22,941</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28,417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35,188</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2423-R-s04-EXH6">
+<h5 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 6<span style="display: block;"> Jollof Inc. Selected Notes to Consolidated Financial Statements </span></h5>
+<p>注記1 重要な会計方針の要約 (Summary of Significant Accounting Policies)</p>
+<p>(a) 棚卸資産および仕掛品 (Inventories and work in progress)</p>
+<p>棚卸資産および仕掛品は、取得原価（該当する場合は間接製造費を含む）または正味実現可能価額のいずれか低い方で評価される。正味実現可能価額とは、通常の営業活動期間における見積売上収益から、予想される完成費用および販売費用を差し引いたものである。</p>
+<p>注記2 見積りの使用に関する主要な不確実性 (Principal uncertainties regarding the use of estimates)</p>
+<p>(a) 棚卸資産および仕掛品に対する評価引当金 (Valuation allowance for inventories and work in progress)</p>
+<p>棚卸資産および仕掛品は、取得原価または正味実現可能価額のいずれか低い方で測定される。棚卸資産および仕掛品に対する評価引当金は、需要、技術、または市場の予見可能な変化の分析に基づいて計算され、陳腐化した在庫または過剰在庫および仕掛品を特定するために用いられる。</p>
+<p>評価引当金は、対象となる金額の性質に応じて、売上原価または事業再編費用として会計処理される。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2423-R-s04-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">（単位：百万ユーロ）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">12月31日</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産および建設契約に係る仕掛品に対する評価引当金 (Valuation allowance for inventories and work in progress on construction contracts)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(549)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(432)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">318</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産および仕掛品の評価減が、のれんの減損および割引事業 (discounted operations) に関連する法人税控除前の利益（損失）に与える影響 (Impact of inventory and work in progress write-downs on income (loss) before income tax related reduction of goodwill and discounted operations)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(239)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(156)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(65)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>注記3 棚卸資産および仕掛品 (Inventories and work in progress)</p>
+<p>(a) 純額の内訳 (Analysis of net value)</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2423-R-s04-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">（単位：百万ユーロ）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">原材料および商品 (Raw materials and goods)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">545</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">474</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">455</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仕掛品（建設契約を除く） (Work in progress excluding construction contracts)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">816</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">805</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">632</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">製品 (Finished goods)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,011</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">995</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,109</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総額（建設契約を除く） (Gross value (excluding construction contracts))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,373</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,274</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,196</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">評価引当金 (Valuation allowance)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(528)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(396)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(298)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純額（建設契約を除く） (Net value (excluding construction contracts))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,845</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,877</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,898</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">建設契約に係る仕掛品（総額） (Work in progress on construction contracts, gross)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">184</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">228</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">291</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">評価引当金 (Valuation allowance)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(21)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(35)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(19)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">建設契約に係る仕掛品（純額） (Work in progress on construction contracts, net)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">163</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">193</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">272</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">合計（純額） (Total, net)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,008</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,071</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,170</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>* 建設契約に係る未収金／未払金に含まれる。</p>
+</div>
+<p>(b) 評価引当金の変動 (Change in valuation allowance)</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2423-R-s04-Tc">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;">（単位：百万ユーロ）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1月1日現在 (At 1 January)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(432)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(318)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(355)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（追加）／戻入れ ((Additions)/reversals)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(239)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(156)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(65)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">取崩し (Utilization)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">58</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">45</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">連結範囲の変更 (Changes in consolidation group)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">45</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">為替レート変動およびその他の変動の純影響 (Net effect of exchange rate changes and other changes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">63</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">12月31日現在 (At 31 December)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(549)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(432)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(318)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>端数処理により、合計が内訳の合計や注記内の対応数値とわずかに一致しない場合がある。</p>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>報告数値に基づき、2017年および2016年について、Jollofの棚卸資産回転率、棚卸資産保有日数、売上総利益率、流動比率 (current ratio)、負債資本比率 (debt-to-equity ratio)、および総資産利益率 (return on total assets) を計算せよ。棚卸資産および総資産は平均値を使用し、その他の比率項目には期末値を使用すること。負債には、発行社債および長期借入金、その他の長期債務、および長期債務の流動部分のみを含めること。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答 (Solution)</h4>
+<p>財務比率は以下のとおりである：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2423-R-s04-Td">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産回転率 (Inventory turnover ratio)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.05</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.38</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産保有日数 (Number of days of inventory on hand)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">72.3日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">67.8日</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益率 (Gross profit margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動比率 (Current ratio)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.25</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.26</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債資本比率 (Debt-to-equity ratio)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.98</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.43</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産利益率 (Return on total assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−16.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–9.2%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>棚卸資産回転率 = 売上原価 ÷ 平均棚卸資産 (Cost of sales ÷ Average inventory)</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E">2017 inventory turnover ratio = 5.05 = 9,400 ÷ [(1,845 + 1,877) ÷ 2]</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___1">2016 inventory turnover ratio = 5.38 = 10,150 ÷ [(1,877 + 1,898) ÷ 2]</div>
+<p>棚卸資産保有日数 = 365日 ÷ 棚卸資産回転率 (365 days ÷ Inventory turnover ratio)</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___2">2017 number of days of inventory = 72.3 days = 365 days ÷ 5.05</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___3">2016 number of days of inventory = 67.8 days = 365 days ÷ 5.38</div>
+<p>売上総利益率 = 売上総利益 ÷ 総売上高 (Gross profit ÷ Total revenue)</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___4">2017 gross profit margin = 34.1% = 4,867 ÷ 14,267</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___5">2016 gross profit margin = 32.1% = 4,795 ÷ 14,945</div>
+<p>流動比率 (Current ratio) = 流動資産 ÷ 流動負債</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___6">2017 current ratio = 1.25 = 12,238 ÷ 9,817</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___7">2016 current ratio = 1.26 = 11,504 ÷ 9,117</div>
+<p>負債資本比率 (Debt-to-equity ratio) = 総負債 ÷ 株主資本合計</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___8">2017 debt-to-equity ratio = 0.98 = (3,302 + 56 + 921) ÷ 4,388</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___9">2016 debt-to-equity ratio = 0.43 = (3,794 + 40 + 406) ÷ 9,830</div>
+<p>総資産利益率 (Return on assets) = 純利益 ÷ 平均総資産</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___10">2017 return on assets = –16.9% = –4,345 ÷ [(22,941 + 28,417) ÷ 2]</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s04-E___11">2016 return on assets = –9.2% = –2,921 ÷ [(28,417 + 35,188) ÷ 2]</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>設問1の解答に基づき、2016年から2017年への変化についてコメントせよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答 (Solution)</h4>
+<p>2016年から2017年にかけて、棚卸資産回転率は低下し、棚卸資産保有日数は4.5日増加した。Jollofは棚卸資産を以前よりも効率的に管理できていないように見える。売上総利益率は2.0％改善し、2016年の32.1％から2017年には34.1％となった。流動比率は2016年から2017年にかけてほぼ変化していない。負債資本比率は2017年において2016年と比較して大きく上昇した。この期間においてJollofの総負債は比較的安定していたが、純損失の累積が利益剰余金に影響を与えたため、株主資本は急速に減少している。</p>
+<p>総資産利益率は負であり、2017年は2016年と比較してさらに悪化した。2017年のより大きな純損失とより低い総資産により、総資産利益率はより大きな負の値となった。アナリストは、Jollofの総資産利益率の急激な低下の根本原因を調査すべきである。図表4から明らかなように、Jollofの売上総利益率は、2016年および2017年において販売費および一般管理費や研究開発費を賄うのに十分ではなかった。また、多額の事業再編費用および資産減損損失が、2016年および2017年の営業損失に寄与している。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>もしJollofが2017年、2016年、および2015年においてFIFO法の代わりに加重平均法 (weighted average cost method) を使用していた場合、報告される売上原価および棚卸資産の帳簿価額にはどのような影響があったか。また、設問1で算出した財務比率にはどのような方向性の影響があったか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答 (Solution)</h4>
+<p>2015年、2016年、および2017年において棚卸資産の再調達原価が上昇していた場合（かつ棚卸資産数量が安定または増加していた場合）、Jollofの売上原価は加重平均法の下ではFIFO法で報告されたものより高くなり、売上総利益率は低くなっていた（棚卸資産評価減がなく、評価方法間の差異を相殺しないと仮定）。FIFOは最も古い棚卸資産原価を売上原価に配分するため、棚卸資産コストが上昇している場合には、FIFOの下で報告される売上原価は低くなる。棚卸資産の帳簿価額は、より最近に購入された棚卸資産がより高い原価で含まれるため、FIFO法の方が加重平均法より高くなる（同様に評価減がないと仮定）。その結果、Jollofの売上総利益、純利益、および利益剰余金もこれらの期間においてFIFO法の下でより高くなる。</p>
+<p>各比率への影響は以下のとおりである：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2423-R-s04-L2">
+<li class="cfa-curriculum-list-item">棚卸資産回転率はすべて加重平均法の下でより高くなる。これは、分子（売上原価）がより高く、分母（棚卸資産）がFIFO法で報告されたものより低くなるためである。</li>
+<li class="cfa-curriculum-list-item">棚卸資産保有日数は、棚卸資産回転率が高くなるため、加重平均法の下でより低くなる。</li>
+<li class="cfa-curriculum-list-item">売上総利益率は、売上原価がFIFO法より高くなるため、加重平均法の下でより低くなる。</li>
+<li class="cfa-curriculum-list-item">流動比率は、棚卸資産の帳簿価額がFIFO法より低くなるため、加重平均法の下でより低くなる（流動負債は両方法で同一）。</li>
+<li class="cfa-curriculum-list-item">総資産利益率は、分子（純利益）への増分利益の影響が分母（総資産）の増加より大きいため、加重平均法の下でより低くなる。例えば、加重平均法の下で純利益300万ユーロ、総資産1億ユーロの企業を考える。FIFOを用いることで純利益が100万ユーロ増加すると、（税引後で）総資産も100万ユーロ増加する。この場合、総資産利益率は加重平均法では3.00％（300万／1億）、FIFO法では3.96％（400万／1億100万）となる。</li>
+<li class="cfa-curriculum-list-item">負債資本比率は、利益剰余金がFIFO法より低くなるため、加重平均法の下でより高くなる（同様に評価減がないと仮定）。</li>
+<li class="cfa-curriculum-list-item">逆に、2015年、2016年、および2017年において棚卸資産の再調達原価が低下していた場合（かつ棚卸資産数量が安定または増加していた場合）、Jollofの売上原価は加重平均法の下でFIFO法より低くなり、売上総利益および棚卸資産はFIFO法より高くなっていた（評価減がないと仮定）。その結果、上記の比率分析の結論はすべて逆方向となる。</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2423-R-s04-FN1Content">
+<p>5 棚卸資産保有日数 (Days of inventory on hand) は、在庫日数 (days in inventory) または平均在庫日数 (average inventory days outstanding) とも呼ばれる。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143611_603_The_Effects_of_Inflation_and_Deflation_on_Inventories_Costs_of_Sales_and_Gro.html" >← 前へ</a>
+  <span class="title">6.04 | Presentation and Disclosure</span>
+  <a href="courses_1867_modules_items_143619_Real_World_Applications_Bloombergs_Field_Search.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

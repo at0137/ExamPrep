@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.11 | Risk Modification: Transferring, Shifting, and How to Choose</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1642-R-s11" title="6.11 | Risk Modification: Transferring, Shifting, and How to Choose"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：リスク管理入門 6.11｜リスクの修正：移転（Transferring）、シフティング（Shifting）、およびその選択方法</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">リスクエクスポージャーの測定および修正の方法と、それらの方法の選択において考慮すべき要因を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>リスク移転（risk transfer）とは、リスクを他の当事者に引き渡すプロセスであり、多くの場合（必ずしも常にではないが）保険契約（insurance policy）の形をとる。保険（insurance）とは、保険者（insurer）が被保険者（insured）から保険料（premium）を受け取る代わりに、特定の事象によって被保険者が被った損失の一定割合を補償することに同意する法的契約である。リスク修正の手段としての保険は非常に長い歴史を持ち、実際には約4,000年前のハンムラビ法典（Code of Hammurabi）にも言及されている。保険は何世紀にもわたり商業輸送や農業分野で広く利用されてきた。保険はほぼ商業そのものと同じくらい古い。</p>
+<p>保険者の観点から見ると、保険はほぼ常にリスクの分散またはプーリング（pooling）に基づいている。保険者は相関の低いリスクを持つ多数の保険契約を販売しようとする。保険者はプールされたリスクを評価し、期待総損失と運営コストをカバーし、さらに利益を確保できるような保険料を設定する。保険者は集計リスクに関する正確な統計を必要とするが、これらは通常入手が容易である。事故、疾病、財産・損害（property and casualty）、死亡に関するアクチュアリー・データ（actuarial data）は広く利用可能である。原則として、十分に分散された保険者は、請求が相関していない限り、特定の被保険者が平均より大きな請求を行っても問題にしない。他の被保険者が平均より小さな請求を行うからである。</p>
+<p>しかし保険者はリスクを慎重に管理する必要がある。いくつかのリスクは相関している可能性がある。例えば米国メキシコ湾岸地域では、ハリケーン損失を含む財産保険は他地域よりも高額である。高い保険料を設定していても、ハリケーンのようなシステミックイベントが発生し得る地域で過度な補償を引き受けることは避ける必要がある。</p>
+<p>保険者は期待損失を反映した保険料を設定していても、大規模な請求に対する責任を負う。したがって、類似した相関リスクの契約を過度に引き受けないことや、再保険（reinsurance）によってリスクの一部を他の保険者に移転することでリスクを管理する。例えば、米国中西部の竜巻リスクにさらされている保険会社が、適切な保険料で湾岸のハリケーンリスクを引き受ける場合がある。保険契約には特定のケースを除外する条項が含まれることも多い（例：戦争）。また、モラルハザード（moral hazard）への対策条項も含まれる。近年では、一定額を超える保険請求が発生した場合に元本や利息の支払いを免れるカタストロフィ・ボンド（catastrophe bonds）も発行されている。</p>
+<p>多くの保険契約は全リスクをカバーしない。一般的に免責金額（deductible）が設定されており、これは保険金支払い前に被保険者が負担する損失額である。その結果、被保険者と保険者の双方がリスクを負担する。免責は小口請求を減らし、被保険者のリスク管理意識を高め、自己保険（self-insurance）との組み合わせを可能にする。</p>
+<p>保険は分散に依存するが、一部のリスクはプーリングが困難である。例えば、不安定だが非常に成功している俳優を起用した映画制作では、その俳優の行動リスクを十分に分散できない可能性がある。</p>
+<p>例えばテレビ局がオリンピック中止リスクに備える場合、ロイズ（Lloyd’s of London）のような専門保険会社が対応する。ロイズはシンジケート（syndicates）と呼ばれる投資家グループを組織し、保険リスクを引き受ける。これらの投資家は損失全額に責任を負う。異なる非相関リスクを組み合わせることで分散効果が得られる。</p>
+<p>保険に類似したものに保証債（surety bond）がある。これは第三者が義務を履行しない場合に支払いを保証するものである。誠実保証（fidelity bond）は従業員の不正による損失をカバーする。また、補償条項（indemnity clause）や免責契約（hold harmless arrangements）も類似の仕組みである。</p>
+<p>保険が広く利用されていることは、多くの主体にとってリスクのコストがアクチュアリー上のコストを上回ることを示唆する。事前（ex ante）の観点でリスクのコストを企業価値や効用と関連付けることは、リスク許容度やガバナンスの意思決定と密接に関係する。</p>
+<section id="CFA1642-s011-01-01">
+<h3 class="dp-heading">リスクシフティング</h3>
+<p>リスク移転がリスクを他者に渡す行為であるのに対し、リスクシフティング（risk shifting）はリスクの分布を変える行為である。前者は保険に関連し、後者は主にデリバティブ（derivatives）を用いる。リスクシフティングでは、リスクの一部を他の市場参加者に移し、収益分布（payoff diagram）を調整する。ヘッジング（hedging）の大部分はこのリスクシフティングに該当する。</p>
+<p>リスクシフティングの主要手段はデリバティブである。デリバティブとは、基礎資産またはレートから価格が導出される金融商品である。デリバティブは低コストで同様のエクスポージャーを提供し、効率的にリスクを移転できる。</p>
+<p>デリバティブはフォワード型契約（forward commitments）と条件付請求権（contingent claims）に分類される。フォワード型契約は将来の一定条件で取引する義務を伴う契約であり、フォワード契約（forward contracts）、先物（futures）、スワップ（swaps）を含む。契約開始時に資金のやり取りはなく、将来の価格変動に応じて損益が決まる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1642-s011-EXM-1-4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例4 リスクシフティング：為替リスクとフォワード契約</h4>
+<section>
+<p>あなたは英国の投資家であり、ポートフォリオの60%をFTSE100指数に連動するファンド、40%を米国債に投資している。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA1642-s011-E-1-"><em>R<sub>P</sub> </em> = <em>w</em><sub>1</sub> × <em>R</em><sub>1</sub> + (1 – <em>w</em><sub>1</sub>) × [(1 + <em>R<sub>lc</sub></em>) × (1 + <em>R<sub>FX</sub></em>) – 1].</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1642-s011-E-1-___1"><em>R<sub>P</sub> </em> = 0.6 × 0.055 + 0.4 × [(1 + .016) × (1 + 0.0) – 1] = 0.039 = 3.9%.</div>
+<p>FTSE100のリスクは13.2%、米国債（ポンド建て）のリスクは11.0%、USD/GBPのリスクは9%である。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1642-s011-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">FTSE100</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">米国債</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">USD/GBP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">FTSE100</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.32</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.06</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国債</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.32</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.33</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">USD/GBP</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.06</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.33</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>上記情報からポートフォリオリスクを計算できる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA1642-s011-E-1-___2"><math> <semantics> <mrow> <msub> <mi>σ</mi> <mi>p</mi> </msub> <mo>=</mo> <msqrt> <mrow> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msubsup> <mi>σ</mi> <mn>1</mn> <mn>2</mn> </msubsup> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msubsup> <mi>σ</mi> <mn>2</mn> <mn>2</mn> </msubsup> <mo>+</mo> <msubsup> <mi>w</mi> <mn>3</mn> <mn>2</mn> </msubsup> <msubsup> <mi>σ</mi> <mn>3</mn> <mn>2</mn> </msubsup> <mo>+</mo> <mn>2</mn> <msub> <mi>ρ</mi> <mrow> <mn>1</mn> <mo>,</mo> <mn>2</mn> </mrow> </msub> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <msub> <mi>σ</mi> <mn>1</mn> </msub> <msub> <mi>σ</mi> <mn>2</mn> </msub> <mo>+</mo> <mn>2</mn> <msub> <mi>ρ</mi> <mrow> <mn>1</mn> <mo>,</mo> <mn>3</mn> </mrow> </msub> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <msub> <mi>σ</mi> <mn>1</mn> </msub> <msub> <mi>σ</mi> <mn>3</mn> </msub> <mo>+</mo> <mn>2</mn> <msub> <mi>ρ</mi> <mrow> <mo>2,</mo> <mn>3</mn> </mrow> </msub> <msub> <mi>w</mi> <mi>2</mi> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <msub> <mi>σ</mi> <mn>2</mn> </msub> <msub> <mi>σ</mi> <mn>3</mn> </msub> </mrow> </msqrt> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1642-s011-E-1-___3">σ<em> <sub>p</sub> </em>= (0.6<sup>2</sup> × 0.132<sup>2</sup> + 0.4<sup>2</sup> × 0.110<sup>2</sup> + 0.4<sup>2</sup> × 0.090<sup>2</sup> + 2 × –0.32 × 0.6 × 0.4 × 0.132 × 0.110 + 2 × –0.06 × 0.6 × 0.4 × 0.132 × 0.090 + 2 × 0.33 × 0.4 × 0.4 × 0.110 × 0.090)<sup>1⁄2</sup></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1642-s011-E-1-___4">σ<em> <sub>p</sub> </em> = 0.0894 ≈ 8.9%.</div>
+<p>このポートフォリオのリスクは8.9%である。</p>
+<p>為替リスクをヘッジすることでリスク低減を検討する。</p>
+<p>フォワード価格はスポット価格に金利差を調整したものである。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>このフォワード契約を用いた場合の影響は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>完全ヘッジでは為替エクスポージャーを無視したのと同じ効果となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA1642-s011-E-1-___5"><math> <semantics> <mrow> <msub> <mi>σ</mi> <mi>p</mi> </msub> <mo>=</mo> <msqrt> <mrow> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msubsup> <mi>σ</mi> <mn>1</mn> <mn>2</mn> </msubsup> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msubsup> <mi>σ</mi> <mn>2</mn> <mn>2</mn> </msubsup> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <msub> <mi>ρ</mi> <mrow> <mn>12</mn> </mrow> </msub> <msub> <mi>σ</mi> <mn>1</mn> </msub> <msub> <mi>σ</mi> <mn>2</mn> </msub> </mrow> </msqrt> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1642-s011-E-1-___6"><math> <semantics> <mrow> <msub> <mi>σ</mi> <mi>p</mi> </msub> <mo>=</mo> <msqrt> <mrow> <mo stretchy="false">(</mo> <msup> <mrow> <mn>0.6</mn> </mrow> <mn>2</mn> </msup> <mo>×</mo> <msup> <mrow> <mn>0.132</mn> </mrow> <mn>2</mn> </msup> <mo stretchy="false">)</mo> <mo>+</mo> <mo stretchy="false">(</mo> <msup> <mrow> <mn>0.4</mn> </mrow> <mn>2</mn> </msup> <mo>×</mo> <msup> <mrow> <mn>0.040</mn> </mrow> <mn>2</mn> </msup> <mo stretchy="false">)</mo> <mo>+</mo> <mn>2</mn> <mo>×</mo> <mn>0.6</mn> <mo>×</mo> <mn>0.4</mn> <mo>×</mo> <mo stretchy="false">(</mo> <mo>−</mo> <mn>0.32</mn> <mo stretchy="false">)</mo> <mo>×</mo> <mn>0.132</mn> <mo>×</mo> <mn>0.040</mn> </mrow> </msqrt> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA1642-s011-E-1-___7">σ<em> <sub>p </sub> </em>= 0.0757 ≈ 7.6%.</div>
+<p>リスクは8.9%から大幅に低下する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>期待リターンへの影響はあるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>フォワード価格の差により期待リターンはわずかに低下する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>為替リスクは完全に除去されるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>完全には除去されない。時間経過によりアンダー／オーバーヘッジが発生する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>もう一つのデリバティブはオプション（option）である。コールオプション（call option）は購入権、プットオプション（put option）は売却権を与える。</p>
+<p>フォワードは双方に義務を課すが、オプションは一方に権利のみを与える。そのためオプション購入者はプレミアム（premium）を支払う必要がある。購入者は行使するか放棄するか選択でき、損失はプレミアムに限定される。</p>
+<p>デリバティブ（derivatives）は、デリバティブ取引所（derivatives exchanges）のような公開市場で作成される場合もあれば、2者間で私的に作成される場合もある。取引所では、多数の個人および機関トレーダーがデリバティブのマーケットメイクを行っている。私的なデリバティブ取引では、大手銀行およびノンバンクのディーラー（dealers）が売買に応じる広範な市場が存在する。いずれの市場においても、これらのディーラーは取引当事者から移転されたリスクを引き受けるが、そのリスクの一部または全部を他の当事者に再配分することで再構成する。最終的には、そのリスクを受け入れる意思のある主体がリスクを引き受け、すべての当事者にとって経済的に効率的な結果が生じる。</p>
+</section>
+<section id="CFA1642-s011-01-02">
+<h3 class="dp-heading">リスク修正手法の選択方法</h3>
+<p>リスク軽減手法として、リスク防止・回避（risk prevention and avoidance）、自己保険（self-insuring）、リスク移転（risk transfer）、リスクシフティング（risk shifting）のいずれを選択するかは、リスク管理プロセスの重要な要素である。これらの手法は相互排他的ではなく、多くの組織が複数の手法を併用している。いずれの手法も明確に他より優れているわけではなく、意思決定はコストと便益のトレードオフに基づき、組織または個人のリスク許容度に照らして判断される。</p>
+<p>例えば、海外事業を多く持つ企業は為替リスクに大きくさらされるため、デリバティブを用いてヘッジを行う。フォワード（forward）、スワップ（swap）、オプション（option）などの選好は企業によって異なる。海外で生産を行うことで為替リスクを回避する企業もある。また、通貨建て資産と負債をバランスさせることでリスク管理を行う企業もある。航空会社の中には原油価格リスクをヘッジする企業としない企業があり、ヘッジの程度も異なる。フォワードやスワップの確実性を重視する企業もあれば、初期コストを支払ってでもオプションの柔軟性を重視する企業もある。多くの保険会社はアクチュアリー知識を活用しつつ、リスクを他者に移転するなどの積極的な手段も併用する。</p>
+<p>可能な限り、多くの組織は便益が小さくコストが極めて大きいリスクを回避すべきである。低コストで実施可能な予防策は常に講じるべきであり、特にコアコンピタンス外で付加価値が期待できないリスクについては、リスク防止や回避が第一の選択肢となる。ただし、回避は最適な選択でない場合もあり、またリスク回避は機会の放棄を意味する可能性もある。</p>
+<p>多額のフリーキャッシュフローを持つ組織は自己保険を選択する場合があるが、すべてのリスクを自己保険できるほどの資金を持つ組織は少ない。一部のリスクは資本全体を危険にさらす可能性がある。とはいえ、多くの企業は外部監視コストの削減や柔軟性の確保のため、可能な限り自己保険を選好する。自己保険や回避はガバナンスのレベルで明確に検討され、リスク許容度と整合的であるべきである。</p>
+<p>リスク移転、すなわち保険の利用は広く用いられているが、すべてのリスクに適しているわけではない。一部のリスクはコスト効率的に保険化できない。また、同時に多数の主体に影響を与えるリスクはプーリングが困難である。デリバティブのようなリスクシフティング手段もすべてのリスクに適用可能ではない。リスク許容度を超える財務リスクに対しては、リスクシフティングが一般的に用いられる。</p>
+<p>各リスク管理手法は、リスク低減効果や残存リスクの形状が異なる。例えば、保険のような条件付請求権（contingent claims）は一方向の利益機会と他方向の損失軽減という柔軟性を提供するが、初期コストが必要である。一方、フォワード型契約（forward commitments）は結果を固定するが柔軟性は低く、初期支払いは不要である。これらはリスクプロファイルに大きな違いをもたらすため、組織全体で十分な理解と議論が必要である。</p>
+<p>まとめると、リスクテイカーは潜在コストに対して報酬が小さいリスクを識別し、可能な限り回避すべきである。また、適切な場合には自己保険や分散を行い、プーリング可能な場合には保険を検討する。デリバティブを使用する場合は、フォワードによる結果固定と、オプションの柔軟性（ただしコストを伴う）とのトレードオフを考慮する必要がある。最終的には、コストと便益のバランスを取りつつ、組織のリスク管理目標に整合的なリスクプロファイルを構築することが重要である。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1642-s011-EXM-1-5">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例5 リスクの測定と修正</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s011-Q4"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>組織の観点から、リスクドライバー（risk drivers）を最も適切に表すものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 不利な事象の確率</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。リスク（およびリスクドライバー）はマクロ経済や産業の基本的要因から生じる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. リスクを測定する統計手法</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。リスク（およびリスクドライバー）はマクロ経済や産業の基本的要因から生じる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. マクロ経済や産業に影響を与える要因</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。リスク（およびリスクドライバー）はマクロ経済や産業の基本的要因から生じる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s011-Q5"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>次のうち、デリバティブのリスクを直接測定する概念はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 確率</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。デルタ（delta）およびガンマ（gamma）は、基礎資産の変動に対するオプション価格の変化を測る指標である。他の選択肢もリスクの一部を反映するが、直接的な測定ではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. デルタとガンマ</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。デルタ（delta）およびガンマ（gamma）は、基礎資産の変動に対するオプション価格の変化を測る指標である。他の選択肢もリスクの一部を反映するが、直接的な測定ではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. ベータと標準偏差</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。デルタ（delta）およびガンマ（gamma）は、基礎資産の変動に対するオプション価格の変化を測る指標である。他の選択肢もリスクの一部を反映するが、直接的な測定ではない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s011-Q6"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>バリュー・アット・リスク（value at risk, VaR）の最も適切な定義はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. カウンターパーティがデフォルトした場合の期待損失</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。VaRは、一定の期間において一定の確率で発生する最小損失を測定する指標である。期待損失ではなく、また最大損失（組織の全資本）を示すものでもない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 一定期間における最大損失</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。VaRは、一定の期間において一定の確率で発生する最小損失を測定する指標である。期待損失ではなく、また最大損失を示すものでもない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 一定期間において一定の確率で発生する最小損失</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。VaRは、一定の期間において一定の確率で発生する最小損失を測定する指標である。期待損失ではなく、また最大損失を示すものでもない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s011-Q7"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>次のうち、極端事象のリスク測定のためにVaRを補完する手法はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 標準偏差</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。シナリオ分析（scenario analysis）およびストレステスト（stress testing）は極端事象下でのポートフォリオのパフォーマンスを評価する。他の選択肢は一般的な指標だが、極端事象には特化していない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. デフォルト時損失（loss given default）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。シナリオ分析（scenario analysis）およびストレステスト（stress testing）は極端事象下でのポートフォリオのパフォーマンスを評価する。他の選択肢は一般的な指標だが、極端事象には特化していない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. シナリオ分析およびストレステスト</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。シナリオ分析（scenario analysis）およびストレステスト（stress testing）は極端事象下でのポートフォリオのパフォーマンスを評価する。他の選択肢は一般的な指標だが、極端事象には特化していない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s011-Q8"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>次のうち、保険可能リスク（insurable risks）について正しい記述はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 保険可能リスクはより低コストである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。保険（insurance）はリスクのプーリング（pooling）によって機能する。デリバティブ（derivatives）より必ずしも低コストであるわけではなく、また損失限度が低いわけでもない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 保険可能リスク（insurable risks）は損失限度が小さい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。保険（insurance）はリスクのプーリング（pooling）によって機能する。デリバティブ（derivatives）より必ずしも低コストであるわけではなく、また損失限度が低いわけでもない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 保険可能リスク（insurable risks）は通常、保険者によって分散可能（diversifiable）である。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Cが正しい。保険（insurance）はリスクのプーリング（pooling）によって機能する。デリバティブ（derivatives）より必ずしも低コストであるわけではなく、また損失限度が低いわけでもない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s11-FN1Content">
+<p>25 保険業界は長い間、自らを「リスク管理（risk management）」という用語で表現してきた点は注目に値する。大規模組織におけるリスク管理部門は、しばしば保険契約を管理する部署を指す。しかし、1990年頃以降、「リスク管理」という用語は保険をはるかに超える概念を指すようになってきている。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s11-FN2Content">
+<p>26 NBCは1980年モスクワ夏季オリンピックに関して、米国によるボイコットが発生した場合に、ソ連に前払いした放映権料に対する損失を補填する保険をロイズ（Lloyd’s of London）で付保していた。実際に米国はボイコットを行い、NBCは保険金を受け取った。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s11-FN3Content">
+<p>27 保証債（surety bond）および誠実保証（fidelity bond）の文脈において、「ボンド（bond）」という語は、借り手が発行し貸し手が購入する債務証券を意味しない。この文脈では、特定の当事者の行動に対して他方の当事者がリスクを負わないことを保証することを指す。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s11-FN4Content">
+<p>28 一部のオプション（option）は、原資産（underlying）を引き渡す代わりに同等額の現金決済を行う。また、一部のフォワード型契約（forward commitments）も現金決済される。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s11-FN5Content">
+<p>29 リスクの相互作用の別の例として、外国で製品を生産する意思決定がある。この場合、為替リスク、政治リスク、およびその国の経済に特有のさまざまなリスク、さらには異なる程度のオペレーショナルリスク（operational risk）とのトレードオフを伴いながら、より高い利益を追求することになる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RiskTransferContent">
+<p>特定のリスクの影響を軽減するために、それらを保険会社に移転することで実施される戦略。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RiskShiftingContent">
+<p>リスクの結果分布を変更するための行動。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_146185_610_Risk_Modification_Prevention_Avoidance_and_Acceptance.html" >← 前へ</a>
+  <span class="title">6.11 | Risk Modification: Transferring, Shifting, and How to Choose</span>
+  <a href="courses_1872_modules_items_146194_612_Summary.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

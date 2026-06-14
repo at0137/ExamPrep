@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9.05 | Presentation and Disclosure</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2426-R-s05-R-1" title="9.05 | Presentation and Disclosure"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール9：法人所得税の分析（Analysis of Income Taxes）9.05 | 表示および開示（Presentation and Disclosure）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">繰延税項目（deferred tax items）および実効税率の調整（effective tax rate reconciliation）に関する開示を分析し、これらの開示に含まれる情報が企業の財務諸表および財務比率にどのように影響するかを説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>米国に本拠を置くグローバルテクノロジー企業であるMicron Technology（MU）の連結損益計算書（Consolidated Statements of Operations（Income Statements））および連結貸借対照表（Consolidated Balance Sheets）は、それぞれ図表18および図表19に示されている。図表18は、2015年、2016年、および2017年の会計年度におけるMUの法人税に関する注記開示（income tax note disclosures）を示している。</p>
+<p>MUの2017年度の法人税費用（income tax provision）は1億1,400万米ドル（USD114 million）である（図表18参照）。図表20の法人税に関する注記開示（income tax note disclosure）は、税引前利益（income before taxes）（図表20では2017年度について5,196百万米ドルと表示）から出発して、どのように法人税費用が決定されたかを調整（reconcile）している。この注記では、2017年の法人税費用のうち当期分（current）（1億5,300万米ドル）が示され、これが海外税に関する繰延税金利益（deferred tax benefit for foreign taxes）（3,900万米ドル）によって相殺され、純額の法人税費用は1億1,400万米ドルとなることが示されている。さらに図表20は、米国連邦の法定税率（US federal statutory rate）から法人税費用がどのように導出されたかの調整も示している。多くの上場企業はこの開示要件を満たすためにパーセンテージ表示を用いるが、MUは金額ベース（absolute dollar amounts）での開示を選択している。この情報から、2017年について、法定税率に基づく米国連邦法人税費用（1,819百万米ドル）は、MUの税引前利益に米国連邦法定税率35％を乗じることで算出されたことが分かる（5,196 × 0.35 = 1,819）。</p>
+<p>さらに、図表20の注記開示は、繰延税金資産（deferred tax assets）（2017年は7億6,600万米ドル）および繰延税金負債（deferred tax liabilities）（2017年は1,700万米ドル）の算出過程に関する詳細情報も提供している。これらの繰延税金資産は、2017年度のMUの連結貸借対照表において非流動資産（noncurrent assets）として個別に表示されている（図表19参照）。一方、繰延税金負債はその他の非流動負債（other noncurrent liabilities）に含まれている（同様に図表19参照）。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s05-EXH18">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 18<span style="display: block;">Micron Technology, Inc. Consolidated Statements of Operations (US dollar millions, except per share) </span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">対象年度（For the Year Ended）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2017年8月31日（31 Aug. 2017）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2016年9月1日（1 Sept. 2016）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2015年9月3日（3 Sept. 2015）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高（Net sales）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20,322</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12,399米ドル（USD12,399）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,192米ドル（USD16,192）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上原価（Cost of goods sold）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11,886</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,894</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10,977</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益（Gross margin）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8,436</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,505</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,215</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">販売費および一般管理費（Selling, general and administrative）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">743</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">659</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">719</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">研究開発費（Research and development）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,824</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,617</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,540</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">リストラクチャリングおよび資産減損（Restructure and asset impairments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">67</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他営業収益（費用）（純額）（Other operating (income) expense, net）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(17)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(6)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(45)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業利益（Operating income）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,868</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">168</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,998</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">受取利息（支払利息）（純額）（Interest income (expense), net）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(560)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(395)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(336)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他非営業収益（費用）（純額）（Other non-operating income (expense), net）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(112)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(54)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(53)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税（費用）（利益）（Income tax (provision) benefit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(114)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(19)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(157)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">持分法適用投資先の純利益（損失）に対する持分（Equity in net income (loss) of equity method investees）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">447</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非支配持分に帰属する純利益（損失）（Net income (loss) attributable to noncontrolling interests）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Micronに帰属する純利益（損失）（Net income (loss) attributable to Micron）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,089米ドル（USD5,089）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（276米ドル）（USD(276)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,899米ドル（USD2,899）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1株当たり利益（損失）（Earnings (loss) per share）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Basic</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.67米ドル（USD4.67）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（0.27米ドル）（USD(0.27)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.71米ドル（USD2.71）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">希薄化後（Diluted）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.41米ドル（USD4.41）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（0.27米ドル）（USD(0.27)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.47米ドル（USD2.47）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1株当たり計算に使用された株式数（Number of shares used in per share calculations）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Basic</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,089</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,036</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,070</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">希薄化後（Diluted）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,154</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,036</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,170</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s05-EXH19">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 19<span style="display: block;">Micron Technology, Inc. Consolidated Balance Sheets (US dollar millions) </span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>As of</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2017年8月31日（31 Aug. 2017）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2016年9月1日（1 Sept. 2016）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産（Assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金および現金同等物（Cash and equivalents）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,109米ドル（USD5,109）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,140米ドル（USD4,140）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">短期投資（Short-term investments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">319</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">258</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売掛金（Receivables）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,759</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,068</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産（Inventories）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,123</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,889</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他流動資産（Other current assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">147</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">140</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産合計（Total current assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12,457</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,495</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期市場性投資（Long-term marketable investments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">617</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">414</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産（純額）（Property, plant and equipment, net）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19,431</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14,686</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">持分法適用投資（Equity method investments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,364</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">無形資産（純額）（Intangible assets, net）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">387</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">464</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金資産（Deferred tax assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">766</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">657</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他非流動資産（Other noncurrent assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,662</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">460</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産合計（Total assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35,336米ドル（USD35,336）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27,540米ドル（USD27,540）</td>
+</tr>
+<tr>
+<td colspan="4" style="text-align: center; vertical-align: top; padding: 8px;">負債および株主資本（Liabilities and shareholders’ equity）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">買掛金および未払費用（Accounts payable and accrued expenses）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,664米ドル（USD3,664）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,879米ドル（USD3,879）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延収益（Deferred income）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">408</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">200</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債（Current debt）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,262</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">756</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債合計（Total current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,334</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,835</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期負債（Long-term debt）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,872</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,154</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他非流動負債（Other noncurrent liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">639</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">623</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債合計（Total liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15,845</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14,612</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">償還可能転換社債（Redeemable convertible notes）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Micronの株主資本（Micron shareholder’s equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">額面価値0.10米ドルの普通株（Common stock of USD0.10 par value）、発行可能株式数3,000株、発行済株式数1,116株、発行済みかつ流通株式数1,112株（2016年9月1日時点では発行済株式数1,094株、流通株式数1,040株）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">112</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">109</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">払込資本剰余金（Additional capital）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8,287</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7,736</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利益剰余金（Retained earnings）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10,260</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,299</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">自己株式（Treasury stock）、保有株式4株（2016年9月1日時点では54株）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(67)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（1,029）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の包括利益累計額（Accumulated other comprehensive income (loss)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(35)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Micronの株主資本合計（Total Micron shareholders’ equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18,621</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12,080</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">子会社における非支配持分（Noncontrolling interests in subsidiaries）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">849</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">848</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純資産合計（Total equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19,470</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12,928</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債および株主資本合計（Total liabilities and shareholders’ equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35,336</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27,540米ドル（USD27,540）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2426-R-s05-EXH20">
+<h3 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 20<span style="display: block;"> Micron Technology, Inc. Income Taxes Note to the Consolidated Financial Statements </span></h3>
+<p>税引前利益（損失）および法人税（費用）（利益）（income tax (provision) benefit）の内訳は以下のとおりである：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s05-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">（単位：百万米ドル）（USD millions）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益（損失）、非支配持分に帰属する純利益（損失）、および持分法適用投資先の純利益（損失）に対する持分（Income (loss) before income taxes, net income (loss) attributable to noncontrolling interests, and equity in net income (loss) of equity method investees）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">海外（Foreign）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,252米ドル（USD5,252）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（353米ドル）（USD(353)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,431米ドル（USD2,431）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">US</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(56)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">72</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">178</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,196米ドル（USD5,196）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（281米ドル）（USD(281)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,609米ドル（USD2,609）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税（費用）（利益）（Income tax (provision) benefit）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当期（Current）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">海外（Foreign）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（152米ドル）（USD(152)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（27米ドル）（USD(27)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（93米ドル）（USD(93)）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">State</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国連邦（US federal）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(153)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(28)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(88)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延（Deferred）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国連邦（US federal）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">State</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">海外（Foreign）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(32)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(85)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(69)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税（費用）（Income tax (provision)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（114米ドル）（USD(114)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（19米ドル）（USD(19)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（157米ドル）（USD(157)）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>米国連邦の法定税率（US federal statutory rate）を用いて計算された法人税（費用）と、実際の法人税（費用）（利益）（income tax (provision) benefit）との調整は、図表21に示されている：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s05-EXH21">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 21<span style="display: block;">Company Income Tax (US dollar millions) </span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国連邦法人税（費用）（利益）（US federal income tax (provision) benefit）（法定税率ベース）（at statutory rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（1,819米ドル）（USD1,819）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD98</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（913米ドル）（USD913）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">海外税率差異（Foreign tax rate differential）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,571</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(300)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">515</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">評価性引当金の変動（Change in valuation allowance）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">64</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">63</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">260</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">未認識税務ベネフィットの変動（Change in unrecognized tax benefits）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">52</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(118)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税額控除（Tax credits）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">66</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">48</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">53</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非支配投資取引（Noncontrolling investment transactions）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">57</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Other</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(8)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(11)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税（費用）（利益）（Income tax (provision) benefit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(114)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（19米ドル）（USD19）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（157米ドル）（USD157）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>州税（State taxes）は、2017年8月31日時点で2億3,300万米ドル（USD233 million）の投資税額控除（investment tax credits）を反映している。繰延法人税（deferred income taxes）は、財務報告目的と税務目的における資産および負債の帳簿価額の差異（temporary differences）による純税効果を反映している。図表22に示される期間末時点における同社の繰延税金資産（deferred tax assets）および繰延税金負債（deferred tax liabilities）の内訳は以下のとおりである：</p>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s05-EXH22">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 22<span style="display: block;">Deferred Tax Assets and Liabilities (US dollar millions)</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金資産（Deferred tax assets）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰越欠損金および税額控除の繰越（Net operating loss and tax credit carryforwards）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,426米ドル（USD3,426）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,014米ドル（USD3,014）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">未払給与・賃金および福利厚生（Accrued salaries, wages, and benefits）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">211</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">142</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他未払負債（Other accrued liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">76</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Other</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">86</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">65</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金資産総額（Gross deferred assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,782</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,297</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">評価性引当金控除（Less valuation allowance）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（2,321）（USD(2,321)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（2,107）（USD(2,107)）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">評価性引当金控除後の繰延税金資産（Deferred tax assets, net of valuation allowance）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,461</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,190</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金負債（Deferred tax liabilities）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">債務割引（Debt discount）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(145)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(170)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産（Property, plant, and equipment）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(300)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(135)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">一部子会社の未送金利益（Unremitted earnings on certain subsidiaries）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(123)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(121)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">製品およびプロセス技術（Product and process technology）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(85)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(81)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Other</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(59)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(28)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金負債（Deferred tax liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(712)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(535)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純繰延税金資産（Net deferred tax assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">749米ドル（USD749）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">655米ドル（USD655）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">表示区分（Reported as）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動繰延税金資産（その他流動資産に含まれる）（Current deferred tax assets (included in other current assets)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">USD—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金資産（Deferred tax assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">766</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">657</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動繰延税金負債（買掛金および未払費用に含まれる）（Current deferred tax liabilities (included in accounts payable and accrued expenses)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金負債（その他非流動負債に含まれる）（Deferred tax liabilities (included in other noncurrent liabilities)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(17)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純繰延税金資産（Net deferred tax assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">749米ドル（USD749）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">655米ドル（USD655）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>同社は、米国の純繰延税金資産（net deferred tax assets）のほぼすべてに対して評価性引当金（valuation allowance）を計上している。2017年8月31日時点で、同社は米国の繰越欠損金（net operating loss carryforwards）合計38億8,000万米ドル（USD3.88 billion）および未使用の米国税額控除繰越（unused US tax credit carryforwards）4億1,600万米ドル（USD416 million）を有している。また、州税に関する未使用の繰越欠損金19億5,000万米ドル（USD1.95 billion）および未使用の州税額控除2億3,300万米ドル（USD233 million）も有している。これらの繰越欠損金および税額控除の繰越は2018年から2037年の間に失効する。</p>
+<p>2017年および2016年における評価性引当金の変動（それぞれ6,400万米ドルおよび6,300万米ドル）は、主として一部の米国および海外の繰越欠損金や税額控除繰越の実現可能性に関する不確実性に起因している。</p>
+<p>非米国子会社の未分配利益（undistributed earnings）については、当該子会社からの配当支払が追加の税負担を生じさせると見込まれる範囲において、繰延税金の引当が行われている。2017年8月31日時点で残存する未分配利益129億1,000万米ドル（USD12.91 billion）は無期限に再投資されている（indefinitely reinvested）。これらの未送金利益（unremitted earnings）に関する未認識の繰延税金負債の金額は実務上算定できない。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2426-R-s05-EXM6">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 6<span style="display: block;">Financial Analysis</span></h3>
+<section>
+<p>図表18～図表20に示されたMUの財務諸表情報および開示を用いて、以下の設問に答えよ：</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>MUは2017年において、総繰延税金資産（gross deferred assets）37億8,200万米ドル（USD3,782 million）に対して、23億2,100万米ドル（USD2,321 million）の評価性引当金を開示している（図表20参照）。この評価性引当金の存在は、MUの将来の収益見通しに関して何らかの示唆を与えるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>図表20によれば、MUの繰延税金資産（deferred tax assets）は2037年まで段階的に失効する（繰越欠損金および税額控除繰越は2018年から2037年）。</p>
+<p>同社は比較的若い企業であるため、これらの失効の多くは期間の後半に集中している可能性が高い。米国の繰越欠損金の累計が38億8,000万米ドルであることから、評価性引当金は、今後20年間で同社が38億8,000万米ドルの利益を合理的に稼得できない可能性を示唆しているとも考えられる。しかし、図表18から分かるように、MUは2017年および2015年に利益を計上しており、今後も利益を生み出し続ける場合には、繰延税金資産が認識される可能性が高まるため、評価性引当金は将来的に減少する可能性がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>連邦法定税率（federal statutory tax rate）が21％に変更された場合、MUの繰延税金資産および繰延税金負債はどのような影響を受けるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>MUの純繰延税金資産は7億4,900万米ドル（USD749 million）であり、繰延税金資産が繰延税金負債を上回っている。連邦法定税率が現行の35％から21％に引き下げられると、これらの純繰延税金資産の価値は低下する。また、将来において評価性引当金が減少する可能性があるため（解答1の議論参照）、その影響はさらに大きくなる可能性がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>MUが評価性引当金（valuation allowance）を使用していなかった場合、報告利益（reported earnings）はどのような影響を受けたか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>図表20の開示によれば、評価性引当金の増加は、2017年の損益計算書における法人税費用（income tax provision）を6,400万米ドル増加させている。将来において評価性引当金が減少すれば、同様に報告上の法人税費用は減少する（実際の税額は財務報告目的で設定された評価性引当金の影響を受けない）（解答1の議論参照）。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>2017年におけるMUの38億8,000万米ドルの繰越欠損金（net operating loss carryforwards）（図表20参照）は、買収企業が提示する評価額にどのような影響を与えるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>買収企業が利益を計上している場合、MUの繰越欠損金を利用して自社の税負担を相殺できる可能性がある。買収者にとっての価値は、買収者の税率および実現時期の見込みに基づく繰越欠損金の現在価値（present value）となる。買収企業の税率が高く、かつ収益性が高いほど、より早期にその恩恵を享受できる。したがって、現在の税率が高い買収企業は、税率が低い買収企業よりも理論上高い価格を支払う意思がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>アナリストはどのような場合にMUの繰延税金負債（deferred tax liability）を負債（debt）または資本（equity）として扱うべきか。また、どのような場合に負債対資本比率（debt-to-equity ratio）を計算する際に繰延税金負債を両方から除外すべきか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>繰延税金負債が将来の税支払いを伴って解消（reverse）されると予想される場合、アナリストはそれを負債として分類すべきである。解消が見込まれない場合には、キャッシュアウトフローの発生が期待されないため、資本として扱うべきである。例えば、将来の損失により法人税が発生しない場合や、税法の変更により税金が支払われない場合などが考えられる。繰延税金負債は、一時差異の解消に伴う税支払いの金額および時期の両方が不確実である場合、負債および資本の双方から除外すべきである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2426-R-s05-Ba">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Question Set</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s05-Q6"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>繰延税金負債は、以下の場合に資本として扱われるべきである：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 解消が見込まれない場合</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。負債が解消されない場合、将来の税支払いは必要なく、この「負債」は資本として扱うべきである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 税支払いの時期が不確実である場合</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。負債が解消されない場合、将来の税支払いは必要なく、この「負債」は資本として扱うべきである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 税支払いの金額が不確実である場合</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。負債が解消されない場合、将来の税支払いは必要なく、この「負債」は資本として扱うべきである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s05-Q7"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>税支払いの時期および金額の両方が不確実である場合、アナリストは繰延税金負債をどのように扱うべきか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 資本（equity）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。一時差異の解消に伴う税支払いの金額および時期の両方が不確実な場合、繰延税金負債は負債および資本の双方から除外すべきである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 負債（liabilities）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。一時差異（temporary differences）の解消に伴う税支払いの金額および時期の両方が不確実である場合、繰延税金負債（deferred tax liability）は負債および資本の双方から除外すべきである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 負債でも資本でもない（neither liabilities nor equity）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。一時差異（temporary differences）の解消に伴う税支払いの金額および時期の両方が不確実である場合、繰延税金負債（deferred tax liability）は負債および資本の双方から除外すべきである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<section>
+<p>注記I：法人税（Note I: Income Taxes）</p>
+<p>税引前利益（earnings before income taxes）の内訳は図表23に示されている：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s05-EXH23">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 23<span style="display: block;"> Earnings before Income Taxes (US dollar thousands)</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">第3年度（Year 3）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">第2年度（Year 2）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">第1年度（Year 1）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="text-align: left; vertical-align: top; padding: 8px;">税引前利益（Earnings before income taxes）：</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国（United States）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">88,157米ドル（USD88,157）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75,658米ドル（USD75,658）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59,973米ドル（USD59,973）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">海外（Foreign）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">116,704</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">113,509</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">94,760</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">204,861米ドル（USD204,861）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">189,167米ドル（USD189,167）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">154,733米ドル（USD154,733）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>法人税費用（provision for income taxes）の内訳は図表24に示されている：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s05-EXH24">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 24<span style="display: block;"> Provision for Income Taxes (US dollar thousands)</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">第3年度（Year 3）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">第2年度（Year 2）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">第1年度（Year 1）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td colspan="6" style="text-align: left; vertical-align: top; padding: 8px;">法人税（Income taxes）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当期（Current）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">連邦（Federal）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30,632米ドル（USD30,632）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22,031米ドル（USD22,031）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18,959米ドル（USD18,959）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">海外（Foreign）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28,140</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27,961</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22,263</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">58,772米ドル（USD58,772）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">49,992米ドル（USD49,992）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">41,222米ドル（USD41,222）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延（Deferred）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">連邦（Federal）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（4,752米ドル）（USD4,752）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,138米ドル（USD5,138）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,336米ドル（USD2,336）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">海外（Foreign）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">124</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,730</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">621</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（4,628）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6,868</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,957</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">54,144米ドル（USD54,144）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">56,860米ドル（USD56,860）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">44,179米ドル（USD44,179）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s05-Q8"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>第3年度において、同社のUS GAAP（US GAAP）損益計算書に計上された法人税費用（provision for income taxes）として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 30,632米ドル（USD30,632）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。第3年度の法人税費用は54,144米ドルであり、これは当期法人税58,772米ドルのうち、4,628米ドルが繰延税金であることによる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 54,144米ドル（USD54,144）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。第3年度の法人税費用は54,144米ドルであり、これは当期法人税58,772米ドルのうち、4,628米ドルが繰延税金であることによる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 58,772米ドル（USD58,772）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。第3年度の法人税費用は54,144米ドルであり、これは当期法人税58,772米ドルのうち、4,628米ドルが繰延税金であることによる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s05-Q9"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>同社の実効税率（effective tax rate）が最も高かったのはどの年度か。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 第1年度（Year 1）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。実効税率30.1％（56,860 / 189,167）は、第1年度および第3年度の実効税率よりも高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 第2年度（Year 2）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。実効税率30.1％（56,860 / 189,167）は、第1年度および第3年度の実効税率よりも高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 第3年度（Year 3）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。実効税率30.1％（56,860 / 189,167）は、第1年度および第3年度の実効税率よりも高い。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s05-Q10"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>同社の米国所得に対する実効税率と比較して、海外所得に対する実効税率はどのようであったか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 各年度において低い</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。第3年度における海外事業の実効税率は24.2％［（28,140＋124）/ 116,704］であり、米国の実効税率は［（30,632 − 4,752）/ 88,157］＝29.4％である。第2年度では海外の実効税率は26.2％、米国は35.9％である。第1年度では海外は24.1％、米国は35.5％である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 各年度において高い</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。第3年度における海外事業の実効税率は24.2％［（28,140＋124）/ 116,704］であり、米国の実効税率は［（30,632 − 4,752）/ 88,157］＝29.4％である。第2年度では海外の実効税率は26.2％、米国は35.9％である。第1年度では海外は24.1％、米国は35.5％である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 期間によって高い場合と低い場合がある</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。第3年度における海外事業の実効税率は24.2％［（28,140＋124）/ 116,704］であり、米国の実効税率は［（30,632 − 4,752）/ 88,157］＝29.4％である。第2年度では海外の実効税率は26.2％、米国は35.9％である。第1年度では海外は24.1％、米国は35.5％である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+<section>
+<p>ある企業の法人税費用（provision for income taxes）は、会計方針の変更の累積的影響（cumulative effect of change in accounting principles）控除前の継続事業からの損失（loss from continuing operations）に帰属する実効税率（effective tax rates）を生じさせ、その税率は34％の連邦法定税率（statutory federal income tax rate）と異なっている（図表25に要約）。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2426-R-s05-EXH25">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 25<span style="display: block;">Effective Tax Rates</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">6月30日終了年度（Year Ended 30 June）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">第3年度（Year 3）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">第2年度（Year 2）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">第1年度（Year 1）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">継続事業に対する34％の連邦法人税率に基づく予想法人税費用（利益）（Expected federal income tax expense (benefit) from continuing operations at 34 percent）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（112,000米ドル）（USD112,000）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">768,000米ドル（USD768,000）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">685,000米ドル（USD685,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税務上損金算入されない費用（Expenses not deductible for income tax purposes）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">357,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">51,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">州所得税（連邦税効果控除後）（State income taxes, net of federal benefit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">132,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延税金資産に対する評価性引当金の変動（Change in valuation allowance for deferred tax assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（150,000）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（766,000）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（754,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税費用（Income tax expense）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">227,000米ドル（USD227,000）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">56,000米ドル（USD56,000）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">82,000米ドル（USD82,000）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s05-Q11"><span class="cfa-curriculum-question-with-label">6. </span>
+<p>第3年度における同社の純利益（損失）（net income (loss)）として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. （217,000米ドル）（USD217,000）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。法定税率34％に基づく法人税費用は112,000米ドルの利益（benefit）であり、これは税引前利益が112,000 / 0.34 = （329,412米ドル）の損失であったことを示唆する。実際の法人税費用は227,000米ドルである。（329,412）− 227,000 = （556,412）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. （329,000米ドル）（USD329,000）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。法定税率34％に基づく法人税費用は112,000米ドルの利益（benefit）であり、これは税引前利益が112,000 / 0.34 = （329,412米ドル）の損失であったことを示唆する。実際の法人税費用は227,000米ドルである。（329,412）− 227,000 = （556,412）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. （556,000米ドル）（USD556,000）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。法定税率34％に基づく法人税費用は112,000米ドルの利益（benefit）であり、これは税引前利益が112,000 / 0.34 = （329,412米ドル）の損失であったことを示唆する。実際の法人税費用は227,000米ドルである。（329,412）− 227,000 = （556,412）。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s05-Q12"><span class="cfa-curriculum-question-with-label">7. </span>
+<p>第3年度における357,000米ドルの調整は、最も可能性が高いものとして以下のどれをもたらしたか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 繰延税金資産の増加（increase in deferred tax assets）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。税務上損金算入されない会計上の費用は恒久差異（permanent difference）を生じさせるため、繰延税金は発生しない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 繰延税金負債の増加（increase in deferred tax liabilities）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。税務上損金算入されない会計上の費用は恒久差異（permanent difference）を生じさせるため、繰延税金は発生しない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 繰延税金資産および繰延税金負債に変化はない（no change to deferred tax assets and liabilities）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。税務上損金算入されない会計上の費用は恒久差異（permanent difference）を生じさせるため、繰延税金は発生しない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2426-R-s05-Q13"><span class="cfa-curriculum-question-with-label">8. </span>
+<p>提示された3年間において、繰延税金資産に対する評価性引当金（valuation allowance）の変動は、最も可能性が高いものとして何を示唆しているか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 将来の収益性の見通しの低下（decreased prospect for future profitability）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。3年間にわたり、評価性引当金の変動は累積の法人税を1,670,000米ドル減少させた。評価性引当金の減少は、企業が繰延税金資産を相殺するのに十分な課税所得を得る可能性が「高い（more likely than not）」と判断されたことによる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 将来の収益性の見通しの向上（increased prospects for future profitability）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。3年間にわたり、評価性引当金の変動は累積の法人税を1,670,000米ドル減少させた。評価性引当金の減少は、企業が繰延税金資産を相殺するのに十分な課税所得を得る可能性が「高い（more likely than not）」と判断されたことによる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 資産が税務上の簿価（tax base）よりも高い価値で計上されていること（assets being carried at a higher value than their tax base）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。3年間にわたり、評価性引当金の変動は累積の法人税を1,670,000米ドル減少させた。評価性引当金の減少は、企業が繰延税金資産を相殺するのに十分な課税所得を得る可能性が「高い（more likely than not）」と判断されたことによる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143683_904_Corporate_Income_Tax_Rates.html" >← 前へ</a>
+  <span class="title">9.05 | Presentation and Disclosure</span>
+  <a href="courses_1867_modules_items_143692_Glossary_Analysis_of_Income_Taxes.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

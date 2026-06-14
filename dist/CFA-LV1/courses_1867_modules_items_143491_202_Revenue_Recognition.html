@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.02 | Revenue Recognition</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2418-R-s02-R-1" title="2.02 | Revenue Recognition">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：損益計算書の分析（Analyzing Income Statements）　2.02｜収益認識（Revenue Recognition）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">収益認識の一般原則、具体的な適用、および収益認識の選択が財務分析に与える影響を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<section id="CFA2418-R-s02-01-01">
+<h3 class="dp-heading">一般原則（General Principles）</h3>
+<p>発生主義会計（accrual accounting）の基本原則は、収益は稼得されたときに認識（損益計算書に計上）されるというものである。したがって、企業の財務記録は、所有権のリスクと便益が移転した時点での販売収益を反映することになる。これは多くの場合、財やサービスが引き渡された時点である。信用取引で引き渡された場合、売掛金（accounts receivable）などの関連資産が計上される。その後、現金が受け取られると、単に売掛金の回収として記録される。同様に、企業が先に現金を受け取り、その後に商品やサービスを提供する場合もある。この場合、企業は現金受領時に未稼得収益（unearned revenue）または繰延収益（deferred revenue）として負債を計上し、商品やサービスの提供に応じて時間をかけて収益を認識する。例えば、クラウド型ソフトウェアの1年分のサブスクリプション料金を前受けするケースが挙げられる。</p>
+</section>
+<section id="CFA2418-R-s02-01-02">
+<h3 class="dp-heading">収益認識に関する会計基準（Accounting Standards for Revenue Recognition）</h3>
+<p>2014年5月にIASB（International Accounting Standards Board）およびFASB（Financial Accounting Standards Board）によって公表された収斂基準は、収益認識の基本原則にいくつかの変更を導入した。両基準の内容はほぼ同一であり、特に断りがない限り両方に適用される。この収斂基準は、さまざまな収益創出活動に適用可能な原則ベース（principles-based）のアプローチを提供することを目的としている。</p>
+<p>収斂基準の中核原則は、「企業が顧客に約束した財またはサービスの移転を、当該財またはサービスと引き換えに企業が受け取ると見込まれる対価を反映した金額で描写するように収益を認識する」ことである。この原則を達成するために、次の5つのステップが示されている：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA2418-R-s02-L1">
+<li class="cfa-curriculum-list-item">顧客との契約（contract）を識別する</li>
+<li class="cfa-curriculum-list-item">契約における個別または独立した履行義務（performance obligations）を識別する</li>
+<li class="cfa-curriculum-list-item">取引価格（transaction price）を決定する</li>
+<li class="cfa-curriculum-list-item">取引価格を契約内の履行義務に配分する</li>
+<li class="cfa-curriculum-list-item">履行義務が充足された時点（または充足されるにつれて）収益を認識する</li>
+</ol>
+<p>基準によれば、契約とは商業的実質（commercial substance）を有する当事者間の合意および約束であり、支払条件を含む各当事者の権利と義務を定めるものである。また、回収可能性（collectability）が高い場合にのみ契約が存在するとされる。両基準は同じ文言を用いるが、「probable」の閾値は異なる。IFRSでは「より可能性が高い（more likely than not）」ことを意味し、US GAAPでは「発生する可能性が高い（likely）」ことを意味する。このため、経済的に類似した契約でもIFRSとUS GAAPで異なる処理となる可能性がある。</p>
+<p>契約における履行義務は、独立した財またはサービスを移転する約束を表す。顧客が単独または容易に利用可能な他の資源と組み合わせて便益を得られる場合、また契約内の他の約束から分離可能である場合、その財またはサービスは独立しているとみなされる。識別された各履行義務は個別に会計処理される。</p>
+<p>取引価格は、契約で識別された財またはサービスの移転と引き換えに売手が受け取ると見込む金額である。この取引価格は各履行義務に配分される。収益は履行義務が充足された時点で認識される。第3および第4ステップは金額に関するものであり、第5ステップは認識のタイミングに関するものである。認識される金額は回収可能性の見込みや、複数の履行義務への配分を反映する。</p>
+<p>収益は、その後に取り消される可能性が非常に低い場合にのみ認識されるべきである。取り消される可能性が高い場合、売手は販売時に最小限の収益のみを認識し、返金負債（refund liability）および返品権資産（right to returned goods asset）を、在庫の帳簿価額から回収コストを差し引いた額に基づいて貸借対照表に計上する。</p>
+<p>企業は、財またはサービスの支配（control）を顧客に移転することで履行義務を充足できる場合に収益を認識する。顧客が支配を取得したかを判断する際には、次の要因を考慮する：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2418-R-s02-L2">
+<li class="cfa-curriculum-list-item">企業が現在の支払請求権（present right to payment）を有しているか</li>
+<li class="cfa-curriculum-list-item">顧客が法的所有権（legal title）を有しているか</li>
+<li class="cfa-curriculum-list-item">顧客が物理的占有（physical possession）を有しているか</li>
+<li class="cfa-curriculum-list-item">顧客が所有に伴う重要なリスクおよび便益を有しているか</li>
+<li class="cfa-curriculum-list-item">顧客が財またはサービスを受領（accepted）しているか</li>
+</ul>
+<p>単一の成果物を単一時点で提供する単純な契約では、これら5つのステップの適用は容易である。しかし、履行義務が時間にわたって充足される場合、複数期間契約の条件が変更される場合、または複数の財・サービス要素を含む場合などの複雑な契約では、会計処理の選択は明確ではない。基準のステップは、多くの状況に一般化可能な指針を提供することを目的としている。</p>
+<p>履行義務が充足され、支払いに関する不確実性がない場合、収益および売掛金が認識される。収益は認識されるが、顧客の支払いが将来の履行に条件付けられている場合、履行義務が満たされるまで貸借対照表には契約資産（contract asset）が計上され、その後売掛金が認識される。財またはサービスの移転前に対価を受領した場合、売手は契約負債（contract liability）を計上する。</p>
+<p>アナリストとして、実務におけるビジネスモデルの多様性を反映した複雑な収益認識方針を持つ企業に数多く遭遇することになる。実際の企業を基にしたいくつかの例が例1で示されている。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2418-R-s02-EXM-1-1">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例1　収益認識収斂基準の適用（Applying the Converged Revenue Recognition Standards）</h4>
+<section id="CFA2418-R-s02-01-02-01-01">
+<h6 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-h2">Principal Versus Agent</h6>
+<p>MegaDigitalは商品を販売し迅速に顧客へ配送するオンラインマーケットプレイスである。一部の取引では、商品が顧客に移転される前にMegaDigitalが商品を支配しており、プリンシパル（principal）として行動する。他の取引では、第三者販売者が支配する商品の移転を仲介するエージェント（agent）として行動する。MegaDigitalがプリンシパルである取引では、収益は商品の移転に対して受け取る総額で計上される。一方、エージェントである取引では、収益は手数料またはコミッションに相当する部分のみが計上される。これはコモンサイズ分析や比率分析に大きな影響を与える可能性がある。エージェント取引では収益は低くなるが利益率は高くなる。</p>
+<p>MegaDigitalがある商品をプリンシパルとしてUSD100で販売し、USD70で仕入れたとする。さらに販売費及び一般管理費（selling, general, and administrative costs）がUSD10発生する場合、マージンは次のようになる：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s02-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Sales</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">USD100</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上原価（Cost of Sales）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">70</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">70％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上総利益（Gross Profit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">SG&amp;A</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期純利益（Net Profit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20％</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>同一の商品について同じ販売価格でMegaDigitalがエージェント（agent）として行動する場合、MegaDigitalはUSD30のコミッションを受け取り、依然としてUSD10のその他費用を負担する。この場合のマージンは次の通りである：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s02-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Sales</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">USD30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上原価（Cost of Sales）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上総利益（Gross Profit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">SG&amp;A</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">33％</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期純利益（Net Profit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">67％</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>プリンシパル（principal）としての販売とエージェントとしての販売の両方を行う企業（多くのEコマース企業など）については、アナリストは全体のマージンを評価・予測するために、プリンシパル販売とエージェント販売の相対的な割合を評価する必要がある。特にこの販売構成比が変化すると予想される場合には重要である。</p>
+</section>
+<section id="CFA2418-R-s02-01-02-01-02">
+<h6 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-h2">Franchising/Licensing</h6>
+<p>Mahjong Pizzaは、世界中でピザ宅配レストランを運営するとともにフランチャイズ展開も行っている。収益認識基準は、企業が顧客との契約から生じる収益を、収益およびキャッシュフローの性質、金額、タイミング、不確実性が経済的要因によってどのように影響されるかを示すカテゴリーに分解して表示することを求めている。この要件を満たすため、企業は連結損益計算書（consolidated statements of income）において収益を分解表示しなければならない。Mahjong Pizzaは次のような区分で収益を表示している：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2418-R-s02-L3">
+<li class="cfa-curriculum-list-item">自社運営店舗収益（company-owned stores revenues）</li>
+<li class="cfa-curriculum-list-item">フランチャイズ・ロイヤルティおよび手数料（franchise royalties and fees）</li>
+<li class="cfa-curriculum-list-item">サプライチェーン収益（supply chain revenues）</li>
+</ul>
+<p>自社運営店舗収益は、Mahjongが所有・運営する店舗での食品の小売販売による収益である。</p>
+<p>フランチャイズ・ロイヤルティおよび手数料は、Mahjongレストランの運営を許可された第三者フランチャイジーからの手数料で構成される。各フランチャイジーは通常、売上高の5.5％に相当する手数料を支払う必要がある。企業はフランチャイジーの総売上ではなく、このロイヤルティを収益として認識する。新規店舗開設に伴う前払手数料は当初繰延収益（deferred revenue）として認識され、その後通常10年間のフランチャイズ契約期間にわたり定額法（straight-line basis）で収益に振り替えられる。</p>
+<p>サプライチェーン収益は主に、フランチャイジーに対する食品、設備、備品の販売から構成される。収益は、出荷条件に基づき関連製品がフランチャイジーに引き渡された時点で認識される。</p>
+</section>
+<section id="CFA2418-R-s02-01-02-01-03">
+<h6 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-h2">Software as a Service or License</h6>
+<p>CReaM Software and Servicesは、企業、政府、非営利団体向けに顧客関係管理ソフトウェア（customer relationship management software）およびサービスを提供するテクノロジー企業である。顧客はソフトウェアライセンスを購入して自社システムにインストールすることもできるし、CReaMのクラウドサービスプラットフォームを通じてインターネット経由でソフトウェアを利用する月額サブスクリプション契約を結ぶこともできる。</p>
+<p>IFRS第15号（IFRS 15）の下では、企業が顧客にソフトウェアの使用ライセンスを提供し、顧客が自社システムにインストールする場合、収益はライセンス期間にわたって、またはライセンス移転時点で認識される。以下の条件のいずれかが満たされる場合、収益はライセンス期間にわたり認識される：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2418-R-s02-L4">
+<li class="cfa-curriculum-list-item">ソフトウェア提供者がソフトウェアに重大な影響を与える活動（例：アップグレードや機能強化）を継続的に行う</li>
+<li class="cfa-curriculum-list-item">その権利が顧客に対してこれらの活動の正または負の影響をもたらす</li>
+<li class="cfa-curriculum-list-item">これらの活動が財またはサービスの移転を伴わない</li>
+</ul>
+<p>これらの条件が満たされない場合、収益はライセンスが顧客に移転された時点で認識される。CReaMの年次報告書の注記には次のように記載されている：</p>
+<div class="cfa-curriculum-blockquote">
+<p>ソフトウェア収益には、顧客が提供時点のソフトウェアを使用する権利を得る期間ライセンスおよび永久ライセンスに関連する収益が含まれる。これらのライセンスからの収益は通常、ソフトウェアが顧客に提供された時点で認識される。ソフトウェアのサポートおよびアップデートからの収益は、サポートおよびアップデートが提供されるにつれて、通常契約期間にわたり均等に認識される。</p>
+</div>
+<p>CReaMのライセンス条件では、ソフトウェアは「現状有姿（as is）」で販売され、収益はライセンス移転時点で認識される。ただし、アップデートのためのサポート契約も提供しており、この収益は契約期間にわたり認識される。</p>
+<p>CReaMのクラウド顧客は、継続的に更新されるソフトウェアにアクセスすることができる。CReaMは次のように報告している：</p>
+<div class="cfa-curriculum-blockquote">
+<p>クラウドサービスにより、顧客はソフトウェアの所有権を取得することなく当社のソフトウェアを利用できる。収益は通常契約期間にわたり認識される。当社のサブスクリプションサービス契約のほとんどは解約不可であり、返金条項を含まない。</p>
+</div>
+<p>CReaMの場合、アナリストは、前払いで収益が認識されるライセンス型ソフトウェアと、時間にわたって収益が認識されるサービス型ソフトウェア（software as a service）との収益構成を理解する必要がある。</p>
+</section>
+<section id="CFA2418-R-s02-01-02-01-04">
+<h6 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-h2">Long-Term Contracts</h6>
+<p>Armored Vehicles Inc.（AVI）は、軍向けの兵器システムおよび車両を製造している。同社は通常、数年にわたる長期契約を締結する。これらの契約における履行義務は時間の経過に伴って充足される。IFRS第15号（IFRS 15）では、以下のいずれかの条件を満たす場合、履行義務は時間の経過とともに充足されるとされる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2418-R-s02-L5">
+<li class="cfa-curriculum-list-item">企業の履行に伴い、顧客が同時に便益を受け取り消費する場合（例：定常的なサービス契約）</li>
+<li class="cfa-curriculum-list-item">企業の履行が、顧客が支配する資産を創出または増強する場合（例：顧客が所有・支配する工場の改修や政府機関向けの道路建設）</li>
+<li class="cfa-curriculum-list-item">企業の履行が企業にとって代替的用途を持たない資産を生み出し、かつ当該時点までの履行に対する支払いを受ける強制可能な権利（enforceable right to payment）を有する場合（例：他の顧客に販売できないような特注の大型資産、例えば兵器システムの製造）</li>
+</ul>
+<p>AVIは、顧客への支配の継続的な移転に基づき、製品の製造やサービス提供の進捗に応じて契約期間にわたり長期契約収益を認識する。同社の軍事契約では、顧客が契約を一方的に解除できる条項、発生費用に合理的な利益を加えた金額の支払い義務、および仕掛品の支配権を取得できる条項により、この支配移転が裏付けられている。</p>
+<p>IFRS第15号の下では、進捗度はアウトプット法（output methods：例 評価額や完成単位）またはインプット法（input methods：例 総見積費用に対する発生費用）により測定される。AVIは、長期契約の会計処理において、各履行義務ごとの総売上、総コストおよび利益を見積もる判断的プロセスを含むとしている。売上原価は発生時に認識される。収益は、売上原価に見積利益の比例配分額を加えて決定される。費用の発生に応じて収益を認識することは、進捗の客観的な指標を提供し、顧客への支配移転の程度を最も適切に表す。</p>
+<p>例として、AVIが総額USD1,000万の兵器システム製造契約を締結し、総費用がUSD700万、利益がUSD300万と見積もられているとする。このシステムは2年で完成する。契約1年目において、AVIは総見積費用の60％にあたるUSD420万の費用を計上した。この場合、AVIは1年目にUSD600万の収益とUSD180万の利益を認識する（いずれも総額の60％）。</p>
+<p>2年目に実際の累計費用がUSD750万となって完成した場合、企業は2年目に収益USD400万、費用USD330万、利益USD70万を計上し、累計利益はUSD250万となる。</p>
+</section>
+<section id="CFA2418-R-s02-01-02-01-05">
+<h6 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-h2">Bill and Hold Arrangements</h6>
+<p>前述の長期契約に加え、AVIは顧客が直ちに引き取れない（例：保管スペース不足）特注装甲車両も製造している。IFRS第15号では、このような「ビル・アンド・ホールド（bill and hold）」契約において、顧客が製品の支配を取得した時点で履行義務が充足されたと判断できるとされる。IFRS第15号の下では、以下のすべての条件が満たされた場合に該当する：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2418-R-s02-L6">
+<li class="cfa-curriculum-list-item">ビル・アンド・ホールド契約の理由が実質的であること（例：顧客からの要請）</li>
+<li class="cfa-curriculum-list-item">製品が顧客の所有物として個別に識別されていること</li>
+<li class="cfa-curriculum-list-item">製品が顧客への物理的移転が可能な状態にあること</li>
+<li class="cfa-curriculum-list-item">企業がその製品を使用または他の顧客に振り向ける能力を持たないこと</li>
+</ul>
+<p>AVIの場合、各車両は固有の車両識別番号（vehicle identification number）によって識別され、完成時点で所有権および損失リスクは顧客に移転している。AVIは、製品が顧客への引渡し可能な状態にあるが、顧客の指示により保管されている場合に収益を認識する。</p>
+</section>
+</div>
+<p>IFRS第15号における開示要件は非常に広範であり、顧客からのキャッシュフローの性質、金額、タイミングに関する十分な情報を提供することを目的としている。企業は、顧客との契約から生じる収益を複数のカテゴリーに分解して開示する必要がある。カテゴリーは、製品の種類、地理的地域、顧客または販売チャネルの種類、契約価格条件、契約期間、または移転のタイミングなどに基づくことがある。また、契約関連資産および負債の残高とその重要な変動、残存履行義務およびそれに配分された取引価格、収益認識に関する重要な判断およびその変更についても開示が求められる。これらの開示は通常、「収益（Revenue）」などの注記で提供される。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="UnearnedRevenueContent">
+<p>まだ提供されていない財またはサービスに対して既に受領した金額に関する負債勘定；財またはサービス提供前に受領した対価。繰延収益（deferred revenue）または繰延利益（deferred income）とも呼ばれる。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143489_201_Introduction.html" >← 前へ</a>
+  <span class="title">2.02 | Revenue Recognition</span>
+  <a href="courses_1867_modules_items_143493_203_Expense_Recognition.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

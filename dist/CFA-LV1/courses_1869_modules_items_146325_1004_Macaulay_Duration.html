@@ -1,0 +1,2085 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10.04 | Macaulay Duration</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2440-R-s04-R-1" title="10.04 | Macaulay Duration">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール10: 金利リスク(Interest Rate Risk)とリターン(Return) 10.04 | マコーレー・デュレーション(Macaulay Duration)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">マコーレー・デュレーション(Macaulay duration)を定義し、計算し、解釈する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>前回のレッスンでは、マコーレー・デュレーション(Macaulay duration)を、再投資リスク(Reinvestment risk)と価格リスク(Price risk)を相殺する債券の保有期間(Holding period)として位置づけました。ここではその計算に進みます。</p>
+<p>伝統的な固定利付債(Traditional fixed-rate bond)のマコーレー・デュレーション(Macaulay duration)を理解する最も簡単な方法は、債券のキャッシュフロー(Cash flows)受領までの期間の加重平均であり、その計算における各キャッシュフローの重みは、債券の額面価格(Full price)に対する各キャッシュフローの割合(現在価値 Present value)である、と考えることです。一般式を紹介する前に、具体例を挙げてマコーレー・デュレーション(Macaulay duration)の計算を示します: 前回のレッスンで使用したBRWA社(BRWA Corp.)の10年満期、年6.2%クーポン(Eurobond)です。</p>
+<p>図表4(Exhibit 4)は、発行時(Issuance)のマコーレー・デュレーション(Macaulay duration)の計算を示しています。債券が額面で発行され、2025年10月15日に決済(Settled)され、2035年10月15日に満期(Maturity)を迎えると仮定しています。これは社債(Corporate bond)であるため、30/360日数計算基準(Day-count basis)を使用します。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2440-R-s04-EXH4">
+<h3 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">図表4(BRWA Corp. 10-Year, 6.2% Annual Eurobond 発行時のマコーレー・デュレーション(Macaulay Duration))</h3>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン(Coupon)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">6.20%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年間クーポン頻度(Coupon frequency per year)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">額面100に対する価格(Price per 100 par value)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期利回り(Yield-to-maturity)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">6.20%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">決済日(Settlement date)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2025年10月15日(15 October 2025)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期日(Maturity)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2035年10月15日(15 October 2035)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">残存年数(Years to maturity)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(1)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(2)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(3)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(4)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(5)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(6)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(4) ÷ 現在価値の合計(Sum of present values)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1) × (5)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">現在価値(Present value)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to receipt × weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.8380</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0584</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0584</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.4972</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0550</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1099</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.1763</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0518</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1553</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.8741</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0487</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1950</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.5895</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0459</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.2295</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.3216</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0432</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.2593</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0693</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0407</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.2849</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.8317</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0383</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3065</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.6080</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0361</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3247</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">106.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">58.1942</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5819</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.8194</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.7429</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+</div>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2440-R-s04-L1">
+<li class="cfa-curriculum-list-item">列1と列2はそれぞれ、期間数とキャッシュフロー(Cash flow)受領までの期間(Time to receipt)を示しています。計算が発行時(Issuance)またはクーポン支払日(Coupon date)に行われる場合、両者は等しくなります。</li>
+<li class="cfa-curriculum-list-item">列3は額面100に対するキャッシュフロー(Cash flow)であり、列4はそのキャッシュフローの現在価値(Present value)です。</li>
+<li class="cfa-curriculum-list-item">列5は重み(Weight)、すなわち各キャッシュフロー(Cash flow)の総現在価値(Total PV)に対する割合です。最終支払い(PMT N + FV N)の106.2は債券の現在価値(PV)の58%を占めることに注意してください。</li>
+<li class="cfa-curriculum-list-item">列6はキャッシュフロー受領までの期間(Time to receipt、列2)に重み(Weight、列5)を掛けた値です。この列の合計がマコーレー・デュレーション(Macaulay duration)で7.7429となります。これは前回のレッスンでのHightest Capital(Hightest Capital)の投資期間(Investment horizon)8年に近く、再投資リスク(Reinvestment risk)と価格リスク(Price risk)がバランスされていることを意味します。</li>
+</ul>
+<p>マコーレー・デュレーション(Macaulay duration)はしばしば年率化された統計値として引用されます。この債券は年1回クーポンを支払うため、調整は不要です。もし半期クーポン債(Semiannual coupon bond)であれば、マコーレー・デュレーション(Macaulay duration)を2で割って年率化されたマコーレー・デュレーション(Macaulay duration)を求めます。年率化統計として引用される場合、単位は年(Years)です。</p>
+<p>7.7429年が債券の残存期間(Time-to-maturity)10年より短いことに注目してください。これは、マコーレー・デュレーション(Macaulay duration)がキャッシュフロー(Cash flow)受領までの期間の現在価値加重平均(Present value–weighted average)であるのに対し、残存期間(Time-to-maturity)は最終キャッシュフロー受領までの期間だからです。</p>
+<p>マコーレー・デュレーション(Macaulay duration、MacDur)の一般的な計算式は、クーポン支払日間(Coupon Dates)に計算される場合の部分的クーポン期間(Partial coupon periods)も考慮しており、式2(Equation 2)に示されています。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2440-R-s04-E2"><math>
+<semantics>
+<mrow>
+<mtext>MacDur</mtext>
+<mo>=</mo>
+<mfenced close="}" open="{">
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>−</mo>
+<mrow>
+<mi>t</mi>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</mfenced>
+<mfenced close="]" open="[">
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mn>1</mn>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mrow>
+<mi>P</mi>
+<msup>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+<mo>+</mo>
+<mfenced>
+<mrow>
+<mn>2</mn>
+<mo>−</mo>
+<mrow>
+<mi>t</mi>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</mfenced>
+<mfenced close="]" open="[">
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mn>2</mn>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mrow>
+<mi>P</mi>
+<msup>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+<mo>+</mo>
+<mo>⋯</mo>
+<mo>+</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mfenced>
+<mrow>
+<mi>N</mi>
+<mo>−</mo>
+<mrow>
+<mi>t</mi>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</mfenced>
+<mfenced close="]" open="[">
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+<mo>+</mo>
+<mi>F</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mi>N</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mrow>
+<mi>P</mi>
+<msup>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mtd>
+</mtr>
+</mtable>
+</mfenced>
+<mo>,</mo>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">2</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>t は前回のクーポン支払い日から決済日(Settlement date)までの日数(Days)です。</li>
+<li>T はクーポン期間(Coupon period)の日数(Days)です。</li>
+<li>t / T は前回支払い日から経過したクーポン期間(Coupon period)の割合(Fraction)です。</li>
+<li>PMT は期間ごとのクーポン支払い(Coupon payment per period)です。</li>
+<li>FV は満期時に支払われる将来価値(Future value)、または債券の額面(Par value)です。</li>
+<li>r は期間ごとの満期利回り(Yield-to-maturity per period)です。</li>
+<li>N は現在期間(Current period)開始時点での、満期までの均等期間数(Number of evenly spaced periods to maturity)です。</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2440-R-s04-EXM6">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例5: クーポン支払日間(Coupon Dates)のマコーレー・デュレーション(Macaulay Duration)</h3>
+<p>それでは、クーポン支払日間(Coupon Dates)におけるBRWA社(BRWA Corp.)債のマコーレー・デュレーション(Macaulay duration)を計算してみましょう。具体的には、発行から57日後の2025年12月11日です。前回の例との違いは、57日後である点です。そのため、発行時のt / T = 0ではなく、t / T = 57/360となり、各キャッシュフロー(Cash flow)の受領までの期間(Time to receipt)は57日早くなります。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Tc">
+<h4 class="cfa-curriculum-unknownType-title">発行後57日目のBRWA社(BRWA Corp.) 10年、年6.2%ユーロ債(Eurobond)のマコーレー・デュレーション(Macaulay Duration)</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン(Coupon)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">6.20%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年間クーポン頻度(Coupon frequency per year)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">額面100に対する価格(Price per 100 par value)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期利回り(Yield-to-maturity)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">6.20%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">決済日(Settlement date)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2025年12月11日(11 December 2025)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期(Maturity)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2035年10月15日(15 October 2035)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">残存年数(Years to maturity)</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Td">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(1)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(2)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(3)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(4)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(5)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(6)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(4) ÷ 現在価値の合計(Sum of present values)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1) × (5)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">現在価値(Present value)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to receipt × weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.8939</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0584</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0491</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.5498</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0550</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1012</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.2258</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0518</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1471</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.9207</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0487</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1872</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.6335</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0459</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.2222</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.3630</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0432</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.2525</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.1082</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0407</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.2784</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.8684</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0383</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3005</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.6426</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0361</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3190</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.8417</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">106.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">58.7511</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5819</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.7273</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.9570</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.5845</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>この例を前回の例と比較すると、各キャッシュフロー(Cash flow)の受領までの期間(Time to receipt)が短くなっており、57日後であることを反映して、各キャッシュフロー(Cash flow)の現在価値(Present value)が増加しています。しかし、各キャッシュフロー(Cash flow)の現在価値に対する重み(Present value weight)は同じままです。マコーレー・デュレーション(Macaulay duration、7.5845)は前回の例(7.7429)より低く、受領までの期間が短くなったことを反映しています。</p>
+<p>この例は、マコーレー・デュレーション(Macaulay duration)の重要な特性を示しています: 時間が経過し、各キャッシュフロー(Cash flow)の受領までの期間(Time to receipt)が短くなると、マコーレー・デュレーション(Macaulay duration)は減少します。</p>
+</div>
+<p>スプレッドシートだけでなく、マコーレー・デュレーション(Macaulay duration)はMicrosoft ExcelやGoogle SheetsのDURATION関数を使っても計算できます。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2440-R-s04-E">=DURATION(<em>Settlement</em>, <em>Maturity</em>, <em>Coupon</em>, <em>Yld</em>, <em>Frequency</em>, [<em>Basis</em>])</div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>Settlementは決済日(Settlement date)、DATE形式で入力</li>
+<li>Maturityは満期日(Maturity date)、DATE形式で入力</li>
+<li>Couponは年間クーポン利率(Annual coupon rate)</li>
+<li>Yldは年率換算の満期利回り(Annualized yield-to-maturity)</li>
+<li>Frequencyはクーポン支払の周期(Periodicity)、通常は年間のクーポン支払回数(Number of coupon payments per year)で、年1回なら1、半年ごとなら2、四半期ごとなら4</li>
+<li>[Basis]は日数計算規則(Day-count convention)、0または省略は30/360、1は実日/実日(act/act)、2は実日/360(act/360)、3は実日/365(act/365)</li>
+</ul>
+<p>最後に、マコーレー・デュレーション(Macaulay duration)を計算する別の方法として、微積分(Calculus)と代数(Algebra)を用いて導出された閉形式式(Closed-form equation)を使用する方法があり、式3(Equation 3)に示されています。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2440-R-s04-E3"><math>
+<semantics>
+<mrow>
+<mi>M</mi>
+<mi>a</mi>
+<mi>c</mi>
+<mi>D</mi>
+<mi>u</mi>
+<mi>r</mi>
+<mo>=</mo>
+<mfenced close="}" open="{">
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mi>r</mi>
+</mfrac>
+</mstyle>
+<mo>−</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+<mo>+</mo>
+<mfenced close="]" open="[">
+<mrow>
+<mi>N</mi>
+<mo>×</mo>
+<mo stretchy="false">(</mo>
+<mi>c</mi>
+<mo>−</mo>
+<mi>r</mi>
+<mo stretchy="false">)</mo>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mi>c</mi>
+<mo>×</mo>
+<mfenced close="]" open="[">
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+<mo stretchy="false">)</mo>
+</mrow>
+<mi>N</mi>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</mfenced>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+<mo>−</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mi>t</mi>
+<mi>T</mi>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">3</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>r は期間ごとの満期利回り(Yield-to-maturity per period)</li>
+<li>N は現在期間(Current period)開始時点での満期までの均等期間数(Number of evenly spaced periods to maturity)</li>
+<li>c は期間ごとのクーポン利率(Coupon rate per period)</li>
+<li>t は前回のクーポン支払い日から決済日(Settlement date)までの日数(Days)</li>
+<li>T はクーポン期間(Coupon period)の日数(Days)</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2440-R-s04-Ba">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット(Question Set)</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2440-R-s04-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>残存期間が3年で、半期ごと(Semiannually)に4%のクーポン(Coupon)が支払われ、価格が100の債券を考えます。この債券の年率換算マコーレー・デュレーション(Annualized Macaulay duration)に最も近いのはどれですか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 2.801年(Years)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Bが正解です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Te">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">現在価値(Present value)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to receipt × weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.961</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0196</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01961</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.922</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0192</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.03845</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.885</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0189</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.05654</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.848</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0185</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.07391</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.811</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0181</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.09057</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">102</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">90.573</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9057</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.43438</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.00000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.71346</td>
+</tr>
+<tr>
+<td colspan="5" style="text-align: left; vertical-align: top; padding: 8px;">年率換算マコーレー・デュレーション(Annualized Macaulay duration、年)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.857</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 2.857年(Years)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Bが正解です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Te">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">現在価値(Present value)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to receipt × weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.961</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0196</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01961</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.922</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0192</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.03845</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.885</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0189</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.05654</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.848</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0185</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.07391</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.811</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0181</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.09057</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">102</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">90.573</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9057</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.43438</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.00000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.71346</td>
+</tr>
+<tr>
+<td colspan="5" style="text-align: left; vertical-align: top; padding: 8px;">年率換算マコーレー・デュレーション(Annualized Macaulay duration、年)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.857</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 3.000年(Years)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Bが正解です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Te">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">現在価値(Present value)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to receipt × weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.961</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0196</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01961</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.922</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0192</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.03845</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.885</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0189</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.05654</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.848</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0185</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.07391</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.811</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0181</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.09057</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">102</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">90.573</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9057</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.43438</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.00000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.71346</td>
+</tr>
+<tr>
+<td colspan="5" style="text-align: left; vertical-align: top; padding: 8px;">年率換算マコーレー・デュレーション(Annualized Macaulay duration、年)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.857</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2440-R-s04-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>投資期間(Investment horizon)が3年の投資家が、残存期間(Four years remaining to maturity)4年、半期ごと(Semiannually)に1%クーポン(Coupon)が支払われ、満期利回り(Yield-to-maturity)0.90%の債券を購入します。金利リスク(Interest rate risk)に関して、投資家が主に懸念すべきことは次のうちどれですか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 金利上昇(Rising interest rates)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Aが正解です。この債券のマコーレー・デュレーション(Macaulay duration)は3.9312年です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Tf">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to Receipt × Weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4978</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0050</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0050</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4955</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0099</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4933</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0147</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4911</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0196</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4889</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0243</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4867</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0291</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4845</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0338</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">96.9542</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9658</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.7260</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.3920</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.8624</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td colspan="2" style="text-align: right; vertical-align: top; padding: 8px;">年率換算マコーレー・デュレーション(Annualized MacDur、年)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.9312</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>債券のマコーレー・デュレーション(Macaulay duration)が投資家の投資期間(Investment horizon、3年)より長い場合、価格リスク(Price risk)が支配的となり、投資家が主に懸念する下方リスクは金利上昇(Rising interest rates)です。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 金利下降(Falling interest rates)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Aが正解です。この債券のマコーレー・デュレーション(Macaulay duration)は3.9312年です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Tf">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to Receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash Flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to Receipt × Weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4978</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0050</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0050</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4955</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0099</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4933</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0147</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4911</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0196</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4889</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0243</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4867</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0291</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4845</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0338</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">96.9542</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9658</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.7260</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.3920</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.8624</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td colspan="2" style="text-align: right; vertical-align: top; padding: 8px;">年率換算マコーレー・デュレーション(Annualized MacDur、年)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.9312</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>債券のマコーレー・デュレーション(Macaulay duration)が投資家の投資期間(Investment horizon、3年)より長い場合、価格リスク(Price risk)が支配的となり、投資家の主な下方リスクは金利上昇(Rising interest rates)です。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 金利上昇(Rising interest rates)でも金利下降(Falling interest rates)でもない</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Aが正解です。この債券のマコーレー・デュレーション(Macaulay duration)は3.9312年です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Tf">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to Receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash Flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to Receipt × Weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4978</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0050</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0050</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4955</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0099</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4933</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0147</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4911</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0196</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4889</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0243</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4867</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0291</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4845</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0338</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">96.9542</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9658</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.7260</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.3920</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.8624</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td colspan="2" style="text-align: right; vertical-align: top; padding: 8px;">年率換算マコーレー・デュレーション(Annualized MacDur、年)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.9312</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>債券のマコーレー・デュレーション(Macaulay duration)が投資家の投資期間(Investment horizon、3年)より長い場合、価格リスク(Price risk)が支配的となり、投資家の主な下方リスクは金利上昇(Rising interest rates)です。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2440-R-s04-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>残存期間が5年、年0.5%クーポン(Coupon)支払、満期利回り(Yield-to-maturity)が-0.20%の債券を考えます。この債券の年率換算マコーレー・デュレーション(Annualized Macaulay duration)に最も近い値はどれですか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 2.4758</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Bが正解です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Tg">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to Receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>CF</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to Receipt × Weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5010</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5020</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0097</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5030</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0146</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5040</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0195</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101.5111</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9806</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.9029</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">103.5211</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.9515</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 4.9515</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Bが正解です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Tg">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to Receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>CF</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to Receipt × Weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5010</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5020</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0097</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5030</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0146</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5040</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0195</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101.5111</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9806</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.9029</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">103.5211</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.9515</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 5.3130</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Bが正解です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Tg">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to Receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>CF</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to Receipt × Weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5010</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5020</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0097</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5030</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0146</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5040</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0195</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101.5111</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9806</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.9029</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">103.5211</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.9515</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2440-R-s04-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>残存期間が5年、年0.5%クーポン(Coupon)支払、満期利回り(Yield-to-maturity)が-0.20%の債券を考えます。初回クーポン期間の91日目で、30/360日数計算基準(Basis)を仮定します。この債券の年率換算マコーレー・デュレーション(Annualized Macaulay duration)に最も近い値はどれですか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 4.2371</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Cが正解です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Th">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to Receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash Flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to Receipt × Weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5007</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0036</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5018</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0085</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5028</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0133</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5038</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0182</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101.4597</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9806</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.6550</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">103.4687</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.6987</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>クーポン期間(Coupon periods)間でスプレッドシートを使用してマコーレー・デュレーション(Macaulay duration)を計算する簡単な方法として、最初のキャッシュフロー(Cash flow)の受領までの期間(Time to receipt)を 1 – t / T（ここでは 1 – 91/360）と設定し、以降の受領までの期間(Time to receipt)を前の値に1を加える方法があります。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 4.5054</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Cが正解です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Th">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to Receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash Flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to Receipt × Weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5007</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0036</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5018</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0085</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5028</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0133</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5038</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0182</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101.4597</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9806</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.6550</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">103.4687</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.6987</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>クーポン期間(Coupon periods)間でスプレッドシートを使用してマコーレー・デュレーション(Macaulay duration)を計算する簡単な方法として、最初のキャッシュフロー(Cash flow)の受領までの期間(Time to receipt)を 1 – t / T（ここでは 1 – 91/360）と設定し、以降の受領までの期間(Time to receipt)を前の値に1を加える方法があります。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 4.6987</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答(Solution)</h3>
+<p>Cが正解です。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2440-R-s04-Th">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間(Period)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間(Time to Receipt)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー(Cash Flow)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">重み(Weight)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受領までの期間 × 重み(Time to Receipt × Weight)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5007</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0036</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5018</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0085</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5028</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0133</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.5038</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0049</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0182</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.7472</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.5000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101.4597</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9806</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.6550</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">103.4687</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.6987</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>クーポン期間(Coupon periods)間でスプレッドシートを使用してマコーレー・デュレーション(Macaulay duration)を計算する簡単な方法として、最初のキャッシュフロー(Cash flow)の受領までの期間(Time to receipt)を 1 – t / T（ここでは 1 – 91/360）と設定し、以降の受領までの期間(Time to receipt)を前の値に1を加える方法があります。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146321_1003_Investment_Horizon_and_Interest_Rate_Risk.html" >← 前へ</a>
+  <span class="title">10.04 | Macaulay Duration</span>
+  <a href="courses_1869_modules_items_146336_Glossary_Interest_Rate_Risk_and_Return.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

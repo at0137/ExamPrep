@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1001-R-s01" title="7.01 | Introduction"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール7：金利スワップ（interest rate swaps）およびその他のスワップ（other swaps）の価格決定（pricing）と評価（valuation） 7.01｜導入（Introduction）</h2>
+</header>
+<p>スワップ契約（swap contracts）は以前に、将来にわたる一連のキャッシュフロー（cash flows）を交換する確定的契約（firm commitment）として導入された。中でも、固定キャッシュフロー（fixed cash flows）と変動支払い（floating payments）を交換する金利スワップ（interest rate swaps）が最も一般的なタイプである。その後のレッスンでは、期間構造（term structure）全体にわたるフォワード契約（forward contracts）および先物契約（futures contracts）の価格決定と評価を扱い、これらはスワップ契約の構成要素（building blocks）となる。</p>
+<p>本レッスンでは、スワップ契約がこれら他のフォワード・コミットメント（forward commitment）とどのように関連しているかを考察する。金融仲介機関（financial intermediaries）は金利エクスポージャー（interest rate exposure）の管理にフォワード・レート・アグリーメント（forward rate agreements, FRAs）や短期金利先物（short-term interest rate futures）を用いることが多い一方で、発行体（issuers）や投資家（investors）は通常、スワップ契約を好む。これは、固定利付債（fixed-coupon bonds）、変動金利ローン（variable-rate loans）、または既知の将来コミットメント（known future commitments）といった、定期的なキャッシュフロー（periodic cash flows）を持つ金利感応資産・負債（rate-sensitive assets and liabilities）とより適合するためである。これらの市場参加者にとって重要なのは、スワップを用いて将来のキャッシュフローを整合させるだけでなく、その価値変化が既存または望ましい原資産エクスポージャー（underlying exposures）と一致することを確保することである。以下のレッスンでは、スワップ契約とフォワード契約を比較し、スワップの価値と価格を対比する。</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA1001-s01-B-1-b">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title">学習モジュール概要（Learning Module Overview）</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1001-s01-L1">
+<li class="cfa-curriculum-list-item">スワップ契約は、2つのカウンターパーティ（counterparties）間で将来の一連のキャッシュフローを交換する合意であるのに対し、フォワード契約は将来のある時点における単一の価値交換（single exchange of value）である。</li>
+<li class="cfa-curriculum-list-item">金利スワップは、対称的なペイオフ（symmetric payoff）を持つ確定契約（firm commitments）であり、契約開始時に現金のやり取りがない点でフォワード契約と類似しているが、固定スワップレート（fixed swap rate）が一定であるのに対し、一連のフォワード契約では各満期ごとに異なるフォワードレート（forward rates）が適用される点で異なる。</li>
+<li class="cfa-curriculum-list-item">スワップは、パー・スワップレート（par swap rate）を求めることによって価格決定される。このレートは、将来のすべての期待変動キャッシュフロー（expected floating cash flows）の現在価値（present value）と、将来のすべての固定キャッシュフロー（fixed cash flows）の現在価値が等しくなるように設定される。</li>
+<li class="cfa-curriculum-list-item">スワップの価値は、契約開始時にはゼロである（取引コスト（transaction costs）およびカウンターパーティ信用コスト（counterparty credit costs）を無視する場合）。任意の決済日において、スワップの価値は、現在の決済価値（current settlement value）と残存するすべての将来スワップ決済の現在価値の合計に等しい。</li>
+<li class="cfa-curriculum-list-item">スワップ契約の価値は、時間の経過および金利の変化に伴って変動する。例えば、将来のフォワードレート（forward rates）の上昇は、変動支払いの現在価値を増加させ、固定金利支払者（fixed-rate payer）（変動金利受取者（floating-rate receiver））にとってはマーク・トゥ・マーケット利益（MTM gain）を生み、固定金利受取者（fixed-rate receiver）（変動金利支払者（floating-rate payer））にとってはMTM損失（MTM loss）を生じさせる。</li>
+</ul>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA1001-s01-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">学習モジュール自己評価（Learning Module Self-Assessment）</h3>
+<p>これらの初期の質問は、この学習モジュールに対する現在の理解度を測るためのものである。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>次の特徴がどのフォワード・コミットメント契約に該当するかを識別せよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1001-s01-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1. 各期間ごとに設定された固定金利と市場参照金利（market reference rate, MRR）の差に基づく定期的な決済を伴う。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">A. 金利スワップおよび一連のフォワード・レート・アグリーメントの両方（Both an interest rate swap and a series of forward rate agreements）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2. 対称的なペイオフ（symmetric payoff）を持ち、契約開始時に双方にとって価値がゼロである。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">B. 一連のフォワード・レート・アグリーメント（A series of forward rate agreements, FRAs）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3. 一定の固定金利と市場参照金利（MRR）の差に基づく定期的な決済を伴う。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">C. 金利スワップ（Interest rate swap）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<ol class="cfa-curriculum-list-decimal" id="CFA1001-s01-L2">
+<li class="cfa-curriculum-list-item">Bが正しい。一連のFRAは、各期間ごとに設定された固定金利とMRRの差に基づく定期的な決済を伴う。</li>
+<li class="cfa-curriculum-list-item">Aが正しい。金利スワップと一連のFRAの両方は、対称的なペイオフを持ち、契約開始時に双方にとって価値がゼロである。</li>
+<li class="cfa-curriculum-list-item">Cが正しい。金利スワップは、一定の固定金利とMRRの差に基づく定期的な決済を伴う。</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1001-s01-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>次のうち、金利低下から利益を得ることができる固定利付ポートフォリオ・マネージャーの取引はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 変動金利債（floating-rate bond）を購入する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。金利低下から利益を得たい固定利付ポートフォリオ・マネージャーは、債券を購入する代わりに、固定受取（receive-fixed）・変動支払（pay-floating）の金利スワップに参入することを検討できる。金利が低下すると固定支払いの価値は増加する。Aは誤りである。変動金利債の利払いは金利低下とともに減少するため、価値は上昇しない。Cも誤りである。金利低下時には固定支払いは相対的にコストが高くなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 固定受取（receive-fixed）・変動支払（pay-floating）の金利スワップに参入する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。金利低下から利益を得たい固定利付ポートフォリオ・マネージャーは、債券を購入する代わりに、固定受取・変動支払の金利スワップに参入することを検討できる。金利が低下すると固定支払いの価値は増加する。Aは誤りである。変動金利債の利払いは金利低下とともに減少するため、価値は上昇しない。Cも誤りである。金利低下時には固定支払いは相対的にコストが高くなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 固定支払（pay-fixed）・変動受取（receive-floating）の金利スワップに参入する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Bが正しい。金利低下から利益を得たい固定利付ポートフォリオ・マネージャーは、債券を購入する代わりに、固定受取（receive-fixed）・変動支払（pay-floating）の金利スワップ（interest rate swap）に参入することを検討できる。金利が低下すると固定金利支払い（fixed-rate payments）の価値は上昇する。Aは誤りである。変動金利債（floating-rate bond）の利払いは金利低下とともに減少するため、債券の価値は上昇しない。Cも誤りである。金利が低下すると固定金利支払いは相対的にコストが高くなる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1001-s01-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>次のうち、固定支払（pay-fixed）・変動受取（receive-floating）の金利スワップ・ポジションを正しく説明しているものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 市場参照金利（market reference rate, MRR）で価格付けされた変動金利債（floating-rate note）のロングと、固定スワップレート（fixed swap rate）と等しいクーポンを持つ固定利付債（fixed-rate bond）のショート</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。金利スワップは、基礎となる債券のロングおよびショートポジションの組み合わせと経済的に等価である。固定支払・変動受取スワップの場合、受け取るキャッシュフローはロングポジションを反映する。この場合、変動支払いを受け取るため、変動金利債を購入することに相当する。一方、固定支払い部分は、固定利付債を売却し、債券保有者に固定クーポンを支払うことに相当する。Bは誤りである。この選択肢は固定受取・変動支払スワップに相当する。Cは誤りである。この選択肢はショートポジションを反映していない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 固定スワップレートと等しいクーポンを持つ固定利付債のロングと、MRRで価格付けされた変動金利債のショート</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。金利スワップは、基礎となる債券のロングおよびショートポジションの組み合わせと経済的に等価である。固定支払・変動受取スワップの場合、受け取るキャッシュフローはロングポジションを反映する。この場合、変動支払いを受け取るため、変動金利債を購入することに相当する。一方、固定支払い部分は、固定利付債を売却し、債券保有者に固定クーポンを支払うことに相当する。Bは誤りである。この選択肢は固定受取・変動支払スワップに相当する。Cは誤りである。この選択肢はショートポジションを反映していない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. MRRで価格付けされた変動金利債のロング</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Aが正しい。金利スワップは、基礎となる債券のロングおよびショートポジションの組み合わせと経済的に等価である。固定支払・変動受取スワップの場合、受け取るキャッシュフローはロングポジションを反映する。この場合、変動支払いを受け取るため、変動金利債を購入することに相当する。一方、固定支払い部分は、固定利付債を売却し、債券保有者に固定クーポンを支払うことに相当する。Bは誤りである。この選択肢は固定受取・変動支払スワップに相当する。Cは誤りである。この選択肢はショートポジションを反映していない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1001-s01-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>ある投資家が、6か月EURの市場参照金利（EUR MRR）に対して、利率1.12%でEUR1億の10年固定支払スワップに参入したとする。現在の6か月EUR MRRは0.25%である。6か月後における投資家の観点からのスワップの期中決済額（periodic settlement value）として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. EUR870,000</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。投資家（固定金利支払者）の観点から、スワップの期中決済額は次の通りである：</p>
+<p>期中決済額（Periodic settlement value）＝（MRR − sₙ）× 元本（Notional amount）× 期間（Period）</p>
+<p>＝ −EUR435,000 ＝ (0.25% − 1.12%) × EUR100 million × 0.5年</p>
+<p>EUR MRRが固定スワップレートを下回っているため、固定金利支払者は利払い期間の終了時に固定金利受取者へ純支払いを行う必要がある。AおよびBはスワップ期間（0.5年）を考慮していないため誤りである。またAは符号が逆であり、カウンターパーティの期中決済額を表している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. −EUR870,000</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。投資家（固定金利支払者）の観点から、スワップの期中決済額は次の通りである：</p>
+<p>期中決済額（Periodic settlement value）＝（MRR − sₙ）× 元本（Notional amount）× 期間（Period）</p>
+<p>＝ −EUR435,000 ＝ (0.25% − 1.12%) × EUR100 million × 0.5年</p>
+<p>EUR MRRが固定スワップレートを下回っているため、固定金利支払者は利払い期間の終了時に固定金利受取者へ純支払いを行う必要がある。AおよびBはスワップ期間（0.5年）を考慮していないため誤りである。またAは符号が逆であり、カウンターパーティの期中決済額を表している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. −EUR435,000</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。投資家（固定金利支払者）の観点から、スワップの期中決済額は次の通りである：</p>
+<p>期中決済額（Periodic settlement value）＝（MRR − sₙ）× 元本（Notional amount）× 期間（Period）</p>
+<p>＝ −EUR435,000 ＝ (0.25% − 1.12%) × EUR100 million × 0.5年</p>
+<p>EUR MRRが固定スワップレートを下回っているため、固定金利支払者は利払い期間の終了時に固定金利受取者へ純支払いを行う必要がある。AおよびBはスワップ期間（0.5年）を考慮していないため誤りである。またAは符号が逆であり、カウンターパーティの期中決済額を表している。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1870_modules_items_145413_Learning_Outcomes_Pricing_and_Valuation_of_Interest_Rates_and_Other_Swaps.html" >← 前へ</a>
+  <span class="title">7.01 | Introduction</span>
+  <a href="courses_1870_modules_items_145420_702_Swaps_vs_Forwards.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

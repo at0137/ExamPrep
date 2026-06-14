@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.33 | Summary</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Investment Performance Presentation and GIPS › Module 2: An Introduction to the Global Investment Performance Standards (GIPS®)</nav>
+<h1 class="page-title screenreader-only">2.33 | Summary</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM2113-R-s33-R-1" title="2.33 | Summary"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール2：グローバル投資パフォーマンス基準 (Global Investment Performance Standards, GIPS®) 入門 2.33｜まとめ (Summary)</h2></header><p>これまで学んだとおり、GIPS基準 (GIPS standards) は投資パフォーマンスの計算および提示のための倫理的枠組みを提供する。本学習モジュールの主要なポイントを以下にまとめる。</p><ul class="cfa-curriculum-list-bullet" id="CIPM2113-R-s33-L1"><li class="cfa-curriculum-list-item">GIPS基準は、投資運用会社およびアセットオーナーの投資パフォーマンス結果の公正な表示と完全な開示を促進する倫理基準である。</li><li class="cfa-curriculum-list-item">GIPS基準は、CFA Instituteと複数のボランティア委員会および地域GIPSスポンサー (regional GIPS Standards Sponsors) の協力により維持・資金提供されている。</li><li class="cfa-curriculum-list-item">GIPS基準は、パフォーマンス結果の誤表示、計算手法の選択的適用、ポートフォリオや期間の恣意的選択（cherry-picking）、サバイバーシップ・バイアス (survivorship bias)、不適切なベンチマークの使用、不十分な開示といった不正行為を抑止するために策定された。</li><li class="cfa-curriculum-list-item">GIPS基準は4つの章から構成される：企業向けGIPS基準 (GIPS Standards for Firms)、アセットオーナー向けGIPS基準 (GIPS Standards for Asset Owners)、検証者向けGIPS基準 (GIPS Standards for Verifiers)、およびフィデューシャリー・マネジメント・プロバイダー向けGIPS基準 (GIPS Standards for Fiduciary Management Providers) である。</li><li class="cfa-curriculum-list-item">実際の資産を運用する投資運用会社またはアセットオーナーのみがGIPS基準への準拠を主張できる。GIPS基準は企業全体またはアセットオーナー全体に適用されなければならず、すべての要件を満たした場合にのみ準拠を主張できる。</li><li class="cfa-curriculum-list-item">企業は、独立した事業体として公に提示される投資会社、子会社、または部門として定義されなければならない。</li><li class="cfa-curriculum-list-item">GIPS基準は、企業が最も広範で意味のある企業定義を採用することを推奨している。</li><li class="cfa-curriculum-list-item">GIPS基準への準拠を主張する企業は、GIPS基準の該当要件に加え、CFA InstituteおよびGIPS基準の統括機関が公表するガイダンス・ステートメント (Guidance Statements)、解釈 (interpretations)、およびQ&amp;A (Questions &amp; Answers) に従わなければならない。</li><li class="cfa-curriculum-list-item">企業は、GIPS基準への準拠を確立・維持するための方針および手続きを文書化し、一貫して適用しなければならない。</li><li class="cfa-curriculum-list-item">準拠を主張する企業は、パフォーマンスの計算および提示に関して適用されるすべての法令や規制にも従わなければならない。</li><li class="cfa-curriculum-list-item">企業は虚偽または誤解を招くパフォーマンスまたはパフォーマンス関連情報を提示してはならない。この要件は、企業が配布するすべてのパフォーマンス提示資料に適用される。</li><li class="cfa-curriculum-list-item">企業が作成するGIPSレポートは、特定のコンポジットまたはプールド・ファンドに関する情報を含む標準化された資料である。企業は、見込み顧客となった時点で、すべての見込み顧客に対してGIPSコンポジット・レポートを提供するために合理的なあらゆる努力を行わなければならない。また、限定配布プールド・ファンドの見込み投資家に対しても、見込み投資家となった時点でGIPSレポートを提供するために合理的なあらゆる努力を行わなければならない。</li><li class="cfa-curriculum-list-item">企業は、コンポジットの説明の完全な一覧を維持し、要請に応じて見込み顧客に提供しなければならない。また、プールド・ファンドを運用する企業は、限定配布プールド・ファンドおよび広範配布プールド・ファンドの説明一覧を維持し、要請に応じて見込み投資家に提供しなければならない。</li><li class="cfa-curriculum-list-item">企業は、GIPS基準への準拠を裏付ける記録を保持しなければならず、これにはGIPSレポートに含まれるすべての項目を裏付けるために必要なすべてのデータおよび情報が含まれる。</li><li class="cfa-curriculum-list-item">企業がGIPS基準のすべての要件を満たした場合、GIPSコンプライアンス通知フォーム (GIPS Compliance Notification Form) を通じてCFA Instituteに準拠の主張を通知しなければならない。</li><li class="cfa-curriculum-list-item">企業総資産 (total firm assets) には、企業が投資運用責任を有するすべての裁量資産および非裁量資産が含まれる。</li><li class="cfa-curriculum-list-item">GIPS基準の一般的な会計要件には、トータルリターンの使用、約定日基準および発生主義会計の採用、ならびにポートフォリオ評価における現金および現金同等物の含有が含まれる。</li><li class="cfa-curriculum-list-item">ポートフォリオ評価は、企業が定めたコンポジットまたはプールド・ファンド固有の評価方針に従い、公正価値 (fair value) に基づいて行われなければならない。</li><li class="cfa-curriculum-list-item">企業は一般に、少なくとも月次およびすべての大口キャッシュフローの日にポートフォリオを評価することが求められる。また、大口キャッシュフローの定義はコンポジットごとに定めなければならない。</li><li class="cfa-curriculum-list-item">特定の状況を除き、時間加重リターン (time-weighted return, TWR) は、コンポジットおよびプールド・ファンドのパフォーマンス提示においてGIPS基準 (GIPS standards) が要求するリターン指標である。</li><li class="cfa-curriculum-list-item">企業がコンポジットまたはプールド・ファンドへの外部キャッシュフローのタイミングをコントロールしており、かつ当該コンポジットまたはプールド・ファンドが以下のいずれかの特性を有する場合には、TWRの代わりにマネー・ウェイテッド・リターン (money-weighted return, MWR) を提示することができる：クローズドエンド (closed-end)、固定存続期間 (fixed life)、固定コミットメント (fixed commitment)、または非流動性投資 (illiquid investments) が投資戦略の重要な部分を占める場合。</li><li class="cfa-curriculum-list-item">すべてのパフォーマンス計算において取引コスト (transaction costs) は控除されなければならない。グロス・リターン (gross-of-fees return) は取引コストのみを控除したものでなければならない。ネット・リターン (net-of-fees return) は取引コストおよび運用報酬 (investment management fees) の両方を控除したものでなければならない。</li><li class="cfa-curriculum-list-item">コンポジットのネット・リターンを計算する際に用いる運用報酬は、実際の運用報酬または見込み顧客に適切なモデル運用報酬 (model investment management fee) のいずれかとすることができる。</li><li class="cfa-curriculum-list-item">コンポジット (composite) とは、類似した投資マンデート、目的、または戦略に従って運用される1つ以上のポートフォリオの集合である。コンポジットはこれらの投資マンデート、目的、または戦略に基づいて定義されなければならない。</li><li class="cfa-curriculum-list-item">裁量 (discretion) とは、企業が意図した戦略を実行する能力であり、各企業が個別に定義しなければならない。一般に、裁量があり報酬を支払うポートフォリオはコンポジットに含めなければならない（分別口座として提供されない戦略に基づいて運用されるプールド・ファンドを除く）。一方、非裁量ポートフォリオはコンポジットから除外しなければならない。</li><li class="cfa-curriculum-list-item">新規ポートフォリオは、適時かつ一貫した方法でコンポジットに組み入れなければならない。</li><li class="cfa-curriculum-list-item">終了したポートフォリオは、運用されていた最後の完全な測定期間まで、適切なコンポジットの過去パフォーマンスに含めなければならない。</li><li class="cfa-curriculum-list-item">ポートフォリオは、その投資マンデート、目的、または戦略の文書化された変更、あるいはコンポジットの再定義によって適切とされない限り、別のコンポジットに移してはならない。</li><li class="cfa-curriculum-list-item">コンポジットの時間加重リターンは、期首価値を用いた資産加重、または期首価値と外部キャッシュフローの双方を反映する方法、あるいは集計法 (aggregate method) によって個々のポートフォリオ・リターンを加重して計算しなければならない。コンポジットのマネー・ウェイテッド・リターンは、コンポジットが単一のポートフォリオであるかのように、構成ポートフォリオの情報を集計して計算しなければならない。</li><li class="cfa-curriculum-list-item">GIPSコンポジット時間加重リターン・レポート (GIPS Composite Time-Weighted Return Reports) には、少なくとも5年分の年次コンポジット結果（またはコンポジットのトラックレコードがそれ未満の場合は設定以来）を含める必要があり、時間の経過とともに最低10年分の準拠パフォーマンスまで積み上げる必要がある。その他の必須数値情報には、提示されたコンポジット結果に対応するベンチマーク・リターン、各年次期間末時点のコンポジット内ポートフォリオ数、コンポジット資産および企業総資産、ポートフォリオ年次リターンの内部ディスパージョン指標、ならびにコンポジットおよびベンチマーク双方の3年年率事後標準偏差が含まれる。</li><li class="cfa-curriculum-list-item">GIPSコンポジット時間加重リターン・レポートには、コンポジット、企業、ベンチマーク、手数料の取扱い、およびパフォーマンス結果の計算および提示方法に関する詳細な開示も含めなければならない。</li><li class="cfa-curriculum-list-item">GIPS基準への準拠を主張するアセットオーナーは、企業とは異なる要件の対象となる。特に、アセットオーナーは監督機関に対してGIPSアセットオーナー・レポート (GIPS Asset Owner Report) を提供しなければならず、初期の準拠主張時には1年分（またはそれ未満の場合は設定以来）の準拠パフォーマンスのみを提示すればよい。</li><li class="cfa-curriculum-list-item">GIPS基準への準拠を主張し、かつビジネス獲得のために競争するアセットオーナーは、競争時には企業向けGIPS基準 (GIPS Standards for Firms) に従う。</li></ul>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1370_modules_items_99551_232_Key_Differences_between_the_GIPS_Standards_for_Firms_and_the_GIPS_Standards_.html" >← 前へ</a>
+  <span class="title">2.33 | Summary</span>
+  <a href="courses_1370_modules_items_99554_Glossary_An_Introduction_to_the_Global_Investment_Performance_Standards_GIPS.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

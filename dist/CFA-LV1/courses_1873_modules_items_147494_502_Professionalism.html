@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.02 | Professionalism</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2160-R-s02-R-1" title="5.02 | Professionalism">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール5：倫理応用（Ethics Application）5.02｜プロフェッショナリズム（Professionalism）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">実務慣行（practices）、方針（policies）、および行為（conduct）を、CFA協会の倫理規範（Code of Ethics）および職業行為基準（Standards of Professional Conduct）に照らして評価せよ</li>
+<li class="cfa-curriculum-los-item">実務慣行（practices）、方針（policies）、および行為（conduct）が、CFA協会の倫理規範（Code of Ethics）および職業行為基準（Standards of Professional Conduct）に違反しているか否かを説明せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<section id="CFA2160-R-s02-01-01">
+<h3 class="dp-heading">法令知識（Knowledge of the Law）</h3>
+<div class="cfa-curriculum-blockquote">
+<p>会員（Members）および受験者（Candidates）は、自らの専門的活動を規律するあらゆる適用法令（laws）、規則（rules）、規制（regulations）（CFA協会の倫理規範（Code of Ethics）および職業行為基準（Standards of Professional Conduct）を含む）を理解し、これに従わなければならない。これには、政府、規制機関（regulatory organization）、認可機関（licensing agency）、または職能団体（professional association）が定めるものが含まれる。これらの間に矛盾がある場合、会員および受験者は、より厳格な法令、規則、または規制に従わなければならない。会員および受験者は、そのような法令、規則、または規制への違反に故意に関与または加担してはならず、またそのような違反から離脱（dissociate）しなければならない。</p>
+</div>
+<section id="CFA2160-R-s02-01-01-01">
+<h4>Mandracken</h4>
+<p>SBS銀行（SBS Bank、SBS）は、多様な顧客に対してカストディ銀行（custody bank）としてサービスを提供している。SBSは、カストディ、クリアリング（clearing）、支払い（payment）、決済（settlement）、記録管理（record keeping）など、さまざまなサービスを顧客に提供している。SBSはこれらのサービスに対して、資産残高に基づく手数料（asset-based fee）を顧客に課している。銀行の顧客契約に基づき、カストディ顧客は、カストディアンが顧客に代わって支払った実費（out-of-pocket expenses）を銀行に補償することに同意している。これらの費用の大半は、銀行およびその他の金融機関が使用する安全なメッセージングネットワークである国際銀行間金融通信協会（Society for Worldwide Interbank Financial Telecommunication、SWIFT）を通じて送信されるメッセージに関するものである。SBSはSWIFTメッセージについて、あらかじめ定められた料金をカストディ顧客に請求しているが、その料金は実際の提供コストを上回っている。</p>
+<p>顧客サービス業務を統括するSBSの副社長であるMandracken（CFA）は、この不一致に気付き、上司に報告する。電子メールの中でMandrackenは、「SWIFT手数料の請求については顧客の手数料表（fee schedules）に開示されているが、これらの手数料は常に実際のコストに上乗せされており、したがって顧客への請求は純粋な実費転嫁（pass-through）ではなく、我々はマージン（margin）を加えている」と述べている。Mandrackenの上司は、新規顧客に対してはSWIFT手数料率を引き下げ、既存顧客については契約更新時に手数料率を見直すよう指示する。</p>
+<p>CFA協会の倫理規範（Code）および基準（Standards）に基づく義務を果たすために、Mandrackenが取るべき行動はどれか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L1">
+<li class="cfa-curriculum-list-item">上司の指示に従い、是正措置（corrective procedures）を実施する。</li>
+<li class="cfa-curriculum-list-item">上司の指示に従い、是正措置を実施するが、銀行の取締役会（board of directors）に異議を報告する。</li>
+<li class="cfa-curriculum-list-item">銀行がSWIFT手数料率を実際のコストに反映するよう改訂するまで、当該手数料表を用いた顧客対応への関与を拒否する。</li>
+</ol>
+<section id="CFA2160-R-s02-01-01-01-01">
+<h5>Analysis</h5>
+<p>Cが正しい。本ケースは、専門的責任を遂行する中で他者の不正行為をどのように適切に対処すべきかに関するものである。基準I(A)「法令知識（Knowledge of the Law）」は、CFA協会の会員および受験者が法的または倫理的違反に故意に関与または加担することを禁止し、そのような行為から離脱することを求めている。SBSは、カストディ顧客に対する実費の請求内容を誤って表示（misrepresent）し、過剰請求を行っている。Mandrackenは問題を上司に報告したものの、上司の是正措置は不十分である。なぜなら、(1)新規顧客に対してのみ問題を扱っている、(2)既存顧客への対応が即時ではない、(3)過去の顧客に対する誤表示および過剰請求に対応していない、ためである。したがってMandrackenは、銀行がカストディ顧客に請求するSWIFT手数料を実際の実費に基づくものに改訂するまで、当該手数料表を用いた顧客対応への関与を拒否しなければならない。</p>
+<p>Aは誤りである。規範および基準に基づき、Mandrackenはこの不正行為に関与し続けること、またはそれに関係し続けることはできない。会員が行動を起こさず、不正または非倫理的行為に関与する者との関係を維持することは、そのような行為への関与または加担と見なされる可能性がある。</p>
+<p>Bは誤りである。Mandrackenは、この行為から離脱し顧客利益を保護するために、銀行を離れる、または取締役会や規制当局に不正を報告するなどの強い措置を取る必要があるかもしれない。しかし、その前に、上司や銀行のコンプライアンス部門に是正措置の不十分さについて相談するなどの中間的措置を検討すべきである。ただし、Mandrackenは不正な手数料表を用いた顧客対応を継続することはできない。</p>
+</section>
+</section>
+<section id="CFA2160-R-s02-01-01-02">
+<h4>Pellie</h4>
+<p>Pellie（CFA）は、Kwaume Investment Group（KIG）のCEOであり、同社はKwaume銀行の完全子会社である投資顧問会社（investment adviser）である。長年の銀行顧客であり、Pellieおよび銀行の取締役の一部が個人的に知っている顧客が、最近KIGに投資口座を開設し、収益獲得（earning income）を投資目的としていた。この顧客は翌年にいくつかの投資を行ったが、口座の活動の大部分は、総額9,000万ドルの入金および8,400万ドルの出金からなる数百件の銀行取引であった。</p>
+<p>これらの取引には、銀行秘密保護地域（bank secrecy havens）や、政府によりマネーロンダリング（money-laundering）リスクが高いと特定された国に所在する個人および法人との電子送金が含まれていた。Pellieは、この顧客が腐敗や贈賄のリスクが高い国際取引に従事していることを認識していた。顧客が長年の銀行取引関係にあることから、Pellieはこれらの取引には正当な事業目的があると仮定し、「提供されたサービスに対して（for services provided）」「コンサルティング料（consulting fees）」「コミッション（commissions）」といった曖昧な説明を受け入れていた。疑わしい活動の可能性を示す警告（red flags）がトリガーされた場合に法令で義務付けられている日次のアンチ・マネーロンダリング報告（anti-money-laundering, AML reports）を受け取った際にも、さらなる調査を行うことなく承認していた。</p>
+<p>Pellieの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L2">
+<li class="cfa-curriculum-list-item">CFA協会の倫理規範および基準への違反である。</li>
+<li class="cfa-curriculum-list-item">顧客情報の機密性（confidentiality）を保護しているため適切である。</li>
+<li class="cfa-curriculum-list-item">口座の清算会社（clearing firm）が疑わしい活動を報告する責任を負うため適切である。</li>
+</ol>
+<section id="CFA2160-R-s02-01-01-02-01">
+<h5>Analysis</h5>
+<p>Aが正しい。Pellieの行為は、基準I(A)「法令知識（Knowledge of the Law）」に違反している。同基準は、CFA協会の会員および受験者が「自らの専門的活動を規律するすべての適用法令、規則、規制を理解し、遵守しなければならない」と定めている。本事例の事実関係は、顧客口座の正当性に疑問を生じさせるものである。多額の入出金と少数の投資取引の組み合わせは、収益獲得を目的とする投資口座として整合的ではない。口座内の取引はマネーロンダリングの高リスク取引と見受けられ、より厳格な精査を受けるべきであった。しかし、Pellieは法令で求められる調査を行わず、顧客の長年の関係を理由に追加の確認を行わなかった。このようなAML要件の不履行は、基準I(A)への違反である。</p>
+<p>Bは誤りである。顧客に対する忠実義務（duty of loyalty）および顧客情報の機密保持は、顧客による法令違反や、グローバル資本市場の健全性や持続可能性を損なう行為を許容する正当化にはならない。</p>
+<p>Cは誤りである。Pellieは、疑わしい取引の検証義務を清算会社に依存することはできず、それは自身の責任である。</p>
+</section>
+</section>
+<section id="CFA2160-R-s02-01-01-03">
+<h4>Mwangi</h4>
+<p>Mwangi（CFA）は、保険商品を販売する企業に勤務している。Mwangiの顧客のうち3名は、ある商品（クラスA、Class A）を購入したが、その後考えを変え、より低価格の商品（クラスB、Class B）へ切り替えることを希望した。Mwangiがこの取引を完了するためには、法令上、顧客にクラスB商品の売買書類に新たに署名してもらう必要がある。顧客の要請時点ではすべての書類が整っていなかったため、Mwangiは書類一式が準備されるまで署名を待つよう顧客に助言した。書類が揃った後、Mwangiは顧客から署名を得ようとしたが、連絡が取れなかった。署名がないため、Mwangiの上司は交換取引を取り消すと脅したが、これは他の投資購入との関係で、顧客口座を当座貸越（overdraft）の状態に陥らせることになる。企業の方針では、口座の不足額は2週間継続した場合、資産を売却することで補填される。この事態を防ぐため、Mwangiは顧客に代わって必要書類に署名した。</p>
+<p>Mwangiの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L3">
+<li class="cfa-curriculum-list-item">CFA協会の倫理規範および基準への違反である。</li>
+<li class="cfa-curriculum-list-item">顧客が既に取引の許可を与えていたため許容される。</li>
+<li class="cfa-curriculum-list-item">顧客がMwangiに対し明示的に代理署名の許可を与えていた場合には許容される。</li>
+</ol>
+<section id="CFA2160-R-s02-01-01-03-01">
+<h5>Analysis</h5>
+<p>Aが正しい。本ケースは基準I(A)「法令知識（Knowledge of the Law）」に関するものであり、同基準はCFA協会の会員および受験者に対し、「自らの専門的活動を規律するすべての適用法令、規則、規制に従う」ことを求めている。クラスAからクラスB商品への切替を完了するためには、Mwangiの顧客は法的に新たな売買書類に署名する必要があったが、それは行われなかった。顧客に代わって書類に署名することで、Mwangiは顧客の署名を偽造（forge）した。この法令違反は基準I(A)の違反に該当する。</p>
+<p>Bは誤りである。顧客による一般的な承認（general approval）（書面または口頭）は、顧客署名に関する法的要件を満たすには不十分である。</p>
+<p>Cは誤りである。顧客が切替に必要な事項を完全に理解し、Mwangiに代理署名の明示的な許可を与えた場合であっても、法令は文書に顧客本人の真正な署名があることを求めている。法の趣旨が顧客保護にあり、顧客がその権利を放棄する意思を持っていたとしても、Mwangiが法的要件を回避することは許されない。</p>
+</section>
+</section>
+</section>
+<section id="CFA2160-R-s02-01-02">
+<h3 class="dp-heading">独立性と客観性（Independence and Objectivity）</h3>
+<div class="cfa-curriculum-blockquote">
+<p>会員および受験者は、専門的活動において独立性と客観性を達成し維持するために、合理的な注意と判断を用いなければならない。会員および受験者は、自身または他者の独立性と客観性を損なうと合理的に予想されるいかなる贈答（gift）、利益（benefit）、報酬（compensation）、または対価（consideration）も、提供、要求、または受領してはならない。</p>
+</div>
+<section id="CFA2160-R-s02-01-02-01">
+<h4>Myers</h4>
+<p>Myers（CFA）は、環境・社会・ガバナンス（environmental, social, and governance, ESG）投資に特化した30億ドル規模のヘッジファンドであるCorbobaのパートナーである。今後の公職選挙（public office elections）を支援するため、Myersは候補者DeFrietasに個人的に1万ドルを寄付したいと考えている。熱心な気候活動家であり責任投資（responsible investment）の支持者であるMyersは、大気汚染の削減および気候変動の影響緩和に向けた環境政策を支持するDeFrietasを支援している。Myersはまた、自身の政治献金がCorbobaにとっても有益となり得ると考えている。なぜならDeFrietasは、州の年金基金（pension plans）がどのヘッジファンドに投資するかに影響を与え得る職位に立候補しているためである。</p>
+<p>Myersが取るべき最善の行動はどれか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L4">
+<li class="cfa-curriculum-list-item">DeFrietasへの寄付を控える。</li>
+<li class="cfa-curriculum-list-item">個人資金であり、ヘッジファンドの規模に対して重要でない金額であるため、DeFrietasに寄付する。</li>
+<li class="cfa-curriculum-list-item">自身の信念と一致する環境政策を支持する候補者であるため、DeFrietasに寄付する。</li>
+</ol>
+<section id="CFA2160-R-s02-01-02-01-01">
+<h5>Analysis</h5>
+<p>Aが正しい。MyersがDeFrietasの選挙運動に寄付を行った場合、その行為は基準I(B)「独立性と客観性（Independence and Objectivity）」に違反する可能性がある。同基準は、CFA協会の会員および受験者が「他者の独立性および客観性を損なうと合理的に予想されるいかなる贈答等も提供してはならない」と定めている。Myersには寄付の正当な理由があるものの、事実関係からは、その寄付がDeFrietasに影響を与え、州の年金基金の運用をCorbobaに委託するよう促す可能性があると考えていることが明らかである。基準I(B)は、政府系年金基金からの運用委託を得るために、意思決定に直接関与する人物の政治献金を行うことを禁止している。</p>
+<p>Bは誤りである。寄付の資金源や金額は、それがDeFrietasに影響を与える意図である場合には無関係である。また、1万ドルという金額は選挙活動において重要である可能性がある。重要なのは、その寄付がDeFrietasの独立性および客観性に不適切な影響を与え、MyersまたはCorbobaに直接的な利益をもたらすよう合理的に設計されているかどうかである。この判断には、寄付額、寄付の意図、DeFrietasの職位が意思決定に与える影響など、複数の要因が関係する。本事例では、Myersの寄付理由の一つが州からの運用ビジネス獲得への影響であると示されている。</p>
+<p>Cは誤りである。MyersはDeFrietasへの政治献金に関して、適切な動機と不適切な動機の両方を持っているように見える。環境保護に関するDeFrietasの立場を支持すること自体は正当である。基準I(B)は、投資専門家が政治プロセスに参加すること自体を禁止するものではない。しかし、Myersはその資金提供がCorbobaに利益をもたらす可能性を認識しているため、その行為は不適切と見なされ得る。したがって、潜在的な利益相反（conflict）を回避するためには寄付を控え、他の方法で環境政策を支援することが最善である。</p>
+</section>
+</section>
+</section>
+<section id="CFA2160-R-s02-01-03">
+<h3 class="dp-heading">虚偽表示（Misrepresentation）</h3>
+<div class="cfa-curriculum-blockquote">
+<p>会員および受験者は、投資分析（investment analysis）、推奨（recommendations）、行動（actions）、またはその他の専門的活動に関して、故意に虚偽表示（misrepresentation）を行ってはならない。</p>
+</div>
+<section id="CFA2160-R-s02-01-03-01">
+<h4>Lee</h4>
+<p>Lee（CFA）は、AKCのファイナンシャルプランナーである。AKCは、自社商品を販売した件数に基づいてプランナーに報酬を支払っている。Leeは、ある夫婦に対し、合計125,000ドルの退職資金を単一のAKC投資ファンド（大型株式戦略、large-cap equity strategy）へ移すよう助言する。Leeは、退職口座を解約することで合計30,000ドルのペナルティが発生することを開示する一方で、AKC商品によるより高い投資収益によってその損失を補うことができると主張する。</p>
+<p>Leeの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L5">
+<li class="cfa-curriculum-list-item">AKC商品が当該夫婦に適合（suitable）している場合には許容される。</li>
+<li class="cfa-curriculum-list-item">特定の収益率を約束しているため、CFA協会の倫理規範および基準への違反である。</li>
+<li class="cfa-curriculum-list-item">退職口座を解約することによる不利益を完全に開示しているため許容される。</li>
+</ol>
+<section id="CFA2160-R-s02-01-03-01-01">
+<h5>Analysis</h5>
+<p>Bが正しい。本ケースは基準I(C)「虚偽表示（Misrepresentation）」に関するものである。同基準は、投資分析、推奨、または行動に関して虚偽表示を行うことを禁止している。この基準は、変動性の高い投資に対して特定の収益率を約束または保証する発言を禁止している。株式ベースの投資は本質的に変動性が高く、将来の収益は予測不可能であるため、Leeが将来の収益で損失を補填できると約束することは基準I(C)への違反である。信頼は投資専門職の基盤であり、虚偽または誤解を招く発言は投資家に損害を与えるだけでなく、投資業界全体への信頼を損ない、資本市場の健全性を脅かす。</p>
+<p>Aは誤りである。AKC商品が当該夫婦に適合している場合であっても、株式投資は本質的に変動性が高い。そのため、将来の収益を保証するような発言は虚偽表示に該当する。また、本ケースでは、退職資金に大きな損失を伴う助言が顧客の最善の利益に適うかどうかや、報酬体系がLeeの独立性および客観性に影響している可能性についても問題がある。</p>
+<p>Cは誤りである。退職資産移転に伴う不利益を開示しているとしても、それは将来収益に関する不適切で誤解を招く発言を正当化するものではない。</p>
+</section>
+</section>
+<section id="CFA2160-R-s02-01-03-02">
+<h4>Andersen</h4>
+<p>Andersen（CFA）は、資産運用会社のCEOである。Andersenおよび同社の他のシニア投資マネージャーは、大規模な年金プランの資産運用を受託するための提案を対面で行う。年金プランからの要請に応じて、Andersenは当該口座を担当する主要人員（key personnel）のリストを提出する。評価結果を待つ間に、提案に参加していた主要人員の一人が退職する。</p>
+<p>Andersenが取るべき行動はどれか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L6">
+<li class="cfa-curriculum-list-item">年金プランは個人ではなく企業を採用するため、何も行わない。</li>
+<li class="cfa-curriculum-list-item">主要人員の一人が退職したことを直ちに年金プランに通知する。</li>
+<li class="cfa-curriculum-list-item">退職者の代替として有能な人材を採用し、その後変更を年金プランに通知する。</li>
+</ol>
+<section id="CFA2160-R-s02-01-03-02-01">
+<h5>Analysis</h5>
+<p>Bが正しい。本ケースは基準I(C)「虚偽表示（Misrepresentation）」に関するものである。同基準は、専門的活動に関連する事項について虚偽表示を行うことを禁止している。提案提出後、Andersenが主要人員として提示していた人物が退職した。年金プランは当該口座を担当する個人の情報を求めており、この情報は採用判断において重要である。退職に関する情報を開示しないことは、不作為による虚偽表示（misrepresentation by omission）に該当する。</p>
+<p>Aは誤りである。Andersenは企業全体に自信を持っており、退職者を同等の能力と経験を持つ人材で補うことは可能であるが、年金プランは特定の担当者に関心を持っていることが明らかである。もし退職者がジュニア職員や投資意思決定に影響の少ない人物であれば通知の必要はない可能性があるが、本ケースでは主要人員であるため、虚偽表示を避けるために通知が必要である。</p>
+<p>Cは誤りである。代替要員が見つかるまで待つのは遅すぎる。なぜなら、チームの運用担当者が誰であるかという情報は、年金プランの採用判断において明らかに重要であるためである。</p>
+</section>
+</section>
+<section id="CFA2160-R-s02-01-03-03">
+<h4>Brodeur</h4>
+<p>Brodeur（CFA）は、電気自動車を製造するグローバル企業LeTourのCEOである。BrodeurとLeTourは、同社が投資家および一般投資家向けに情報を発信する手段として、Brodeur個人のソーシャルメディアアカウントを利用することを公表し、規制当局にも開示している。メディアが同社の生産および納車に困難があると報じた後、Brodeurは自身のソーシャルメディアに「当社を1株420ドルで非公開化（taking LeTour private）することを検討している。資金は確保されている（Funding is secure）」と投稿した。</p>
+<p>これに先立ち、Brodeurは同社への投資および非公開化に一般的な関心を示した大規模な政府系ファンド（sovereign wealth fund, SWF）と面談していた。しかし、BrodeurとSWFは何らの合意にも達しておらず、株式取得価格も決定していなかった。また、Brodeurは投資銀行とも協議していたが、非公開化を支援するアドバイザーを正式に選任してはいなかった。この投稿後、LeTourの株価は出来高の大幅な増加を伴って6%以上上昇し、前日比10%高の1株380ドルで取引を終えた。投稿における株価水準について問われた際、Brodeurは潜在的投資家と価格について議論していなかったことを認め、その価格は冗談として設定したものであると述べた。Brodeurの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L7">
+<li class="cfa-curriculum-list-item">投稿が事実の虚偽表示（misrepresentation）であったため不適切である。</li>
+<li class="cfa-curriculum-list-item">すべての投資家がソーシャルメディアを利用しているわけではなく、選択的開示（selective disclosure）となり一部の投資家を不利にするため不適切である。</li>
+<li class="cfa-curriculum-list-item">「検討している」と述べただけであり、投機的かつ重要性の低い情報であるため適切である。</li>
+</ol>
+<section id="CFA2160-R-s02-01-03-03-01">
+<h5>Analysis</h5>
+<p>Aが正しい。本ケースは基準I(C)「虚偽表示（Misrepresentation）」に関するものであり、会員および受験者が専門的または投資活動に関して虚偽表示を行うことを禁止している。Brodeurの投稿は仮定に基づき、事実に反していた。具体的には、(1)SWFとの合意は成立していない、(2)1株420ドルという価格について議論していない、(3)価格は冗談として設定された、(4)非公開化のためのアドバイザーを正式に選任していない、などである。市場参加者とは異なり、Brodeurは「資金が確保されている」という主張が、不特定の金額・不明確な取引構造に関する一般的な会話に基づくものであることを認識していた。非公開化の実現には多くの不確実性が存在するため、Brodeurは自身の発言が虚偽または誤解を招くものであることを認識していた、あるいは認識すべきであった。ソーシャルメディアの双方向性やオンライン性は、情報の正確性と誠実性の義務を免除するものではない。</p>
+<p>Bは誤りである。ソーシャルメディアを用いた情報開示は、一定の条件下では適切かつ倫理的であり得る。情報の伝達手段はすべての投資家に確実に到達する必要はないが、効果的に公表されるよう設計されていなければならない。情報がすべての顧客に届く、または投資家一般に利用可能であれば、ソーシャルメディアはプレスリリースや電子メールなどの従来の手段と同等である。しかし、本件では情報自体が誤解を招くものであるため、不適切である。</p>
+<p>Cは誤りである。本投稿は「重要な情報（material information）」と見なされ得る。なぜなら、(1)発信者がCEOである、(2)内容が重大かつ本質的である、(3)投資家が投資判断に先立ち知りたい情報である、ためである。</p>
+</section>
+</section>
+</section>
+<section id="CFA2160-R-s02-01-04">
+<h3 class="dp-heading">不正行為（Misconduct）</h3>
+<div class="cfa-curriculum-blockquote">
+<p>会員および受験者は、不誠実（dishonesty）、詐欺（fraud）、または欺瞞（deceit）を伴ういかなる専門的行為にも関与してはならず、また自らの職業的評判、誠実性（integrity）、または能力（competence）に悪影響を与えるいかなる行為も行ってはならない。</p>
+</div>
+<section id="CFA2160-R-s02-01-04-01">
+<h4>Hanse</h4>
+<p>Hanse（CFA）は、グローバル投資銀行に勤務するポートフォリオマネージャーであり、環境・社会・ガバナンス（ESG）投資ファンドを運用している。私生活では、気候変動や生物多様性の喪失、生態系崩壊に抗議する非暴力的抵抗運動を行う社会運動であるExtinction Rebellionの市民的不服従（civil disobedience）デモに参加している。金融街で開催された複数のデモにおいて、Hanseは違法集会（unlawful assembly）、公共交通妨害（obstructing public transit）、秩序違反（disorderly conduct）の容疑で逮捕され、最終的に軽微な犯罪で有罪判決を受けた。Hanseは、犯罪で有罪となった従業員を解雇できるとする標準的な雇用契約に署名している。</p>
+<p>CFA協会の倫理規範および基準の下で、Hanseの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L8">
+<li class="cfa-curriculum-list-item">規範および基準に違反しない。</li>
+<li class="cfa-curriculum-list-item">銀行との雇用契約に違反しているため、規範および基準に違反する。</li>
+<li class="cfa-curriculum-list-item">金融街で不正行為により逮捕されたため、規範および基準に違反する。</li>
+</ol>
+<section id="CFA2160-R-s02-01-04-01-01">
+<h5>Analysis</h5>
+<p>Aが正しい。本ケースは何が職業上の不正行為に該当するかに関するものである。基準I(D)「不正行為（Misconduct）」は、不誠実、詐欺、欺瞞を伴う専門的行為、または職業的評判、誠実性、能力に悪影響を与える行為を禁止している。一般に、個人的信念に基づく市民的不服従による法令違反は、職業的評判や能力に悪影響を与えるものではないため、基準I(D)の対象とはならない。</p>
+<p>Bは誤りである。Hanseの逮捕は銀行の規定に自動的に違反するとは限らない。雇用契約は犯罪行為に基づく解雇の選択肢を銀行に与えるが、犯罪の性質や状況に応じて裁量がある。また、雇用契約違反が常に規範および基準違反となるわけではなく、その内容が規範で扱われる行為に関連する場合に限られる。</p>
+<p>Cは誤りである。金融街で逮捕されたという事実だけでは、専門的活動との十分な関連性はなく、規範および基準違反とはならない。Hanseの行為は個人的信念に基づくものであり、詐欺、不誠実、欺瞞、または職業的評判や能力に悪影響を与える行為とは通常見なされない。</p>
+</section>
+</section>
+<section id="CFA2160-R-s02-01-04-02">
+<h4>Mang</h4>
+<p>Mang（CFA）は、地域銀行の投資顧問であり、高額資産保有者（high-net-worth individuals）の裁量運用・手数料ベース口座を多数担当している。当該銀行の方針では、取引注文の送信忘れによるエラーについて、30日以内であれば訂正が認められている。この訂正では、現在の市場価格で売買を行い、価格差は内部のエラー口座を通じて顧問本人が負担する。</p>
+<p>Mangは、口座パフォーマンスに不満を持つ顧客の利益のためとして、この取引エラー訂正制度を繰り返し利用している。過去30日間で価格が上昇した銘柄を特定し、その銘柄を以前に購入する注文を出し忘れたと虚偽の申告を行う。承認後、取引部門は当該銘柄を購入し、価格差をMang本人に請求する。その直後、Mangは売却注文を出して顧客に利益をもたらす。その後、Mangは顧客に対し、これが「ギフト」または「ノーリスク取引」であると説明する。</p>
+<p>Mangの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L9">
+<li class="cfa-curriculum-list-item">CFA協会の倫理規範および基準に違反する。</li>
+<li class="cfa-curriculum-list-item">顧客の利益のために行動しているため適切である。</li>
+<li class="cfa-curriculum-list-item">銀行に損害が生じていないため適切である。</li>
+</ol>
+<section id="CFA2160-R-s02-01-04-02-01">
+<h5>Analysis</h5>
+<p>Aが正しい。Mangは基準I(D)「不正行為（Misconduct）」に違反している。同基準は、不誠実、詐欺、欺瞞を伴う専門的行為を禁止している。Mangは、実際には存在しない取引エラーを利用して銀行の制度を悪用し、顧客口座のパフォーマンスを人工的に向上させている。また、自身の能力や口座の実際のパフォーマンスについて顧客を誤導するために、個人的に損失を補填している。</p>
+<p>Bは誤りである。顧客に利益をもたらしているとしても、Mangは詐欺的かつ欺瞞的な行為により顧客を誤導しており、職業上の不正行為に該当する。</p>
+<p>Cは誤りである。銀行に財務的損失が発生していないことは、Mangの行為の欺瞞性や不正性を軽減するものではない。</p>
+</section>
+</section>
+</section>
+<section id="CFA2160-R-s02-01-05">
+<h3 class="dp-heading">能力（Competence）</h3>
+<div class="cfa-curriculum-blockquote">
+<p>会員および受験者は、自らの専門的責任を遂行するために必要な能力をもって行動し、その能力を維持しなければならない。</p>
+</div>
+<section id="CFA2160-R-s02-01-05-01">
+<h4>Mahajan</h4>
+<p>Mahajan（CFA）は、大手グローバル投資会社で再生可能エネルギー分野を担当するリサーチチームの一員として働く、成功したリサーチアナリストである。キャリアをさらに発展させるため、新たな職に応募し、ESG要因および評価（ratings）に特化したブティック型投資調査会社に採用される。新しい職務では、複数のジュニアアナリストからなるチームを監督することになる。これまで他のアナリストと協働した経験はあるが、監督責任（supervisory responsibility）を担ったことはなかった。彼のチームの担当範囲（remit）には、再生可能エネルギー分野に加え、運輸（transportation）および建設（construction）分野も含まれる。新しい職務に備えるため、MahajanはCFA協会のESG投資証明書プログラム（CFA Institute Certificate in ESG Investing）に登録し、建設業における環境配慮型の実務に関するウェビナーに複数参加し、電動輸送に関する動向について広範な自主学習を行い、ESGに特化したアナリストの業界団体（trade organization）にも参加する。</p>
+<p>規範および基準（Code and Standards）への準拠義務を満たすという観点から、Mahajanの行動はどのように評価されるか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s02-L10">
+<li class="cfa-curriculum-list-item">規範および基準に基づくすべての義務を満たすのに十分である。</li>
+<li class="cfa-curriculum-list-item">正式な継続教育プログラム（continuing education program）に登録していないため、規範および基準の要件を満たしていない。</li>
+<li class="cfa-curriculum-list-item">監督者としての新たな役割を果たすために必要な技能および知識を習得するための活動を行っていないため、規範および基準の要件を満たしていない。</li>
+</ol>
+<section id="CFA2160-R-s02-01-05-01-01">
+<h5>Analysis</h5>
+<p>Cが正しい。本ケースは基準I(E)「能力（Competence）」に関するものであり、会員および受験者に対し、専門的責任を遂行するために必要な能力をもって行動し、その能力を維持することを求めている。Mahajanは新しい職務に就いたことで、その専門的責任が変化し、従来の職務で必要であったものを超える技能、能力、知識が求められるようになった。彼は初めて監督責任を担い、担当する業界分野も拡大している。基準I(E)は、Mahajanに対し、新たな役割のすべての責任をカバーするよう能力を拡張することを求めている。教育および自主学習を通じて、Mahajanは調査および分析に関する拡大した責任に対応する能力を高めようとしているが、他のアナリストを監督するために必要な技能および知識を習得するための措置を講じていない。このためには、例えば、マネジメントに関するカンファレンスへの参加や専門能力開発コースの受講、コンプライアンス資格（compliance credentials）の取得、企業内での監督責任に関する研修の受講などが考えられる。</p>
+<p>Aは誤りである。新たに担当する業界分野に関する能力向上には取り組んでいるものの、基準I(E)が求めるような監督責任を果たすための技能および知識の習得に関する取り組みが不足している。</p>
+<p>Bは誤りである。基準I(E)は、正式な継続教育プログラムや専門能力開発プログラムへの参加を必須とはしていないが、それらは能力を開発・維持する一つの方法ではある。</p>
+</section>
+</section>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1873_modules_items_147492_501_Introduction.html" >← 前へ</a>
+  <span class="title">5.02 | Professionalism</span>
+  <a href="courses_1873_modules_items_147496_503_Integrity_of_Capital_Markets.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

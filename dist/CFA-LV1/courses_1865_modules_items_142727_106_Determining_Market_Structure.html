@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.06 | Determining Market Structure</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2410-R-s06-R-1" title="1.06 | Determining Market Structure"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：企業と市場構造（The Firm and Market Structures）1.06｜市場構造の決定（Determining Market Structure）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">企業がどの市場構造のもとで活動しているかを特定し、集中度指標（concentration measures）の利用方法とその限界を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>独占市場（monopoly markets）や企業が価格支配力（pricing power）を持つその他の状況は、企業が価格上昇を引き起こすために生産量を制限するため非効率的となり得る。その結果、財の消費量は減少し、より高い価格で販売されることになり、これは一般に市場全体として非効率である。したがって、多くの国は産業における競争の程度を規制するために競争法（competition law）を導入している。</p>
+<p>現実世界における市場支配力（market power）は、教科書の例のように明確であるとは限らない。政府や規制当局は、市場支配力を測定し、企業が独占に近い支配的地位（dominant position）を持っているかどうかを判断するという困難な課題に直面する。いくつかの歴史的事例は以下のとおりである。</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA2410-R-s06-L1">
+<li class="cfa-curriculum-list-item">1990年代、米国の規制当局は農業企業Archer Daniels Midlandを、日本の競合企業と共謀して動物飼料添加物として使用されるアミノ酸リジン（lysine）の価格を固定したとして訴追した。この反トラスト措置により、カルテル参加企業は総額1億ドル以上の罰金を支払う和解に至った。</li>
+<li class="cfa-curriculum-list-item">1970年代、米国の反トラスト当局は地域電話独占を解体し、AT&amp;Tには長距離通信事業を残しつつ競争を導入し、さらに同社に対して保有していた地域電話会社の分離（divestiture）を命じた。この決定は、米国の電話市場に競争、イノベーション、そして低価格をもたらした。</li>
+<li class="cfa-curriculum-list-item">欧州の規制当局（特に欧州委員会（European Commission））は、欧州企業の合併や独占的地位（例：ビタミン価格固定事件の中心であったRoche、Rhone-Poulenc、BASF）や、欧州で事業を行う非欧州企業（Intelなど）にも影響を与えてきた。さらに、米国企業General Electricと欧州企業Honeywellの合併は、市場集中の過度な増加を理由に欧州委員会によって却下された。</li>
+</ol>
+<p>過度な市場集中（excessive market concentration）を定量化することは困難である。規制当局は、まだ発生していない事象が将来過度な市場支配力を生むかどうかを評価する必要がある場合もある。例えば、2社の合併により、統合企業が特定市場で独占または準独占（quasi-monopolist）となる可能性がある。</p>
+<p>合併の可能性に関するニュースを聞いた金融アナリストは、常に競争法（competition law、反トラスト法（antitrust law）とも呼ばれる）の影響を考慮すべきである。すなわち、提案された合併が競争市場を維持するために規制当局によって阻止される可能性があるかどうかである。</p>
+<section id="CFA2410-R-s06-01-01">
+<h3 class="dp-heading">計量経済学的アプローチ（Econometric Approaches）</h3>
+<p>市場支配力はどのように測定すべきか。理論的には、市場の需要と供給の弾力性（elasticity）を推定することである。需要が非常に弾力的であれば、その市場は完全競争に近い。需要が非弾力的（inelastic）であれば、企業は市場支配力を持っている可能性がある。</p>
+<p>計量経済学的観点から、この推定には注意が必要である。観測される価格と数量は均衡値であり、供給または需要単独の値を表しているわけではない。この問題は内生性（endogeneity）の問題と呼ばれ、価格と数量が需要と供給の相互作用によって同時に決定されることを意味する。したがって、適切に需要と供給を推定するには、2つの方程式を持つモデルが必要である。すなわち、需要量（価格、所得、その他の変数の関数）と供給量（価格、生産コスト、その他の変数の関数）の方程式である。推定されたパラメータにより弾力性を計算できる。</p>
+<p>回帰分析（regression analysis）は弾力性の計算に有用であるが、多数の観測データを必要とする。そのため、例えば20年分の四半期データを用いる時系列アプローチ（time-series approach）が用いられることがある。しかし、その期間中に市場構造が大きく変化している可能性があり、推定された弾力性が現在の状況に適用できない場合がある。また、大規模企業の合併によって供給曲線が変化する可能性もあり、過去データに基づく推定は将来の市場状態に関して有用でない場合がある。</p>
+<p>代替手法として、クロスセクション回帰分析（cross-sectional regression analysis）がある。これは時間の経過に伴う市場全体のデータではなく、同一時点における複数企業の売上や、複数の取引データを用いる方法である。ただし、この手法は大量のデータ収集を必要とし、推定は複雑になる。また、説明変数の仕様（例えば所得の代理変数としてGDP全体を使うか中央値所得を使うか）によって推定結果が大きく異なる可能性がある。</p>
+</section>
+<section id="CFA2410-R-s06-01-02">
+<h3 class="dp-heading">より簡易な指標（Simpler Measures）</h3>
+<p>これらの問題を回避するため、アナリストはより単純な指標を用いることが多い。最も単純な指標は集中度比率（concentration ratio）であり、これは上位N社の市場シェアの合計である。例えば、上位10社の売上を合計し、それを市場全体の売上で割ることで求められる。この値は0（完全競争）から100％（独占）の間にある。</p>
+<p>集中度比率の主な利点は計算が容易である点である。しかし欠点として、市場支配力を直接測定するものではない。高い集中度比率が必ずしも独占力を意味するわけではない。例えば、ある企業が市場で唯一の既存企業であっても、参入障壁が低ければ、新規参入の可能性だけでその企業は完全競争のように行動する可能性がある。例えば、ある国で砂糖の卸売業者が1社しか存在しなくても、他の大規模食品卸が容易に砂糖を取り扱う可能性があれば、その企業は競争市場と同様の価格設定を行うだろう。</p>
+<p>集中度比率のもう一つの欠点は、上位企業間の合併の影響を十分に反映しないことである。最大企業と第2位企業が合併すれば価格支配力は増大する可能性が高いが、集中度比率は大きく変化しないことがある。</p>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="CFA2410-R-s06-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Calculating the Concentration Ratio</span></h4>
+<p>ある市場に8社の生産者がいるとする。最大企業は35％、第2位は25％、第3位は20％、第4位は10％、残り4社はそれぞれ2.5％のシェアを持つ。このとき上位3社の集中度比率は80％、上位4社では90％となる。</p>
+<p>最大企業と第2位企業が合併した場合、上位3社の集中度比率は90％、上位4社では92.5％となる。この合併は市場の60％を支配する巨大企業を生むにもかかわらず、集中度比率の変化は比較的小さい。</p>
+<p>例えば、米国のガソリン小売市場では統合により集中度が上昇している。1992年には上位4社のシェアは33％であったが、2001年には78％に増加した（Exxon Mobil 24％、Shell 20％、BP/Amoco/Arco 18％、Chevron/Texaco 16％）。</p>
+</div>
+<p>集中度比率の問題を回避するため、HerfindahlとHirschmanは各企業の市場シェアを二乗して合計する指数を提案した。これがハーフィンダール・ハーシュマン指数（Herfindahl–Hirschman index, HHI）である。1社が市場を支配する場合、HHIは1となる。M社が均等に市場を分ける場合、HHIは1/Mとなる。例えばHHIが0.20であれば、5社が均等に市場を分けている状態に相当する。</p>
+<p>上記の例では、合併前のHHIは0.35² + 0.25² + 0.20² = 0.225であり、合併後は0.60² + 0.20² + 0.10² = 0.410となり、大幅に上昇する。HHIは規制当局によって広く用いられるが、参入可能性や需要の弾力性を考慮しないため、企業の将来収益性を評価する際には限界がある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2410-R-s06-EXM-1-4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 4<span style="display: block;">The Herfindahl–Hirschman Index</span></h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2410-R-s06-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>ある市場に10社の供給者があり、各社が10％のシェアを持つ場合、上位4社の集中度比率とHHIはいくつか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 集中度比率4％、HHI 40</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。上位4社の集中度比率は10 + 10 + 10 + 10 = 40％であり、HHIは0.10² × 4 = 0.01 × 4 = 0.04である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 集中度比率40％、HHI 0.4</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。上位4社の集中度比率は10 + 10 + 10 + 10 = 40％であり、HHIは0.10² × 4 = 0.01 × 4 = 0.04である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 集中度比率40％、HHI 0.04</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。上位4社の集中度比率は10 + 10 + 10 + 10 = 40％であり、HHIは0.10² × 4 = 0.01 × 4 = 0.04である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2410-R-s06-B-1-b">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Question Set</h4>
+<section>
+<p>アナリストがある産業について次の市場シェアデータを収集した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2410-R-s06-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">企業（Company）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">売上（Sales、単位：百万ユーロ）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ABC</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">300</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Brown</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">250</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Coral</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">200</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Delta</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">150</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Erie</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他（All others）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2410-R-s06-Q3"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>当該産業の上位4社集中度比率（four-company concentration ratio）はどれに最も近いか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 71％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。上位4社は産業売上の86％を占める：（300 + 250 + 200 + 150）/(300 + 250 + 200 + 150 + 100 + 50) = 900/1050 = 86％。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 86％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。上位4社は産業売上の86％を占める：（300 + 250 + 200 + 150）/(300 + 250 + 200 + 150 + 100 + 50) = 900/1050 = 86％。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 95％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。上位4社は産業売上の86％を占める：（300 + 250 + 200 + 150）/(300 + 250 + 200 + 150 + 100 + 50) = 900/1050 = 86％。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<section>
+<p>以下の情報は問2および問3に適用される。</p>
+<p>あるアナリストが5社から成る産業について次の市場シェアデータを収集した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2410-R-s06-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">企業（Company）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">市場シェア（Market Share, %）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Zeta</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Yusef</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Xenon</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Waters</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Vlastos</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2410-R-s06-Q5"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>当該産業の上位3社ハーフィンダール・ハーシュマン指数（Herfindahl–Hirschman index, HHI）はどれに最も近いか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.185</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。上位3社のHHIは 0.35² + 0.25² + 0.20² = 0.225 である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 0.225</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。上位3社のHHIは 0.35² + 0.25² + 0.20² = 0.225 である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 0.235</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。上位3社のHHIは 0.35² + 0.25² + 0.20² = 0.225 である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2410-R-s06-Q6"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>ハーフィンダール・ハーシュマン指数（Herfindahl–Hirschman index, HHI）の欠点の一つはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 計算が困難である。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。HHIは、現在市場に存在する企業の市場支配力を制約する可能性のある低い参入障壁（barriers to entry）を反映しない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 低い参入障壁を反映しない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。HHIは、現在市場に存在する企業の市場支配力を制約する可能性のある低い参入障壁（barriers to entry）を反映しない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 産業内の合併の影響を反映しない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。HHIは、現在市場に存在する企業の市場支配力を制約する可能性のある低い参入障壁（barriers to entry）を反映しない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1865_modules_items_142725_105_Oligopoly.html" >← 前へ</a>
+  <span class="title">1.06 | Determining Market Structure</span>
+  <a href="courses_1865_modules_items_142736_Glossary_The_Firm_and_Market_Structures.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

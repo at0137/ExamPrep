@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11.03 | Advanced Analytical Tools: Artificial Intelligence and Machine Learning</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2409-R-s03-R-1" title="11.03 | Advanced Analytical Tools: Artificial Intelligence and Machine Learning">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール11：ビッグデータ技術入門（Introduction to Big Data Techniques）11.03｜高度分析ツール：人工知能と機械学習（Advanced Analytical Tools: Artificial Intelligence and Machine Learning）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">ビッグデータ（Big Data）、人工知能（artificial intelligence）、および機械学習（machine learning）を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>人工知能（artificial intelligence, AI）のコンピュータシステムは、従来人間の知能を必要としていたタスクを実行する能力を持つ。AI技術は、人間と同等またはそれ以上の認知能力および意思決定能力を示すコンピュータシステムの開発を可能にしてきた。</p>
+<p>AIの初期の例として、エキスパートシステム（expert system）がある。これは、特定の問題解決領域における人間専門家の知識体系や分析能力を模倣しようとするコンピュータプログラムであり、多くの場合「if–then」ルールを用いて実現された。1990年代後半には、高速ネットワークと高性能プロセッサの発展により、AIは物流（logistics）、データマイニング（data mining）、金融分析（financial analysis）、医療診断（medical diagnosis）などに応用されるようになった。1980年代以降、金融機関はAI、とりわけニューラルネットワーク（neural networks）—人間の脳が情報を学習・処理する仕組みに基づくプログラミング—を用いて、クレジットカード不正検知システムにおける異常取引の検出を行ってきた。</p>
+<p>機械学習（machine learning, ML）は、データの基礎となる確率分布（probability distribution）について仮定を置かずに、大量のデータから知識を抽出しようとするコンピュータベースの手法である。MLアルゴリズムの目的は、既知の例から一般化（generalizing）、すなわち「学習」することでデータの基礎構造を特定し、意思決定プロセスを自動化することである。重要なのは、人間の助けなしに構造や予測を生成できる能力である。簡潔に言えば、MLアルゴリズムは「パターンを見つけ、そのパターンを適用する」ことを目指す。</p>
+<p>現在の投資分野におけるMLの利用では、「学習（training）」のために膨大なデータが必要である。そのため、一部のML手法は以前から存在していたものの、歴史的にはデータ不足により広範な応用が制限されていた。従来は、これらのアルゴリズムが関係性を適切にモデル化するために必要なデータにアクセスできなかった。ビッグデータ（Big Data）の成長により、ニューラルネットワークを含むMLアルゴリズムは十分なデータを得ることができ、モデル化および予測精度が向上し、より広範な活用が可能となっている。</p>
+<p>MLでは、コンピュータアルゴリズムに「入力（inputs）」（変数やデータセット）を与え、場合によっては「出力（outputs）」（目標データ）も与える。アルゴリズムは、入力から出力への関係を最適にモデル化する方法（出力がある場合）や、出力がない場合にはデータの基礎構造を識別・記述する方法を「学習」する。アルゴリズムがデータ内の関係を特定し、その情報を用いて学習プロセスを改善することで学習が進む。</p>
+<p>MLでは、データセットをトレーニングデータ（training dataset）、検証データ（validation dataset）、テストデータ（test dataset）の3つに分割する。トレーニングデータは、過去のパターンに基づいて入力と出力の関係を特定するために用いられる。その後、検証データを用いてこれらの関係を検証し、モデルを調整する。テストデータは、新しいデータに対する予測能力を評価するために使用される。アルゴリズムが訓練・検証・テストされた後、MLモデルは他のデータセットに対する予測に使用される。</p>
+<p>MLは依然として、人間によるデータの理解や適切な分析手法の選択を必要とする。データは使用前にクリーンであり、バイアスや不適切なデータ（spurious data）が含まれていない必要がある。また、MLモデルは十分な量のデータを必要とし、訓練や検証に必要なデータが不足している場合には良好に機能しない可能性がある。</p>
+<p>アナリストは過学習（overfitting）による誤りに注意しなければならない。過学習したモデルは「偽の」関係や「根拠のない」パターンを発見し、予測誤差や誤った出力をもたらす可能性がある。過学習は、MLモデルが入力データと目標データを過度に正確に学習した場合に発生する。この場合、モデルはデータ中のノイズを真のパラメータとして扱ってしまう。過学習したモデルは別のデータセットに対して正確な予測ができず、過度に複雑である可能性がある。一方、過少適合（underfitting）が生じると、MLモデルは真のパラメータをノイズとして扱い、訓練データ内の関係を認識できない。この場合、モデルは単純すぎる可能性があり、データの背後にあるパターンを十分に捉えることができない。</p>
+<p>さらに、明示的にプログラムされていないため、ML手法は不透明（opaque）または「ブラックボックス（black box）」的なアプローチと見なされることがあり、結果の理解や説明が難しい場合がある。</p>
+<p>MLは、変数間の関係の特定、パターンやトレンドの検出、データの構造化（分類を含む）に役立つ。MLは大きく、教師あり学習（supervised learning）、教師なし学習（unsupervised learning）、ディープラーニング（deep learning）の3つに分類される。</p>
+<p>教師あり学習（supervised learning）では、ラベル付きデータ（labeled data）を用いて関係性をモデル化することを学習する。入力と出力があらかじめ指定されており、学習後、アルゴリズムは新しいデータセットに対して予測やモデル化を行う。例えば、最適なシグナル（signal）や変数の特定、株式の将来リターンの予測、翌営業日の市場パフォーマンス（上昇・下落・横ばい）の予測などに利用できる。</p>
+<p>教師なし学習（unsupervised learning）では、ラベル付きデータは与えられず、アルゴリズムはデータの構造を記述・発見しようとする。例えば、企業を標準的なセクター分類ではなく特性に基づいてグループ化することは、教師なし学習の応用例である。</p>
+<p>ニューラルネットワークに関連するAIの進展は重要である。ディープラーニング（deep learning、またはdeep learning nets）では、ニューラルネットワーク（多くの場合、多数の隠れ層（hidden layers）を持つ）を用いて多段階の非線形データ処理を行い、パターンを特定する。ディープラーニングは教師あり・教師なしの両方の手法を利用できる。多層的な分析により、単純な概念の理解がより複雑な概念の分析に活かされる。</p>
+<p>ニューラルネットワークは1958年以降存在し、予測やパターン認識などに用いられてきた。アルゴリズムの改善により、データをより適切に取り込み学習する精度の高いモデルが可能となっている。その結果、画像認識、パターン認識、音声認識などの分野で性能が大幅に向上している。多くの場合、最新のアルゴリズムは従来よりも少ない計算資源で実行可能であり、これにより従来は困難または時間がかかりすぎた洞察の発見や関係性の特定が可能となっている。</p>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="CFA2409-R-s03-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title">金融以外の分野におけるAIの進展（Advances in AI outside Finance）</h3>
+<p>金融以外の分野でのAIの成果としては、一般知識クイズ番組Jeopardy（2011年、IBMのWatson）や、中国の囲碁（2016年、GoogleのDeepMind）での勝利が挙げられる。AIはチェッカー、チェス、囲碁のように完全情報が存在するゲームだけでなく、不完全情報や非公開情報が存在する状況にも適用されており、ポーカー（DeepStack）での成功例がある。また、AppleのSiri、Googleの翻訳アプリ、Amazonのレコメンデーションエンジンなどの仮想アシスタントの発展にもAIが寄与している。</p>
+</div>
+<p>ML技術と従来の統計手法を組み合わせてビッグデータを分析する能力は、投資リサーチにおける重要な進展であり、データの増加とアルゴリズムの進歩によって支えられている。計算能力や処理速度の向上、ストレージコストの低下もこの進展を後押ししている。</p>
+<p>MLは、トレンドや市場イベントの予測（例えば、合併の成功確率や選挙結果の予測）に活用されている。画像認識アルゴリズムは、衛星データを分析して、小売店舗の駐車場の来客数、輸送活動、製造施設の稼働状況、農作物の収穫量などに関する情報を提供することができる。</p>
+<p>これらの情報は、個別企業レベルから国家・グローバルレベルに至るまでの洞察を提供し、バリュエーションモデルや経済モデルの入力として利用される可能性がある。</p>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ExpertSystemContent">
+<p>特定の問題解決領域において、人間専門家の知識体系や分析能力を模倣しようとするコンピュータプログラムの一種（多くの場合「if–then」ルールに基づく）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="NeuralNetworksContent">
+<p>人間の脳が情報を学習・処理する仕組みに基づいたコンピュータプログラム設計の一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MachineLearningMLContent">
+<p>データの基礎となる確率分布について仮定せずに、大量のデータから知識を抽出することを目的とするコンピュータベースの手法。既知の例から一般化してデータの構造を特定し、意思決定プロセスを自動化することを目指す。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OverfittingContent">
+<p>機械学習モデルが入力データと目標データを過度に正確に学習し、誤った関係や根拠のないパターンを見出してしまい、予測誤差を引き起こす状態。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="UnderfittedContent">
+<p>機械学習モデルが真のパラメータをノイズとして扱い、訓練データ内の関係を認識できず、データの背後にあるパターンを十分に捉えられない状態。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SupervisedLearningContent">
+<p>ラベル付きトレーニングデータに基づいて関係性をモデル化することを学習する機械学習の一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="UnsupervisedLearningContent">
+<p>ラベルのないデータの構造を学習しようとする機械学習の一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DeepLearningContent">
+<p>ニューラルネットワークを用いて多段階の非線形データ処理を行い、パターンを特定する人工知能の一分野。deep learning netsとも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DeepLearningNetsContent">
+<p>ディープラーニング（Deep learning）を参照。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144756_1102_How_Is_Fintech_used_in_Quantitative_Investment_Analysis.html" >← 前へ</a>
+  <span class="title">11.03 | Advanced Analytical Tools: Artificial Intelligence and Machine Learning</span>
+  <a href="courses_1864_modules_items_144765_1104_Tackling_Big_Data_with_Data_Science.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

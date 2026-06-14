@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.05 | Gathering Client Information</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0184-R-s05" title="4.05 | Gathering Client Information">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール4：ポートフォリオ計画および構築の基礎（Basics of Portfolio Planning and Construction）4.05｜顧客情報の収集（Gathering Client Information）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">リスクおよびリターンの目標（risk and return objectives）を説明し、それらがどのように顧客のために策定され得るかを説明する</li>
+<li class="cfa-curriculum-los-item">流動性（liquidity）、投資期間（time horizon）、税務上の考慮事項（tax concerns）、法的・規制上の要因（legal and regulatory factors）、および固有の事情（unique circumstances）といった投資制約（investment constraints）と、それらがポートフォリオ資産の選択に与える影響を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>先に述べたように、ポートフォリオマネージャー（portfolio managers）および投資アドバイザー（investment advisers）が顧客を理解することは重要である。例えば、EUではMiFID II（Markets in Financial Instruments Directive II）が金融仲介業者に対して十分な事実確認（fact finding）を実施することを求めている。これは、フルサービスのウェルスマネジメントやIPSの文脈に限らず、助言関係（advisory relationships：顧客が投資アドバイザーやブローカーと相談のうえで投資判断を行う場合）や執行のみの関係（execution-only relationships：顧客が独立して投資判断を行う場合）といった「より軽い」金融仲介の形態においても求められる。</p>
+<p>顧客に関する事実確認は、顧客関係の開始時に実施されるべきである。このプロセスでは、顧客の状況に関する情報を収集するとともに、顧客の目標（objectives）および要件（requirements）について議論する。</p>
+<p>顧客から収集すべき重要なデータには、家族状況や雇用状況に加えて財務情報が含まれる。顧客が個人である場合、配偶者やその他の家族の状況や要件について把握することも必要となる場合がある。また、顧客および扶養家族の健康状態も重要な情報である。機関投資家との関係では、組織内の主要なステークホルダー（stakeholders）とその見解や要件を把握することが重要である。情報収集は非公式な方法で行われる場合もあれば、構造化されたインタビュー、質問票（questionnaires）、データ分析を伴う場合もある。多くのアドバイザーはデータを電子的に記録し、データの保存やカスタマイズされたレポートの作成を行う専用システムを利用している。</p>
+<p>適切な記録管理（recordkeeping）は非常に重要であり、後に顧客関係に関する問題が発生した場合には決定的に重要となることがある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0184-R-EXM7">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例7 マリー・ガスコン：制約の記述（Marie Gascon: Description of Constraints）</h3>
+<section>
+<p>マリー・ガスコン（Marie Gascon）は、引き続きファイナンシャルアドバイザーと投資要件について議論している。アドバイザーはIPSの制約セクションの作成を開始する。</p>
+<p>ガスコンは、今後も石油会社で働き続け、比較的高い収入が当面維持されると予想している。ガスコン夫妻はこれ以上子供を持たない予定であるが、息子は18歳で大学に進学すると見込んでいる。息子の教育費は給与収入で賄えると考えている。</p>
+<p>ガスコンの緊急資金10万ユーロ（€100,000）は、不測の支出や緊急事態に備えるための十分な準備金と見なされている。彼女の退職資金90万ユーロ（€900,000）は、確定拠出年金（defined-contribution pension plan）の口座に拠出されている。フランスの規制では、年金拠出は総所得（税引前所得）から支払われ、年金基金の運用収益は非課税であるが、年金給付は受給時に所得として課税される。</p>
+<p>ガスコンの退職資金ポートフォリオについて、必要に応じて例2を参照し、以下に答えよ。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>流動性に関して、</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. ポートフォリオの最大50%を流動性資産（liquid assets）に投資すべきである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。これらの資産は20年後の退職のためのものであり、短期的な支出ニーズは他の資産または所得によって満たされる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 高い支出ニーズがあるため、ポートフォリオはすべて流動性資産に投資すべきである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。これらの資産は20年後の退職のためのものであり、短期的な支出ニーズは他の資産または所得によって満たされる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 短期的な支出要件がないため、ポートフォリオには流動性の必要はない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s05-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。これらの資産は20年後の退職のためのものであり、短期的な支出ニーズは他の資産または所得によって満たされる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>投資期間（investment time horizon）はどれに最も近いか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 5年</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。適切な投資期間は退職時点までの期間であり、これは20年である。その時点で資産がすべて清算されるわけではないが、ガスコンがそこから所得を引き出し始めるため、ポートフォリオの再構築が必要になると考えられる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 20年</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s05-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。適切な投資期間は退職時点までの期間であり、これは20年である。その時点で資産がすべて清算されるわけではないが、ガスコンがそこから所得を引き出し始めるため、ポートフォリオの再構築が必要になると考えられる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 40年</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。適切な投資期間は退職時点までの期間であり、これは20年である。その時点で資産がすべて清算されるわけではないが、ガスコンがそこから所得を引き出し始めるため、ポートフォリオの再構築が必要になると考えられる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>税務に関して、ポートフォリオは</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 所得が課税対象であるため、キャピタルゲイン（capital gains）を重視すべきである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-03">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。年金基金内では課税されないため、リターンが所得であるかキャピタルゲインであるかは問題とならない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. キャピタルゲインが課税されるため、所得を重視すべきである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-03">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。年金基金内では課税されないため、リターンが所得であるかキャピタルゲインであるかは問題とならない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 非課税であるため、所得とキャピタルゲインのいずれにも無差別である。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s05-01-03">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。年金基金内では課税が行われないため、リターンが所得（income）であるかキャピタルゲイン（capital gains）であるかは問題とならない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>当該ポートフォリオに適用される主要な法的・規制上の要因（legal and regulatory factors）はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 米国証券法（US securities laws）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-04">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。ポートフォリオの運用は、フランスの年金基金に関する規則に従う必要がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 欧州銀行法（European banking laws）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-04">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。ポートフォリオの運用は、フランスの年金基金に関する規則に従う必要がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. フランスの年金基金規制（French pension fund regulations）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s05-01-04">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。ポートフォリオの運用は、フランスの年金基金に関する規則に従う必要がある。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">5. </span>
+<p>固有のニーズ（unique needs）に関して、ポートフォリオは</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 石油およびその他の商品株（commodity stocks）への高いウェイトを持つべきである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-05">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。ガスコンの人的資本（human capital）（すなわち将来の労働所得）は石油産業の見通しに影響を受ける。ポートフォリオが石油株に大きくエクスポージャーを持つ場合、既に有しているリスクエクスポージャーをさらに増大させることになる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 責任投資およびサステナブル投資（responsible and sustainable investments）のみに投資すべきである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s05-01-05">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。ガスコンの人的資本（human capital）（すなわち将来の労働所得）は石油産業の見通しに影響を受ける。ポートフォリオが石油株に大きくエクスポージャーを持つ場合、既に有しているリスクエクスポージャーをさらに増大させることになる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 石油およびその他の商品株（commodity stocks）への大きなエクスポージャーを持つべきではない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s05-01-05">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。ガスコンの人的資本（human capital）（すなわち将来の労働所得）は石油産業の見通しに影響を受ける。ポートフォリオが石油株に大きくエクスポージャーを持つ場合、既に有しているリスクエクスポージャーをさらに増大させることになる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+<p>例8は、マリー・ガスコンに基づく最後の例であり、事実確認（fact-finding）から得られた情報がどのようにIPSの目的および制約セクションに組み込まれるかを示す。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0184-R-EXM8">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例8 マリー・ガスコン：IPSの概要（Marie Gascon: Outline of an IPS）</h3>
+<p>以下は、アドバイザーがマリー・ガスコンのために作成したIPSの簡略化された抜粋であり、目的および制約を含む。</p>
+<p>リスク目標（Risk Objectives）：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0184-R-L39">
+<li class="cfa-curriculum-list-item">ポートフォリオは、リターン要件（return requirements）を満たすために比較的高いリスクを取ることができる。20年の投資期間（time horizon）と相当な資産および所得を有することから、顧客は平均以上のリスク負担能力（ability to take risk）を有している。また、顧客は金融知識を有する投資家であり、平均以上のリスクを取る意思（willingness to take risk）を持っている。したがって、顧客のリスク許容度（risk tolerance）は平均以上であり、前述のポートフォリオのリスク目標を説明するものである。</li>
+<li class="cfa-curriculum-list-item">ポートフォリオは、資産クラス（asset classes）および各資産クラス内のポジション集中の観点から十分に分散されるべきである。顧客は平均以上のリスク許容度を有しているが、壊滅的損失（catastrophic loss）のリスクを抑制するために投資資産は分散されるべきである。</li>
+</ul>
+<p>リターン目標（Return Objectives）：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0184-R-L40">
+<li class="cfa-curriculum-list-item">ポートフォリオの長期的なリターン要件は、顧客の退職所得目標を達成するために、名目ベース（nominal terms）かつ手数料控除後（net of fees）で年率6.2%である。</li>
+</ul>
+<p>制約（Constraints）：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0184-R-L41">
+<li class="cfa-curriculum-list-item">流動性（Liquidity）：本ポートフォリオは年金基金資産で構成されており、短期から中期にかけて流動性の必要はない。</li>
+<li class="cfa-curriculum-list-item">投資期間（Time Horizon）：本ポートフォリオは20年の投資期間で運用される。顧客は20年後に退職する予定であり、その時点からポートフォリオから所得を引き出すことになる。</li>
+<li class="cfa-curriculum-list-item">税務状況（Tax Status）：フランスの法律の下では、基金への拠出は税引前で行われ、基金内のリターンは非課税である。したがって、顧客は基金内において所得とキャピタルゲインのいずれにも無差別である。</li>
+<li class="cfa-curriculum-list-item">法的および規制上の要因（Legal and Regulatory Factors）：</li>
+<li class="cfa-curriculum-list-item">固有のニーズ（Unique Needs）：</li>
+</ul>
+</div>
+<div class="dp-modal-content dp-modal-content cfa-curriculum-popup-boxed-text" id="CFA0184-R-EXM2_Content">
+<h4 class="dp-modal-title" style="margin-top: 0; border-bottom: 1px solid #A9A9A9;">例2 内容（Example 2 Content）</h4>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0184-R-EXM2">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2 アンリ・ガスコンのケース：リスク許容度（The Case of Henri Gascon: Risk Tolerance）</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>アンリ・ガスコン（Henri Gascon）は、パリに拠点を置くフランスの大手石油会社で働くエネルギートレーダーである。彼は30歳で、結婚しており、5歳の息子がいる。ガスコンは自身の財務状況を見直す時期だと判断し、ファイナンシャルアドバイザーに相談した。アドバイザーは以下の点を把握した。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0184-R-L16">
+<li class="cfa-curriculum-list-item">ガスコンの年収25万ユーロ（€250,000）は、家族の支出を賄うのに十分以上である。</li>
+<li class="cfa-curriculum-list-item">ガスコンは住宅を完全所有しており、100万ユーロ（€1,000,000）の貯蓄を有している。</li>
+<li class="cfa-curriculum-list-item">ガスコンは自身の仕事は比較的安定していると認識している。</li>
+<li class="cfa-curriculum-list-item">ガスコンは金融に関する十分な知識を有しており、株式市場（equity markets）が長期的にプラスのリターンをもたらすと確信している。</li>
+<li class="cfa-curriculum-list-item">リスク許容度質問票において、ガスコンは「株式や債券で利益を上げるのは運によるものである」および「投資においてはリターンよりも安全性の方が重要である」という記述に強く反対している。</li>
+<li class="cfa-curriculum-list-item">ガスコンは、自身の貯蓄の大部分を退職資金として使用する予定であり、50歳での退職を希望している。</li>
+</ul>
+<p>与えられた情報のみに基づき、次のうち最も適切な記述はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. ガスコンはリスク負担能力（ability to take risk）は低いが、リスクを取る意思（willingness to take risk）は高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-02-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。ガスコンは支出に対して高い収入を有し、高い資産水準、安定した職業、そして20年の投資期間を持っている。この情報は高いリスク負担能力を示唆する。同時に、ガスコンは金融市場に関して知識があり自信を持っており、質問票への回答もリスク許容度が高いことを示している。したがって、彼はリスクを取る意思も高いと考えられる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. ガスコンはリスク負担能力は高いが、リスクを取る意思は低い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0184-R-s03-02-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。ガスコンは支出に対して高い収入を有し、高い資産水準、安定した職業、そして20年の投資期間を持っている。この情報は高いリスク負担能力を示唆する。同時に、ガスコンは金融市場に関して知識があり自信を持っており、質問票への回答もリスク許容度が高いことを示している。したがって、彼はリスクを取る意思も高いと考えられる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. ガスコンはリスク負担能力が高く、かつリスクを取る意思も高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0184-R-s03-02-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>Cが正しい。ガスコンは支出に対して高い収入を有し、高い資産水準、安定した職業、そして20年の投資期間を持っている。この情報は高いリスク負担能力を示唆する。同時に、ガスコンは金融市場に関して知識があり自信を持っており、質問票への回答もリスク許容度が高いことを示している。したがって、彼はリスクを取る意思も高いと考えられる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_145993_404_IPS_Constraints.html" >← 前へ</a>
+  <span class="title">4.05 | Gathering Client Information</span>
+  <a href="courses_1872_modules_items_146001_406_Portfolio_Construction_and_Capital_Market_Expectations.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

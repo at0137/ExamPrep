@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.04 | Emotional Biases</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2252-R-s04" title="5.04 | Emotional Biases">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">Module 5：個人の行動バイアス（The Behavioral Biases of Individuals）5.04｜感情バイアス（Emotional Biases）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">一般的に認識されている行動バイアスと、それが金融意思決定に与える影響について説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>ここでは6つの感情バイアス、それらが投資意思決定に与える影響、およびそれらの影響を管理するための提案を検討する。感情バイアスは、意識的な計算ではなく衝動や直感に起因するため、認知エラーよりも修正が困難である。多くの場合、バイアスを認識し、それに適応することしかできない。本章で扱う6つの感情バイアスは、損失回避（loss aversion）、過信（overconfidence）、自己制御（self-control）、現状維持（status quo）、保有効果（endowment）、後悔回避（regret aversion）である。</p>
+<section id="CFA2252-R-s04-01">
+<h3 class="dp-heading">損失回避バイアス（Loss-Aversion Bias）</h3>
+<p>損失回避バイアスとは、利益を得ることよりも損失を回避することを強く好む傾向を指す。合理的なFMPは利益を増加させるためにより多くのリスクを受け入れるべきであり、損失を軽減するためではない。しかし現実には、FMPは利益を得るためよりも損失を回避するためにより多くのリスクを受け入れる傾向がある。損失回避は、損失の認識を避けるために損失銘柄を保有し続け、利益を確定するために勝ち銘柄を売却する行動を引き起こす。</p>
+<p>KahnemanとTversky（1979）は、損失回避的な投資家の行動を、参照点（reference point）に基づく利得と損失の評価として説明している。この参照点を通る効用関数（utility function）は図表1に示されており、S字型で非対称である。これは同じ絶対値の変化に対して、損失が利益よりも大きな効用への影響を持つことを意味する。この効用関数は、損失領域（横軸より下）ではリスク選好的行動、利益領域（横軸より上）ではリスク回避的行動を示す。この効用表現に組み込まれている重要な概念は処分効果（disposition effect）であり、これは損失を出している投資を長く保有しすぎ、利益を出している投資を早く売却しすぎる行動（すなわち、負けを保持し勝ちを売る）を指す。その結果、ポートフォリオは投資家のリスク・リターン目標に基づく最適ポートフォリオよりもリスクが高くなる可能性がある。</p>
+<div class="cfa-curriculum-exhibit-figure" id="CFA2252-R-EXH1">
+<h4 class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 1<span style="display: block;">Value Function of Loss Aversion</span></h4>
+<div class="cfa-curriculum-graphic" style="text-align: center;"><img alt="This diagram shows a utility function that passes through a reference point for a loss-averse investor." aria-describedby="CFA2252-R-EXH1-extended-desc" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1872/files/462166" data-api-returntype="File" id="CFA2252-R-EXH1" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/>
+<details class="dp-panels-wrapper" id="CFA2252-R-EXH1-extended-desc" style="font-size: 10pt;">
+<summary>Expand / Collapse Extended Description</summary>
+<p>この図は、損失回避的な投資家の参照点を通る効用関数を示している。それはS字型で非対称であり、同じ絶対値の変化に対して損失が利益よりも大きな効用への影響を持つことを示している。この効用関数は、損失領域ではリスク選好的行動、利益領域ではリスク回避的行動を示す。</p>
+</details>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM10">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 10<span style="display: block;">Effects of Loss-Aversion Bias</span></h4>
+<p>損失回避バイアスは、実務において処分効果として現れ、ウェルスマネジメントの実務家によって頻繁に観察される。このバイアスの典型例は、投資家が月次の口座明細を開き、個々の投資を勝ちと負けに分けて確認する場合である。一部の投資が損失を出し、他が利益を出していると、投資家は損失を出している投資を保有し続ける傾向がある。実際に損失を確定することの痛みが大きいため、損益がゼロに戻るまで保有しようとするのである。</p>
+<p>この投資家は認知的な推論ではなく感情に基づいて行動している。この場合、調査を行えば、その企業が困難な状況にあることや、その投資を保有し続けることがポートフォリオのリスクを増加させることを理解できた可能性がある（したがって損失領域におけるリスク選好という用語が用いられる）。</p>
+<p>一方で、利益を出している投資は利益を生んでいる。損失回避的なFMPは、利益が消失するのを避けるためにこれらを売却し、利益を確定する傾向がある。この場合、調査を行えば、その企業がポートフォリオのリスク・リターン特性を改善していることを理解できた可能性がある。投資を売却すると、将来の損失の可能性だけでなく将来の利益の可能性も排除される。損失銘柄の保有によるリスク増加と、勝ち銘柄の売却による利益機会の消失が組み合わさることで、ポートフォリオはファンダメンタル分析に基づくものよりも非効率になる可能性がある。</p>
+</div>
+<section id="CFA2252-R-s04-01-02">
+<section id="CFA2252-R-s04-01-02-01">
+<h5>Consequences of Loss Aversion</h5>
+<p>損失回避バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L23">
+<li class="cfa-curriculum-list-item">ファンダメンタル分析では正当化されないにもかかわらず、損失ポジションの投資を損益分岐点に戻ることを期待して長期間保有する。</li>
+<li class="cfa-curriculum-list-item">利益が減少することへの恐れから、ファンダメンタル分析で正当化されるよりも早く利益ポジションの投資を売却する。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s04-01-02-02">
+<h5>Detection of and Guidelines for Overcoming Loss Aversion</h5>
+<p>規律ある投資アプローチは損失回避バイアスの影響を軽減する良い方法である。損失の経験を感情的に軽減することはできないが、投資を分析し将来の損失と利益の確率を現実的に評価することで、FMPを合理的な意思決定へ導くことができる。</p>
+</section>
+</section>
+</section>
+<section id="CFA2252-R-s04-02">
+<h3 class="dp-heading">過信バイアス（Overconfidence Bias）</h3>
+<p>過信バイアスとは、人々が自分の能力に対して過度の確信を持つバイアスである。過信は自己帰属バイアス（self-attribution bias）と組み合わさることで強まることがあり、成功は自分の手柄とし（self-enhancing）、失敗は他者の責任とする（self-protecting）傾向がある。過信は認知的側面と感情的側面の両方を持つが、主として感情に起因するため感情バイアスに分類される。</p>
+<p>過信バイアスには2つの形態がある：予測過信（prediction overconfidence）と確信過信（certainty overconfidence）である。両者とも誤った推論と直感や希望が組み合わさっている。予測過信は、FMPが投資予測に設定する信頼区間が過度に狭い場合に生じる。例えば株価の将来価値を予測する際、過信的なFMPは歴史的実績やファンダメンタル分析に比べて変動を過小評価し、期待される結果の範囲を狭く、標準偏差を低く見積もる。</p>
+<p>確信過信は、FMPが結果に割り当てる確率が過度に高い場合に生じる。この確信はしばしば認知的評価ではなく感情的反応によるものである。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM11">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 11<span style="display: block;">Overconfidence Bias</span></h4>
+<p>あるアナリストは、原油価格が多くの生産者の生産コストを下回っているため、今後12か月で40%上昇すると予測している。不採算の生産者が生産を削減すれば、需要が安定または増加している限り価格は上昇圧力を受けると考えられる。この予測に基づき、アナリストはポートフォリオマネージャーに対して複数の高利回り債を推奨する。</p>
+<p>ポートフォリオマネージャーは下方リスクの見積もりを求め、「仮に原油価格がさらに10%下落した場合、どの程度損失が出るか」と尋ねる。アナリストは「それは非現実的だ。現在の原油価格はこれ以上下がらないし、これらの債券の利回りはこれ以上魅力的になることはない。今すぐ投資すべきであり、下方シナリオは存在しない」と答える。</p>
+<p>このアナリストは、予測に過度の確信を置き、その変動の可能性や影響を考慮していない点で過信バイアスを示している。</p>
+</div>
+<section id="CFA2252-R-s04-02-02">
+<section id="CFA2252-R-s04-02-02-01">
+<h5>Consequences of Overconfidence Bias</h5>
+<p>過信バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L24">
+<li class="cfa-curriculum-list-item">リスクを過小評価し、期待リターンを過大評価する。</li>
+<li class="cfa-curriculum-list-item">分散が不十分なポートフォリオを保有し、大きな下方リスクにさらされる可能性がある。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s04-02-02-02">
+<h5>Detection of and Guidelines for Overcoming Overconfidence Bias</h5>
+<p>FMPは自身の取引記録を見直し、勝ちと負けを特定し、少なくとも2年間のポートフォリオパフォーマンスを計算すべきである。自身の投資能力に対する根拠のない信念を持つ投資家は、勝ちとその結果を記憶しやすく、負けの数や結果を過小評価する傾向がある。この見直しは取引量の把握にも役立つ。過信は認知エラーの側面も持つため、より完全な情報がFMPに誤りを理解させる助けとなる。</p>
+<p>投資判断の実行および評価においては客観性が極めて重要である。ウォール街の格言に「強気相場と自分の能力を混同するな（Don’t confuse brains with a bull market）」というものがある。投資の根拠と結果を、勝ち負けを問わず可能な限り客観的に評価することが望ましい。いつ利益を得たのか、いつ損失を出したのかを確認し、良い判断と悪い判断を分離する。そして良い判断を検討し、何が正しかったのかを明確にする。ファンダメンタルズに基づいて有利なタイミングで投資したのか、それとも市場上昇のタイミングに偶然乗っただけなのかを検討する。同様に、悪い判断についても検討し、ファンダメンタルズに基づいた適切な投資であったのか、あるいは売却時に誤りがあったのか、または市場が調整局面にあったのかを分析する。</p>
+<p>不採算の意思決定を見直す際には、パターンや共通の誤りを探すべきである。発見した傾向を記録し、「今後はXを行う」「今後はYを行わない」といったルールやリマインダーを設定することで意識するようにする。</p>
+</section>
+</section>
+</section>
+<section id="CFA2252-R-s04-03">
+<h3 class="dp-heading">自己制御バイアス（Self-Control Bias）</h3>
+<p>自己制御バイアスとは、長期的な目標を追求するよりも短期的な満足を優先して行動してしまうバイアスである。例えばCFA資格を目指す人が、短期的な時間の制約のために十分に勉強できない場合である。合理的には長期目標達成のために必要な行動をとるべきだが、実際にはそうならないことが多い。</p>
+<p>金銭に関しては、多くの人が将来のために貯蓄する意思と能力を持っているが、自己制御の欠如により現在の消費を犠牲にすることが難しい。この現象は双曲割引（hyperbolic discounting）、すなわち将来の大きな報酬よりも現在の小さな報酬を好む傾向によっても説明される。現在の犠牲には将来の大きな報酬が必要であり、それがなければ人々は現在の犠牲を受け入れない。</p>
+<section id="CFA2252-R-s04-03-01">
+<section id="CFA2252-R-s04-03-01-01">
+<h5>Consequences of Self-Control Bias</h5>
+<p>自己制御バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L25">
+<li class="cfa-curriculum-list-item">将来に向けた貯蓄が不十分となり、その結果として高いリターンを求めて過度なリスクをポートフォリオで取る可能性がある。</li>
+<li class="cfa-curriculum-list-item">現在の消費を賄うために過剰に借入を行う。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s04-03-01-02">
+<h5>Detection of and Guidelines for Overcoming Self-Control Bias</h5>
+<p>FMPは適切な投資計画を策定し、個人の予算を持つべきである。計画は文書化し、定期的に見直す必要がある。同様に、FMPは十分な評価に基づいた戦略的資産配分（strategic asset allocation）を維持するよう努めるべきである。</p>
+</section>
+</section>
+</section>
+<section id="CFA2252-R-s04-04">
+<h3 class="dp-heading">現状維持バイアス（Status Quo Bias）</h3>
+<p>現状維持バイアスとは、変化が望ましい場合であっても、人々が何も行動せず（すなわち「現状（status quo）」を維持し）、変化を避ける傾向を指す感情バイアスである。現状維持バイアスは、保有効果（endowment）や後悔回避（regret-aversion）バイアスと併せて議論されることが多い。これらはいずれも既存のポジションを維持するという結果をもたらすが、その理由は異なる。現状維持バイアスでは、主に慣性によってポジションが維持されるのに対し、保有効果や後悔回避では、意識的ではあるが誤っている可能性のある判断によって維持される。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM12">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 12<span style="display: block;">The Path of Least Resistance</span></h4>
+<p>Choiら（2001）は、3つの企業のデータを用いて、確定拠出年金（defined contribution pension plan）への自動加入が従業員の行動に与える影響、およびデフォルトの拠出率や投資オプションが参加者の行動にどのように影響するかを研究した。</p>
+<p>自動加入により、従業員の参加率は、勤務6か月時点で26%～43%、勤務3年時点で57%～69%であったものが、両期間ともすべての企業で85%以上へと増加した。</p>
+<p>しかしながら、自動加入によって参加率は上昇したものの、65%以上の従業員が雇用主が指定したデフォルト拠出率（2%または3%）を選択し、デフォルトの投資オプションに留まった。この割合は時間とともに徐々に低下したが、勤務2年後であっても40%以上の参加者がデフォルトを使用し続けていた。</p>
+</div>
+<section id="CFA2252-R-s04-04-02">
+<section id="CFA2252-R-s04-04-02-01">
+<h5>Consequences of Status Quo Bias</h5>
+<p>現状維持バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L26">
+<li class="cfa-curriculum-list-item">自身の状況に適さないリスク特性を持つポートフォリオを、知らないうちに維持してしまう。</li>
+<li class="cfa-curriculum-list-item">他の投資機会を検討しない。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s04-04-02-02">
+<h5>Detection of and Guidelines for Overcoming Status Quo Bias</h5>
+<p>現状維持バイアスは非常に強く、克服が困難である場合があるため、教育が不可欠である。FMPは分散投資や適切な資産配分のリスク低減効果およびリターン向上効果を定量的に示すべきである。例えば、集中した株式ポジションについて、その株価が暴落した場合に総資産がどのようになるかを示すことで、分散化を促すことができる。</p>
+</section>
+</section>
+</section>
+<section id="CFA2252-R-s04-05">
+<h3 class="dp-heading">保有効果バイアス（Endowment Bias）</h3>
+<p>保有効果バイアスとは、資産を保有している場合に、保有していない場合よりもその価値を高く評価する傾向を指す感情バイアスである。このバイアスは、財の購入価格と売却価格は等しいはずであるとする標準的な経済理論と整合しない。しかし心理学の研究では、人々は同じ財について、自分が支払ってもよい最大購入価格よりも高い最低売却価格を提示する傾向があることが示されている。すなわち、所有することによって資産に追加的な価値が付与される。</p>
+<p>保有効果バイアスは、損失回避（loss aversion）、アンカリングと調整（anchoring and adjustment）、過信（overconfidence）など、他の行動バイアスの結果として生じる場合がある。名称に反して、購入した証券だけでなく相続した証券にも適用される。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM13">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 13<span style="display: block;">Endowment Bias</span></h4>
+<p>ある投資アナリストが推奨した複数の株式が過去5年間で好成績を収めたため、ポートフォリオマネージャーは各銘柄について簡単な更新とバリュエーションを求めた。アナリストは各銘柄について、フェアバリューが現在価格より少なくとも40%以上高いと見積もった。これに対しポートフォリオマネージャーは、そのフェアバリューが過去5年平均より少なくとも2標準偏差上のバリュエーション倍率を示しており、最も強気なセルサイドアナリストの目標株価すら上回っている点を指摘した。アナリストは、市場がこれら企業のファンダメンタルズを見落としていると主張する。ポートフォリオマネージャーが「現在この株を買うか」と尋ねると、アナリストは「おそらく買わない」と答えた。</p>
+<p>このアナリストは、既に保有している株式の価値を過大評価している点で、保有効果バイアスを示している可能性が高い。このバイアスは、これらの株式への投資が成功してきたことに起因していると考えられる。</p>
+</div>
+<section id="CFA2252-R-s04-05-02">
+<section id="CFA2252-R-s04-05-02-01">
+<h5>Consequences of Endowment Bias</h5>
+<p>保有効果バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L27">
+<li class="cfa-curriculum-list-item">特定の資産を売却して他の資産に置き換えることができない。</li>
+<li class="cfa-curriculum-list-item">慣れ親しんだ資産クラスを保有し続ける。FMPは既に保有している投資の特性を理解していると考え、経験の少ない資産の購入に消極的になる可能性がある。慣れは資産に対する主観的価値を高める。</li>
+<li class="cfa-curriculum-list-item">その結果、不適切な資産配分を維持する可能性がある。ポートフォリオは投資家のリスク許容度や財務目標に適さないものとなる可能性がある。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s04-05-02-02">
+<h5>Detection of and Guidelines for Overcoming Endowment Bias</h5>
+<p>多くのウェルスマネジメントの実務家は、前世代から相続した証券の売却をためらう顧客に直面している。このような場合、投資家は相続資産を売却することへの不忠誠の感情、不確実性、税務上の懸念などを理由として挙げることが多い。FMPは「相続資産と同額の現金を受け取った場合、その現金をどのように投資するか」と質問すべきである。多くの場合、その答えは相続ポートフォリオとは大きく異なる。また、被相続人の意図を検討することも有用である。「特定のポートフォリオを残すことが目的だったのか、それとも資産を相続人の利益のために残すことが目的だったのか」を確認する。後者であれば、代替的な資産配分を検討する意欲が高まる。</p>
+<p>購入した証券に対する保有効果バイアスに対処する有効な方法は、「売却価格」が合理的な「購入価格」を大きく上回る場合に、「現在価格でこの証券を購入するか」と問うことである。同様に、「なぜ現在この証券を追加購入しないのか」と問うことも有効である。これにより、過去ではなく現在に焦点を移し、現時点の上昇余地を検討できる。</p>
+</section>
+</section>
+</section>
+<section id="CFA2252-R-s04-06">
+<h3 class="dp-heading">後悔回避バイアス（Regret-Aversion Bias）</h3>
+<p>後悔回避バイアスとは、意思決定が悪い結果になることへの恐れから意思決定を回避する傾向を指す感情バイアスである。このバイアスには、実際に行った行動と、本来取り得たが取らなかった行動という2つの側面がある。後悔は、行動しなかった場合よりも行動した結果が悪かった場合に強く感じられる。そのため、何もしないことがデフォルトの選択となる。</p>
+<section id="CFA2252-R-s04-06-01">
+<section id="CFA2252-R-s04-06-01-01">
+<h5>Consequences of Regret-Aversion Bias</h5>
+<p>後悔回避バイアスの結果として、FMPは以下のような行動をとる可能性がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2252-R-L28">
+<li class="cfa-curriculum-list-item">過去のリスクの高い投資で悪い結果を経験したため、過度に保守的な投資判断を行う。再び悪い投資をして後悔することを避けるため、低リスク資産を選好する可能性がある。この行動は長期的なアンダーパフォーマンスや投資目標未達につながる可能性がある。</li>
+<li class="cfa-curriculum-list-item">群集行動（herding behavior）をとる。FMPは将来の後悔を軽減するため、人気のある投資に安心感を求める。群衆と同じ行動をとることで心理的な痛みが軽減されると感じる。後悔回避は、同等のリスク・リターンであっても知名度の高い企業の株式を選好する傾向につながる。知名度の低い企業への投資はよりリスクが高く、個人的責任や後悔の可能性が大きいと認識される。John Maynard Keynes（1936）は「世俗的な知恵は、型破りに成功するよりも、型通りに失敗する方が評判を守るうえで望ましいと教える」と述べている。</li>
+</ul>
+</section>
+<section id="CFA2252-R-s04-06-01-02">
+<h5>Detection of and Guidelines for Overcoming Regret-Aversion Bias</h5>
+<p>FMPは分散投資や適切な資産配分のリスク低減およびリターン向上効果を定量化すべきである。後悔回避は、市場環境によって過度に保守的または過度にリスク志向な投資を引き起こす可能性がある。適切な分散により、FMPはリターン目標に応じた適切なリスク水準を受け入れることができる。投資が過度に保守的になることを防ぐためには、損失は誰にでも起こるものであり、リスク資産をポートフォリオに含める長期的利益を認識する必要がある。また、バブルが発生することを理解し、長期目標を意識することで、過度にリスクの高い投資を防ぐことができる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2252-R-EXM14">
+<h6 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 14</h6>
+<section>
+<p>Tiffany Jordanは優れた実績を持つヘッジファンドマネージャーである。過去10年間、Jordanのファンドは株式市場中立戦略（equity market–neutral strategy：市場リスクを排除することを目指すロング・ショート戦略、すなわちベータはゼロであるべき）を採用しており、彼女の努力により有効に機能してきた。この戦略は通常、大量の売買と個別銘柄ポジションの頻繁な変更を伴う。Jordanのファンドは一貫してベンチマークを上回り、彼女の評価は年々高まっている。チームの離職率は高く、Jordanは失敗の責任を素早く他人に転嫁し、成功についてはほとんどチームに評価を与えない。過去12か月間、彼女のファンドはベンチマークを大きく下回っている。</p>
+<p>若手アナリストのJeremy Tangはこのアンダーパフォーマンスを懸念し、以下の点に気付いている。</p>
+<p>観察1：一部のポジションが大幅な含み損となっており、リスクプロファイルが非常に高く、通常よりも長期間保有されている。</p>
+<p>観察2：過去1年間でファンドの売買量が40%以上減少している。</p>
+<p>観察3：ポートフォリオが以前よりも少数のセクターに集中している。</p>
+<p>ポートフォリオが投資方針書（IPS）に違反している可能性を懸念したTangは、定例の週次会議でこの問題をJordanに伝える。JordanはTangの分析を退け、「自分は何をしているか分かっている」と述べる。彼女は価格のミスアライメントが是正されると信じており、損失ポジションを売却すれば平均回帰（reversion to the mean）から利益を得る機会を逃すと主張する。この戦略は過去にうまく機能しており、市場は回復してファンドのリターンも正常に戻るとチームを安心させる。</p>
+<p>Tangは慎重にチームでIPSを再確認することを提案するが、Jordanは彼の発言を遮り、自分はIPSを完全に暗記していると述べる。Tangは次に何をすべきかを考える。彼はJordanがファンドのパフォーマンスに影響を与える行動バイアスを示していることを懸念している。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">1. </span>
+<p>成功は自分の手柄とし、失敗の責任を他者に帰するという行動により、Jordanが最も示している可能性が高いバイアスはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 損失回避バイアス（loss-aversion bias）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。自己帰属バイアス（self-attribution bias）では、人々は成功の功績を自分に帰し、失敗の責任を他者に転嫁する。Jordanは成功した意思決定を自分の手柄とし、失敗した意思決定をチームの責任とする。彼女の自尊心は成功と失敗の捉え方に影響を与えている。自己帰属バイアスおよび知識の錯覚バイアス（illusion of knowledge bias）は過信バイアス（overconfidence bias）に寄与し、Jordanは後に自分が何をしているか分かっているとチームに述べることで明確にそれを示している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 自己帰属バイアス（self-attribution bias）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。自己帰属バイアス（self-attribution bias）では、人々は成功の功績を自分に帰し、失敗の責任を他者に転嫁する。Jordanは成功した意思決定を自分の手柄とし、失敗した意思決定をチームの責任とする。彼女の自尊心は成功と失敗の捉え方に影響を与えている。自己帰属バイアスおよび知識の錯覚バイアス（illusion of knowledge bias）は過信バイアス（overconfidence bias）に寄与し、Jordanは後に自分が何をしているか分かっているとチームに述べることで明確にそれを示している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. コントロールの錯覚バイアス（illusion of control bias）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。自己帰属バイアス（self-attribution bias）では、人々は成功の功績を自分に帰し、失敗の責任を他者に転嫁する。Jordanは成功した意思決定を自分の手柄とし、失敗した意思決定をチームの責任とする。彼女の自尊心は成功と失敗の捉え方に影響を与えている。自己帰属バイアスおよび知識の錯覚バイアス（illusion of knowledge bias）は過信バイアス（overconfidence bias）に寄与し、Jordanは後に自分が何をしているか分かっているとチームに述べることで明確にそれを示している。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">2. </span>
+<p>Tangの観察のうち、Jordanが損失回避バイアスを示している結果として最も考えにくいものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 観察1</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。損失回避は単独ではセクター集中を引き起こす可能性があるが、市場中立戦略（market-neutral strategy）は通常、セクターに関係なく個別銘柄に焦点を当てる。そのため、ロングとショートのポジションのバランスによりセクターエクスポージャーは抑制される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 観察2</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。損失回避は単独ではセクター集中を引き起こす可能性があるが、市場中立戦略（market-neutral strategy）は通常、セクターに関係なく個別銘柄に焦点を当てる。そのため、ロングとショートのポジションのバランスによりセクターエクスポージャーは抑制される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 観察3</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。損失回避は単独ではセクター集中を引き起こす可能性があるが、市場中立戦略（market-neutral strategy）は通常、セクターに関係なく個別銘柄に焦点を当てる。そのため、ロングとショートのポジションのバランスによりセクターエクスポージャーは抑制される。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">3. </span>
+<p>Jordanの行動のうち、コントロールの錯覚バイアス（illusion of control bias）を示している可能性が最も低いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. Tangの分析を退けたこと</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。週次チームミーティングを開催していることは、他者の意見に耳を傾ける意思を示しており、コントロールの錯覚バイアスを示すものではない。コントロールの錯覚バイアスでは、人々は実際よりも結果をコントロールできると信じる。このバイアスを示す人は、偶然の結果に対しても強い確信を持ち、他者の見解を無視する。Jordanは市場が回復すると確信しているが、それは彼女のコントロール外である。また、彼女は自分の見解に疑問を呈するTangの意見に耳を貸さない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 週次チームミーティングを開催していること</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。週次チームミーティングを開催していることは、他者の意見に耳を傾ける意思を示しており、コントロールの錯覚バイアスを示すものではない。コントロールの錯覚バイアスでは、人々は実際よりも結果をコントロールできると信じる。このバイアスを示す人は、偶然の結果に対しても強い確信を持ち、他者の見解を無視する。Jordanは市場が回復すると確信しているが、それは彼女のコントロール外である。また、彼女は自分の見解に疑問を呈するTangの意見に耳を貸さない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 市場の回復と現在の保有についての発言</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。週次チームミーティングを開催していることは、他者の意見に耳を傾ける意思を示しており、コントロールの錯覚バイアスを示すものではない。コントロールの錯覚バイアスでは、人々は実際よりも結果をコントロールできると信じる。このバイアスを示す人は、偶然の結果に対しても強い確信を持ち、他者の見解を無視する。Jordanは市場が回復すると確信しているが、それは彼女のコントロール外である。また、彼女は自分の見解に疑問を呈するTangの意見に耳を貸さない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">4. </span>
+<p>Jordanはどのようにして損失回避バイアスを示している可能性が最も高いか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. チームに心配するなと伝えたこと</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。Jordanの行動は損失回避の典型例である。損失が発生すると、正当化されるよりも長くポジションを保有することで、ポートフォリオにより多くのリスクを取っている。損失回避バイアスでは、人々は利益の獲得よりも損失の回避を強く好む。その結果の一つとして、投資専門家（この場合はJordan）は損失ポジションを損益分岐点以上に戻ることを期待して保有し続ける。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 今年のポートフォリオ回転率を低下させたこと</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。Jordanの行動は損失回避の典型例である。損失が発生すると、正当化されるよりも長くポジションを保有することで、ポートフォリオにより多くのリスクを取っている。損失回避バイアスでは、人々は利益の獲得よりも損失の回避を強く好む。その結果の一つとして、投資専門家（この場合はJordan）は損失ポジションを損益分岐点以上に戻ることを期待して保有し続ける。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 損失ポジションが回復するまで保有し続けると判断したこと</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。Jordanの行動は損失回避の典型例である。損失が発生すると、正当化されるよりも長くポジションを保有することで、ポートフォリオにより多くのリスクを取っている。損失回避バイアスでは、人々は利益の獲得よりも損失の回避を強く好む。その結果の一つとして、投資専門家（この場合はJordan）は損失ポジションを損益分岐点以上に戻ることを期待して保有し続ける。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">5. </span>
+<p>次のうち、Jordanが最も示している可能性が高い感情バイアスはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 保有効果（Endowment）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。Jordanは複数の点で過信バイアス（overconfidence）を示している。彼女はTangの分析を無視しており、これは自分がチームメンバーよりも優れており情報も豊富であると信じているためであり、知識の錯覚バイアス（illusion of knowledge bias）に典型的である。また、市場が回復すると強く確信していることも過信の証拠である。さらに、損失をチームの責任とし利益を自分の手柄とする自己帰属バイアスによって過信が強化されている。最後に、ベンチマークに対するアンダーパフォーマンスも過信バイアスの結果である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 後悔回避（Regret aversion）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。Jordanは複数の点で過信バイアス（overconfidence）を示している。彼女はTangの分析を無視しており、これは自分がチームメンバーよりも優れており情報も豊富であると信じているためであり、知識の錯覚バイアス（illusion of knowledge bias）に典型的である。また、市場が回復すると強く確信していることも過信の証拠である。さらに、損失をチームの責任とし利益を自分の手柄とする自己帰属バイアスによって過信が強化されている。最後に、ベンチマークに対するアンダーパフォーマンスも過信バイアスの結果である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 過信（Overconfidence）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Cが正解である。Jordanは複数の点で過信バイアス（overconfidence）を示している。彼女はTangの分析を無視しており、これは自分がチームメンバーよりも優れており情報も豊富であると信じているためであり、知識の錯覚バイアス（illusion of knowledge bias）に典型的である。また、市場が回復すると強く確信していることも過信の証拠である。さらに、損失をチームの責任とし利益を自分の手柄とする自己帰属バイアスによって過信が強化されている。最後に、ベンチマークに対するアンダーパフォーマンスも過信バイアスの結果である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">6. </span>
+<p>次のうち、Jordanが示していないバイアスはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 自己帰属（Self-attribution）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。本シナリオでは、Jordanが情報を過去の経験や分類に基づいて分類したという記述はない。代表性バイアス（representativeness bias）は、新しい情報を過去の経験や分類に基づいて判断する認知バイアスである。Jordanは将来に対する確信や損失ポジションの保有を、過去の経験や分類に基づいて説明していない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 代表性（Representativeness）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。本シナリオでは、Jordanが情報を過去の経験や分類に基づいて分類したという記述はない。代表性バイアス（representativeness bias）は、新しい情報を過去の経験や分類に基づいて判断する認知バイアスである。Jordanは将来に対する確信や損失ポジションの保有を、過去の経験や分類に基づいて説明していない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 知識の錯覚（illusion of knowledge）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Bが正解である。本シナリオでは、Jordanが特定の情報を個人的な分類に基づいて分類したという記述はない。代表性バイアス（representativeness bias）は、人々が新しい情報を過去の経験や分類に基づいて分類する認知バイアスである。Jordanは将来に対する確信や損失ポジションを保有する判断を、過去の自身の経験や分類に関連付けていない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id=""><span class="cfa-curriculum-question-with-label">7. </span>
+<p>Tangの指摘のうち、自己制御バイアス（self-control bias）の典型的な結果ではないものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 他のポートフォリオ機会を検討しないこと</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Aが正解である。他の機会を検討しないことは現状維持バイアス（status quo bias）の例であり、自己制御バイアスではない。自己制御バイアスは、自己規律の欠如により長期目標（この場合はIPS）から逸脱する場合に生じる。Jordanは過去に成功した戦略に従っていない。自己制御バイアスの結果には、より高いリターンを求めてポートフォリオで過度のリスクを取ること（C）や、資産配分の不均衡（B）が含まれる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. ポートフォリオにおける資産配分の不均衡</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Aが正解である。他の機会を検討しないことは現状維持バイアス（status quo bias）の例であり、自己制御バイアスではない。自己制御バイアスは、自己規律の欠如により長期目標（この場合はIPS）から逸脱する場合に生じる。Jordanは過去に成功した戦略に従っていない。自己制御バイアスの結果には、より高いリターンを求めてポートフォリオで過度のリスクを取ること（C）や、資産配分の不均衡（B）が含まれる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. より高いリターンを追求した結果としてポートフォリオのリスクプロファイルが高まること</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>Aが正解である。他の機会を検討しないことは現状維持バイアス（status quo bias）の例であり、自己制御バイアスではない。自己制御バイアスは、自己規律の欠如により長期目標（この場合はIPS）から逸脱する場合に生じる。Jordanは過去に成功した戦略に従っていない。自己制御バイアスの結果には、より高いリターンを求めてポートフォリオで過度のリスクを取ること（C）や、資産配分の不均衡（B）が含まれる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+</section>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist"><i aria-hidden="true" class="dp-icon fas fa-clipboard-list" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Reference List</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA2252-R-R7list">Keynes, John Maynard（1936）『雇用・利子および貨幣の一般理論（The General Theory of Employment, Interest, and Money）』ニューヨーク：Harcourt, Brace。</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA2252-R-R7Content">Keynes, John Maynard (1936). <em>The General Theory of Employment, Interest, and Money</em>. New York: Harcourt, Brace.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LossAversionBiasContent">
+<p>損失を回避することを利益を得ることよりも強く好む傾向を指すバイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DispositionEffectContent">
+<p>自身の保有物を損失で売却することを嫌う傾向をもたらす認知バイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OverconfidenceBiasContent">
+<p>自身の直感的推論、判断、および／または認知能力に対して根拠のない過信を示すバイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SelfAttributionBiasContent">
+<p>成功について過度に自分の手柄とし（self-enhancing）、失敗について他者に責任を帰する（self-protecting）バイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SelfControlBiasContent">
+<p>自己規律の欠如により、長期的かつ包括的な目標の追求において行動できないバイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="StatusQuoBiasContent">
+<p>変化を行わず現状（status quo）を維持する傾向を持つ感情バイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="EndowmentBiasContent">
+<p>資産を保有している場合に、保有していない場合よりも高く評価する感情バイアス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RegretAversionBiasContent">
+<p>意思決定が悪い結果になることへの恐れから、行動を伴う意思決定を回避する傾向を持つ感情バイアス。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_146066_503_Cognitive_Errors.html" >← 前へ</a>
+  <span class="title">5.04 | Emotional Biases</span>
+  <a href="courses_1872_modules_items_146076_505_Behavioral_Finance_and_Market_Behavior.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

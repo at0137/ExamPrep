@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.13 | Bond Indexes</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Return Attribution and Benchmarks › Module 2: Introduction to Benchmarks</nav>
+<h1 class="page-title screenreader-only">2.13 | Bond Indexes</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0146-R-s13-R-1" title="2.13 | Bond Indexes"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール2：ベンチマーク入門（Introduction to Benchmarks）2.13｜債券インデックス（Bond Indexes）</h2></header><div class="cfa-curriculum-los-box"><h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"></i>Learning Outcome</h3><p class="p1">The candidate should be able to:</p><ul id="CIPM0146-R-s13-los-1"><li class="cfa-curriculum-los-item">債券市場のセクターと関連する債券スタイル・インデックスの構築を説明すること；</li></ul></div><hr class="dp-hr-solid-light dp-hr-color-dp-primary"/><p>債券市場はセクターに分割され、類似した証券がグループ化される。例えば、発行体別に企業債（corporate bonds）、政府・政府機関債（government and government agency bonds）、地方債（municipal bonds）、資産担保証券（ABS: asset-backed securities）および住宅ローン担保証券（MBS: mortgage-backed securities）に分類できる。また、信用リスク別に投資適格債（investment-grade bonds）とハイイールド債（high-yield bonds）に分類することもできる。さらに細分化も可能であり、例えば企業債は産業、公益、金融セクターに分けられる。投資適格債はAAA、AA、A、BBBなどの格付け別に分類できる。加えて、固定／変動クーポン、コール条項の有無、インフレ連動の有無などでも分類される。債券インデックス提供者はリターンに加えて、デュレーション（duration：債券の主要な体系的リスク指標）も総合およびセクター別に提供する。</p><p>債券インデックス構築における典型的な基準には、国、信用リスク、流動性、満期、通貨、セクター分類が含まれる。米国債券インデックスの一般的な採用基準は、公募発行、非転換型、米ドル建て、固定または一定間隔で変動するクーポン、満期1年以上、最低発行額、必要な信用格付けの充足などである。広範な債券インデックスはサブセクターとしても提供され、満期および信用リスク別のインデックスが一般的である。</p><p>株式と比較すると、債券の発行体はより多い。政府や政府機関は債券を発行するが株式は発行しない。また、多くの発行体は普通株式は1種類だが、満期や優先順位などが異なる複数の債券を発行する。世界の債券市場の時価総額は約93兆ドルで、約54兆ドルの株式市場のほぼ2倍である。</p><p>しかし、債券は発行数が多いにもかかわらず、流通市場は株式ほど活発ではない。多くの債券は日中に取引されないか、中央取引所を通じていないため報告されない場合もある。このような場合、直近の価格は「陳腐化した価格（stale）」と呼ばれる。多くの債券インデックスの価格は実際の取引ではなく、特性に基づいて推定された評価値（matrix pricing）である。スプレッド情報の遅延は評価誤差を生む。取引が少ない理由として、長期投資志向、投資家数の少なさ、発行額の小ささなどがある。これにより、債券インデックスは株式インデックスほど投資可能性が高くなく、市場を正確に反映しない場合がある。また、評価価格を用いると、実際の価格変動が隠されるため、標準偏差や相関が過小評価される可能性がある。</p><p>債券インデックスをベンチマークとして用いる際の問題の一つは、完全複製（full replication）が困難である点である。流動性の低い債券が多く、指数に完全に追随することが難しい。そのため、実務では代表的サンプリング（sampling）が用いられる。また、流動性問題を緩和するために、より流動性の高いサブインデックスが作成されることもある（例：JP MorganのEMBI Global Core Index）。</p><p>第二の問題は、債券の異質性により、似たインデックスでも構成やパフォーマンスが大きく異なることである。例えば、あるインデックスはシンキングファンド条項を除外するが、別のインデックスは含める。また、コール可能債や転換債の扱いも異なる。クーポン再投資の仮定も提供者ごとに異なるため、投資家はインデックスの特性を理解する必要がある。</p><p>第三の問題は、インデックス構成の頻繁な変化である。債券インデックスは通常毎月再構成される。満期、発行、新規発行、償還などにより構成が変わり、リスク特性も変化する。例えば、政府債発行の減少はインデックスの信用リスクを高める可能性がある。したがって、超過リターンの評価は時間とともに不安定になる可能性がある。</p><p>第四の問題は、Siegel（2003）が指摘した「バム問題（bums problem）」である。時価総額加重の債券インデックスでは、借入額の多い発行体に大きなウェイトが与えられる。これらの発行体は将来格下げされる可能性が高く、低リターンとなるリスクがある。この問題は企業債・国債の両方に当てはまる。</p><p>バムのウェイトが高いインデックスは、等加重インデックスよりもリスクが高くなる可能性がある。この問題への対処として、発行体ごとのウェイト制限があるが、その場合は流動性の低い小規模銘柄への投資が増える可能性がある。</p><p>他の解決策としては、分散型インデックス、等加重インデックス、GDP加重インデックス、ファンダメンタル加重インデックスなどがある。しかし、これらも流動性や主観性の問題を完全には解決しない。また、時価総額加重は依然として客観的で市場ベースの指標であり、すべての投資家が理論的に保有可能な唯一のインデックスである。</p><p>第五の問題は、投資家の望むリスク特性と一致するインデックスを見つけにくい点である。債券は信用リスク、デュレーション、プリペイメントリスクなどが多様であり、インデックスは発行体側の特性を反映するため、投資家のニーズと一致しない場合がある。例えば長期金利が低い場合、長期債の発行が増え、インデックスは長期偏重となる。</p><p>したがって、投資家は複数のインデックスを組み合わせてベンチマークを構築することが多い。セクター、金利リスク、信用リスク、通貨リスクなどがポートフォリオと整合する必要がある。</p><p>Bailey and Tierney（1998）の基準に照らすと、債券インデックスは明確性（unambiguous）、測定可能性（measurable）、事前特定性（specified in advance）は満たすが、投資可能性（investable）や適切性（appropriate）を満たさない場合が多い。また、現時点の投資見解を反映しない場合や説明責任（accountable）を満たさない場合もある。</p><p>要約すると、債券インデックスは多くの用途に有用であるが、最適なベンチマークとは限らない。次にカスタムベンチマークを検討する。</p><figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0146-R-s13-Ba"><figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"></i>Knowledge Check: Bond Indexes</figcaption><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0146-R-s13-Q1"><legend><span class="cfa-curriculum-question-with-label">1. </span><p>次のうち、債券インデックスに関する記述として最も正しいものはどれか。</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse0-0" id="dp-qc-0-0" name="dp-qc-0" type="radio" value="true"/><label for="dp-qc-0-0"><p>A. 「バム」へのウェイト制限は、流動性の低いインデックスを生む可能性がある。</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse0-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h3 class="cfa-curriculum-solution-title">解答（Solution）</h3><p>Aが正しい。バム問題とは、借入額の多い発行体に大きなウェイトが与えられることであり、その対策としてウェイト制限を行うと、小規模で流動性の低い銘柄への投資が増える可能性がある。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-1" id="dp-qc-0-1" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-1"><p>B. 債券インデックス追跡には通常完全複製が用いられる。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-2" id="dp-qc-0-2" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-2"><p>C. 債券は同質的であるため、異なる提供者のインデックスは類似している。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0146-R-s13-Q2"><legend><span class="cfa-curriculum-question-with-label">2. </span><p>次のうち、債券インデックスが通常満たさないベンチマーク基準はどれか。</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse1-0" id="dp-qc-1-0" name="dp-qc-1" type="radio" value="true"/><label for="dp-qc-1-0"><p>A. 投資可能性（Investable）</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse1-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h3 class="cfa-curriculum-solution-title">解答（Solution）</h3><p>Aが正しい。債券インデックスは多様で流動性の低い銘柄を多く含むため、投資可能性を満たさない場合が多い。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-1" id="dp-qc-1-1" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-1"><p>B. 測定可能性（Measurable）</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-2" id="dp-qc-1-2" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-2"><p>C. 明確性（Unambiguous）</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div></figure><div class="dp-content-block cfa-curriculum-reflist"><h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3><div class="dp-panels-wrapper dp-accordion-default"><h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel0">参考文献（References）</h3><div aria-labelledby="dpPanel0" class="dp-panel-content" id="dpPanel0Content" role="region" style="display: none;" tabindex="0"><ul id="CIPM0146-R-s13-ref1"><li id="CIPM0146-R-s13-R1list">Amenc, Noel, Goltz, Felix and Tang, Lin (2011). EDHEC-Risk European Index Survey 2011. EDHEC Risk Institute (October): <a class="external" href="http://professoral.edhec.com/servlet/com.univ.collaboratif.utils.LectureFichiergw?ID_FICHIER=1328885973962" rel="noreferrer noopener" target="_blank"><span>http://professoral.edhec.com/servlet/com.univ.collaboratif.utils.LectureFichiergw?ID_FICHIER=1328885973962</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a>.</li><li id="CIPM0146-R-s13-R2list">Bailey, Jeffery V. and Tierney, David E.（1998）『Controlling Misfit Risk in Multiple-Manager Investment Programs』</li><li id="CIPM0146-R-s13-R3list">Drenovak, M., Uroševic, B. and Jelic, R.（2012）「European Bond ETFs: Tracking Errors and the Sovereign Debt Crisis」European Financial Management</li><li id="CIPM0146-R-s13-R4list">Levine, Robert, Drucker, Eve and Rosenthal, Steven（2010）「The Problems and Challenges of High-Yield Bond Benchmarking」Journal of Portfolio Management 36（4）：93–98</li><li id="CIPM0146-R-s13-R5list">Mahseredjian, Vache and Friebel, Mark（2003）「Fixed-Income Benchmarks」『Active Index Investing』</li><li id="CIPM0146-R-s13-R6list">Mizrach, Bruce and Neely, Christopher J.（2006）「The Transition to Electronic Communication Networks in the Secondary Treasury Market」Review - Federal Reserve Bank of St. Louis 88（6）：527–42</li><li id="CIPM0146-R-s13-R7list">Roxburgh, Charles, Lund, Susan and Piotrowski, John（2011）「Mapping Global Capital Markets」McKinsey Global Institute（8月）</li><li id="CIPM0146-R-s13-R8list">Siegel, L.（2003）『ベンチマークと投資運用（Benchmarks and Investment Management）』バージニア州シャーロッツビル（Charlottesville, VA）：CFA Institute Research Foundation。</li><li id="CIPM0146-R-s13-R9list">Upbin, Brian（2012）「債券インデックス設計に関する視点（Perspectives on Fixed-Income Index Design）」Journal of Indexes 15（1）：44–65。</li></ul></div></div></div>AUTHOR QUERIES<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip0Content" role="tooltip" style="display: none;"><p>29 Mahseredjian および Friebel（2003）。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip1Content" role="tooltip" style="display: none;"><p>30 Roxburgh、Lund、および Piotrowski（2011）。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip2Content" role="tooltip" style="display: none;"><p>31 Amenc、Goltz、および Tang（2011, p. 46）。Drenovak、Uroševic、および Jelic（2012）は、一見類似した欧州債券インデックスであってもパフォーマンスが大きく異なることを示した。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip4Content" role="tooltip" style="display: none;"><p>32 各種債券インデックスの加重方式については、Amenc、Goltz、および Tang（2011, pp. 51–52）を参照。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip5Content" role="tooltip" style="display: none;"><p>33 Mizrach および Neely（2006）は、発行体の選好によりインデックスのデュレーションが時間とともに変化する例を示している。米国財務省は2001年に30年債の発行を停止し、2006年に再開した。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip6Content" role="tooltip" style="display: none;"><p>34 債券セクター・インデックスを用いたポートフォリオ・ベンチマーク構築の例については、Upbin（2012）を参照。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip8Content" role="tooltip" style="display: none;"><p>35 Levine、Drucker、および Rosenthal（2010）。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip3Content" role="tooltip" style="display: none;">Siegel, L. (2003). <em>Benchmarks and Investment Management</em>. Charlottesville, VA: Research Foundation of CFA Institute.</div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip7Content" role="tooltip" style="display: none;">Bailey, Jeffery V. and Tierney, David E. (1998). <em>Controlling Misfit Risk in Multiple-Manager Investment Programs</em>. Charlottesville, VA: Research Foundation of CFA Institute.</div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1367_modules_items_99627_212_Equity_Style_Indexes.html" >← 前へ</a>
+  <span class="title">2.13 | Bond Indexes</span>
+  <a href="courses_1367_modules_items_99631_214_Custom_Benchmarks.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

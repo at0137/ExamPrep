@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11.09 | Activity Ratios</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2422-R-s09-R-1" title="11.09 | Activity Ratios">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール11：財務分析手法（Financial Analysis Techniques）11.09｜活動性比率（Activity Ratios）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">活動性（activity）、流動性（liquidity）、健全性（solvency）、および収益性（profitability）の各比率を計算し解釈せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>活動性比率（activity ratios）は、資産利用比率（asset utilization ratios）または業務効率比率（operating efficiency ratios）とも呼ばれ、業務パフォーマンス、すなわち企業が運転資本（working capital）および長期資産をどれだけ効率的に活用しているかを測定する指標である。運転資本の効率性は流動性に直接影響するため、いくつかの活動性比率は流動性の評価にも有用である。</p>
+<section id="CFA2422-R-s09-01-01">
+<h3 class="dp-heading">活動性比率の計算（Calculation of Activity Ratios）</h3>
+<p>図表17（Exhibit 17）は、一般的に使用される活動性比率を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s09-EXH-1-15">
+<h4 class="cfa-curriculum-exhibit-table-title">図表17 一般的に使用される活動性比率の定義（Definitions of Commonly Used Activity Ratios）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">活動性比率（Activity Ratios）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">分子（Numerator）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">分母（Denominator）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">棚卸資産回転率（Inventory turnover）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上原価（cost of sales または cost of goods sold）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">平均棚卸資産（Average inventory）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">棚卸資産保有日数（DOH：days of inventory on hand）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">期間の日数（Number of days in period）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">棚卸資産回転率（Inventory turnover）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金回転率（Receivables turnover）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高（Revenue）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">平均売掛金（Average receivables）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金回収日数（DSO：days of sales outstanding）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">期間の日数（Number of days in period）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金回転率（Receivables turnover）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">買掛金回転率（Payables turnover）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上原価（cost of sales または cost of goods sold）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">平均営業債務（Average trade payables）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">買掛金支払日数（Number of days of payables）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">期間の日数（Number of days in period）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">買掛金回転率（Payables turnover）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">運転資本回転率（Working capital turnover）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高（Revenue）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">平均運転資本（Average working capital）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">固定資産回転率（Fixed asset turnover）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高（Revenue）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">平均純固定資産（Average net fixed assets）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">総資産回転率（Total asset turnover）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高（Revenue）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">平均総資産（Average total assets）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>活動性比率は一般に、分子に損益計算書（income statement）の情報を用い、分母に貸借対照表（balance sheet）の項目を用いる。損益計算書は期間中に何が起こったかを測定するのに対し、貸借対照表は期末時点の状態のみを示すため、一貫性を保つために通常は貸借対照表項目の平均値が用いられる。</p>
+<p>活動性比率は年次または中間期間（interim period）のいずれに対しても計算可能であるが、期間間の解釈および比較には注意が必要である。例えば、同一企業において翌年の第1四半期（90日）の売上原価が35,000ユーロ、平均棚卸資産が11,000ユーロであった場合、棚卸資産回転率は3.18回となる。しかし、この回転率は四半期あたり3.18回であり、前年の年間12回とは直接比較できない。この場合、四半期の回転率に4（12か月／3か月、または365日／90日を用いると4.06）を掛けて年率換算することができる。したがって、四半期の棚卸資産回転率は年率12.72回（または90日と365日を用いると12.90回）に相当する。四半期データを用いてDOHを計算する場合、分子に四半期の日数を用いて四半期回転率を使用する方法、または年率換算した回転率と365日を用いる方法のいずれでも計算でき、いずれも約28.3日となる（90／3.18＝28.30、365／12.90＝28.29）。また、52/53週会計年度を採用している企業やうるう年の場合には、365日ではなく実際の日数を使用すべきである。</p>
+<p>場合によっては、アナリストは年間平均ではなく期末時点の棚卸資産が何日分に相当するかを知りたいことがある。この場合、平均値ではなく期末棚卸資産残高を用いることが適切である。企業が急速に成長している場合やコストが急激に上昇している場合には、この計算において第4四半期のみの売上原価を用いることも検討すべきである。なぜなら、それ以前の四半期の売上原価は現在の状況を反映していない可能性があるためである。例6では、香港証券取引所（HKEX：Hong Kong Stock Exchange）に上場しているLenovo Group Limitedを用いて、活動性比率の計算をさらに示している。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2422-R-s09-EXM-1-6">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例6 活動性比率の計算（Computation of Activity Ratios）</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>アナリストは、2018年3月31日に終了する会計年度（FY2017）におけるLenovo Groupの売掛金回収効率を評価したいと考えている。アナリストは、Lenovoの年次報告書および中間報告書から、図表18（Exhibit 18）に示される次の情報を収集した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s09-EXH-1-16">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 18<span style="display: block;">Lenovo</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: middle; padding: 8px; "></th>
+<th style="text-align: center; vertical-align: middle; padding: 8px; ">千米ドル（US dollar thousands）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px; ">2017年3月31日時点の売掛金（Trade receivables）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px; ">4,468,392</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px; ">2018年3月31日時点の売掛金（Trade receivables）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px; ">4,972,722</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px; ">2018年3月31日に終了する年度の売上高（Revenue）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px; ">45,349,943</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>2018年3月31日に終了する会計年度におけるLenovoの売掛金回転率（receivables turnover）および売掛金回収日数（DSO：days of sales outstanding）を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s09-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">売掛金回転率（Receivables turnover）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">=</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">売上高／平均売掛金（Revenue / Average receivables）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">45,349,943／[(4,468,392 + 4,972,722)／2]</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">45,349,943／4,720,557</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">9.6069回（約9.6回）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">DSO</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">期間の日数／売掛金回転率（Number of days in period / Receivables turnover）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">365／9.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">=</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">38.0日</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>平均して、Lenovoは2018年3月31日に終了する会計年度において、売掛金の回収に38日を要した。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA2422-R-s09-01-02">
+<h3 class="dp-heading">活動性比率の解釈（Interpretation of Activity Ratios）</h3>
+<section id="CFA2422-R-s09-01-02-01">
+<h4>棚卸資産回転率およびDOH（Inventory Turnover and DOH）</h4>
+<p>棚卸資産回転率は、棚卸資産に拘束されている資源（すなわち保有コスト（carrying costs））を示し、したがって棚卸資産管理の有効性を示す指標として用いることができる。一般に、棚卸資産回転率およびDOH（days of inventory on hand）は業界基準と比較されるべきである。</p>
+<p>業界基準と比較して高い棚卸資産回転率は、非常に効率的な在庫管理を示している可能性がある。一方で、高い棚卸資産回転率（およびそれに対応する低いDOH）は、企業が十分な在庫を保有していない可能性も示唆し、在庫不足が売上に悪影響を及ぼす可能性がある。どちらの説明が妥当であるかを判断するために、アナリストは企業の売上成長率を業界と比較することができる。売上成長が業界よりも低く、かつ棚卸資産回転率が高い場合、在庫水準が不十分である可能性を示唆する。一方で、売上成長が業界と同程度またはそれ以上であれば、高い回転率は在庫管理の効率性の高さを反映していると解釈できる。</p>
+<p>業界と比較して低い棚卸資産回転率（およびそれに対応する高いDOH）は、回転の遅い在庫の存在を示す可能性があり、これは技術的陳腐化（technological obsolescence）や流行の変化によるものかもしれない。ここでも、企業の売上成長率を業界と比較することで洞察を得ることができる。</p>
+</section>
+<section id="CFA2422-R-s09-01-02-02">
+<h4>売掛金回転率およびDSO（Receivables Turnover and DSO）</h4>
+<p>DSO（days of sales outstanding）は、企業が信用販売を行った顧客からどれだけ迅速に現金を回収しているかを示す。売掛金回転率の分子を信用売上に限定する方がより適切であるが、信用売上の情報は通常アナリストには入手できないため、一般的には損益計算書に報告されている売上高が用いられる。</p>
+<p>在庫管理と同様に、企業の売上成長率を業界と比較することで、厳格な信用方針により売上が失われているかどうかを評価することができる。さらに、回収不能と見積もられる売掛金や実際の貸倒損失を過去の実績や同業他社と比較することで、低い回転率が信用管理の問題を反映しているかどうかを判断することができる。企業はしばしば売掛金のエイジング（receivables aging：経過期間別の残高）に関する詳細情報を提供しており、これをDSOと併用することで回収のトレンドを理解することができる。これは例7で示されている。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2422-R-s09-EXM-1-7">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i>
+               Example 7<span style="display: block;">Evaluation of an Activity Ratio</span>
+</h5>
+<p>アナリストは、2018年3月31日および2017年3月31日に終了する会計年度におけるLenovoの平均DSOを計算した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s09-EXH-1-17">
+<h6 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 19<span style="display: block;">Average DSO</span>
+</h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">FY2017</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">FY2016</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金回収日数（Days of sales outstanding）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">37.6</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>売上高は、2017年3月31日に終了する会計年度（FY2016）の430億3,500万米ドルから、2018年3月31日に終了する会計年度（FY2017）の453億5,000万米ドルへと増加した。アナリストは、FY2016からFY2017にかけてのDSOの変化をより深く理解し、この増加が顧客の信用力に関する問題を示唆しているかどうかを評価したいと考えている。アナリストはLenovoの年次報告書から売掛金のエイジング情報を収集し、経過日数別の売掛金の割合を計算した。この情報は図表20（Exhibit 20）に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s09-EXH-1-18">
+<h6 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 20<span style="display: block;">Accounts Receivable</span>
+</h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: top; padding: 8px; "></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">FY2017</th>
+<th rowspan="2" style="text-align: left; vertical-align: top; padding: 8px; "></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">FY2016</th>
+<th rowspan="2" style="text-align: left; vertical-align: top; padding: 8px; "></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">FY2015</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">千米ドル（USD000）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">割合（Percent）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">千米ドル（USD000）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">割合（Percent）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">千米ドル（USD000）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">割合（Percent）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金（Accounts receivable）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">0～30日（0–30 days）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3,046,240</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">59.95</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,923,083</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">63.92</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3,246,600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">71.99</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">31～60日（31–60 days）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,169,286</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">23.01</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">985,251</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">21.55</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">617,199</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13.69</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">61～90日（61–90 days）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">320,183</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.30</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">283,050</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.19</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">240,470</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.33</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">90日超（Over 90 days）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">545,629</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10.74</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">381,387</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8.34</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">405,410</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8.99</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,081,338</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,572,771</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,509,679</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">控除：減損引当金（Provision for impairment）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–108,616</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–2.14</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–104,379</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–2.28</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–106,172</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–2.35</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金（純額）（Trade receivables, net）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,972,722</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">97.86</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,468,392</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">97.72</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,403,507</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">97.65</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">総売上高（Total sales）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">45,349,943</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">43,034,731</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">44,912,097</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注記：Lenovoの注記では、一般取引先に対して0日から120日の範囲の信用期間が付与されていることが開示されている。</p>
+</div>
+<p>これらのデータは、FY2017において総売掛金（減損控除後の純額）がFY2016と比較して11%増加した一方で、総売上高はわずか5.4%の増加にとどまったことを示している。さらに、30日超のすべてのカテゴリーにおける売掛金の割合は3年間で増加しており、顧客の支払いが実際に遅くなっていることを示している。これに対して、減損引当金（回収不能売掛金の見積額）は総売掛金に対する割合として低下している。これらの情報を総合すると、企業は売上成長を促進するために意図的に顧客への与信を拡大している可能性がある。また、減損を過小評価している可能性もある。これらの点については、アナリストによるさらなる調査が必要である。</p>
+</div>
+</section>
+<section id="CFA2422-R-s09-01-02-03">
+<h4>買掛金回転率および買掛金支払日数（Payables Turnover and the Number of Days of Payables）</h4>
+<p>買掛金支払日数（number of days of payables）は、企業が仕入先への支払いに要する平均日数を示し、買掛金回転率（payables turnover ratio）は、企業が理論上年間に何回すべての債権者への支払いを行うかを測定する。業界と比較して高い買掛金回転率（低い支払日数）は、企業が利用可能な信用枠を十分に活用していない可能性を示す一方で、早期支払割引（early payment discounts）を利用している結果である可能性もある。逆に、極端に低い回転率（高い支払日数）は、支払い遅延の問題を示唆する可能性があるが、緩やかな仕入先条件を活用している可能性もある。これは他の比率と併せて分析することが有用な例である。流動性比率が、企業が債務を履行するのに十分な現金および短期資産を有していることを示しているにもかかわらず、支払日数が比較的高い場合、アナリストは仕入先の寛容な信用条件および回収方針をその理由として重視するであろう。</p>
+</section>
+<section id="CFA2422-R-s09-01-02-04">
+<h4>運転資本回転率（Working Capital Turnover）</h4>
+<p>運転資本回転率は、企業が運転資本を用いてどれだけ効率的に売上を生み出しているかを示す。例えば、運転資本回転率が4.0であれば、企業は運転資本1ユーロあたり4ユーロの売上を生み出していることを意味する。高い運転資本回転率は高い効率性を示す（すなわち、運転資本に対して高い売上を生み出している）。一部の企業では運転資本がほぼゼロまたは負となることがあり、この場合この比率は解釈できなくなる。そのような状況では、以下の2つの比率の方が有用である。</p>
+</section>
+<section id="CFA2422-R-s09-01-02-05">
+<h4>固定資産回転率（Fixed Asset Turnover）</h4>
+<p>この比率は、企業が固定資産への投資からどれだけ効率的に売上を生み出しているかを測定する。一般に、固定資産回転率が高いほど、売上創出における固定資産の利用効率が高いことを示す。低い比率は非効率性、資本集約的な事業環境、またはまだフル稼働していない新規事業を示唆する可能性があり、その場合、アナリストはこの比率を単純に効率性と結び付けることはできない。さらに、資産回転率は企業の効率性以外の要因にも影響される。例えば、新しい資産（減価償却が進んでおらず、帳簿価額が高い）を持つ企業は、古い資産（減価償却が進んでおり、帳簿価額が低い）を持つ企業よりも固定資産回転率が低くなる傾向がある。また、売上が安定した成長を示していても、固定資産の増加は必ずしも滑らかなパターンに従わないため、固定資産回転率は変動しやすく、年ごとの変化が必ずしも企業の効率性の重要な変化を示すとは限らない。</p>
+</section>
+<section id="CFA2422-R-s09-01-02-06">
+<h4>総資産回転率（Total Asset Turnover）</h4>
+<p>総資産回転率は、一定水準の資産を用いて企業がどれだけ売上を生み出す能力があるかを測定する。例えば、1.20という比率は、平均資産1ユーロあたり1.20ユーロの売上を生み出していることを意味する。比率が高いほど効率性が高いことを示す。この比率は固定資産と流動資産の両方を含むため、運転資本管理の非効率性が全体の解釈を歪める可能性がある。そのため、運転資本回転率と固定資産回転率を個別に分析することが有用である。</p>
+<p>低い総資産回転率は、非効率性または事業の相対的な資本集約度の高さを示す可能性がある。また、この比率は経営陣の戦略的意思決定も反映する。例えば、労働集約的（資本集約度が低い）なアプローチを採用するか、資本集約的（労働集約度が低い）なアプローチを採用するかといった選択である。</p>
+<p>活動性比率を解釈する際には、アナリストは個々の比率だけでなく、関連する比率の集合全体を検討し、企業の総合的な効率性を判断する必要がある。例8では、仮想の製造企業における活動性比率（狭義の指標（例：棚卸資産保有日数（DOH））および広義の指標（例：総資産回転率））の評価が示されている。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2422-R-s09-EXM-1-8">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i>
+               Example 8<span style="display: block;">Evaluation of Activity Ratios</span>
+</h5>
+<p>ZZZ社は仮想の製造企業である。経営の業務効率を分析する一環として、アナリストはデータ提供者から次の活動性比率を収集した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s09-EXH-1-19">
+<h6 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 21<span style="display: block;">Operating Efficiency</span>
+</h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Ratio</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2018</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2017</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2016</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2015</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">DOH</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">35.68</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">40.70</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">40.47</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">48.51</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">DSO</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">45.07</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">58.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">51.27</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">76.98</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">総資産回転率（Total asset turnover）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.36</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.23</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.22</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>これらの比率は、当該企業が4年間にわたり3つの活動性指標すべてにおいて改善していることを示している。同社は棚卸資産をより効率的に管理し、売掛金の回収を迅速化し、総資産に対してより高い売上を生み出しているように見える。全体的なトレンドは良好であるが、現時点ではアナリストは何が起こったかを把握したにすぎない。より重要な問いは、なぜ比率が改善したのかである。なぜなら、良い変化だけでなく悪い変化も理解することで、企業の将来の業績に関する判断が可能になるからである。この問いに答えるため、アナリストは企業の財務報告および業界や経済に関する外部情報を検討する。年次報告書を精査した結果、2018年第4四半期に同社が「在庫調整（inventory correction）」を経験し、期末棚卸資産価値の約15%に相当する市場価値の下落および陳腐化に対する引当金（前年度は約6%）を計上していることが分かった。この棚卸資産価値の減少が、2017年の40.70日から2018年の35.68日へのDOHの低下の大部分を説明している。経営陣はこの在庫陳腐化が短期的な問題であると主張しており、アナリストは将来の中間期間におけるDOHを監視することでこの主張を検証することができる。いずれにしても、他の条件が同じであれば、アナリストは将来的にDOHが40日程度に戻ると予想する可能性が高い。</p>
+<p>総資産回転率については、より肯定的な解釈が可能である。アナリストは、同社の売上が35%以上増加した一方で、総資産は約6%の増加にとどまったことを確認した。業界および経済に関する外部情報に基づき、アナリストは売上増加の要因を業界全体の成長と同社の市場シェア拡大の双方に帰している。経営陣は比較的わずかな資産増加で売上成長を達成しており、その結果、総資産回転率が改善している。さらに、資産回転率の上昇の一因は、DOHおよびDSOの低下にもあることに留意されたい。</p>
+</div>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AssetUtilizationRatiosContent">
+<p>売掛金の回収や棚卸資産の管理など、日常業務をどれだけ効率的に行っているかを測定する比率。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OperatingEfficiencyRatiosContent">
+<p>売掛金の回収や棚卸資産の管理など、日常業務をどれだけ効率的に行っているかを測定する比率。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143774_1108_Common_Ratio_Categories_Interpretation_and_Context.html" >← 前へ</a>
+  <span class="title">11.09 | Activity Ratios</span>
+  <a href="courses_1867_modules_items_143779_1110_Liquidity_Ratios.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.04 | Financial Instruments</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2419-R-s04-R-1" title="3.04 | Financial Instruments">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3: 貸借対照表の分析 (Module 3: Analyzing Balance Sheets) 3.04 | 金融商品 (Financial Instruments)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">金融商品 (financial instruments) に関する財務報告および開示を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>IFRS (International Financial Reporting Standards, 国際財務報告基準) は、金融商品を、一方の企業に金融資産 (financial asset) を、他方の企業に金融負債 (financial liability) または資本性商品 (equity instrument) を生じさせる契約と定義する。このレッスンでは、企業が他社株式への投資や他社（または政府機関）が発行する手形、債券、その他固定利付商品への投資などの金融資産に焦点を当てる。企業が発行する手形や社債などの金融負債は後で扱う。一部の金融商品は契約条件や市場状況により、資産または負債のいずれかとして分類される場合がある。その例がデリバティブ (derivative) である。デリバティブは、価値が基礎となる要因（利率、為替レート、商品価格、証券価格、信用格付けなど）に基づき決定され、ほとんど初期投資を必要としない金融商品である。</p>
+<p>金融商品は、一般に、企業が契約条件の当事者となった時点で認識される。取得後の測定方法として基本的には、公正価値 (fair value) または償却原価 (amortized cost) の二通りがある。公正価値とは、秩序ある市場取引において資産を売却または負債を移転する際に受け取る（または支払う）価格である。金融資産（または負債）の償却原価とは、初期認識額から元本返済を差し引き、割引またはプレミアムの償却を加減算し、減損を控除した金額である。</p>
+<p>IFRSでは、金融資産のキャッシュフローが特定日付に発生し、元本と利息のみで構成され、かつ資産を満期まで保有するビジネスモデルの場合、取得後の測定は償却原価で行われる。この概念はUS GAAP (米国会計基準) においても同様で、この資産カテゴリーは満期保有 (held-to-maturity) と呼ばれる。例として、他社または政府が発行する長期債券への投資がある。債券の価値は、例えば金利変動により変動するが、満期保有投資として分類されている場合、投資企業の貸借対照表では償却原価で測定される。償却原価で測定される他の金融資産には、他企業への貸付も含まれる。</p>
+<p>公正価値で測定される金融商品については、公正価値の純変動を認識する方法として、(1) 損益計算書上の損益として認識、または (2) 損益計算書を経由せずその他の包括利益 (other comprehensive income) として認識する、の二通りがある。これらは、未実現の公正価値変動（期間末時点でまだ売却されておらず保有中の金融資産の価値変動）を指す。未実現損益は保有期間損益とも呼ばれる。売却による実現損益は損益計算書に計上される。</p>
+<p>IFRSでは、ビジネスモデルの目的が契約上のキャッシュフローの回収と金融資産の売却の両方を含む場合、取得後の金融資産はその他包括利益経由の公正価値測定 (fair value through other comprehensive income) が適用される。このIFRSカテゴリーは、特に債券投資に適用され、キャッシュフローが特定日に発生し、元本と利息のみで構成される資産に適用される。ただし、企業が株式投資を取得時に取り消不能の選択をしてこの測定を行う場合、株式投資もその他包括利益経由の公正価値で測定できる。この概念は、US GAAPにおける売却可能 (available-for-sale) 投資カテゴリーに類似しており、未実現の保有損益はその他包括利益で認識される。ただし、US GAAPの売却可能カテゴリーは債券のみであり、株式投資には適用されない。</p>
+<p>IFRSでは、他の二つの測定カテゴリーに分類されない場合、取得後の金融資産は損益計算書経由の公正価値 (fair value through profit or loss) で測定される。取得時に企業が取り消不能の選択を行うことも可能である。US GAAPでは、所有権による支配力が重要でない株式投資はすべて損益計算書経由の公正価値で測定され、未実現損益は損益計算書に認識される。US GAAPでは、取引目的 (trading) に指定された債券も損益計算書経由の公正価値で測定される。取引目的債券は、利息と元本を回収するためではなく売却する意図で取得された債券を指す。</p>
+<p>図4 (Exhibit 4) は、取得後の各金融資産の分類と測定方法をまとめたものである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s04-EXH-1-4">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 4<span style="display: block;">Measurement of Financial Assets</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">原価または償却原価で測定 (Measured at Cost or Amortized Cost)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">その他包括利益経由の公正価値で測定 (Measured at Fair Value through Other Comprehensive Income)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">損益計算書経由の公正価値で測定 (Measured at Fair Value through Profit and Loss)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期保有債券。貸付金および受取手形。非上場株式（公正価値を信頼性高く測定できない場合、原価を公正価値の代理値として使用可能）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売却可能債券 (Available-for-sale, US GAAP); 利息および元本の回収と売却の両方を目的とする債券 (IFRS); 取得時に企業が取り消不能の選択を行った株式投資 (IFRSのみ)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">すべての株式投資（投資先に対して重要な影響力を与える場合を除く、US GAAPのみ）; 取引目的債券 (Trading Debt Securities, US GAAP); 他の二つのカテゴリーに分類されない証券、または取得時に取り消不能の選択を行った投資 (IFRSのみ)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>金融資産の損益の異なる会計処理を例示するために、ある企業が202X年1月1日に固定利付証券投資にEUR100,000,000を投資し、半年ごとに5％のクーポンが支払われるとする。6か月後、企業は最初のクーポン支払いとしてEUR2,500,000を受領する。さらに市場金利が低下し、202X年6月30日時点で固定利付投資の価値はEUR2,000,000増加している。図5は、資産が取引目的、売却可能資産、満期保有資産の各測定カテゴリーに分類された場合、対象企業の貸借対照表および損益計算書（税金無視）でどのように表示されるかを示す。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s04-EXH-1-5">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 5<span style="display: block;">Accounting for Gains and Losses on Marketable Securities</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">IFRSカテゴリー</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">原価または償却原価で測定 (Measured at Cost or Amortized Cost)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">その他包括利益経由の公正価値で測定 (Measured at Fair Value through Other Comprehensive Income)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">損益計算書経由の公正価値で測定 (Measured at Fair Value through Profit and Loss)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">US GAAPにおける類似カテゴリー (US GAAP Comparable Categories)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">満期保有 (Held to Maturity)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">売却可能債券 (Available-for-Sale Debt Securities)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">取引目的債券 (Trading Debt Securities)</td>
+</tr>
+<tr>
+<td colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">202X年1月1日～6月30日期間の損益計算書 (Income Statement for period 1 January–30 June 202X)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">受取利息 (Interest income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">未実現損益 (Unrealized gains)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">— </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">— </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,000,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">損益への影響 (Impact on profit and loss)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,500,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">202X年6月30日時点の貸借対照表 (Balance Sheet as of 30 June 202X)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産 (Assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金および現金同等物 (Cash and cash equivalents)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">証券の取得原価 (Cost of securities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">証券に係る未実現損益 (Unrealized gains on securities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">— </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,000,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">102,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">104,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">104,500,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債 (Liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純資本 (Equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資本金 (Paid-in capital)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利益剰余金 (Retained earnings)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,500,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他包括利益累計額 (Accumulated other comprehensive income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> —</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,000,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">— </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">102,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">104,500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">104,500,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>原価または償却原価で測定される証券（US GAAPでは満期保有 (held-to-maturity) と同等）の場合、損益計算書には利息収入のみが表示され（これは期末貸借対照表の利益剰余金に反映される）、未実現損益は認識されない。貸借対照表では、投資資産はEUR100,000,000の償却原価で表示される。</p>
+<p>その他包括利益経由の公正価値で測定される証券（IFRS）、またはUS GAAPの売却可能債券 (Available-for-Sale debt securities) に分類される場合、損益計算書には利息収入のみが表示され（期末貸借対照表の利益剰余金に反映される）。未実現損益は損益計算書には表示されず、包括損益計算書のその他包括利益として表示される。貸借対照表では、投資資産はEUR102,000,000の公正価値で表示される。（図5では、価値変動の影響を示すために未実現損益を別行に表示しているが、実務では投資は単一行で公正価値として表示される）。損益計算書経由の公正価値で測定される証券（IFRS）、またはUS GAAPの取引目的債券 (trading debt securities) に分類される場合、利息収入と未実現損益の両方が損益計算書に含まれ、貸借対照表の利益剰余金に反映される。</p>
+<p>図2および図6の情報から、SAPの2017年貸借対照表では、その他金融資産 (other financial assets) が現金性資産 (current, 図6) でEUR990百万、非流動資産 (non-current, 図2) でEUR1,155百万となっている。財務諸表注記によると、現金性金融資産の最大の構成要素は貸付金およびその他金融債権 (EUR793百万) であり、非流動金融資産の最大構成要素は売却可能株式投資 (available-for-sale equity investments) EUR827百万である。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s04-EXH-1-6">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 6<span style="display: block;">SAP Group Consolidated Statements of Financial Position (Excerpt: Current Assets Detail) (in millions of euros)</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">資産 (Assets)</th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">12月31日時点 (As of 31 December)</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金および現金同等物 (Cash and cash equivalents)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€4,011</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€3,702</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他金融資産 (Other financial assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">990</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,124</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売掛金およびその他債権 (Trade and other receivables)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,899</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,924</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他非金融資産 (Other non-financial assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">725</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">581</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税金資産 (Tax assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">306</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">233</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産合計 (Total current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11,930</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11,564</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非流動資産合計 (Total non-current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30,567</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32,713</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産 (Total assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">42,497</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">44,277</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債合計 (Total current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10,210</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,674</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非流動負債合計 (Total non-current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6,747</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8,205</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債合計 (Total liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,958</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17,880</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純資本合計 (Total equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25,540</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26,397</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純資本および負債合計 (Total equity and liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€42,497</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€44,277</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>出典: SAPグループ 2017年年次報告書 (Source: SAP Group 2017 annual report)</p>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s04-EXH-1-7">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 7<span style="display: block;">Apple, Inc. Consolidated Balance Sheets (Excerpt: Current Assets Detail) (in millions of US dollars)</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">資産 (Assets)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2017年9月30日時点 (30 September, 2017)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2016年9月24日時点 (24 September, 2016)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金および現金同等物 (Cash and cash equivalents)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20,289米ドル ($20,289)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20,484米ドル ($20,484)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">短期有価証券 (Short-term marketable securities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">53,892</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46,671</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売掛金（控除：それぞれ58米ドルおよび53米ドル） (Accounts receivable, less allowances of $58 and $53, respectively)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17,874</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15,754</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産 (Inventories)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,855</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,132</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仕入先非取引性債権 (Vendor non-trade receivables)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17,799</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13,545</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他流動資産 (Other current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13,936</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8,283</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産合計 (Total current assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">128,645</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">106,869</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">[その他資産] ([All other assets])</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">246,674</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">214,817</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産 (Total assets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">375,319</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">321,686</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債合計 (Total current liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,814</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">79,006</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">[非流動負債合計] ([Total non-current liabilities])</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">140,458</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">114,431</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債合計 (Total liabilities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">241,272</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">193,437</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株主資本合計 (Total shareholders’ equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">134,047</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">128,249</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債および株主資本合計 (Total liabilities and shareholders’ equity)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">375,319米ドル ($375,319)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">321,686米ドル ($321,686)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：この抜粋で示された斜体の小計は、企業が作成した財務諸表の表面には明示的に表示されていない。</p>
+<p>出典：Apple Inc. 2017年年次報告書 (Form 10K) (Source: Apple Inc. 2017 annual report, Form 10K)</p>
+</div>
+<p>図3および図7に示されるように、Apple (Apple Inc.) の2017年貸借対照表では、短期有価証券 (short-term marketable securities, 現金性資産, current, 図7) が53,892百万米ドル (USD53,892 million)、長期有価証券 (long-term marketable securities, 非流動資産, non-current, 図3) が194,714百万米ドル (USD194,714 million) と表示されている。合計すると、有価証券はAppleの総資産3,753億米ドル (USD375.3 billion) の66％以上を占める。有価証券に現金および現金同等物を加えると、企業の総資産の約72％を占める。Appleの注記によると、同社の有価証券の大部分は米国政府またはその機関が発行する固定利付証券 (fixed-income securities, USD60,237 million) およびその他企業が発行する商業手形 (commercial paper, USD153,451 million) である。Appleは投資方針に従い、高格付け証券（投資適格、investment grade と定義）に投資し、単一発行体への信用リスクを制限している。同社は有価証券を売却可能 (available-for-sale) と分類し、貸借対照表では公正価値 (fair value) で報告している。未実現損益 (unrealized gains and losses) はその他包括利益 (other comprehensive income) に計上される。</p>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2419-R-s04-FN-1-1Content">
+<p>IAS 32, 金融商品：表示 (Financial Instruments: Presentation), パラグラフ11</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2419-R-s04-FN-1-2Content">
+<p>IFRS 13, 公正価値測定 (Fair Value Measurement); および US GAAP ASC 820, 公正価値測定 (Fair Value Measurement)</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2419-R-s04-FN-1-3Content">
+<p>IFRS 7, 金融商品：開示 (Financial Instruments: Disclosures), パラグラフ8(h); および IFRS 9, 金融商品 (Financial Instruments), パラグラフ5.7.5</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2419-R-s04-FN-1-4Content">
+<p>US GAAP, 会計基準アップデート (Accounting Standards Update, ASU) 2016-01, 金融資産および金融負債の認識と測定 (Recognition and Measurement of Financial Assets and Financial Liabilities); および US GAAP, ASC 32X, 投資 (Investments)</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DerivativeContent">
+<p>基礎資産または要因（例：株価、利率、為替レート）のパフォーマンスに基づき価値が決まる金融商品 (financial instrument)</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="HeldToMaturityContent">
+<p>企業が満期まで保有する意図のある債券（固定利付債, debt (fixed-income) securities）；これらは取得原価で表示され、割引またはプレミアムの償却が加味される</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AvailableForSaleContent">
+<p>US GAAPでは、満期保有債券 (held-to-maturity) または取引目的債券 (held-for-trading securities) に分類されない債券。投資家は売却する意思はあるが、積極的に売却する予定はない。一般に、売却可能債券 (available-for-sale debt securities) は貸借対照表上で公正価値で報告され、未実現損益はその他包括利益の構成要素として含まれる。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143516_303_Goodwill.html" >← 前へ</a>
+  <span class="title">3.04 | Financial Instruments</span>
+  <a href="courses_1867_modules_items_143520_305_Non-Current_Liabilities.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

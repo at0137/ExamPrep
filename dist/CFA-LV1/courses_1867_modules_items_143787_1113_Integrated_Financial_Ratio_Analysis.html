@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11.13 | Integrated Financial Ratio Analysis</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2422-R-s13-R-1" title="11.13 | Integrated Financial Ratio Analysis">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール11：財務分析手法（Financial Analysis Techniques）11.13 | 統合的財務比率分析（Integrated Financial Ratio Analysis）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">比率間の関係を説明し、比率分析を用いて企業を評価する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>これまでのレッスンでは、活動性比率（activity ratios）、流動性比率（liquidity ratios）、ソルベンシー比率（solvency ratios）、および収益性比率（profitability ratios）を個別に提示してきた。本レッスンでは、バリュエーション比率（valuation ratios）を議論する前に、企業の全体的な財務状況および業績を把握するためには、単一の比率や比率の一分類だけでなく、さまざまな財務比率を総合的に検討することの重要性を示す。経験的には、ある比率カテゴリから得られる情報が別のカテゴリで生じた疑問の解決に役立つことがあり、最も正確な全体像はすべての情報源を統合することで得られる。</p>
+<section id="CFA2422-R-s13-01-01">
+<h3 class="dp-heading">比率の全体像：例</h3>
+<p>分析課題に対処するために多様な比率を使用する方法を紹介するために、2つの簡単な例を示す。例13では、2つの活動性比率の分析が企業の流動性に関する問題をどのように解決するかを示す。例14では、複数企業の全体的な比率を検討することが、それらの相対的な業績に関する結論を導くのにどのように役立つかを示す。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2422-R-s13-EXM-1-13">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例13：さまざまな比率（A Variety of Ratios）</h4>
+<p>あるアナリストはカナダの製造企業の流動性を評価しており、Exhibit 29に示される流動性比率を取得した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s13-EXH-1-30">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 29<span style="display: block;">Liquidity Ratios</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">会計年度（Fiscal Year）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>10</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>9</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>8</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">流動比率（Current ratio）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当座比率（Quick ratio）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>これらの比率は、企業の流動性について矛盾した状況を示している。流動比率が1.6から2.1に上昇していることからは、企業の流動性は強く改善しているように見える。しかし、当座比率が1.0から0.8へ低下していることからは、流動性は悪化しているように見える。両比率は分母として同じ流動負債（current liabilities）を持つため、この差異は、流動比率には含まれるが当座比率には含まれない資産（例えば棚卸資産（inventories））の変化によるものであるはずである。そこでアナリストは、Exhibit 30に示される活動性比率を収集した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s13-EXH-1-31">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 30<span style="display: block;">Activity Ratios</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">DOH</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">55</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">45</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">30</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">DSO</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">24</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">28</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">30</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>当該企業の在庫保有日数（DOH: days of inventory on hand）は30日から55日に悪化しており、売上に対して保有する在庫量が増加していることを意味する。一方、売掛金回収日数（DSO: days sales outstanding）の低下は、売掛金の回収が速くなっていることを示唆する。これらの回収による資金が現金として保有されていれば、流動比率および当座比率のいずれにも影響はない。しかし、その資金が在庫の購入に使われた場合、流動比率には影響がなく、当座比率は低下する（すなわち本例で示されているパターン）。これらの比率を総合すると、流動性は低下しており、企業は対処すべき在庫問題を抱えている可能性があることが示唆される。</p>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2422-R-s13-EXM-1-14">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例14：2社の比較（A Comparison of Two Companies (1)）</h4>
+<section>
+<p>あるアナリストは、2つの仮想企業についてExhibit 31の情報を収集した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s13-EXH-1-32">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 31<span style="display: block;">Company Comparison</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; ">アンソン・インダストリーズ（Anson Industries）</th>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度（Fiscal Year）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>5</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>4</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>3</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">在庫回転率（Inventory turnover）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">76.69</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">89.09</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">147.82</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">187.64</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">DOH</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.76</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.47</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.95</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金回転率（Receivables turnover）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10.75</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9.33</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11.14</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.56</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">DSO</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">33.95</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">39.13</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32.77</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">48.29</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">買掛金回転率（Accounts payable turnover）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.62</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.36</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.84</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.22</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">支払日数（Days payable）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">78.97</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">83.77</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">75.49</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">86.56</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業キャッシュフロー／総負債（Cash from operations/Total liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">31.41%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11.15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.04%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8.81%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ROE</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.92%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.66%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.62%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–0.62%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ROA</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.70%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.05%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.05%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–0.39%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">純利益率（Net profit margin（Net income/Revenue））</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.33%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.11%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.13%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–0.47%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">総資産回転率（Total asset turnover（Revenue/Average assets））</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.11</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.95</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.93</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.84</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">レバレッジ（Leverage（Average assets/Average equity））</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.60</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.58</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.54</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.60</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; ">クラレンス・コーポレーション（Clarence Corporation）</td>
+<td colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度（Fiscal Year）</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>5</strong>
+</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>4</strong>
+</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>3</strong>
+</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">在庫回転率（Inventory turnover）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9.19</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9.08</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.52</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14.84</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">DOH</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">39.73</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">40.20</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">48.51</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24.59</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金回転率（Receivables turnover）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8.35</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.01</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.09</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.16</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">DSO</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">43.73</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">52.03</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">59.92</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">70.79</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">買掛金回転率（Accounts payable turnover）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.47</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.61</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.66</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.52</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">支払日数（Days payable）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">56.44</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">55.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">47.64</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">56.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業キャッシュフロー／総負債（Cash from operations/Total liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13.19%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">16.39%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.80%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11.79%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ROE</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9.28%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.82%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–3.63%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–6.75%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ROA</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.64%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.48%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–1.76%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–3.23%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">純利益率（Net profit margin（Net income/Revenue））</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.38%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.48%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–1.60%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–2.34%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">総資産回転率（Total asset turnover（Revenue/Average assets））</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.06</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.38</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">レバレッジ（Leverage（Average assets/Average equity））</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.96</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.06</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.09</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：比率は小数点以下2桁で表示され、四捨五入されている。そのため、期待される関係が完全には成り立たない場合がある。</p>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2422-R-s13-Q1">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>次のうち、企業の効率性についてアナリストが導き得る妥当な結論を最もよく表しているものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. FY5において、AnsonのDOH（在庫保有日数）がわずか4.76であったことは、DOHが39.73であったClarenceよりも在庫管理の効率性が低いことを示している。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。過去4年間において、AnsonはClarenceよりも効率性の改善が大きいことを示している。これは総資産回転率（total asset turnover）が0.84から1.11へ上昇していることから分かる。同期間において、Clarenceの総資産回転率は1.38から1.06へ低下している。選択肢AおよびCは、DOHおよび売掛金回転率（receivables turnover）の解釈が誤っているため不正解である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 過去4年間において、AnsonはClarenceよりも効率性の改善が大きいことを示している。これは総資産回転率が0.84から1.11へ上昇していることから分かる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。過去4年間において、AnsonはClarenceよりも効率性の改善が大きいことを示している。これは総資産回転率（total asset turnover）が0.84から1.11へ上昇していることから分かる。同期間において、Clarenceの総資産回転率は1.38から1.06へ低下している。選択肢AおよびCは、DOHおよび売掛金回転率（receivables turnover）の解釈が誤っているため不正解である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. FY5において、Clarenceの売掛金回転率が8.35回であったことは、売掛金回転率が10.75回であったAnsonよりも売掛金管理の効率性が高いことを示している。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。過去4年間において、AnsonはClarenceよりも効率性の改善が大きいことを示している。これは総資産回転率（total asset turnover）が0.84から1.11へ上昇していることから分かる。同期間において、Clarenceの総資産回転率は1.38から1.06へ低下している。選択肢AおよびCは、DOHおよび売掛金回転率（receivables turnover）の解釈が誤っているため不正解である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143784_1112_Profitability_Ratios.html" >← 前へ</a>
+  <span class="title">11.13 | Integrated Financial Ratio Analysis</span>
+  <a href="courses_1867_modules_items_143789_1114_DuPont_AnalysisThe_Decomposition_of_ROE.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

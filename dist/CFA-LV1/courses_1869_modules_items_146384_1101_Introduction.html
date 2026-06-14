@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2441-R-s01-R-1" title="11.01 | Introduction">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール11：利回りベースの債券デュレーション指標とその特性（Yield-Based Bond Duration Measures and Properties）11.01｜導入（Introduction）</h2>
+</header>
+<p>これまでのレッスンでは、金利リスクの2つの源泉である再投資リスク（reinvestment risk）と価格リスク（price risk）を検討し、債券をそのマコーレー・デュレーション（Macaulay duration）まで保有することでそれらが均衡することを示した。本レッスンおよび以降のレッスンでは、価格リスクの測定指標を導入することでこの議論を拡張する。このような指標には大きく2つのカテゴリーが存在する。1つは、基礎となる債券キャッシュフローが確実であると仮定し、債券自身の利回り（yield）の変化に対する価格感応度を測定するものであり、本レッスンで扱う。もう1つは、債券のデフォルト可能性を考慮し、ベンチマーク・イールドカーブ（benchmark yield curve）の変化に対する価格感応度を測定するものであり、後続のレッスンで扱う。本レッスンでは、債券の金利リスクが満期までの期間（time-to-maturity）、クーポン率（coupon rate）、利回り（yield）といった特性の関数であることを示す。</p>
+<p>Most of the examples and exhibits used throughout the reading can be <a class="instructure_file_link instructure_scribd_file inline_disabled" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1802/files/382202" data-api-returntype="File" data-canvas-previewable="true" href="https://learn.cfainstitute.org/courses/1802/files/382202?wrap=1" id="382205" target="_blank" title="Interactive Spreadsheet Download">downloaded as a Microsoft Excel workbook</a>. Each worksheet in the workbook is labeled with the corresponding example or exhibit number in the text.</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA2441-R-s01-Ba">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title">学習モジュール概要（Learning Module Overview）</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2441-R-s01-L1">
+<li class="cfa-curriculum-list-item">デュレーション（duration）は金利リスクの定量的指標である。複数のデュレーション指標が存在し、債券自身の満期利回り（yield-to-maturity）の変化に対する価格感応度を測定し、基礎キャッシュフローが確実であると仮定するもの（利回りデュレーション：yield duration）と、ベンチマーク・イールドカーブの変化を測定し、基礎キャッシュフローが不確実であるもの（カーブ・デュレーション：curve duration）がある。</li>
+<li class="cfa-curriculum-list-item">マコーレー・デュレーション（Macaulay duration）、修正デュレーション（modified duration）、マネー・デュレーション（money duration）、および1ベーシスポイント当たりの価格価値（price value of a basis point, PVBP）は、利回りデュレーション（yield duration）の指標である。</li>
+<li class="cfa-curriculum-list-item">修正デュレーション（modified duration）は、債券価格を満期利回り（yield-to-maturity）で微分した傾き、すなわち一次導関数であり、満期利回りの変化に対する債券価格の感応度を測定する。修正デュレーションは、マコーレー・デュレーション（Macaulay duration）と利回りを用いて計算することも、近似によって求めることもできる。</li>
+<li class="cfa-curriculum-list-item">マネー・デュレーション（money duration）は修正デュレーション（modified duration）の拡張であり、債券ポジションの金額規模を考慮する。この指標に関連するものとして、1ベーシスポイント当たりの価格価値（price value of a basis point）があり、これは利回りが1bp変化したときの債券価格の変化額の推定値である。</li>
+<li class="cfa-curriculum-list-item">デュレーション（duration）は利回りの変化に対する債券価格の変化を推定するために用いることができるが、価格と利回りの関係が実際には非線形であるにもかかわらず、線形関係を仮定している。この点は、利回りが大きく変化する場合や、特定の特徴を持つ債券において特に顕著である。</li>
+<li class="cfa-curriculum-list-item">債券の満期までの期間（time-to-maturity）、クーポン率（coupon rate）、満期利回り（yield-to-maturity）といった特性が、そのデュレーションを決定する。デュレーションは一定ではなく、満期に近づくにつれて低下する。</li>
+<li class="cfa-curriculum-list-item">他の条件が同じであれば、満期までの期間が長い（短い）ほど、クーポン率が低い（高い）ほど、また満期利回りが低い（高い）ほど、デュレーションおよび金利リスクは高く（低く）なる。</li>
+</ul>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2441-R-s01-Bb">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">学習モジュール自己評価（Learning Module Self-Assessment）</h3>
+<p>これらの初期問題は、本学習モジュールに対する現在の理解度を測るためのものである。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>次の各説明を適切な用語と対応させよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s01-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">説明（Description）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Term</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">債券キャッシュフローの受取までの時間の現在価値加重平均（Present-value-weighted average time-to-receipt of a bond’s cash flows）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">i．マネー・デュレーション（Money duration）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">債券の満期利回り（yield-to-maturity）の変化に対する価格のパーセンテージ変化を推定するために用いられる</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ii．1ベーシスポイント当たりの価格価値（Price value per basis point）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率換算修正デュレーションと債券のフルプライス（full price）の積</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">iii．マコーレー・デュレーション（Macaulay duration）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利回りが1bp変化したときの債券のフルプライスの変化</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">iv．修正デュレーション（Modified duration）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認せよ（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>債券キャッシュフローの受取までの時間の現在価値加重平均は iii．マコーレー・デュレーション（Macaulay duration）に対応する。</p>
+<p>満期利回りの変化に対する価格のパーセンテージ変化を推定するものは iv．修正デュレーション（Modified duration）に対応する。</p>
+<p>年率換算修正デュレーションとフルプライスの積は i．マネー・デュレーション（Money duration）に対応する。</p>
+<p>利回りが1bp変化したときのフルプライスの変化は ii．1ベーシスポイント当たりの価格価値（Price value per basis point）に対応する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2441-R-s01-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>他のすべての条件が一定である場合、債券の満期利回り（yield-to-maturity）が上昇すると、最も起こりやすい結果はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A．修正デュレーション（modified duration）の低下</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。満期利回りの上昇は、将来キャッシュフローがより高い割引率で割り引かれることを意味し、その結果、受取までの時間の現在価値加重平均が低下し、修正デュレーションは小さくなる。</p>
+<p>Bは誤りである。デュレーションは債券のキャッシュフローの現在価値に依存し、その</p>
+<p>Cは誤りである。なぜなら、満期利回り（yield-to-maturity）の上昇は各キャッシュフローの現在価値を低下させ、その結果として債券のデュレーションを低下させるためである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B．債券の修正デュレーション（modified duration）に変化はない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。満期利回り（yield-to-maturity）の上昇は、将来キャッシュフローがより高い割引率で割り引かれることを意味し、その結果、受取までの時間の現在価値加重平均が低下し、修正デュレーション（modified duration）は小さくなる。</p>
+<p>Bは誤りである。デュレーションは債券キャッシュフローの現在価値に影響され、その現在価値は利回りの影響を受ける。</p>
+<p>Cは誤りである。満期利回り（yield-to-maturity）の上昇は各キャッシュフローの現在価値を低下させ、その結果として債券のデュレーションを低下させる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C．債券の修正デュレーション（modified duration）の増加。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。満期利回り（yield-to-maturity）の上昇は、将来キャッシュフローがより高い割引率で割り引かれることを意味し、その結果、受取までの時間の現在価値加重平均が低下し、修正デュレーション（modified duration）は小さくなる。</p>
+<p>Bは誤りである。デュレーションは債券キャッシュフローの現在価値に影響され、その現在価値は利回りの影響を受ける。</p>
+<p>Cは誤りである。満期利回り（yield-to-maturity）の上昇は各キャッシュフローの現在価値を低下させ、その結果として債券のデュレーションを低下させる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2441-R-s01-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>年率換算修正デュレーション（annualized modified duration）が4、クーポン5%、価格95の債券を考える。満期利回り（yield-to-maturity）が50ベーシスポイント（bp）上昇した場合の価格変化（額面100当たり）はどれに最も近いか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A．4.75</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。マネー・デュレーション（money duration）は380である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E"><em>MoneyDur</em> = <em>AnnModDur</em> × <em>PV<sup>Full</sup> </em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___1"><em>MoneyDur</em> = 4.0 × 95.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___2"><em>MoneyDur</em> = 380.</div>
+<p>これにより、利回りが50bp上昇した場合の価格変化は−1.90となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___3">Δ<em>PV<sup>Full</sup> </em> ≈ −<em>MoneyDur</em> × Δ<em>Yield</em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___4">Δ<em>PV<sup>Full</sup> </em> ≈ −380 × 0.005.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___5">Δ<em>PV<sup>Full</sup> </em> ≈ −1.90.</div>
+<p>満期利回りの上昇に対して価格変化は負となる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B．3.80</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。マネー・デュレーション（money duration）は380である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E"><em>MoneyDur</em> = <em>AnnModDur</em> × <em>PV<sup>Full</sup> </em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___1"><em>MoneyDur</em> = 4.0 × 95.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___2"><em>MoneyDur</em> = 380.</div>
+<p>これにより、利回りが50bp上昇した場合の価格変化は−1.90となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___3">Δ<em>PV<sup>Full</sup> </em> ≈ −<em>MoneyDur</em> × Δ<em>Yield</em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___4">Δ<em>PV<sup>Full</sup> </em> ≈ −380 × 0.005.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___5">Δ<em>PV<sup>Full</sup> </em> ≈ −1.90.</div>
+<p>満期利回りの上昇に対して価格変化は負となる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C．1.90</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。マネー・デュレーション（money duration）は380である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E"><em>MoneyDur</em> = <em>AnnModDur</em> × <em>PV<sup>Full</sup> </em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___1"><em>MoneyDur</em> = 4.0 × 95.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___2"><em>MoneyDur</em> = 380.</div>
+<p>これにより、利回りが50bp上昇した場合の価格変化は−1.90となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___3">Δ<em>PV<sup>Full</sup> </em> ≈ −<em>MoneyDur</em> × Δ<em>Yield</em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___4">Δ<em>PV<sup>Full</sup> </em> ≈ −380 × 0.005.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s01-E___5">Δ<em>PV<sup>Full</sup> </em> ≈ −1.90.</div>
+<p>満期利回りの上昇に対して価格変化は負となる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2441-R-s01-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>債券Xと債券Yは、債券Xの方がクーポン率が低い点を除いて同一である。このとき：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A．両債券の修正デュレーション（modified duration）は同一である。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。その他の条件（満期、利回りなど）が同一である場合、クーポン率が低い債券の方が修正デュレーションは高くなる。これは、債券Yと比較して、債券Xのクーポンキャッシュフローの現在価値が価格に占める割合が小さくなり、額面価値からの寄与が大きくなるためである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B．債券Xの修正デュレーションは債券Yより低い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。その他の条件（満期、利回りなど）が同一である場合、クーポン率が低い債券の方が修正デュレーションは高くなる。これは、債券Yと比較して、債券Xのクーポンキャッシュフローの現在価値が価格に占める割合が小さくなり、額面価値からの寄与が大きくなるためである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C．債券Yの修正デュレーションは債券Xより低い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Cが正しい。その他の条件（満期、利回りなど）が同一である場合、クーポン率が低い債券の方が修正デュレーションは高くなる。これは、債券Yと比較して、債券Xのクーポンキャッシュフローの現在価値が価格に占める割合が小さくなり、額面価値からの寄与が大きくなるためである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2441-R-s01-Q5"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>0.0001の低下と0.0001の上昇に対する債券価格の差を2で割って1ベーシスポイント当たりの価格価値（price value per basis point）を推定する方法は、次のどれを無視しているか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A．債券の価格–利回り関係のコンベクシティ（convexity）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。この1ベーシスポイント当たりの価格価値（price value of a basis point）の定式化は、コンベクシティ（convexity）に対する調整を含んでいない。これは重要である。なぜなら、価格と利回りの関係が凸（convex）であるため、利回りの上昇と低下に対する価格変化は非対称であるからである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B．債券の価格–利回り関係の凹性（concavity）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。この1ベーシスポイント当たりの価格価値（price value of a basis point）の定式化は、コンベクシティ（convexity）に対する調整を含んでいない。これは重要である。なぜなら、価格と利回りの関係が凸（convex）であるため、利回りの上昇と低下に対する価格変化は非対称であるからである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C．債券の価格–利回り関係における対称性（symmetry）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。この1ベーシスポイント当たりの価格価値（price value of a basis point）の定式化は、コンベクシティ（convexity）に対する調整を含んでいない。これは重要である。なぜなら、価格と利回りの関係が凸（convex）であるため、利回りの上昇と低下に対する価格変化は非対称であるからである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2441-R-s01-Q6"><span class="cfa-curriculum-question-with-label">6. </span>
+<p>債券の利回りが100ベーシスポイント（bps）上昇したときの価格変化は、次のうちどれが最も適切に表しているか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A．利回りが100bps低下した場合の価格変化よりも小さい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。ほとんどの債券における価格–利回り関係は凸（convex）であり、利回りが低下した場合の価格上昇は、同じ幅の利回り上昇による価格下落よりも大きい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B．利回りが100bps低下した場合の価格変化と同じである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。ほとんどの債券における価格–利回り関係は凸（convex）であり、利回りが低下した場合の価格上昇は、同じ幅の利回り上昇による価格下落よりも大きい。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C．利回りが100bps低下した場合の価格変化よりも大きい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。ほとんどの債券における価格–利回り関係は凸（convex）であり、利回りが低下した場合の価格上昇は、同じ幅の利回り上昇による価格下落よりも大きい。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146375_Learning_Outcomes_Yield-Based_Bond_Duration_Measures_and_Properties.html" >← 前へ</a>
+  <span class="title">11.01 | Introduction</span>
+  <a href="courses_1869_modules_items_146393_1102_Modified_Duration.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

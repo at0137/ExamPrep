@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.17 | Market Regulation</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s17" title="1.17 | Market Regulation">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.17｜市場規制（Market Regulation）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">市場規制の目的を説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>政府機関および実務家団体は、多くの市場およびそこに参加する金融仲介機関を規制している。規制当局は一般に、トレーダーが過度な取引コストを負うことなく、ファンダメンタル価値（fundamental values）を正確に反映する価格で取引できる、公正で秩序ある市場の促進を目指している。本節では、金融規制当局が解決しようとする問題と、その規制の目的を明らかにする。</p>
+<p>残念ながら、人は機会があれば互いに不正に利益を奪うことがあり、特に発覚確率が低い場合や、発覚時の罰則が軽い場合にその傾向が強まる。人々の関係が複雑になるほど、また知識の非対称性（asymmetries in knowledge）が大きくなるほど、不正や資産の横領の方法は増加する。金融市場は複雑であり、顧客はしばしば専門家よりもはるかに知識が乏しいため、無規制市場ではさまざまな詐欺による損失の可能性が容認できないほど高くなる。</p>
+<p>したがって規制当局は、顧客を詐欺から保護するための仕組みが整備されていることを確保する。原則としては、顧客自身が取引の条件としてそのような仕組みを要求すべきである。しかし、顧客が未熟または情報不足である場合、自らを守る方法を理解していない可能性がある。学習コストが高い場合—これは複雑な金融市場では一般的である—公共の利益を守る規制当局の存在は経済的に効率的である。</p>
+<p>金融市場において顧客資金が失われる原因は、明白な詐欺よりもむしろ過失（negligence）によるものの方が多いと考えられる。多くの顧客は、自分が十分に理解していない問題を解決するために、証券ブローカー、財務アドバイザー、運用者、保険代理人などの代理人（agents）を利用する。顧客は市場状況について十分な情報を持たないため、代理人から得られる付加価値を測定することが極めて難しい。この問題は、パフォーマンスに強いランダム性がある場合に特に深刻である。その場合、代理人が有能なのか単に運が良いのかを判断するのは非常に困難である。さらに、代理人が優れた営業能力を持つ場合、顧客はそのパフォーマンスを批判的に評価しない可能性がある。これらの状況はほとんどの金融市場に当てはまり、顧客が代理人が誠実に働いているかどうかを容易に判断できないことを意味する。代理人が無能または怠慢である場合、あるいは最も誠実な人であっても自然に起こり得るように、自分や知人を顧客より優先してしまう場合、顧客は損失を被る傾向がある。</p>
+<p>規制当局は、代理人の最低限の能力基準を設定し、業務に関する最低基準を定義・強制することで、これらのエージェンシー問題（agency problems）に対処する。CFA協会（CFA Institute）は、投資運用および運用パフォーマンス報告の分野において、CFAプログラム（Chartered Financial Analyst Program）およびグローバル投資パフォーマンス基準（Global Investment Performance Standards）を通じて重要な基準設定のリーダーシップを提供している。原則として、顧客が有能な代理人を識別し、そのパフォーマンスを効果的に評価できるなら、規制は不要である。しかし金融市場では、それは非常に困難である。</p>
+<p>規制当局はしばしば、市場参加者間の公平性を確保するために行動する。例えば、多くの法域ではインサイダー取引（insider trading）は違法である。この規則は、企業内部者や未公開の重要情報にアクセスできる者が、その情報を用いて取引することを防ぐ。その目的は、内部者が市場から利益を不当に得ることを抑制することである。これらの利益は、情報劣位にある他のトレーダーの損失から生じる。トレーダーは損失を被ると市場から撤退する傾向があるため、インサイダー取引を禁止する規則は市場の流動性を維持するのに役立つ。また、企業内部者が情報を囲い込むことも防ぐ。</p>
+<p>金融市場では、共通の基準が関係者全体に利益をもたらす状況が多い。例えば、すべての企業が共通の基準で財務報告を行えば、アナリストは企業間比較を容易に行える。そのため、国際会計基準審議会（International Accounting Standards Board, IASB）や米国財務会計基準審議会（Financial Accounting Standards Board, FASB）などは、企業が従うべき共通の財務基準を策定している。共通の報告基準の利点により、すべての会計基準を単一の世界基準に収束させる取り組みが成功裏に進められている。このような規制がなければ、投資家は最終的に共通基準で報告しない企業への投資を拒否する可能性があるが、このような市場ベースの規律は非常に遅く、また新規資金調達を必要としない企業にはほとんど影響を与えない。</p>
+<p>規制当局は通常、金融機関に最低資本要件（minimum capital requirements）を課す。これには2つの目的がある。第一に、予期せぬ市場変動や不適切な意思決定によって損失が生じた場合でも、契約上の義務を履行できるようにするためである。第二に、金融機関の所有者が意思決定に対して十分な利害関係を持つようにするためである。十分な利害関係がない場合、企業は過度なリスクを取ったり、不適切な信用供与を行ったりする傾向がある。そのような企業が破綻すると、他者に大きなコストを負わせる。最低資本要件は、金融機関の破綻確率および破綻時の混乱を低減する。原則としては、顧客や取引相手が取引条件として資本要件を要求することも可能だが、政府のように強制力を持って契約を執行することは困難である。</p>
+<p>規制当局は同様に、長期的な約束を行う保険会社や年金基金も規制する。これらの機関は、将来の負債を履行するために十分な準備金（reserves）を維持する必要がある。しかし、管理者は自らが責任を負わない将来の負債に対して準備金を過小評価する傾向がある。原則としては、契約者や従業員が十分な資金手当を求めることで規律を課すことも可能だが、実際にはそのために必要な知識、情報、時間は多くの人にとって過大である。そのため、政府による規制が合理的である。</p>
+<p>多くの規制機関は自主規制機関（self-regulating organizations, SROs）であり、その会員を規制する。取引所、清算機関（clearinghouses）、ディーラー団体はその例である。場合によっては、会員が共同利益のために自発的に規制を受け入れることもある。また、政府が規制および執行権限をSROに委任することもあり、通常は証券取引委員会のような政府機関の監督下に置かれる。取引所やディーラー協会、清算機関はこうした権限の下で会員を規制することが多い。</p>
+<p>SROは高い行動基準を設定することで、顧客からの信頼を高める。また、会員同士の取引において損失が発生する可能性を低減する。</p>
+<p>規制当局がこれらの問題を解決できない場合、金融システムはうまく機能しない。損失を被った人々は貯蓄をやめ、優れたアイデアを持つ借り手は資金調達ができなくなる。同様に、ヘッジャーはヘッジコストが高い場合、市場から撤退する。ヘッジができなければ、生産者は専門化を避けるようになる。専門化は通常リスクを増大させるためである。しかし専門化はコスト削減にもつながるため、生産者がより安全な技術を選択すると、生産効率は低下する。このような規制問題を解決できない経済は、適切に規制された経済よりも効率が低く、一般に富も少ない。</p>
+<p>要約すると、市場規制の目的は以下の通りである：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA0161-R-L36">
+<li class="cfa-curriculum-list-item">詐欺（fraud）の抑制；</li>
+<li class="cfa-curriculum-list-item">エージェンシー問題（agency problems）の抑制；</li>
+<li class="cfa-curriculum-list-item">公平性（fairness）の促進；</li>
+<li class="cfa-curriculum-list-item">相互に利益のある基準の設定；</li>
+<li class="cfa-curriculum-list-item">資本不足の金融機関が過度にリスクの高い投資を行うことで投資家を搾取するのを防ぐこと；そして</li>
+<li class="cfa-curriculum-list-item">長期負債が適切に資金手当てされることを確保すること。</li>
+</ol>
+<p>規制は、未熟で情報に乏しい人々にとって市場メカニズムだけで特定の行動を規律することがコスト的に困難であるため必要である。適切に規制された市場は、人々が金融目標をより良く達成することを可能にする。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM30">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例30 破産したトレーダー（Bankrupt Traders）</h3>
+<section>
+<p>あなたは清算機関（clearinghouse）の会員である証券会社の最高経営責任者（CEO）である。あなたの会社を通じて清算を行っているトレーダーが正午に破産したが、彼との清算契約では重大な損失が発生した場合に即時報告する義務があるにもかかわらず、あなたはまだその事実を知らない。そのトレーダーは、大きなポジションを取れば価格が有利に動き、破産状態を脱する可能性があると考えている。彼はそれを試み、成功する。あなたはその事実をその日の夕方に知る。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>なぜ清算機関は会員を規制するのか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s17-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>清算機関は、ある会員が取引の決済を履行できないことによって他の会員にコストを負わせないようにするため、会員を規制する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>そのトレーダーに対して何をすべきか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s17-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>直ちにそのトレーダーとの清算関係を終了し、その取引利益を没収すべきである。そのトレーダーは破産後にあなたの会社の資本を用いて取引を行っていた。もし損失が出ていれば、その損失はあなたの会社が負担していたことになる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>なぜ清算機関はあなたがその取引利益を保持することを認めるのか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s17-01-03">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>清算機関（clearinghouse）があなたにその取引利益の保持を認めなければ、同様の状況にある他のトレーダーも同じ戦略を試みる可能性がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142186_116_Well-functioning_Financial_Systems.html" >← 前へ</a>
+  <span class="title">1.17 | Market Regulation</span>
+  <a href="courses_1868_modules_items_142192_118_Summary.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

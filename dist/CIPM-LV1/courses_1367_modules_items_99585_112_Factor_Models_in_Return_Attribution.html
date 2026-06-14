@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.12 | Factor Models in Return Attribution</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Return Attribution and Benchmarks › Module 1: Return Attribution</nav>
+<h1 class="page-title screenreader-only">1.12 | Factor Models in Return Attribution</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0017-R-s12-R-1" title="1.12 | Factor Models in Return Attribution"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール1：リターン・アトリビューション（Return Attribution）1.12 | リターン・アトリビューションにおけるファクターモデル（Factor Models in Return Attribution）</h2></header><div class="cfa-curriculum-los-box"><h3 class="dp-has-icon cfa-curriculum-los-box">学習到達目標（Learning Outcomes）</h3><p class="p1">The candidate should be able to:</p><ul id="CIPM0017-R-s12-los-1CIPM0017-R-s12-los-2"><li class="cfa-curriculum-los-item">ファクターモデル（factor model）に基づくリターン・アトリビューション分析の結果を解釈する</li><li class="cfa-curriculum-los-item">ブリンソン・モデル（Brinson models）（資産グルーピング・モデル（asset-grouping models））とファクターモデルによるアトリビューションを比較し、それぞれの利点と欠点を説明する</li></ul></div><hr class="dp-hr-solid-light dp-hr-color-dp-primary"/><p>リターン・アトリビューション（return attribution）は、ベンチマークに対する超過リターン（excess return）の構成要素を特定するために用いられる。これまで見てきたように、リターン・アトリビューションは、ポートフォリオとベンチマークにおける会計情報（ウェイトとリターン）を比較することで超過リターンを分析することを可能にする。これまで提示されたモデルは、証券選択（security selection）、資産配分（asset allocation）、およびそれらの相互作用に焦点を当てている。しかし、投資プロセスにおける他の意思決定をコントロールしたい場合はどうだろうか。別のタイプのリターン・アトリビューションでは、ファンダメンタル・ファクターモデル（fundamental factor models）を用いて、複数の異なるファクターによる超過リターンへの寄与を分解する。ファンダメンタル・ファクター分析により、ポートフォリオ内の特定のアクティブな投資意思決定の影響を定量化し、それらがベンチマークに対してどのように価値を付加または減少させたかを示すことができる。</p><p>我々は、市場の影響を除去して、アクティブな投資意思決定によって生み出された超過リターンを特定したい。そのために、超過リターンの定義に立ち返る：超過リターン ＝ R − B。</p><p>実務家は、超過リターンを分解するためにさまざまなファクターモデルを使用する。これらのモデルを構築する際には、どの要素を帰属させるか（どのファクターを使用するか）を選択することができる。例えば、投資スタイル（investment style）、通貨管理（currency management）、またはデュレーション（duration）などの債券特性（fixed-income characteristics）をコントロールすることで、特定のファクターへのエクスポージャーによって生じた超過リターンの部分を帰属させることができる。前述のとおり、分析ではアクティブな投資運用プロセスに寄与するファクターのみに焦点を当てたい。</p><p>これらのモデルに共通して、どのファクターを用いるかにかかわらず、いかなるファクターにも関連しない超過リターンの部分が存在する。この項は特定資産選択（specific asset selection）と呼ばれる。超過リターンの式に基づき、超過リターンをファクターによる部分と特定資産選択による部分に分解する。</p><p>例として、Eugene FamaとKenneth French（1993）によって最初に提示されたモデルに注目する。このモデルは、従来のCapital Asset Pricing Model（CAPM）の回帰を拡張し、サイズ（size）とバリュー（value）に関する2つの追加項を導入している。このモデルでは、分析を単一通貨の株式市場に限定する。この制約により、通貨管理や国別配分といった多くの他の投資意思決定を除外することができる。この単一の株式市場において、3つのファクターは次のとおりである：</p><ol class="cfa-curriculum-list-decimal" id="CIPM0017-R-s12-L1"><li class="cfa-curriculum-list-item">RMRF（Rₘ − R_f）は、時価総額加重株価指数のリターンから1か月物Tビル（T-bill）レート（リスクフリー・リターンの代理）を差し引いたものである。期待値は株式リスク・プレミアム（equity risk premium）であり、CAPMと共通するファクターである。</li><li class="cfa-curriculum-list-item">SMB（small minus big）は、小型株ポートフォリオのリターンから大型株ポートフォリオのリターンを差し引いたものである。このファクターは小型株プレミアム（small-cap return premium）を捉える。</li><li class="cfa-curriculum-list-item">HML（high minus low）は、簿価対価格比（book-to-price ratio）が高い株式のポートフォリオのリターンから、低い株式のポートフォリオのリターンを差し引いたものである。簿価対価格比が高いことは価格対簿価比（price-to-book ratio）が低いこと（すなわち簿価に対して割安で取引されていること）を意味するため、このファクターはバリュー・プレミアム（value return premium）を表す。</li></ol><p>モデル自体は次のように表される：</p><div class="cfa-curriculum-display-formula-container" id="CIPM0017-R-s12-E"><em>R<sub>P</sub></em> – <em>R<sub>F</sub></em> = α + β<em><sub>mkt</sub></em>RMRF + β<em><sub>S</sub></em>SMB + β<em><sub>V</sub></em>HML + ε<em><sub>P</sub></em></div><p>where</p><ul class="cfa-curriculum-definition-list" id="deflist-d23e167"><li>Rₚ ＝ ポートフォリオ・リターン（Portfolio Return）</li><li>R_f ＝ 1か月物Tビルのリターン（デフォルトリスクのないリターンの代理）</li><li>Rₘ ＝ 時価総額加重株価指数のリターン</li><li>βₘₖₜ ＝ ポートフォリオ（リスクフリー控除後）のリターンの市場（リスクフリー控除後）リターンに対する感応度</li><li>βₛ ＝ SMBに対するポートフォリオ（リスクフリー控除後）リターンの感応度。正で大きい値（1を超える）は、小型株を大型株よりも選好する傾向を示す。</li><li>βᵥ ＝ HMLに対するポートフォリオ（リスクフリー控除後）リターンの感応度。正で大きい値（1を超える）は、グロース株よりもバリュー株を選好する傾向を示す。</li><li>εₚ ＝ 誤差項（error term）</li></ul><p>ファクター・リターン・アトリビューション分析の結果を分析することで、投資意思決定の相対的な強みや弱みを推定することができる。例えば、先に示したファマ＝フレンチ・モデル（Fama–French model）を用いると、次のような結果が得られる。</p><div class="cfa-curriculum-table-wrap" id="CIPM0017-R-s12-EXH25"><div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"></i>Exhibit 26<span style="display: block;">Fama–French Factor Model</span></div><div class="cfa-curriculum-table-container"><div class="dp-table-scroll"><table aria-labelledby="CIPM0017-R-s12-EXH25-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM0017-R-s12-EXH25-title">図表26：ファマ＝フレンチ・ファクターモデル（Exhibit 26: Fama–French Factor Model）</caption><thead><tr><th style="text-align: left; vertical-align: bottom; padding: 8px; ">ファクター（Factor）</th><th style="text-align: center; vertical-align: bottom; padding: 8px; ">ポートフォリオ感応度（Portfolio Sensitivity）</th><th style="text-align: center; vertical-align: bottom; padding: 8px; ">ベンチマーク感応度（Benchmark Sensitivity）</th><th style="text-align: center; vertical-align: bottom; padding: 8px; ">差分（Difference）</th><th style="text-align: center; vertical-align: bottom; padding: 8px; ">ファクター・リターン（Factor Return）</th><th style="text-align: center; vertical-align: bottom; padding: 8px; ">絶対寄与（Absolute Contribution）</th><th style="text-align: center; vertical-align: bottom; padding: 8px; ">比例寄与（Proportional Contribution）</th></tr></thead><tbody><tr><td style="text-align: left; vertical-align: top; padding: 8px; ">Rₘ − R_f</td><td style="text-align: center; vertical-align: top; padding: 8px; ">1.05</td><td style="text-align: center; vertical-align: top; padding: 8px; ">1.09</td><td style="text-align: center; vertical-align: top; padding: 8px; ">−0.04</td><td style="text-align: center; vertical-align: top; padding: 8px; ">6.88</td><td style="text-align: center; vertical-align: top; padding: 8px; ">−0.2752</td><td style="text-align: center; vertical-align: top; padding: 8px; ">29%</td></tr><tr><td style="text-align: left; vertical-align: top; padding: 8px; ">SMB</td><td style="text-align: center; vertical-align: top; padding: 8px; ">1.2</td><td style="text-align: center; vertical-align: top; padding: 8px; ">1.1</td><td style="text-align: center; vertical-align: top; padding: 8px; ">0.1</td><td style="text-align: center; vertical-align: top; padding: 8px; ">−3.82</td><td style="text-align: center; vertical-align: top; padding: 8px; ">−0.3820</td><td style="text-align: center; vertical-align: top; padding: 8px; ">40%</td></tr><tr><td style="text-align: left; vertical-align: top; padding: 8px; ">HML</td><td style="text-align: center; vertical-align: top; padding: 8px; ">0.3</td><td style="text-align: center; vertical-align: top; padding: 8px; ">0.25</td><td style="text-align: center; vertical-align: top; padding: 8px; ">0.05</td><td style="text-align: center; vertical-align: top; padding: 8px; ">−4.97</td><td style="text-align: center; vertical-align: top; padding: 8px; ">−0.2485</td><td style="text-align: center; vertical-align: top; padding: 8px; ">26%</td></tr><tr><td colspan="5" style="text-align: left; vertical-align: top; padding: 8px; ">ファクターに帰属されるリターン（Return attributed to factors）</td><td style="text-align: center; vertical-align: top; padding: 8px; ">−0.9057</td><td style="text-align: center; vertical-align: top; padding: 8px; ">96%</td></tr><tr><td colspan="5" style="text-align: left; vertical-align: top; padding: 8px; ">特定資産選択に帰属されるリターン（Return attributed to specific asset selection）</td><td style="text-align: center; vertical-align: top; padding: 8px; ">−0.0400</td><td style="text-align: center; vertical-align: top; padding: 8px; ">4%</td></tr><tr><td colspan="5" style="text-align: left; vertical-align: top; padding: 8px; ">超過リターン（Excess return）</td><td style="text-align: center; vertical-align: top; padding: 8px; ">−0.9457</td><td style="text-align: center; vertical-align: top; padding: 8px; ">100%</td></tr></tbody></table></div></div><p><span class="cfa-curriculum-table-wrap-foot"><em>Source</em>: Data are from <a class="external" href="http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html." rel="noreferrer noopener" target="_blank"><span>http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html.</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></span></p></div><p>この分析は、このポートフォリオの投資アプローチ、マネージャーがどのように超過リターンを生み出したか、そしてベンチマークに対して一貫して付加価値を生み出す能力についての情報など、いくつかの興味深い結果をもたらす。</p><p>まず投資アプローチについて、ポートフォリオとベンチマークの両方が、他の2つのファクターと比較してSMBファクターへのエクスポージャーがかなり高い（それぞれ1.2および1.1）ことに注目する。このエクスポージャーは、両者が大型株よりも小型株を選好する傾向があることを示唆している。同様に、ポートフォリオおよびベンチマークのHMLファクターは比較的低い（それぞれ0.3および0.25）ため、両者ともバリュー株へのエクスポージャーが低いことを示唆している。これらの結果から、このマネージャーは小型成長株（small-cap growth）または小型中立（small-cap neutral）の投資スタイルを持つと結論づけられる。</p><p>次に、この期間においてポートフォリオは負の超過リターン（−0.9457）を示していることが分かる。当然ながら、この負の超過リターンへの最大の寄与は、最大のファクターであるSMBによるものであった。この期間において、SMBは−0.382、すなわち負の超過リターンの40%を占めた。ベンチマーク以上に小型株へ投資した判断は、この期間に小型株バイアスのポートフォリオ（SMB）がアンダーパフォームしたため、全体のパフォーマンスを悪化させた。同様に、ベンチマークに対するHMLへの過剰エクスポージャーも、超過リターンに負の影響（−0.2485、すなわち26%）を与えた。最後に、ベンチマークに対する市場全体へのアンダーエクスポージャー（正のRₘ − R_fファクター）も、負の影響（−0.2752、すなわち29%）をもたらした。</p><p>この分析を用いて、このマネージャーの投資運用スキルについて何か結論を導けるだろうか。この分析は、超過リターンの96%が市場、サイズ、スタイルという3つのファクターのいずれかに帰属されることを示している。これらのファクターで説明されない残り4%の超過リターンは、負の寄与（−0.04）を示している。</p><p>ファクターの内訳を見ると、小型株へのより高い配分（ポートフォリオ1.2、ベンチマーク1.1）およびグロース偏重からの乖離（ポートフォリオ0.3、ベンチマーク0.25）は負の影響をもたらした。小型株（−3.82対6.88）およびバリュー・スタイル（−4.97対6.88）の両方が広範な市場指数をアンダーパフォームしたため、ポートフォリオはこれらの投資スタイルによって負の影響を受けた。この期間においてマネージャーが小型株またはバリュー株に意図的にベットしたかどうかを断定することはできないが、評価者がポートフォリオ・マネージャーに対して問うべき合理的な質問である。</p><figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0017-R-s12-Ba"><figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"></i>Knowledge Check: Factor Models</figcaption><section><p>図表26のリターン・アトリビューション分析を用いて、次の問いに最も適切な答えを選びなさい：</p><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0017-R-s12-Q1"><legend><span class="cfa-curriculum-question-with-label">1. </span><p>HMLファクターによって説明される超過リターンはおよそどの程度か。</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-0" id="dp-qc-0-0" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-0"><p>A. 29%</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse0-1" id="dp-qc-0-1" name="dp-qc-0" type="radio" value="true"/><label for="dp-qc-0-1"><p>B. 26%</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse0-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h3 class="cfa-curriculum-solution-title">解答（Solution）</h3><p>Bが正解である。結果は、HMLファクターが全体の超過リターンの26%に寄与したことを示している。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-2" id="dp-qc-0-2" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-2"><p>C. 96%</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0017-R-s12-Q2"><legend><span class="cfa-curriculum-question-with-label">2. </span><p>ポートフォリオはベンチマークに対してHMLをどの程度オーバーウェイトしていたか。</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-0" id="dp-qc-1-0" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-0"><p>A. 0.10</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse1-1" id="dp-qc-1-1" name="dp-qc-1" type="radio" value="true"/><label for="dp-qc-1-1"><p>B. 0.05</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse1-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h3 class="cfa-curriculum-solution-title">解答（Solution）</h3><p>Bが正解である。ポートフォリオは0.30、ベンチマークは0.25であり、その差は0.05（0.30 − 0.25）である。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-2" id="dp-qc-1-2" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-2"><p>C. 0.09</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0017-R-s12-Q3"><legend><span class="cfa-curriculum-question-with-label">3. </span><p>HMLをオーバーウェイトした意思決定が超過リターンに与えた影響は：</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse2-0" id="dp-qc-2-0" name="dp-qc-2" type="radio" value="true"/><label for="dp-qc-2-0"><p>A. 負である。なぜなら、ファクター・リターン・アトリビューション分析の結果がHMLファクターからの絶対寄与として−0.2485を示しているためである。</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse2-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h3 class="cfa-curriculum-solution-title">解答（Solution）</h3><p>Aが正解である。図表26の絶対寄与（absolute contribution）列は、各ファクターが超過リターンに与えた総寄与を示している。Bは不正解である。HMLファクター・リターンが負であっても、ポートフォリオがHMLをオーバーウェイトしているかアンダーウェイトしているかによって、超過リターンへの影響は正にも負にもなり得る。Cは不正解である。ポートフォリオは負のファクターをオーバーウェイトしており、これは超過リターンに負の影響を与える。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-1" id="dp-qc-2-1" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-1"><p>B. 負である。なぜなら、ファクター・リターン・アトリビューション分析の結果がHMLファクター・リターン−4.97を示しているためである。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse2-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-2" id="dp-qc-2-2" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-2"><p>C. 正である。なぜなら、ファクター・リターン・アトリビューション分析の結果が0.05の差を示しているためである。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse2-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div></section></figure><p>ファクターモデルの知識チェックにおいて、市場・サイズ・スタイルのファクターを用いることは、ファクターベースのリターン・アトリビューションの多くのアプローチの一つにすぎない。現在、業界ではさまざまなアプローチが利用可能であり、ブリンソン・モデルや幾何モデルのような資産グルーピング・アプローチ（異なるポートフォリオや資産グループのリターンを比較してアトリビューション効果を分離する手法）と比較して、ファクターモデルには以下の利点がある：</p><ul class="cfa-curriculum-list-bullet" id="CIPM0017-R-s12-L2"><li class="cfa-curriculum-list-item">投資プロセスに非常に密接に適合するように調整できるため、柔軟性が非常に高い。</li><li class="cfa-curriculum-list-item">同一のポートフォリオに対して異なるファクターモデルを適用することで、さまざまな投資意思決定に関するアトリビューション効果を抽出できる。</li><li class="cfa-curriculum-list-item">ファクターモデルは非常に高度に設計することが可能であり、投資運用の意思決定から生じる多くの効果を測定できる。</li></ul><p>資産グルーピング・アプローチと比較した主な欠点としては、次のような点がある：</p><ul class="cfa-curriculum-list-bullet" id="CIPM0017-R-s12-L3"><li class="cfa-curriculum-list-item">ファクターモデル（factor models）は一般に単一資産クラス（株式（equity）または債券（fixed-income））のポートフォリオに適用されるのに対し、資産グルーピング・アプローチ（asset-grouping approaches）は複数の資産クラスを含むトータルプラン（total plans）やバランス型ポートフォリオ（balanced portfolios）に使用できる。</li><li class="cfa-curriculum-list-item">ファクターモデルは分析に用いる特定のファクターに依存している。すべてのファクターモデルには明確な限界があり、そのため一部の実務家は複数の異なるモデルを適用する。</li><li class="cfa-curriculum-list-item">ファクターモデルが特に複雑である場合、例えば一部の債券ファクターモデルでは、データおよびコンピュータソフトウェアのコストが高額になる可能性がある。</li><li class="cfa-curriculum-list-item">一般に、業界で使用される資産グルーピング・モデルの種類は少なく、そのため分析結果はより認識しやすい。一方で、実務家は業界内で多様なファクターモデルに直面する可能性がある。</li><li class="cfa-curriculum-list-item">資産グルーピング・モデルは、投資意思決定の観点から理解しやすいことが多い。</li></ul><p>したがって、ファクターモデルはより複雑で使用が難しい場合があるが、そのリターン・アトリビューション結果は、資産グルーピング・アプローチと併用することで、投資プロセスの有効性についてより完全な理解を提供することができる。</p><figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0017-R-s12-Bb"><figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"></i>Knowledge Check: Advantages and Disadvantages of Factor Models</figcaption><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0017-R-s12-Q4"><legend><span class="cfa-curriculum-question-with-label">1. </span><p>次のうち、資産グルーピング・アプローチに対するファクターモデルの利点はどれか。</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse3-0" id="dp-qc-3-0" name="dp-qc-3" type="radio" value="true"/><label for="dp-qc-3-0"><p>A. 非常に微細な投資意思決定に適合させることができる。</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse3-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h3 class="cfa-curriculum-solution-title">解答（Solution）</h3><p>Aが正解である。ファクターモデルは多数のファクターを考慮するように設計できるため、非常に細かな投資意思決定を分析するよう構築できる。Bは不正解である。特定のファクターへの依存は、資産グルーピング・モデルに対する欠点である。Cは不正解である。業界には非常に多様なファクターモデルが存在する。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse3-1" id="dp-qc-3-1" name="dp-qc-3" type="radio" value="false"/><label for="dp-qc-3-1"><p>B. 分析で使用する特定のファクターに依存している。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse3-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse3-2" id="dp-qc-3-2" name="dp-qc-3" type="radio" value="false"/><label for="dp-qc-3-2"><p>C. 業界にはごく限られた種類のファクターモデルしか存在しない。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse3-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0017-R-s12-Q5"><legend><span class="cfa-curriculum-question-with-label">2. </span><p>次のうち、バランス型ポートフォリオでより頻繁に使用されるモデルはどれか。</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse4-0" id="dp-qc-4-0" name="dp-qc-4" type="radio" value="false"/><label for="dp-qc-4-0"><p>A. 複数資産クラスを1つのモデルで容易に扱えるため、ファクターモデル。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse4-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse4-1" id="dp-qc-4-1" name="dp-qc-4" type="radio" value="false"/><label for="dp-qc-4-1"><p>B. データ要件が少ないため、資産グルーピング・モデル。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse4-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい答えを選択して詳細を学習せよ。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse4-2" id="dp-qc-4-2" name="dp-qc-4" type="radio" value="true"/><label for="dp-qc-4-2"><p>C. 複数資産クラスで使用可能であるため、資産グルーピング・モデル。</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse4-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h3 class="cfa-curriculum-solution-title">解答（Solution）</h3><p>Cが正解である。資産グルーピング・モデルは、バランス型またはマルチアセット・ポートフォリオで最も一般的に使用される。Aは不正解である。ファクターモデルは通常、複数資産クラスへの適用が難しいため一般的には使用されない。Bは不正解である。データ要件は、複数資産クラスにおける資産グルーピング・モデルの使用容易性の理由ではない。</p></section></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div></figure><div class="dp-content-block cfa-curriculum-reflist"><h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3><div class="dp-panels-wrapper dp-accordion-default"><h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel0">参考文献（References）</h3><div aria-labelledby="dpPanel0" class="dp-panel-content" id="dpPanel0Content" role="region" style="display: none;" tabindex="0"><ul id="CIPM0017-R-s12-ref1"><li id="CIPM0017-R-s12-R1list">Fama, Eugene F. and French, Kenneth R. (1993). “<em>Common Risk Factors in the Returns on Stocks and Bonds</em>.” <em>Journal of Financial Economics</em>, vol. 33, no. 1 (February):3–56. <a class="external" href="https://doi.org/10.1016/0304-405X(93)90023-5" rel="noreferrer noopener" target="_blank"><span>10.1016/0304-405X(93)90023-5</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></li></ul></div></div></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip2Content" role="tooltip" style="display: none;"><p>7 簿価対価格比（book-to-price ratio）を用いることで、より一般的な価格対簿価比（price-to-book ratio）で生じ得るゼロ除算などの問題を回避できる。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip1Content" role="tooltip" style="display: none;">Fama, Eugene F. and French, Kenneth R. (1993). “<em>Common Risk Factors in the Returns on Stocks and Bonds</em>.” <em>Journal of Financial Economics</em>, vol. 33, no. 1 (February):3–56. <a class="external" href="https://doi.org/10.1016/0304-405X(93)90023-5" rel="noreferrer noopener" target="_blank"><span>10.1016/0304-405X(93)90023-5</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip0Content" role="tooltip" style="display: none;"><p>超過リターンのうち、個別資産の選択に起因する部分。</p></div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1367_modules_items_99583_111_Return_Attribution_Analysis_at_Multiple_Levels.html" >← 前へ</a>
+  <span class="title">1.12 | Factor Models in Return Attribution</span>
+  <a href="courses_1367_modules_items_99587_113_Fixed-Income_Attribution_An_Overview.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

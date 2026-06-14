@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.02 | Natural Resources Investment Features</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2467-R-s02-R-1" title="5.02 | Natural Resources Investment Features">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール5：天然資源 5.02 | 天然資源投資の特徴（Natural Resources Investment Features）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">未開発地（raw land）、森林地（timberland）、および農地（farmland）の特徴とそれらの投資特性を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>天然資源は、経済や日常生活の基盤となるさまざまな生産要素から構成される。すなわち、植物および動物（ソフト・コモディティ（soft commodities））、エネルギーおよび鉱物（ハード・コモディティ（hard commodities））、および財の製造やサービスの提供に使用される金属や工業製品である。天然資源投資のかなりの割合は、農地、探査および採掘権を伴う未開発地、ならびに森林地への直接投資である。直接所有は幅広く、穀物を生産する農家から太陽光発電所を建設する機関投資家まで多岐にわたる。</p>
+<p>多くの大規模な機関投資家は、農産物の生産のための土地、石油・ガスの採掘、太陽光や風力発電所などの代替エネルギー施設の建設、または鉄鉱石、石炭、その他の工業用金属の採掘の権利を有する土地を購入することで、天然資源へのエクスポージャーを直接的に構築する。これらの資産への投資を通じて、機関投資家は持続可能性（sustainability）、水資源保全（water conservation）、その他の環境目標など、環境・社会・ガバナンス（ESG）目標の達成を目指すことが多い。</p>
+<section id="CFA2467-R-s02-01-01">
+<h3 class="dp-heading">土地投資と不動産（Land Investments vs. Real Estate）</h3>
+<p>農地、森林地、および未開発地は、それぞれ固有で非流動的な資産であり、明確な地理的位置と特性を有する点で不動産投資に類似している。後者2つの特性は資源そのものの価値に影響を与える。これらは所有資本（ownership capital）（残余キャッシュフローへの請求権）という形態を伴う。開発済み不動産および農地の場合、安定したキャッシュフロー（リース収入（leases））が存在することもある。</p>
+<p>より未開発な土地には、農地、森林地、未開発地、および関連する鉱物権（mineral rights）や掘削権（drilling rights）が含まれる。リターンの源泉には、時間の経過に伴う価格上昇と、農地の賃貸収入（所有者の場合）、農業の営業収益（オーナー兼経営者の場合）、森林地収入、鉱物および掘削ロイヤルティなどのキャッシュフローが含まれる。推計によると、世界の投資可能な私有森林地のほぼ半分が米国に存在する。次に大きな森林地地域は、中東欧、ラテンアメリカ、オーストラリア、ニュージーランドである。</p>
+<p>不動産投資と未開発地、農地、森林地投資の間にはいくつかの違いがある。第一に、不動産とは異なり、土地の物理的改良（physical improvements）への注目は限定的またはほとんどない。重要なのは建物や建設、開発の価値ではなく、土壌の質、気候条件（農地・森林地）、または地質（鉱物権）である。一方、不動産投資では、実際の、潜在的な、計画された改良が資産価値を決定する。土地の立地も重要であり、輸送手段や市場に近いほど価格は高くなる。不動産でも輸送への近接性は重要であるが、森林地や農地では輸送費が最終消費者価格の重要な構成要素となる場合がある。</p>
+<p>未開発地、森林地、または農地への投資には、天然資源の特性に関する専門的知識と理解が必要である。森林地への直接投資を行う投資家は、森林のライフサイクル全体を管理するための専門知識が求められる。この専門知識を持たない多くの機関投資家は、森林地投資管理機関（timberland investment management organizations：TIMOs）に依存しており、これらの組織は適切な森林地の分析および取得を通じて投資を管理する。</p>
+<p>商業用および住宅用不動産は多様な資金調達手段を提供する一方で、農地、森林地、未開発地には利用可能な選択肢が少ない。これらの投資は通常、銀行融資や直接的なプライベートデット（private debt investment）によって資金調達される。さらに、これらは専門知識と資本を必要とするため、潜在的な買い手と売り手が限られる非流動的資産である。これらの特徴は図表1に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2467-R-s02-EXH-1-1">
+<h4 class="cfa-curriculum-exhibit-table-title">図表1 未開発地、農地および森林地（Raw Land, Farmland and Timberland）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px; "></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">未開発地（raw land）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">農地（farmland）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">森林地（timberland）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">リターンのドライバー（return drivers）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">土地価格（price of land）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">収穫量（harvest quantities）、コモディティ価格（commodity prices）、土地価格</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">生物学的成長（biological growth）、収穫量、木材価格（lumber prices）、土地価格</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">直接収益の源泉（source of direct revenue）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">価格上昇（price appreciation）、賃貸収入（lease revenue）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">作物およびその他農産物の販売、価格上昇、賃貸収入</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">樹木、木材およびその他林産物の販売、価格上昇、賃貸収入</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Value</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">立地（physical location）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">立地、生育サイクル（growth cycle）、土壌の質（soil quality）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">立地、木材の品質（quality of timber）、木材生産の段階（phase in timber production）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">主なリスク（main risks）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">最適代替用途（best alternative use）</td>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px; ">天候要因および気候変動、生物学的要因、疾病</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">所有者（owners）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">主に機関投資家、一部個人</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">主に個人、一部機関投資家</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">主に機関投資家、一部個人</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">所有構造（ownership structure）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">直接所有、パートナーシップ</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">直接所有、パートナーシップ、REIT（real estate investment trust）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">直接所有、パートナーシップ、REIT、TIMO</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="CFA2467-R-s02-01-02">
+<h3 class="dp-heading">農地および森林地投資の特徴と形態（Features and Forms of Farmland and Timberland Investment）</h3>
+<p>農地および森林地投資への継続的な関心は、その基本的な性質（人は食料と住居を必要とすること）、作物からの継続的な収益、土地保有によるインフレヘッジ、そして金融市場の変動からの一定の独立性に起因する。例えば、米国の農地は、GDPが大きく低下した期間（1973～1975年および2007～2009年）および高インフレ期（1915～1920年、1940～1951年、1967～1981年）の双方でプラスのリターンを示した。</p>
+<p>森林地は数十年にわたり機関投資家および超富裕層（ultra-high-net-worth）のポートフォリオに組み込まれており、通常は数千エーカーまたはヘクタール単位の大規模な土地で取引される。これらの投資の主な課題の一つは長い市場サイクルであり、特に新規成長の森林や収穫される作物（果物など）において顕著である。一方、農地ははるかに小規模（数十から数百エーカーまたはヘクタール）で見られる。多くの農場は依然として家族経営であり、米国では農地の98％が家族所有である。世界的にも、農地は家族資産の主要な源泉である。</p>
+<p>農地および森林地への投資—直接所有、間接所有、または賃貸—は、作物や木材の販売からリターンを生み出す。農地は主に播種・収穫される作物（作物や気候によっては年に複数回の収穫が可能）と、樹木やつる植物に成長する永年作物から構成される。また、農地は家畜の放牧地として利用される場合もある。農産物は成熟時に収穫する必要があり、生産における柔軟性はほとんどない。これに対して森林地は「工場」と「倉庫」の両方の機能を持つ。木材（樹木）は成長させることができ（工場としての特性）、収穫せずに保管することも容易である（倉庫としての特性）。この特性により、木材価格が上昇したときに収穫し、価格が低下したときに収穫を延期する柔軟性が得られる。</p>
+<p>土地から生産される産出物の販売によって生じるリターンの一部として、農地および森林地はいずれも産出物価格の変動からリターンを得る。農産物および木材の市場価格は時間の経過とともに大きく変動する可能性があり、これらの価格と収穫量の組み合わせが土地の産出物販売から得られる収益を決定する。さらに、農地および森林地の土地価値も時間とともに変化し、これらの土地価格の変動も投資リターンに寄与する。これらのリターン要因は図表1の最初の行に要約されている。</p>
+<p>何世紀にもわたり、農地および森林地の直接所有は主要な形態であり、年金基金（pension funds）、財団（foundations）、エンダウメント（endowments）などの長期的な非課税投資家を中心としてきた。そのため、小規模投資家にとっての主要な投資手段は、米国のREIT（real estate investment trusts）のような公開市場で提供されるものや、リミテッド・パートナーシップ（limited partnerships）を通じて私的に運用される投資ファンドである。森林地への直接投資家は、投資目的に沿って資産の選定、管理、売却を行うためにTIMO（timberland investment management organizations）を利用することが多い。TIMOは、リミテッド・パートナーシップ、有限責任会社（limited liability corporations：LLC）、および私募REITなどの間接投資手段と併用されることが多い。</p>
+<p>大規模投資家は、魅力的な資産について直接投資を検討することができる。例えば、中東の政府系ファンド（sovereign wealth funds）はアフリカや東南アジアの農地に投資している。近年では、農地ファンド、リミテッド・パートナーシップ、および上場農地REITが増加している。</p>
+<p>これらの間接投資手段は通常、オーナー型（owner）とオーナー兼オペレーター型（owner-operator）を区別する個別運用口座（separately managed accounts）を含む。前者では、所有者は穀物などの列作物（row crops）に使用される土地を賃貸し、後者では永年作物（果樹園やブドウ園など）の場合に一定の運営管理を保持する。前者ではキャッシュフローは通常固定的であり、後者では変動的で、投資家は一定の運営リスクを負う。</p>
+<p>実物農地を所有することで、香辛料、ナッツ、果物、野菜など、先物投資で提供されるトウモロコシ、大豆、小麦よりもはるかに多様な食品への投資が可能となる。しかし、セクター専門家の支援なしに投資判断を行うための価格透明性や情報は限定的である。また、農地および森林地の直接投資は非流動性であることも制約となる。</p>
+<p>リスクの観点では、農地は予期しない気象変動や気候変化に非常に敏感であり、作物を破壊し収益を消失させる可能性がある。天候の影響は生育期間全体に及ぶため、農業生産量および価格の予測は困難である。このため、農産物先物契約（agricultural commodity futures）を農地保有と組み合わせて、全体としてヘッジされたリターンを得ることができる。農場は本質的に作物に対するロングポジションを持つため、収穫時期に引き渡す先物を売却する。以下では、森林地投資に関連する気候リスクの詳細なケーススタディを示す。</p>
+<p>農地および森林地投資には間接的な便益も存在する。これらの天然資源は植物のライフサイクルの一環として炭素を吸収し、その価値は収穫だけでなく人間活動による炭素排出の相殺（carbon offset）にも由来する。水利権（water rights）もこれら資産の直接的および潜在的価値の一部であり、保全地役権（conservation easements）は伝統や自然保護を支えることで価値を生み出す可能性がある。ESG（environmental, social, and governance）に配慮した投資への関心の高まりに伴い、耕作可能地への需要は増加する可能性がある。</p>
+<div class="dp-content-block cfa-curriculum-case-study-box" id="CFA2467-R-s02-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-case-study-box cfa-curriculum-box-title">ケーススタディ：森林地資産への責任投資―気候配慮型ケーススタディ（Investing Responsibly in Timberland Assets: A Climate-Conscious Case Study）</h4>
+<p>キャンベル・グローバル（Campbell Global：CG）は、森林および天然資源投資に特化したグローバル投資運用会社である。オレゴン州ポートランドに本社を置き、米国14州およびニュージーランドに拠点を有し、約40年にわたる持続可能な価値創造の経験を持つ。同社は、顧客の長期的利益を最大化する森林管理を行うとともに、経済的およびESGの観点にも対応することを目指している。森林は経済的価値に加えて巨大な炭素吸収源（carbon sinks）として機能し、樹木は大気中のCO₂を吸収し炭素を貯蔵する。例えば、米国太平洋岸北西部で一般的な商業用樹種であるダグラスファー（Douglas fir）の1本は、年間で一般的な自動車が約400マイル走行するのに相当するCO₂を貯蔵する。世界全体では、森林は人為的なCO₂排出量の約30％を吸収すると推定されている。</p>
+<p>持続可能に収穫された木材製品も、森林から伐採された後も大気中のCO₂を長期間貯蔵し、1立方メートルの木材はほぼ1トンのCO₂を固定する。炭素隔離（carbon sequestration）に加えて、森林は清浄な水の供給、生物の生息地、レクリエーション機会、地方コミュニティにおける生活賃金の雇用などの便益を提供する。これらの特性は国連の持続可能な開発目標（UN’s Sustainable Development Goals）と整合し、持続可能な未来に向けた国連の使命の推進に寄与する。このような効果から、適切に管理された森林が気候変動対策の重要な要素であるという認識が高まっている。</p>
+<p>CGは、国レベルから個別物件レベルへと段階的に詳細化するシナリオ分析を用いて気候関連リスクを特定し、さまざまなリスクが現在および将来の適合性に与える影響を検証する。分析される要因には、降水パターン、気温変動、極端気象の頻度、害虫や病害の存在、商業用樹種の年間平均成長率が含まれる。多くの気候関連リスクは積極的な管理によって軽減されるが、この反復的プロセスにおいて、CGはリスクに伴う正負の影響を分析し、純資産価値（net asset value）の変化を評価する。以下の表は、評価される気候リスク、その森林への影響、およびリスク軽減の方法を示す。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2467-R-s02-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">気候リスク（Climate Risk）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">影響（Implication）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">CGの対応策（CG Mitigants）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">気温の変化（Change in temperature）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">火災リスクの増加（Increased fire danger）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">物件別の火災対策計画；投資対象地域・国の再評価</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">降水パターンの変化（Change in precipitation patterns）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">樹種分布の変化；干ばつおよびそれに伴う火災リスクの増加</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">植生適合性モデルおよび遺伝的改良；投資対象地域・国の再評価</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">極端気象の頻度（Frequency of extreme weather events）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">強風による立木の損失</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">投資地域の再評価；物件別対応計画；地理的に分散されたポートフォリオ構築</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">害虫または病害の存在（Presence of pests or disease）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">個々の樹木の死亡の早期化および頻度増加</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">即時対応（感染木の除去を含む）による拡散防止</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">成長の変化（Change in growth）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">成長率の増減</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">地域により影響は異なり、植林方針に影響；森林成長モデルの前提再評価</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>CGの投資プロセスにおける気候変動の機会と課題には以下が含まれる。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2467-R-s02-L1">
+<li class="cfa-curriculum-list-item">大気中のCO₂を樹木および土壌に隔離することで気候変動を緩和しつつ、コミュニティ、生物多様性、土壌および水質に多くの共益をもたらす植林（afforestation）の機会の特定。</li>
+<li class="cfa-curriculum-list-item">森林管理手法の最適化により森林床に蓄積された炭素への影響を最小化し、既存の炭素ストックを保護すること。</li>
+<li class="cfa-curriculum-list-item">できるだけ早期に再植林を行い、新たな森林が迅速にCO₂を吸収し始めることで、森林の炭素隔離能力を強化すること。</li>
+</ul>
+<p>森林のカーボンフットプリントの年次変化を定量化、評価、報告する能力は、組織の環境への影響を左右し、透明性の向上とより情報に基づいた意思決定につながる。投資プロセスに気候変動要因を組み込むことは、気候関連リスクの軽減にとどまらず、森林が提供する自然的解決策を促進・強化する。森林の包括的な炭素貯蔵量を理解・測定することは、炭素隔離の改善につながる意思決定を導き、気候変動対策に不可欠である。</p>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2467-R-s02-B-1-b">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット（Question Set）</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>森林地投資における3つの主要なリターンドライバーを特定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解説（Solution）</h4>
+<p>森林地投資における3つの主要なリターンドライバーは、(1) 将来収穫される木材の生物学的成長（biological growth）、(2) 木材価格（lumber prices）、(3) 土地価格の変化である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2467-R-s02-Q2">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>次のうち、森林地投資管理機関（timberland investment management organizations：TIMOs）を最も正確に説明しているものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. TIMOは、機関投資家に代わって森林投資の専門知識を用いて適切な森林地の分析および取得を行う主体である。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解説（Solution）</h4>
+<p>正解はA。森林地は資産固有の専門知識を必要とし、TIMOはその専門性を活用して、機関投資家のために直接または間接的に森林地の分析および取得を行う。BはTIMOが投資ファンドではないため誤りである。CはTIMOが間接投資と併用して利用される場合もあるため誤りである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. TIMOは、個人投資家から資金を集めて森林地を購入する投資ファンドである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解説（Solution）</h4>
+<p>正解はA。森林地は資産固有の専門知識を必要とし、TIMOはその専門性を活用して、機関投資家のために直接または間接的に森林地の分析および取得を行う。BはTIMOが投資ファンドではないため誤りである。CはTIMOが間接投資と併用して利用される場合もあるため誤りである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. TIMOは、機関投資家による森林地の直接所有のみを促進する主体である。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解説（Solution）</h4>
+<p>正解はA。森林地は資産固有の専門知識を必要とし、TIMOはその専門性を活用して、機関投資家のために直接または間接的に森林地の分析および取得を行う。BはTIMOが投資ファンドではないため誤りである。CはTIMOが間接投資と併用して利用される場合もあるため誤りである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>森林地投資と不動産投資の間の重要な類似点を1つと重要な相違点を1つ説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解説（Solution）</h4>
+<p>森林地と不動産の類似点として、両資産クラスが固有の地理的特性を持つユニークな資産への投資である点、および両資産クラスが高い非流動性（illiquidity）を有する点が挙げられる。</p>
+<p>両資産クラスの重要な相違点は、土地の物理的改良（physical improvements）が価値に与える影響の程度である。具体的には、不動産投資では実際および潜在的な改良が価値を決定するのに対し、森林地投資ではそうではない。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>農地投資と森林地投資におけるインカム収益の重要な相違点を説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解説（Solution）</h4>
+<p>森林地は樹木の収穫時期を柔軟に選択できる。一方、農地では作物は成熟時に収穫する必要があり、生産における柔軟性はほとんどない。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TimberlandInvestmentManagementOrganizationsContent">
+<p>機関投資家の森林地投資を支援する主体であり、適切な森林地の分析および取得を通じて投資を管理する組織。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1871_modules_items_144723_501_Introduction.html" >← 前へ</a>
+  <span class="title">5.02 | Natural Resources Investment Features</span>
+  <a href="courses_1871_modules_items_144744_503_Commodity_Investment_Forms.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

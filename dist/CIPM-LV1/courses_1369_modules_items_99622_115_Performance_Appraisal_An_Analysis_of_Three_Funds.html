@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.15 | Performance Appraisal: An Analysis of Three Funds</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Investment Performance Appraisal › Module 1: Investment Performance Appraisal</nav>
+<h1 class="page-title screenreader-only">1.15 | Performance Appraisal: An Analysis of Three Funds</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM1509-R-s15-R-1" title="1.15 | Performance Appraisal: An Analysis of Three Funds"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：投資パフォーマンス評価（Investment Performance Appraisal）1.15｜パフォーマンス評価：3つのファンドの分析（Performance Appraisal: An Analysis of Three Funds）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcomes</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul id="CIPM1509-R-s15-los-1CIPM1509-R-s15-los-2CIPM1509-R-s15-los-3CIPM1509-R-s15-los-4">
+<li class="cfa-curriculum-los-item">シャープレシオ（Sharpe ratio）、M²、トレイナーレシオ（Treynor ratio）、ジェンセンのアルファ（Jensen’s alpha）、アルファ（alpha）、インフォメーションレシオ（information ratio）、およびアプレイザルレシオ（appraisal ratio）を計算し、解釈し、比較する</li>
+<li class="cfa-curriculum-los-item">パフォーマンス評価指標の適切な利用方法を特定し、その妥当性を説明する</li>
+<li class="cfa-curriculum-los-item">パフォーマンス評価指標を計算し、解釈し、比較する</li>
+<li class="cfa-curriculum-los-item">非対称なリターン分布が評価指標にどのように影響するかを説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>本レッスンでは、主に英国に投資する3つの株式ファンドの過去のパフォーマンスを検討する。これら3つのファンドはいずれも認可ユニットトラスト（authorized unit trusts）であり、UCITS（譲渡可能証券への集団投資事業（Undertakings for Collective Investment in Transferable Securities））として分類される。UCITSは、欧州連合（European Union）の指令に従い、1つの加盟国からの単一認可に基づいて、集団投資スキームがEU全域で自由に運用できるようにする枠組みである。これら3つのファンドは以下のとおりである。</p>
+<ul class="cfa-curriculum-list-bullet" id="CIPM1509-R-s15-L1">
+<li class="cfa-curriculum-list-item">ファンド1。長期的な資本成長を目的とする。中型および小型企業へのバイアスを持つ可能性が高く、主要な投資地域、市場セクター、業種、または資産クラスの外にも投資する自由を有する。ファンドのリスクプロファイルに沿って、リスクまたはコストの削減、あるいは追加的な資本や収益の創出のためにデリバティブを利用できる。</li>
+<li class="cfa-curriculum-list-item">ファンド2。過度にネガティブなセンチメントが存在し、かつ変化の触媒（catalyst for change）がある領域を活用することを目指す。銘柄はファンダメンタル分析（fundamental analysis）およびテクニカル分析（technical analysis）に基づいて選択される。為替リスクから保護するために為替ヘッジ（currency hedging）が用いられることがある。</li>
+<li class="cfa-curriculum-list-item">ファンド3。主に大型株および中型株に投資し、小型株の比率は最大で全体の10%に制限される。このファンドの投資哲学は、平均以上の収益性を持続できる持続的な競争優位（durable economic advantage）を有する企業に投資することである。効率的なポートフォリオ運用および投資目的のためにデリバティブの使用が認められている。</li>
+</ul>
+<p>これらのファンドのパフォーマンス評価に用いられる市場およびベンチマークポートフォリオは、FTSE All-Share Indexである。この指数は、ロンドン証券取引所（London Stock Exchange, LSE）のメインマーケットに上場し、規模および流動性のスクリーニングを通過したすべての適格企業のパフォーマンスを表す。この指数は英国市場の時価総額の98%をカバーしている。FTSE All-Shareは、FTSE 100、FTSE 250、およびFTSE Small Cap Indexの合成である。</p>
+<p>無リスク金利の代理として選択されたのはSONIA（Sterling Overnight Index Average）であり、これはイングランド銀行（Bank of England）が管理する金利ベンチマークである。</p>
+<p>本分析では、20X1年4月から20X6年3月までの5年間の月次データが使用された。Exhibit 23は評価期間における要約統計量および3つのファンドすべてに対する市場モデル回帰の結果を示している。Exhibit 24は3つのファンドすべてのパフォーマンス指標を示している。計算はExhibit 23のデータに基づいている。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM1509-R-s15-EXH21">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 23<span style="display: block;">Summary Statistics and Market Model Regression Results, April 20X1–March 20X6</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s15-EXH21-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s15-EXH21-title">Exhibit 23：要約統計量および市場モデル回帰結果（20X1年4月～20X6年3月）</caption>
+<thead>
+<tr>
+<th colspan="6" style="text-align: left; vertical-align: bottom; padding: 8px;">要約統計量（Summary Statistics）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">変数（Variable）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">FTSE All-Share</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>SONIA</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンド1</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンド2</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンド3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率リターン（Annualized return）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.37%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.98%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.45%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17.98%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-1-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.355ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -639.9 1033.1 1013.9" width="2.4ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-70" y="-213"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>p</mi></msub></mrow></math></span></span><script id="MathJax-Element-1" type="math/mml"><math id="m1"> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>p</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.33%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.50%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.44%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-2-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.725ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -799.3 1028.5 1173.4" width="2.389ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><use transform="scale(0.707)" x="809" xlink:href="#MJMATHI-70" y="-213"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mi>p</mi></msub></mrow></math></span></span><script id="MathJax-Element-2" type="math/mml"><math id="m2"> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>p</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.27%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.93%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.40%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-3-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.355ex" role="img" style="vertical-align: -0.498ex;" viewbox="0 -799.3 1258.3 1013.9" width="2.923ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><use transform="scale(0.707)" x="809" xlink:href="#MJMATHI-44" y="-213"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mi>D</mi></msub></mrow></math></span></span><script id="MathJax-Element-3" type="math/mml"><math id="m3"> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>D</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.23%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.88%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.70%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">‒MD</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.49%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.11%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.71%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-4-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="1.985ex" role="img" style="vertical-align: -0.498ex;" viewbox="0 -639.9 1207.1 854.5" width="2.804ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-46" y="-213"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>F</mi></msub></mrow></math></span></span><script id="MathJax-Element-4" type="math/mml"><math id="m4"> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>F</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.05%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-5-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="1.985ex" role="img" style="vertical-align: -0.498ex;" viewbox="0 -639.9 1298.3 854.5" width="3.015ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-6D" y="-213"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>m</mi></msub></mrow></math></span></span><script id="MathJax-Element-5" type="math/mml"><math id="m5"> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>m</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.06%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-6-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.355ex" role="img" style="vertical-align: -0.498ex;" viewbox="0 -799.3 1293.7 1013.9" width="3.005ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><use transform="scale(0.707)" x="809" xlink:href="#MJMATHI-6D" y="-213"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mi>m</mi></msub></mrow></math></span></span><script id="MathJax-Element-6" type="math/mml"><math id="m6"> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>m</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.04%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-7-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.355ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -639.9 3463.1 1013.9" width="8.043ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-70" y="-213"></use><use x="1255" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2256,0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-46" y="-213"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>p</mi></msub><mo>−</mo><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>F</mi></msub></mrow></math></span></span><script id="MathJax-Element-7" type="math/mml"><math id="m7"> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>p</mi> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>F</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.28%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.45%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.39%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-8-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="1.985ex" role="img" style="vertical-align: -0.498ex;" viewbox="0 -639.9 3728.3 854.5" width="8.659ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-6D" y="-213"></use><use x="1520" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2521,0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-46" y="-213"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>m</mi></msub><mo>−</mo><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>F</mi></msub></mrow></math></span></span><script id="MathJax-Element-8" type="math/mml"><math id="m8"> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>m</mi> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>F</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.01%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-9-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.355ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -639.9 3554.4 1013.9" width="8.255ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-70" y="-213"></use><use x="1255" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2256,0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-6D" y="-213"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>p</mi></msub><mo>−</mo><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>m</mi></msub></mrow></math></span></span><script id="MathJax-Element-9" type="math/mml"><math id="m9"> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>p</mi> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>m</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.27%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.44%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.39%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-10-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.849ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -852.5 4821.3 1226.6" width="11.198ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><g transform="translate(739,0)"><use xlink:href="#MJMAIN-28"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-70" y="-213"></use><use x="1129" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2130,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-6D" y="-213"></use></g></g><use x="3692" xlink:href="#MJMAIN-29" y="0"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover><mrow><mo>(</mo><mrow><msub><mi>r</mi><mi>p</mi></msub><mo>−</mo><msub><mi>r</mi><mi>m</mi></msub></mrow><mo>)</mo></mrow></mrow></math></span></span><script id="MathJax-Element-10" type="math/mml"><math id="m10"> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> <mrow> <mo>(</mo> <mrow> <msub> <mi>r</mi> <mi>p</mi> </msub> <mo>−</mo> <msub> <mi>r</mi> <mi>m</mi> </msub> </mrow> <mo>)</mo> </mrow> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.84%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.85%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s15-EXH21-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s15-EXH21-title">Exhibit 23：要約統計量および市場モデル回帰結果（20X1年4月～20X6年3月）</caption>
+<thead>
+<tr>
+<th colspan="6" style="text-align: left; vertical-align: bottom; padding: 8px;">市場モデル回帰結果（Market Model Regression Results）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">変数（Variable）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンド1</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンド2</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンド3</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3B1;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-11-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.725ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -799.3 1096.5 1173.4" width="2.547ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-3B1" y="0"></use><use x="69" xlink:href="#MJSZ1-2C6" y="-28"></use><use transform="scale(0.707)" x="905" xlink:href="#MJMATHI-70" y="-213"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mover accent="true"><mi>α</mi><mo stretchy="true">^</mo></mover></mrow><mi>p</mi></msub></mrow></math></span></span><script id="MathJax-Element-11" type="math/mml"><math id="m11"> <mrow> <msub> <mrow> <mover accent="true"> <mi>α</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>p</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.27%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.57% a</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.64% b</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3B2;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-12-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="3.466ex" role="img" style="vertical-align: -0.992ex;" viewbox="0 -1065.1 1108.9 1492.3" width="2.576ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-3B2" y="0"></use><use x="96" xlink:href="#MJSZ1-2C6" y="235"></use><use transform="scale(0.707)" x="923" xlink:href="#MJMATHI-70" y="-326"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mover accent="true"><mi>β</mi><mo stretchy="true">^</mo></mover></mrow><mi>p</mi></msub></mrow></math></span></span><script id="MathJax-Element-12" type="math/mml"><math id="m12"> <mrow> <msub> <mrow> <mover accent="true"> <mi>β</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>p</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.01 b</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.87 b</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.75 b</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x3B5;&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-13-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.849ex" role="img" style="vertical-align: -0.992ex;" viewbox="0 -799.3 1324.8 1226.6" width="3.077ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><g transform="translate(572,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-3B5" y="0"></use><use transform="scale(0.5)" x="659" xlink:href="#MJMATHI-70" y="-213"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mrow><msub><mi>ε</mi><mi>p</mi></msub></mrow></msub></mrow></math></span></span><script id="MathJax-Element-13" type="math/mml"><math id="m13"> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mrow> <msub> <mi>ε</mi> <mi>p</mi> </msub> </mrow> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.76%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.55%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><em>R</em><sup>2</sup></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9077</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7984</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7930</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>a 5%の有意水準（significance level）で統計的に有意。</p>
+<p>b 1%の有意水準（significance level）で統計的に有意。</p>
+<p>注：目標セミ標準偏差（target semi-standard deviation）およびソルティノレシオ（Sortino ratio）は、目標リターンを0%と仮定して算出されている。</p>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CIPM1509-R-s15-EXH22">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 24<span style="display: block;">Performance Appraisal Measures, April 20X1–March 20X6</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s15-EXH22-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s15-EXH22-title">Exhibit 24：パフォーマンス評価指標（20X1年4月～20X6年3月）</caption>
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">パフォーマンス評価指標（Performance Appraisal Measure）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">公式または変数（Formula or Variable）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンド1</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンド2</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンド3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">シャープレシオ（Sharpe ratio）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mrow&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;/mrow&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-14-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.812ex" role="img" style="vertical-align: -2.474ex; margin-left: -0.008ex;" viewbox="-3.5 -1437.2 6605.2 2502.3" width="15.341ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g transform="translate(19,0)"><use x="0" xlink:href="#MJMATHI-53" y="0"></use><use x="645" xlink:href="#MJMATHI-52" y="0"></use></g><use x="0" xlink:href="#MJSZ3-2C6" y="222"></use><use x="1722" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2778,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="3583" x="0" y="220"></rect><g transform="translate(60,760)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-70" y="-213"></use><use x="1255" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2256,0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-46" y="-213"></use></g></g><g transform="translate(1277,-686)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><use transform="scale(0.707)" x="809" xlink:href="#MJMATHI-70" y="-213"></use></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>S</mi><mi>R</mi></mrow><mo stretchy="true">^</mo></mover><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>p</mi></msub><mo>−</mo><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>F</mi></msub></mrow><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mi>p</mi></msub></mrow></mfrac></mstyle></mrow></math></span></span><script id="MathJax-Element-14" type="math/mml"><math id="m14"> <mrow> <mover accent="true"> <mrow> <mi>S</mi> <mi>R</mi> </mrow> <mo stretchy="true">^</mo> </mover> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>p</mi> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>F</mi> </msub> </mrow> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>p</mi> </msub> </mrow> </mfrac> </mstyle> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.30</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.37</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.41</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">M<sup>2</sup></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mover accent="true"&gt;&lt;mrow&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;/mrow&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;mo&gt;&amp;#xD7;&lt;/mo&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-15-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="3.096ex" role="img" style="vertical-align: -0.498ex;" viewbox="0 -1118.3 9129.4 1332.9" width="21.204ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-4D" y="0"></use><use transform="scale(0.707)" x="1521" xlink:href="#MJMAIN-32" y="408"></use><use x="42" xlink:href="#MJSZ3-2C6" y="277"></use><use x="1807" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2863,0)"><g transform="translate(19,0)"><use x="0" xlink:href="#MJMATHI-53" y="0"></use><use x="645" xlink:href="#MJMATHI-52" y="0"></use></g><use x="0" xlink:href="#MJSZ3-2C6" y="222"></use></g><use x="4530" xlink:href="#MJMAIN-D7" y="0"></use><g transform="translate(5531,0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><use transform="scale(0.707)" x="809" xlink:href="#MJMATHI-6D" y="-213"></use></g><use x="7047" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(8047,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-46" y="-213"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><msup><mi>M</mi><mn>2</mn></msup></mrow><mo stretchy="true">^</mo></mover><mo>=</mo><mover accent="true"><mrow><mi>S</mi><mi>R</mi></mrow><mo stretchy="true">^</mo></mover><mo>×</mo><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mi>m</mi></msub><mo>+</mo><msub><mi>r</mi><mi>F</mi></msub></mrow></math></span></span><script id="MathJax-Element-15" type="math/mml"><math id="m15"> <mrow> <mover accent="true"> <mrow> <msup> <mi>M</mi> <mn>2</mn> </msup> </mrow> <mo stretchy="true">^</mo> </mover> <mo>=</mo> <mover accent="true"> <mrow> <mi>S</mi> <mi>R</mi> </mrow> <mo stretchy="true">^</mo> </mover> <mo>×</mo> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>m</mi> </msub> <mo>+</mo> <msub> <mi>r</mi> <mi>F</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.26%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.54%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.71%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">トレイナーレシオ（Treynor ratio）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mrow&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;/mrow&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3B2;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-16-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="6.553ex" role="img" style="vertical-align: -3.215ex;" viewbox="0 -1437.2 6621.2 2821.2" width="15.378ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-54" y="0"></use><use x="704" xlink:href="#MJMATHI-52" y="0"></use><use x="9" xlink:href="#MJSZ3-2C6" y="200"></use><use x="1741" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2798,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="3583" x="0" y="220"></rect><g transform="translate(60,760)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-70" y="-213"></use><use x="1255" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2256,0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-46" y="-213"></use></g></g><g transform="translate(1237,-954)"><use x="0" xlink:href="#MJMATHI-3B2" y="0"></use><use x="96" xlink:href="#MJSZ1-2C6" y="235"></use><use transform="scale(0.707)" x="923" xlink:href="#MJMATHI-70" y="-326"></use></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>T</mi><mi>R</mi></mrow><mo stretchy="true">^</mo></mover><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>p</mi></msub><mo>−</mo><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>F</mi></msub></mrow><mrow><msub><mrow><mover accent="true"><mi>β</mi><mo stretchy="true">^</mo></mover></mrow><mi>p</mi></msub></mrow></mfrac></mstyle></mrow></math></span></span><script id="MathJax-Element-16" type="math/mml"><math id="m16"> <mrow> <mover accent="true"> <mrow> <mi>T</mi> <mi>R</mi> </mrow> <mo stretchy="true">^</mo> </mover> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>p</mi> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>F</mi> </msub> </mrow> <mrow> <msub> <mrow> <mover accent="true"> <mi>β</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>p</mi> </msub> </mrow> </mfrac> </mstyle> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.0127</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.0166</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.0186</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">ジェンセンのアルファ（Jensen’s alpha）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3B1;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-17-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.725ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -799.3 1096.5 1173.4" width="2.547ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-3B1" y="0"></use><use x="69" xlink:href="#MJSZ1-2C6" y="-28"></use><use transform="scale(0.707)" x="905" xlink:href="#MJMATHI-70" y="-213"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mover accent="true"><mi>α</mi><mo stretchy="true">^</mo></mover></mrow><mi>p</mi></msub></mrow></math></span></span><script id="MathJax-Element-17" type="math/mml"><math id="m17"> <mrow> <msub> <mrow> <mover accent="true"> <mi>α</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>p</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.27%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.57%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.64%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">アクティブリターン（Active return）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-18-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.355ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -639.9 3554.4 1013.9" width="8.255ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-70" y="-213"></use><use x="1255" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2256,0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-6D" y="-213"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>p</mi></msub><mo>−</mo><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>m</mi></msub></mrow></math></span></span><script id="MathJax-Element-18" type="math/mml"><math id="m18"> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>p</mi> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>m</mi> </msub> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.27%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.44%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.39%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">インフォメーションレシオ（Information ratio）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mrow&gt;&lt;mi&gt;I&lt;/mi&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;/mrow&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-19-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.935ex" role="img" style="vertical-align: -2.597ex;" viewbox="0 -1437.2 7779.4 2555.4" width="18.068ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-49" y="0"></use><use x="504" xlink:href="#MJMATHI-52" y="0"></use><use x="131" xlink:href="#MJSZ2-2C6" y="199"></use><use x="1541" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2598,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="4941" x="0" y="220"></rect><g transform="translate(693,760)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-70" y="-213"></use><use x="1255" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2256,0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-6D" y="-213"></use></g></g><g transform="translate(60,-724)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><g transform="translate(739,0)"><use xlink:href="#MJMAIN-28"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-70" y="-213"></use><use x="1129" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2130,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-6D" y="-213"></use></g></g><use x="3692" xlink:href="#MJMAIN-29" y="0"></use></g></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>I</mi><mi>R</mi></mrow><mo stretchy="true">^</mo></mover><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>p</mi></msub><mo>−</mo><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>m</mi></msub></mrow><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover><mrow><mo>(</mo><mrow><msub><mi>r</mi><mi>p</mi></msub><mo>−</mo><msub><mi>r</mi><mi>m</mi></msub></mrow><mo>)</mo></mrow></mrow></mfrac></mstyle></mrow></math></span></span><script id="MathJax-Element-19" type="math/mml"><math id="m19"> <mrow> <mover accent="true"> <mrow> <mi>I</mi> <mi>R</mi> </mrow> <mo stretchy="true">^</mo> </mover> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>p</mi> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>m</mi> </msub> </mrow> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> <mrow> <mo>(</mo> <mrow> <msub> <mi>r</mi> <mi>p</mi> </msub> <mo>−</mo> <msub> <mi>r</mi> <mi>m</mi> </msub> </mrow> <mo>)</mo> </mrow> </mrow> </mfrac> </mstyle> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.21</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.24</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.21</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">アプレイザルレシオ（Appraisal ratio）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mrow&gt;&lt;mi&gt;A&lt;/mi&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;/mrow&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3B1;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x3B5;&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-20-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="6.182ex" role="img" style="vertical-align: -2.597ex;" viewbox="0 -1543.5 4528.9 2661.7" width="10.519ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-41" y="0"></use><use x="750" xlink:href="#MJMATHI-52" y="0"></use><use x="32" xlink:href="#MJSZ3-2C6" y="233"></use><use x="1787" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2844,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="1444" x="0" y="220"></rect><g transform="translate(174,760)"><use x="0" xlink:href="#MJMATHI-3B1" y="0"></use><use x="69" xlink:href="#MJSZ1-2C6" y="-28"></use><use transform="scale(0.707)" x="905" xlink:href="#MJMATHI-70" y="-213"></use></g><g transform="translate(60,-686)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><g transform="translate(572,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-3B5" y="0"></use><use transform="scale(0.5)" x="659" xlink:href="#MJMATHI-70" y="-213"></use></g></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mrow><mi>A</mi><mi>R</mi></mrow><mo stretchy="true">^</mo></mover><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mrow><mover accent="true"><mi>α</mi><mo stretchy="true">^</mo></mover></mrow><mi>p</mi></msub></mrow><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mrow><msub><mi>ε</mi><mi>p</mi></msub></mrow></msub></mrow></mfrac></mstyle></mrow></math></span></span><script id="MathJax-Element-20" type="math/mml"><math id="m20"> <mrow> <mover accent="true"> <mrow> <mi>A</mi> <mi>R</mi> </mrow> <mo stretchy="true">^</mo> </mover> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msub> <mrow> <mover accent="true"> <mi>α</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>p</mi> </msub> </mrow> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mrow> <msub> <mi>ε</mi> <mi>p</mi> </msub> </mrow> </msub> </mrow> </mfrac> </mstyle> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.21</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.32</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.41</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">ソルティノレシオ（Sortino ratio）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mrow&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;/mrow&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mover accent="true"&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-21-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.441ex" role="img" style="vertical-align: -2.103ex; margin-left: -0.008ex;" viewbox="-3.5 -1437.2 7259.2 2342.8" width="16.86ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g transform="translate(19,0)"><use x="0" xlink:href="#MJMATHI-53" y="0"></use><use x="645" xlink:href="#MJMATHI-52" y="0"></use></g><use x="0" xlink:href="#MJSZ3-2C6" y="222"></use><use transform="scale(0.707)" x="2042" xlink:href="#MJMATHI-44" y="-213"></use><use x="2408" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(3464,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="3551" x="0" y="220"></rect><g transform="translate(60,760)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-70" y="-213"></use><use x="1255" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2256,0)"><use x="35" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(55,-20)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><use x="21" xlink:href="#MJMAIN-AF" y="0"></use></g><use transform="scale(0.707)" x="816" xlink:href="#MJMATHI-54" y="-213"></use></g></g><g transform="translate(1146,-686)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><use transform="scale(0.707)" x="809" xlink:href="#MJMATHI-44" y="-213"></use></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mrow><mover accent="true"><mrow><mi>S</mi><mi>R</mi></mrow><mo stretchy="true">^</mo></mover></mrow><mi>D</mi></msub><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>p</mi></msub><mo>−</mo><msub><mover accent="true"><mi>r</mi><mo>¯</mo></mover><mi>T</mi></msub></mrow><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mi>D</mi></msub></mrow></mfrac></mstyle></mrow></math></span></span><script id="MathJax-Element-21" type="math/mml"><math id="m21"> <mrow> <msub> <mrow> <mover accent="true"> <mrow> <mi>S</mi> <mi>R</mi> </mrow> <mo stretchy="true">^</mo> </mover> </mrow> <mi>D</mi> </msub> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>p</mi> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>r</mi> <mo>¯</mo> </mover> <mi>T</mi> </msub> </mrow> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>D</mi> </msub> </mrow> </mfrac> </mstyle> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.60</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.79</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.85</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">カルマーレシオ（Calmar ratio）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mtext&gt;CR&lt;/mtext&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mrow&gt;&lt;mstyle displaystyle="true"&gt;&lt;munderover&gt;&lt;mo&gt;&amp;#x220F;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;/munderover&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mn&gt;12&lt;/mn&gt;&lt;/mrow&gt;&lt;mo&gt;/&lt;/mo&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mtext&gt;MD&lt;/mtext&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-22-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="10.873ex" role="img" style="vertical-align: -1.98ex;" viewbox="0 -3829.1 12766.1 4681.6" width="29.65ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-43"></use><use x="722" xlink:href="#MJMAIN-52" y="0"></use><use x="1736" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2793,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="9733" x="0" y="220"></rect><g transform="translate(60,1723)"><use xlink:href="#MJSZ4-5B"></use><g transform="translate(583,0)"><use x="0" xlink:href="#MJSZ2-220F" y="0"></use><use transform="scale(0.707)" x="653" xlink:href="#MJMAIN-31" y="-1541"></use><use transform="scale(0.707)" x="551" xlink:href="#MJMATHI-54" y="1627"></use><g transform="translate(1445,0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.707)" x="1074" xlink:href="#MJMATHI-74" y="-213"></use></g></g><use x="3228" xlink:href="#MJMAIN-29" y="0"></use></g></g><use x="5646" xlink:href="#MJSZ4-5D" y="-1"></use><g transform="translate(6229,1477)"><use transform="scale(0.707)" xlink:href="#MJMAIN-31"></use><use transform="scale(0.707)" x="500" xlink:href="#MJMAIN-32" y="0"></use><use transform="scale(0.707)" x="1001" xlink:href="#MJMAIN-2F" y="0"></use><use transform="scale(0.707)" x="1501" xlink:href="#MJMATHI-54" y="0"></use></g><use x="8111" xlink:href="#MJMAIN-2212" y="0"></use><use x="9112" xlink:href="#MJMAIN-31" y="0"></use></g><g transform="translate(3636,-686)"><use x="0" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(778,0)"><use xlink:href="#MJMAIN-4D"></use><use x="917" xlink:href="#MJMAIN-44" y="0"></use></g></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mtext>CR</mtext><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msup><mrow><mrow><mo>[</mo><mrow><mstyle displaystyle="true"><munderover><mo>∏</mo><mn>1</mn><mi>T</mi></munderover><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mi>t</mi></msub></mrow><mo>)</mo></mrow></mrow></mstyle></mrow><mo>]</mo></mrow></mrow><mrow><mrow><mrow><mn>12</mn></mrow><mo>/</mo><mi>T</mi></mrow></mrow></msup><mo>−</mo><mn>1</mn></mrow><mrow><mo>−</mo><mtext>MD</mtext></mrow></mfrac></mstyle></mrow></math></span></span><script id="MathJax-Element-22" type="math/mml"><math id="m22"> <mrow> <mtext>CR</mtext> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msup> <mrow> <mrow> <mo>[</mo> <mrow> <mstyle displaystyle="true"> <munderover> <mo>∏</mo> <mn>1</mn> <mi>T</mi> </munderover> <mrow> <mrow> <mo>(</mo> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>R</mi> <mi>t</mi> </msub> </mrow> <mo>)</mo> </mrow> </mrow> </mstyle> </mrow> <mo>]</mo> </mrow> </mrow> <mrow> <mrow> <mrow> <mn>12</mn> </mrow> <mo>/</mo> <mi>T</mi> </mrow> </mrow> </msup> <mo>−</mo> <mn>1</mn> </mrow> <mrow> <mo>−</mo> <mtext>MD</mtext> </mrow> </mfrac> </mstyle> </mrow> </math></script></span></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.88</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">2.28</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">2.68</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>Exhibit 23を確認すると、評価期間中に3つすべてのファンドがFTSE All-Shareを上回るリターンを達成していることが分かる。最も高いリターンはファンド2であり、年率18.45%で、FTSE All-Shareの12.37%と比較して高い。ファンド3とファンド1の年率リターンはそれぞれ17.98%および15.98%であった。ファンド1を除くすべてのファンドは、FTSE All-Share指数よりも低いリターンボラティリティでこれらのリターンを達成している。</p>
+<p>もし投資家が将来を予見でき、将来のリターンを知ることができたならば、誰もがファンド2を選択していたであろう。しかし、リターンにはリスクが伴うため、利益の大きさだけでなく、どの程度のリスクが取られたかも考慮することが重要である。</p>
+<p>投資パフォーマンス評価指標が最も重要となるのは、アナリストが将来のファンドリターンがどのようになるかを評価しようとする場合である。本質的には、これらの指標の解釈は、ファンドへの投資によって引き受けるリスクが、ベンチマークポートフォリオを上回るリターンの可能性を考慮したときに「見合っているかどうか」に帰着する。したがって、これらは投資家が十分な情報に基づいた意思決定を行うための事前的（ex ante）な選択ツールとして捉えるのが最適である。</p>
+<p><a aria-label="View Exhibit 23" class="internal" href="#CIPM1509-R-s15-EXH21" role="button">Exhibit 23</a> shows that the volatility measures for Fund 3 are the lowest of the three funds. The standard deviation of monthly returns <span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-23-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.849ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -852.5 1807.5 1226.6" width="4.198ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-28"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><use transform="scale(0.707)" x="809" xlink:href="#MJMATHI-70" y="-213"></use></g><use x="1418" xlink:href="#MJMAIN-29" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mrow><mo>(</mo><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mi>p</mi></msub></mrow><mo>)</mo></mrow></mrow></math></span></span><script id="MathJax-Element-23" type="math/mml"><math id="m23"> <mrow> <mrow> <mo>(</mo> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>p</mi> </msub> </mrow> <mo>)</mo> </mrow> </mrow> </math></script></span>, the target semi-standard deviation <span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-24-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.725ex" role="img" style="vertical-align: -0.745ex;" viewbox="0 -852.5 2037.3 1173.4" width="4.732ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><use transform="scale(0.707)" x="809" xlink:href="#MJMATHI-44" y="-213"></use></g><use x="1647" xlink:href="#MJMAIN-29" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mrow><mo>(</mo><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mi>D</mi></msub></mrow><mo>)</mo></mrow></mrow></math></span></span><script id="MathJax-Element-24" type="math/mml"><math id="m24"> <mrow> <mrow> <mo>(</mo> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mi>D</mi> </msub> </mrow> <mo>)</mo> </mrow> </mrow> </math></script></span>, and the maximum drawdown (−MD) are all significantly lower for Fund 3. Thus, it was the least risky of the three funds during the evaluation period.</p>
+<p>The performance of Fund 1 most closely tracked that of the FTSE All-Share benchmark. As <a aria-label="View Exhibit 23" class="internal" href="#CIPM1509-R-s15-EXH21" role="button">Exhibit 23</a> shows, the tracking risk <span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;m&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-25-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.849ex" role="img" style="vertical-align: -0.869ex;" viewbox="0 -852.5 5378.3 1226.6" width="12.492ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-5B"></use><g transform="translate(278,0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><g transform="translate(739,0)"><use xlink:href="#MJMAIN-28"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-70" y="-213"></use><use x="1129" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2130,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-6D" y="-213"></use></g></g><use x="3692" xlink:href="#MJMAIN-29" y="0"></use></g></g><use x="5099" xlink:href="#MJMAIN-5D" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mrow><mo>[</mo><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover><mrow><mo>(</mo><mrow><msub><mi>r</mi><mi>p</mi></msub><mo>−</mo><msub><mi>r</mi><mi>m</mi></msub></mrow><mo>)</mo></mrow></mrow><mo>]</mo></mrow></mrow></math></span></span><script id="MathJax-Element-25" type="math/mml"><math id="m25"> <mrow> <mrow> <mo>[</mo> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> <mrow> <mo>(</mo> <mrow> <msub> <mi>r</mi> <mi>p</mi> </msub> <mo>−</mo> <msub> <mi>r</mi> <mi>m</mi> </msub> </mrow> <mo>)</mo> </mrow> </mrow> <mo>]</mo> </mrow> </mrow> </math></script></span> and the standard deviation of the residual error terms from the market model regression <span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mover accent="true"&gt;&lt;mi&gt;&amp;#x3C3;&lt;/mi&gt;&lt;mo stretchy="true"&gt;^&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x3B5;&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-26-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="3.219ex" role="img" style="vertical-align: -0.992ex;" viewbox="0 -958.8 2241.8 1386" width="5.207ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJSZ1-28"></use><g transform="translate(458,0)"><use x="0" xlink:href="#MJMATHI-3C3" y="0"></use><use x="8" xlink:href="#MJSZ1-2C6" y="-39"></use><g transform="translate(572,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-3B5" y="0"></use><use transform="scale(0.5)" x="659" xlink:href="#MJMATHI-70" y="-213"></use></g></g><use x="1783" xlink:href="#MJSZ1-29" y="-1"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mrow><mo>(</mo><mrow><msub><mrow><mover accent="true"><mi>σ</mi><mo stretchy="true">^</mo></mover></mrow><mrow><msub><mi>ε</mi><mi>p</mi></msub></mrow></msub></mrow><mo>)</mo></mrow></mrow></math></span></span><script id="MathJax-Element-26" type="math/mml"><math id="m26"> <mrow> <mrow> <mo>(</mo> <mrow> <msub> <mrow> <mover accent="true"> <mi>σ</mi> <mo stretchy="true">^</mo> </mover> </mrow> <mrow> <msub> <mi>ε</mi> <mi>p</mi> </msub> </mrow> </msub> </mrow> <mo>)</mo> </mrow> </mrow> </math></script></span> are the lowest for Fund 1. The market model <em>R</em><sup>2</sup> of 0.9077 indicates that more than 90% of the changes in Fund 1’s excess returns are explained by changes in the excess returns for the FTSE All-Share. This result compares with an <em>R</em><sup>2</sup> of less than 80% for the other two funds.</p>
+<p>Exhibit 24は、ほとんどのリスク調整後パフォーマンス指標がファンド3を支持していることを示している。3つのファンドの中で、ファンド3は最も高いシャープレシオと最も高いM²を有している。これらの指標はいずれもリスク調整に標準偏差を用いており、ポートフォリオの総リスクを統制している。シャープレシオとM²は、投資家のポートフォリオ全体に適用される場合に最も適切な評価指標である。</p>
+<p>検討対象のファンドが投資家のポートフォリオの一部に過ぎない場合には、市場リスクで調整するアプローチがパフォーマンス評価として望ましいとされる。Exhibit 24が示すとおり、ファンド3はトレイナーレシオ、ジェンセンのアルファ、アプレイザルレシオにおいても最も高い値を示している。Exhibit 23から、ジェンセンのアルファの係数推定値が1%の有意水準で統計的に有意であることに注意せよ。これらすべての指標は、CAPM（Capital Asset Pricing Model）が理論的に正しい価格決定モデルであり、ファンドの市場リスクがベータ（beta）によって適切に表されていることを前提としている。</p>
+<p>Exhibit 24はまた、ファンド3が最も高いソルティノレシオとカルマーレシオを有していることも示している。これらの指標はいずれも下方リスク（downside risk）に基づいてリスク調整を行う。リターンが非対称であると考えられる場合や、投資家の主な関心が資本保全（capital preservation）にある場合に、これらの指標の利用が最も適切とされる。</p>
+<p>Exhibit 24においてファンド2を支持するパフォーマンス指標は2つある。1つ目のアクティブリターンはリスク調整されていない指標であり、単にファンド2が他の2つのファンドよりもFTSE All-Shareを大きくアウトパフォームしたことを再確認するに過ぎない。もう1つのインフォメーションレシオはリスク調整された指標であり、ファンド2が最も高いアクティブリターンを持ち、かつトラッキングリスクがファンド3とほぼ同程度であるため、ファンド2を支持する結果となっている。</p>
+<p>まとめると、Exhibit 24に示されたリスク調整後パフォーマンス指標の大半は、ファンド3を最も優れたパフォーマーとして支持している。これらの結果は、この評価期間においてファンド3の運用が優れた投資スキルを示したという仮説を支持する。「スキル」とはこの文脈において、投資家が引き受けたリスクに対して十分な報酬を得ていたことを意味する。</p>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1369_modules_items_99620_114_Appraisal_Measures_Based_on_Downside_Risk.html" >← 前へ</a>
+  <span class="title">1.15 | Performance Appraisal: An Analysis of Three Funds</span>
+  <a href="courses_1369_modules_items_99624_116_Multifactor_Models_in_Performance_Appraisal.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

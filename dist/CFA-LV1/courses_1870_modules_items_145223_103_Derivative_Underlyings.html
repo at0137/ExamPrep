@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.03 | Derivative Underlyings</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2374-R-s03" title="1.03 | Derivative Underlyings">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1: デリバティブ商品(Derivative Instrument)およびデリバティブ市場(Derivative Market)の特徴 1.03 | デリバティブの基礎資産(Derivative Underlyings)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">デリバティブ(Derivative)を定義し、デリバティブ商品の基本的特徴(Basic Features)を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>デリバティブ(Derivatives)は通常、その価値(Value)の源となる基礎資産(Underlying)ごとに分類されます。デリバティブ契約(Derivative Contract)は複数の基礎資産(Underlying)を参照(Reference)することもあります。最も一般的なデリバティブの基礎資産には、株式(Equities)、固定収益(Fixed Income)および金利(Interest Rates)、通貨(Currencies)、商品(Commodities)、信用(Credit)が含まれます。</p>
+<section id="CFA2374-s003-01-01">
+<h3 class="dp-heading">株式(Equities)</h3>
+<p>株式デリバティブ(Equity Derivatives)は通常、個別株(Individual Stock)、株式群(Group of Stocks)、または株価指数(Stock Index)を参照します。例としてFTSE 100があります(FTSE 100)。個別株に対するデリバティブで最も一般的なのはオプション(Options)です。指数デリバティブ(Index Derivatives)は、オプション(Options)、フォワード(Forwards)、先物(Futures)、スワップ(Swaps)として一般的に取引されます。</p>
+<p>指数スワップ(Index Swaps)または株式スワップ(Equity Swaps)は、投資家(Investor)がある株価指数のリターン(Return)を支払い、別の指数または金利(Interest Rate)のリターンを受け取ることを可能にします。投資運用者(Investment Manager)は、個別株を取引することなく、株式市場(Equity Market)やセクター(Sector)へのエクスポージャー(Exposure)を増減するために指数スワップ(Index Swaps)を利用できます。これらのスワップは、トップダウン型資産配分戦略(Top-Down Asset Allocation Strategies)で広く使用されます。さらに、一定期間の株価指数(Equity Index)価格の実現ボラティリティ(Realized Volatility)に基づいたオプション(Options)、先物(Futures)、スワップ(Swaps)も利用可能です。これらの契約により、市場参加者(Market Participants)は価格変動の方向性(Direction)とは別に、価格変動のリスク(Risk)や分散(Dispersion)を管理できます。</p>
+<p>個別株(Individual Stocks)のオプション(Options)は投資家(Investors)によって売買され、発行者(Issuers)が経営陣や従業員の報酬として使用することも頻繁にあります。ストックオプション(Stock Options)は、株価(Stock Prices)の上昇を見込み、より強い企業業績(Corporate Performance)を目指すインセンティブ(Incentives)として付与されます。これにより、企業は現金報酬(Cash Compensation)を低く抑えることが可能です。企業はまたワラント(Warrants)を発行することもあり、これは従業員に付与されるオプションまたは一般に販売されるオプションで、将来固定価格(Fixed Price)で発行者(Issuer)から直接株式(Share)を購入することを可能にします。</p>
+</section>
+<section id="CFA2374-s003-01-02">
+<h3 class="dp-heading">固定収益商品(Fixed-Income Instruments)</h3>
+<p>債券(Bonds)は広く用いられる基礎資産(Underlying)であり、関連するデリバティブにはオプション(Options)、フォワード(Forwards)、先物(Futures)、スワップ(Swaps)があります。米国財務省(US Treasury)や日本財務省(Japanese Ministry of Finance)などの政府発行者(Government Issuers)は、多くの債券発行(Bond Issues)を抱えています。これらの債券に関連する単一の標準化された先物契約(Standardized Futures Contract)は、契約を決済(Settle)するために複数の債券発行(Bond Issues)を受渡できるようなパラメータを指定することが多いです。</p>
+<p>金利(Interest Rate)は資産ではなく、多くの金利デリバティブ(Interest Rate Derivatives)で使用される固定収益基礎資産(Fixed-Income Underlying)です。金利スワップ(Interest Rate Swaps)は、市場参加者(Market Participants)が一定期間にわたって固定金利(Fixed)から変動金利(Floating)へのエクスポージャー(Exposure)を変換(Convert)するために頻繁に使用する確定的権利(Firm Commitment)の一種です。例えば、投資運用者(Investment Manager)は、債券(Bonds)を取引せずにポートフォリオ期間(Duration)へのエクスポージャー(Exposure)を増減するために金利スワップ(Interest Rate Swaps)を使用できます。一方、発行者(Issuer)は、負債(Liabilities)の金利エクスポージャープロファイル(Interest Rate Exposure Profile)を変更するために金利スワップを使用する場合があります。</p>
+<p>市場参照金利(Market Reference Rate, MRR)は、金利スワップ(Interest Rate Swaps)で最も一般的に使用される金利基礎資産(Interest Rate Underlying)です。これらの金利は通常、ローン(Loans)やその他の短期債務(Short-Term Obligations)の金利と一致します。過去に参照金利として用いられていた調査ベースのLIBOR金利(Survey-Based LIBOR Rates)は、観測された市場取引金利(Market Transaction Rates)の1日平均(Daily Average)に基づく金利に置き換えられました。例えば、担保付き米国債(US Treasuries)による翌日資金調達金利(Overnight Cash Borrowing Rate)であるSecured Overnight Financing Rate (SOFR)があります。他のMRRには、ユーロ短期金利(€STR)やスターリング翌日物指数平均(Sterling Overnight Index Average, SONIA)があります。</p>
+</section>
+<section id="CFA2374-s003-01-03">
+<h3 class="dp-heading">通貨(Currencies)</h3>
+<p>市場参加者(Market Participants)は、外国為替リスク(Foreign Exchange Risk)によって生じる商業取引(Commercial Transactions)および金融取引(Financial Transactions)のエクスポージャー(Exposure)をヘッジ(Hedge)するためにデリバティブ(Derivatives)を頻繁に使用します。例えば、輸出業者(Exporters)は、外国通貨(Foreign Currency)を売却し、国内通貨(Domestic Currency)を購入するために、納入契約(Delivery Contract)の条件に合わせたフォワード契約(Forward Contracts)に参加することがあります。あるいは、投資家(Investor)は、特定通貨(Currency)に対する先物(Futures)を売却しつつ、その通貨建ての証券ポートフォリオ(Securities Portfolio)を保有することで、一時的な通貨価値(Value)の下落から利益を得ることがあります。ソブリン債(Sovereign Bonds)や為替レート(Exchange Rates)を基礎とするオプション(Options)、フォワード(Forwards)、先物(Futures)、スワップ(Swaps)は、通貨リスク(Currency Risk)を管理するために使用されます。</p>
+</section>
+<section id="CFA2374-s003-01-04">
+<h3 class="dp-heading">商品(Commodities)</h3>
+<p>ソフト(Soft)およびハード(Hard)商品に対する現物(Cash)またはスポット市場(Spot Market)では、決済(Settlement)時に基礎資産(Underlying)の物理的受渡(Physical Delivery)が行われます。ソフト商品(Soft Commodities)は牛(Cattle)やトウモロコシ(Corn)などの農産物(Agricultural Products)であり、ハード商品(Hard Commodities)は原油(Crude Oil)や金属(Metals)などの天然資源(Natural Resources)です。商品デリバティブ(Commodity Derivatives)は、個別商品(Individual Commodity)または商品指数(Commodity Index)の価格リスク(Price Risk)を物理的受渡とは別に管理するために広く使用されます。例えば、航空会社(Airline)、海運会社(Shipping)、または運送会社(Freight Company)は、燃料コスト(Fuel Costs)上昇による運営費(Operating Expenses)の上昇をヘッジ(Hedge)するために原油先物(Oil Futures)を購入することがあります。投資家(Investor)は、商品指数先物(Commodity Index Futures Contract)を購入し、基礎資産(Underlying)を物理的に受け取ることなく、商品価格(Commodity Prices)へのエクスポージャー(Exposure)を増やすことができます。</p>
+</section>
+<section id="CFA2374-s003-01-05">
+<h3 class="dp-heading">信用(Credit)</h3>
+<p>信用デリバティブ(Credit Derivative Contracts)は、単一発行者(Single Issuer)または指数(Index)内の複数発行者(Group of Issuers)のデフォルトリスク(Default Risk)に基づきます。クレジットデフォルトスワップ(Credit Default Swaps, CDS)は、投資家(Investor)が債券市場(Bond Market)とは別に借り手(Borrower)のデフォルト(Default)による損失リスク(Loss Risk)を管理することを可能にします。CDS契約(CDS Contracts)は、デフォルト(Default)の可能性を表すスプレッド(Spread)で取引されます。例えば、投資家(Investor)は、高利回り(High-Yield)指数に対するCDS契約を売買することで、基礎債券(Underlying Bonds)を売買せずに高利回り信用(High-Yield Credit)へのポートフォリオエクスポージャー(Portfolio Exposure)を変更できます。あるいは、銀行(Bank)は、発行者(Issuer)の潜在的デフォルト(Potential Default)に対する既存の信用エクスポージャー(Credit Exposure)を相殺(Offset)するためにCDS契約(CDS Contract)を購入することがあります。</p>
+</section>
+<section id="CFA2374-s003-01-06">
+<h3 class="dp-heading">Other</h3>
+<p>その他のデリバティブ基礎資産(Other Derivative Underlyings)には、天候(Weather)、暗号資産(Cryptocurrencies)、寿命(Longevity)が含まれ、これらはさまざまな市場参加者(Market Participants)の財務パフォーマンス(Financial Performance)に影響を与える可能性があります。例えば、寿命リスク(Longevity Risk)は、平均寿命の延長(Increased Life Expectancy)にエクスポージャーを持つ保険会社(Insurance Companies)や確定給付型年金プラン(Defined Benefit Pension Plans)にとって重要です。これらの基礎資産に基づくデリバティブは一般的ではなく、価格設定(Pricing)がより困難です。図表3(Exhibit 3)は、一般的な基礎資産(Common Underlyings)の概要を示しています。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2374-s003-EXH-1-3">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 3<span style="display: block;">Common Derivative Underlyings</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">資産クラス(Asset Class)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">例(Examples)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">使用例(Sample Uses)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株式(Equities)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">個別株(Individual Stocks)、株価指数(Equity Indexes)、株価ボラティリティ(Equity Price Volatility)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">エクスポージャープロファイルの変更(Change Exposure Profile, 投資家 Investors)、従業員報酬(Employee Compensation, 発行者 Issuers)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">金利(Interest Rates)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">国内ソブリン債(Sovereign Bonds, Domestic)、市場参照金利(Market Reference Rates)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">デュレーションエクスポージャーの変更(Change Duration Exposure, 投資家 Investors)、負債エクスポージャープロファイルの変更(Alter Debt Exposure Profile, 発行者 Issuers)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">外国為替(Foreign Exchange)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">外国ソブリン債(Sovereign Bonds, Foreign)、市場為替レート(Market Exchange Rates)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">グローバルポートフォリオリスクの管理(Manage Global Portfolio Risks, 投資家 Investors)、グローバル貿易リスクの管理(Manage Global Trade Risks, 発行者 Issuers)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">商品(Commodities)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ソフト・ハード商品(Soft and Hard Commodities)、商品指数(Commodity Indexes)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">運営リスクの管理(Manage Operating Risks, 消費者/生産者 Consumers/Producers)、ポートフォリオ多様化(Portfolio Diversification, 投資家 Investors)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">信用(Credit)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">個別参照主体(Individual Reference Entities)、信用指数(Credit Indexes)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ポートフォリオ多様化(Portfolio Diversification, 投資家 Investors)、信用リスク管理(Manage Credit Risk, 金融仲介者 Financial Intermediaries)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>Other</strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">天候(Weather)、暗号資産(Cryptocurrencies)、寿命(Longevity)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">運営リスクの管理(Manage Operating Risks, 発行者 Issuers)、ポートフォリオリスクの管理(Manage Portfolio Risks, 投資家 Investors)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="CFA2374-s003-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Rare Earth Futures and the LME Lithium Contract</span></h4>
+<p>デリバティブの基礎資産(Derivative Underlyings)は、商業および金融市場(Commercial and Financial Markets)に影響を与える環境(Environmental)、社会(Social)、ガバナンス(Governance, ESG)要因の重要性の高まりに適応し続けています。例えば、自動車産業(Automotive Industry)が環境(Environmental)上の懸念から内燃機関(Internal Combustion Engine)技術から電気自動車(Electric Vehicle, EV)生産にシフトするにつれて、EVバッテリー(EV Battery)製造プロセスに投入される希少金属(Rare Earth Metals)、例えばリチウム(Lithium)の需要がますます重要になっています。</p>
+<p>商品生産者(Commodity Producers)やエンドユーザー(End Users)、および投資家(Investors)からの需要の高まりに応じて、ロンドン金属取引所(London Metal Exchange, LME)は2021年にリチウム先物契約(Lithium Futures Contract)を導入しました。LMEリチウム契約(LME Lithium Contract)は、中国(China)、日本(Japan)、韓国(Korea)向けに配送可能なバッテリーグレードの水酸化リチウム一水和物(Battery-Grade Lithium Hydroxide Monohydrate)のスポット価格(Spot Price)を週次(Weekly)で公表し、1契約あたり1メトリックトン(Lot Size of One Metric Ton per Contract)として、米ドル(USD)で現金決済(Cash Settled)されます。</p>
+</div>
+</section>
+<section id="CFA2374-s003-01-07">
+<h3 class="dp-heading">投資家シナリオ(Investor Scenarios)</h3>
+<p>以下のシナリオは、2つの当事者(Parties)の特定の目標(Goals)を考慮し、それぞれに最も適切なデリバティブ契約(Derivative Contract)を確認します。</p>
+<section id="CFA2374-s003-01-07-01">
+<h4>シナリオ1: Hightest Capital</h4>
+<p>Hightest Capitalは、米国(US)に拠点を置く投資ファンド(Investment Fund)で、よく分散された国内株式ポートフォリオ(Domestic Equity Portfolio)を保有しています。Hightestのシニアポートフォリオマネージャー(Senior Portfolio Manager)は、今後6か月でヘルスケア株(Health Care Stocks)が全体指数(Overall Index)を大幅にアウトパフォーム(Outperform)すると考えています。Ace Limitedは金融仲介者(Financial Intermediary)であり、シカゴ・ボード・オプション取引所(Chicago Board Options Exchange, CBOE)のメンバーです。</p>
+<p>Hightestは、Aceを金融仲介者(Financial Intermediary)として、S&amp;P 500ヘルスケア・セレクト・セクター指数(S&amp;P 500 Health Care Select Sector Index, SIXV)に基づく標準化契約(Standardized Contract)のオプション(Option)を購入します。SIXVはS&amp;P 500指数(S&amp;P 500 Index)に含まれる約60銘柄のヘルスケア株(Health Care Equities)で構成されています。この契約は偶発的権利(Contingent Claim)であり、Hightestに6か月後にSIXVを現行市場価格(Spot SIXV)の5%プレミアム(Spot SIXV × 1.05)で購入する権利(Right)を付与します。</p>
+</section>
+<section id="CFA2374-s003-01-07-02">
+<h4>シナリオ2: Esterr Inc.</h4>
+<p>Esterr Inc.はトロント(Toronto)に拠点を置く上場企業(Public Company)で、2億5,000万カナダドル(CAD250 Million)の変動金利タームローン(Floating-Rate Term Loan)を保有しています。ローンは残存期間(Remaining Maturity)が3年半で、3か月MRR(カナダ翌日物参照金利(Canadian Overnight Reference Rate Average, CORRA))＋150ベーシスポイント(bps)で価格設定されています。Esterrの財務担当者(Treasurer)は、ローンの残存期間中にカナダ金利(Canadian Interest Rates)が上昇することを懸念しており、金利費用(Interest Expense)を固定したいと考えています。</p>
+<p>Esterrは、金融仲介者(Financial Intermediary)とCAD2億5,000万(CAD250 Million)の金利スワップ(Interest Rate Swap)契約を締結し、基礎資産(Underlying)としてMRRを使用します。スワップ(Swap)契約の下で、Esterrは固定金利(Fixed Interest Rate)を支払い、3か月MRRを受け取ることに合意します。名目元本(Notional Principal)はCAD2億5,000万で、支払日(Payment Dates)はタームローン(Term Loan)と一致します。このスワップ契約(Swap Contract)は確定的権利(Firm Commitment)です。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2374-s003-B-1-b">
+<h5 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Question Set</h5>
+<section id="CFA2374-s003-01-07-02-01">
+<h6 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-h1">Derivative Underlyings</h6>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>従業員報酬(Employee Compensation)において、基礎資産(Underlying)がどのように使用されるか、またその理由を説明してください。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答(Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>株式基礎資産(Equity Underlying)を持つデリバティブ(Derivatives)、特に特定発行者(Issuer)の株式(Stock)は、その企業の従業員(Employee)の報酬(Compensation)に組み込まれることがあります。ストックオプション(Stock Options)は、株価(Stock Price)の上昇を見込んでより強い企業業績(Corporate Performance)を目指すインセンティブ(Incentives)として付与され、オプションの価値(Value)が上昇します。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>ユーロ圏(Euro Zone)から商品を輸入する英国(UK)の輸入業者(Importer)が、通貨基礎資産(Currency Underlying)を持つデリバティブ(Derivative)を用いてリスク(Risk)を軽減する方法を説明してください。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答(Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>ユーロ圏(Euro Zone)から商品を輸入する英国(UK)の輸入業者(Importer)は、商品(Goods)の代金としてユーロ(EUR)を支払い、それを英国ポンド(GBP)で販売する予定です。この通貨の不一致(Currency Mismatch)に対応するため、将来の事前合意価格(Pre-Determined Price)でEURをGBPに交換する確定的権利(Firm Commitment)に参加することを検討し、基礎資産(Underlying)のスポット為替レート(Spot Exchange Rate)の変動リスク(GBPのEURに対する下落)を相殺(Offset)します。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>図表1(Exhibit 1)のように、シナリオ2のEsterr Inc.の金利スワップ(Interest Rate Swap)におけるA、B、Cを特定してください。</p>
+<p><img alt="Esterr Inc. is a fictional company that specializes in providing innovative financial solutions." aria-describedby="CFA2374-s003-Fig1-extended-desc" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1870/files/461006" data-api-returntype="File" id="CFA2374-s003-Fig1" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/></p>
+<details class="dp-panels-wrapper" id="CFA2374-s003-Fig1-extended-desc" style="font-size: 10pt;">
+<summary>Expand / Collapse Extended Description</summary>
+<p>Esterr Inc.は、革新的な金融ソリューション(Innovative Financial Solutions)を提供する架空会社(Fictional Company)です。資産担保証券(Asset-Backed Securities, ABS)の構造設計(Structuring)や、特別目的事業体(Special Purpose Entities, SPEs)を用いたカバードボンド(Covered Bond)投資家向けの投資機会創出に関する専門知識(Expertise)で知られています。さらに、Esterr Inc.は、構造強化(Structural Enhancements)を伴う債券(Bonds)に注力し、安全で魅力的な利回り(Yields)のある投資を提供します。</p>
+</details>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答(Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p><img alt="Esterr Inc. on top and financial intermediary on bottom. Esterr offers fixed interest rate to financial intermediary represented by downward arrow. Financial intermediary offers CORRA, market reference rate, to Esterr represented by upward arrow." aria-describedby="CFA2374-s003-Fig2-extended-desc" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1870/files/461113" data-api-returntype="File" id="CFA2374-s003-Fig2" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/></p>
+<details class="dp-panels-wrapper" id="CFA2374-s003-Fig2-extended-desc" style="font-size: 10pt;">
+<summary>Expand / Collapse Extended Description</summary>
+<p>Esterr Inc.が上、金融仲介者(Financial Intermediary)が下。Esterr Inc.は、固定金利(Fixed Interest Rate)を下向き矢印(Downward Arrow)で金融仲介者に提供します。金融仲介者は、CORRA市場参照金利(Market Reference Rate)を上向き矢印(Upward Arrow)でEsterr Inc.に提供します。</p>
+</details>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>図表2(Exhibit 2)のタームシート(Term Sheet)を用いて、Esterr Inc.金利スワップ(Interest Rate Swap)のデリバティブ特徴(Derivative Features)を特定し、説明してください。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2374-s003-T-1-a">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Interest Rate Swap Term Sheet</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">開始日(Start Date):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">[スポット開始(Spot Start)]</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期日(Maturity Date):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">[開始日から3年6か月(Three Years and Six Months from Start Date)]</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">名目元本(Notional Principal):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">CAD250,000,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">固定金利支払者(Fixed-Rate Payer):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Esterr Inc.</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">固定金利(Fixed Rate):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">半期ごと(Semiannual)、Act/365ベースで2.05%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">変動金利支払者(Floating-Rate Payer):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">[金融仲介者(Financial Intermediary)]</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">変動金利(Floating Rate):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">カナダ翌日物レポ金利平均(Three-Month Canadian Overnight Repo Rate Average, CORRA)を、カナダ銀行(Bank of Canada)が営業日ごとに公表(Published)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">支払日(Payment Dates):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">半期ごとに純額(Net Basis)で交換</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業日(Business Days):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">トロント(Toronto)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">書類(Documents):</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ISDA契約(ISDA Agreement)およびEsterr Inc.タームローン(Esterr Inc. Term Loan)に合わせた信用条件(Credit Terms)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>A. 基礎資産(Underlying): ___________________________</p>
+<p>B. カウンターパーティー(Counterparties): Esterr Inc. と金融仲介者(Financial Intermediary)</p>
+<p>C. 契約サイズ(Contract Size): CAD250,000,000</p>
+<p>D. 契約タイプ(Contract Type): 確定的権利(Firm Commitment, 金利スワップ Interest Rate Swap)</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答(Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>A. 基礎資産(Underlying): 金利(Interest Rate, カナダ市場参照金利 Canadian Market Reference Rate, CORRA)</p>
+<p>B. カウンターパーティー(Counterparties): Esterr Inc. と金融仲介者(Financial Intermediary)</p>
+<p>C. 契約サイズ(Contract Size): CAD250,000,000</p>
+<p>D. 契約タイプ(Contract Type): 確定的権利(Firm Commitment, 金利スワップ Interest Rate Swap)</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>各デリバティブ基礎資産タイプ(Derivative Underlying Type)に対応する例を特定してください。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2374-s003-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">A. ソフト商品(Soft Commodities)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1. アルミニウム先物(Aluminum Futures)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">B. ハード商品(Hard Commodities)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2. SOFR先物(SOFR Futures)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">C. ソフトでもハードでもない(Neither Soft nor Hard Commodities)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3. 大豆オプション(Soybean Options)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答(Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h6 class="cfa-curriculum-solution">Solution</h6>
+<p>1. Bが正しいです。アルミニウム先物(Aluminum Futures)は金属(Metals)契約の例であり、ハード商品(Hard Commodity)を基礎資産(Underlying)とするデリバティブです。</p>
+<p>2. Cが正しいです。SOFR先物(SOFR Futures)は金利契約(Interest Rate Contract)の例であり、商品ベース(Commodity-Based)のデリバティブ契約ではありません。</p>
+<p>3. Aが正しいです。大豆オプション(Soybean Options)は農産物(Agricultural)またはソフト商品(Soft Commodity)を基礎資産(Underlying)とするデリバティブ契約の例です。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MarketReferenceRateMRRContent">
+<p>金利スワップ(Interest Rate Swaps)で使用される金利基礎資産(Interest Rate Underlying)。これらの金利は通常、ローン(Loans)やその他の短期債務(Short-Term Obligations)の金利と一致します。過去に参照金利として使用されていた調査ベースのLIBOR金利(Survey-Based LIBOR Rates)は、観測された市場取引金利(Market Transaction Rates)の1日平均(Daily Average)に基づく金利に置き換えられています。例えば、担保付き米国債(US Treasuries)による翌日資金調達金利(Overnight Cash Borrowing Rate)であるSecured Overnight Financing Rate (SOFR)があります。他の市場参照金利(MRRs)には、ユーロ短期金利(€STR)やスターリング翌日物指数平均(Sterling Overnight Index Average, SONIA)があります。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SoftCommoditiesContent">
+<p>決済(Settlement)時に基礎資産(Underlying)の物理的受渡(Physical Delivery)を伴う農産物(Agricultural Products)、例えば牛(Cattle)やトウモロコシ(Corn)などの標準化された(Standardized)農産物(Agri-Products)の市場(Markets)。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="HardCommoditiesContent">
+<p>決済(Settlement)時に基礎資産(Underlying)の物理的受渡(Physical Delivery)を伴う天然資源(Natural Resources)、例えば原油(Crude Oil)や金属(Metals)などの取引市場(Traded Markets)。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1870_modules_items_145221_102_Derivative_Features.html" >← 前へ</a>
+  <span class="title">1.03 | Derivative Underlyings</span>
+  <a href="courses_1870_modules_items_145226_104_Derivative_Markets.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

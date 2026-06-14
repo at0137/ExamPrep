@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.02 | Ethics</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1701-R-s02" title="1.02 | Ethics">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：投資専門職における倫理と信頼（Ethics and Trust in the Investment Profession）1.02｜倫理（Ethics）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">倫理（ethics）を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>私たち一人ひとりの行動は、他者の生活に影響を与えます。私たちの意思決定や行動は、さまざまな利害関係者（stakeholders）―すなわち、ある意思決定によって直接または間接的に影響を受け、その意思決定に利害関係（interest）を持つ個人または集団―に対して利益または損害をもたらす可能性があります。投資業界の専門家が行う意思決定における利害関係者の例としては、同僚、顧客、雇用主、私たちが生活し働く地域社会、投資専門職、業界団体（trade associations）、規制当局（regulators）、その他の金融市場参加者（financial market participants）が挙げられます。ある場合には、私たちの行動はすべての利害関係者に利益をもたらすこともありますが、別の場合には一部の利害関係者のみに利益をもたらし、さらに別の場合には一部に利益を与えつつ他に損害を与えることもあります。例えば、導入部で取り上げたリサーチアナリストは、自身と雇用主の金銭的利益を増やすことを目的として、誤解を招くリサーチレポート（misleading research reports）を作成しました。短期的には、その行動は一部の利害関係者（特定の顧客、本人、雇用主）に利益をもたらし、他の利害関係者（そのレポートに基づいて投資した顧客）に損害を与えました。しかし長期的には、その行動は本人および多くの利害関係者―雇用主、顧客、同僚、投資家、さらには報道により信頼が失われた金融市場全体―に損害をもたらしました。</p>
+<p>倫理（ethics）は、私たちの行動に指針を与える一連の道徳的原則（moral principles）および行動規範（rules of conduct）を含みます。「倫理（ethics）」という言葉は、性格（character）を意味するギリシャ語の「エートス（ethos）」に由来し、社会または社会集団の指導的信念や理想を表すために用いられます。信念（beliefs）とは、真実であると私たちが考える前提や考え方です。原則（principle）は、信念体系や行動、あるいは推論の基礎となる基本的真理として定義されます。私たちの信念は価値（values）を形成し、それは私たちが価値や意義を認めるものです。</p>
+<p>道徳的原則（moral principles）または倫理原則（ethical principles）とは、何が良い、受け入れられる、または義務的な行動であり、何が悪い、受け入れられない、または禁止される行動であるかに関する信念です。倫理原則は、個人が自らに期待する行動に関する信念だけでなく、コミュニティや社会集団が期待または要求する行動基準（standards of behavior）に関する共有された信念にも言及します。</p>
+<p>倫理の研究（study of ethics）は、何が良い、すなわち倫理的（ethical）な行動と見なされるかを定義する上で、結果（consequences）および個人の人格（personal character）の役割を検討します。</p>
+<p>倫理的行動（ethical conduct）とは、道徳的原則に従い、自身の利益（self-interest）と、他者に対する直接的および間接的な影響（consequences）とのバランスをとる行動です。倫理的行為（ethical actions）とは、有益であり、社会の倫理的期待に適合すると認識される行為です。ある行為は、それによって影響を受ける利害関係者の結果が改善される場合、有益と見なされます。例えば、推奨する投資に関連するリスクやコストについて真実を伝えることは倫理的行為です。これは社会全体および特に顧客の倫理的期待に適合する行為です。また、真実を伝えることは有益でもあります。真実を伝えることで顧客との信頼が構築され、より情報に基づいた意思決定が可能となり、その結果として顧客にとってより良い結果がもたらされ、あなたやあなたの雇用主にとっても顧客満足度の向上につながります。</p>
+<p>広く認められている倫理原則には、誠実性（honesty）、透明性（transparency）、公正性または正義（fairness or justice）、勤勉性（diligence）、および他者の権利の尊重（respect for the rights of others）が含まれます。ほとんどの社会集団はこれらの基本原則を共有し、それに基づいて、特定の状況においてメンバーがどのように行動すべきかに関する共通のルールを構築します。これらの原則やルールは、それを定めるコミュニティによって異なる形を取ることがあります。</p>
+<p>例えば、政府（governments）や関連機関は、義務的または禁止される行動に関する広く共有された信念を反映するために、法律（laws）や規制（regulations）を制定することがあります。法律や規制は、立法機関（legislature）や規制当局（regulator）などの統治機関によって定められた行動規則であり、その管轄下にある個人や組織が特定の状況でどのように行動すべきかを示します。多くの国では、投資業界およびその参加者の行動を規定する法律や規制が存在します。法律の違いは、信念や価値の違いを反映している場合があります。</p>
+<p>例えば、一部の国では、投資助言者（investment adviser）は顧客の最善の利益（best interests）に従って行動することが法律で求められています。他の国では、顧客にとって適合的（suitable）な投資を推奨することが求められています。これらの異なる要件は、同一国内でも、ある助言者には適合性基準（suitability standard）が適用され、他には受託者責任基準（fiduciary standard）が適用される場合に見られます。顧客の最善の利益に従うことが法律で求められる投資助言者やポートフォリオ・マネジャーは、常に顧客の利益を自分自身や雇用主の利益より優先しなければなりません。そのような助言者は、顧客の財務目標（financial objectives）およびリスク許容度（risk tolerance）を理解し、複数の投資機会（investment opportunities）を調査・分析し、長期的な財務目標に最も適した投資またはポートフォリオを推奨しなければなりません。さらに、推奨した投資が引き続き最適であることを確認するため、顧客の財務状況および投資を継続的に監視することが期待されます。一方、適合性要件のみが存在する国では、より低コストの類似投資が存在する場合でも、適合的な投資を推奨することは合法とされます。これらの違いは、信念や価値の違いを反映しています。</p>
+<p>私たちが生活し働く特定のコミュニティや社会集団は、義務的または禁止される行動に関する信念を、倫理規範（code of ethics）と呼ばれる文書化された原則としてまとめることがあります。大学、企業、専門職団体（professional associations）は、組織の価値観やメンバーの行動に関する期待を伝えるために倫理規範を採用することが多いです。倫理規範は、メンバーがどのように行動すべきかの一般的な指針となります。一部のコミュニティでは、倫理規範をさらに具体化し、メンバーに求められる具体的行動を定めた行動基準（standards of conduct）を採用します。これらは最低限求められる行動の基準（benchmarks）として機能し、倫理規範を明確化します。メンバーはこれを上回る行動を選択することも可能です。コミュニティに参加することで、メンバーは倫理規範および行動基準を遵守することに同意します。違反を減らすため、コミュニティは倫理規範を目立つ場所や文書に掲示し、また多くの場合、メンバーに定期的に遵守を誓約させます。</p>
+<p>倫理規範や行動基準への違反は、さまざまな形でコミュニティに損害を与える可能性があります。外部の利害関係者や一般社会に対する評判（reputation）を損なう可能性があります。また、内部的にも信頼の低下を招き、組織の分裂を引き起こすことがあります。コミュニティは、その評判を守り無関係なメンバーへの影響を最小限に抑えるため、違反の調査、損害の修復、違反者の処分、重大な場合には会員資格の剥奪などの是正措置を講じることがあります。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1701-R-EXM1">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例1 倫理（Ethics）</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>次の記述のうち最も正確なのはどれか。倫理（ethics）は次のように説明できる：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 法律の遵守（upholding the law）へのコミットメント</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA1701-R-s02-01-01">
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解である。倫理は、私たちの行動に指針を与える一連の道徳的原則として説明され、これらはコミュニティや社会集団によって共有される場合がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 善悪に関する個人の主観的意見（personal opinion）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA1701-R-s02-01-01">
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解である。倫理は、私たちの行動に指針を与える一連の道徳的原則として説明され、これらはコミュニティや社会集団によって共有される場合がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 私たちの行動に指針を与える一連の道徳的原則</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA1701-R-s02-01-01">
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解である。倫理は、私たちの行動に指針を与える一連の道徳的原則として説明され、これらはコミュニティや社会集団によって共有される場合がある。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>次の記述のうち最も正確なのはどれか。行動基準（standards of conduct）は：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. いかなる倫理規範にも必須の構成要素である</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA1701-R-s02-01-02">
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解である。行動基準は、集団のメンバーに求められる最低限の行動の基準として機能する。一部の組織は倫理規範のみを採用し、他は倫理規範と行動基準の両方を採用する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 適切な行動に関する一般的な指針を提供する</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA1701-R-s02-01-02">
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解である。行動基準は、集団のメンバーに求められる最低限の行動の基準として機能する。一部の組織は倫理規範のみを採用し、他は倫理規範と行動基準の両方を採用する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 集団のメンバーに求められる最低限の行動の基準として機能する</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA1701-R-s02-01-02">
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解である。行動基準は、集団のメンバーに求められる最低限の行動の基準として機能する。一部の組織は倫理規範のみを採用し、他は倫理規範と行動基準の両方を採用する。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="StakeholdersContent">
+<p>ある主体（entity）またはその行動に対して、財務的または非財務的な利害関係（interest）を有するあらゆる当事者（party）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="EthicsContent">
+<p>道徳的原則の研究、または適切な選択を行うことの研究。倫理（ethics）は、行動の指針を提供する一連の道徳的原則および行動規範を包含する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MoralPrinciplesContent">
+<p>何が良い、受け入れられる、または義務的な行動であり、何が悪い、受け入れられない、または禁止される行動であるかに関する信念。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="EthicalPrinciplesContent">
+<p>何が良い、受け入れられる、または義務的な行動であり、何が悪い、受け入れられない、または禁止される行動であるかに関する信念。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CodeOfEthicsContent">
+<p>組織の価値観およびメンバーの行動に関する全体的な期待を伝えるために確立された指針。倫理規範（code of ethics）は、コミュニティのメンバーがどのように行動すべきかについての一般的な指針として機能する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="StandardsOfConductContent">
+<p>集団によって要求される行動。集団の倫理規範（code of ethics）を明確化または強化するために確立された基準（benchmarks）。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1873_modules_items_147167_101_Introduction.html" >← 前へ</a>
+  <span class="title">1.02 | Ethics</span>
+  <a href="courses_1873_modules_items_147174_103_Ethics_and_Professionalism.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

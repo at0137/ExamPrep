@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.09 | Drawdown Measures</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Risk Measurement and Attribution › Module 1: Risk Measurement and Risk Attribution</nav>
+<h1 class="page-title screenreader-only">1.09 | Drawdown Measures</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0018-R-s09-R-1" title="1.09 | Drawdown Measures">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：リスク測定とリスク要因分解 (Risk Measurement and Risk Attribution) 1.09｜ドローダウン指標 (Drawdown Measures)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul id="CIPM0018-R-s09-los-1">
+<li class="cfa-curriculum-los-item">ドローダウン (drawdown)、平均ドローダウン (average drawdown)、最大ドローダウン (maximum drawdown)、最大個別ドローダウン (largest individual drawdown) を計算し、解釈し、評価しなさい。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>リスク尺度のもう一つの分類はドローダウン指標 (drawdown measures) と呼ばれる。ドローダウン指標は、ピークからボトムへの価値の下落の様々な側面を捉える。一般的な指標には、ドローダウン、平均ドローダウン、最大ドローダウン、最大個別ドローダウン、ドローダウン期間 (drawdown duration) が含まれる。個別ドローダウン (individual drawdown)、あるいは単にドローダウンとは、ピーク評価の後に発生する価値の下落（負のリターンのみの連続として表される）である。</p>
+<p>図表14 (Exhibit 14) のリターン系列を考える。このリターン系列のドローダウンを求めるには、先行するより高い価値に対する価値の下落率を計算する。最初のリターンは負であるため、最初のドローダウンは最初の月の負のリターンに等しい。その後の期間ではすぐに損失が回復され、より高い水準に到達する。次の損失は第5月に始まり、4期間連続の負のリターンにより累積下落は次の通りとなる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0018-R-s09-E">[1 + (−4.2/100)] × [1 + (−0.7/100)] × [1 + (−1.2/100)] × [1 + (−3.4/100)] – 1 = −9.2%</div>
+<p>その後の月は正のリターンを示すため、このリターン系列のドローダウン計算には影響しない。参照しやすいように、図表14における2つの個別ドローダウンは太字で示されており、この例における複数期間のドローダウン内の構成リターンと区別されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s09-EXH14">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 14<span style="display: block;">Monthly Fund Returns</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM0018-R-s09-EXH14-title" class="table" data-active-table="true">
+<caption class="cfa-curriculum-table-caption-hidden" id="CIPM0018-R-s09-EXH14-title">図表14：ファンドの月次リターン (Monthly Fund Returns)</caption>
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Month</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン (return)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">基準価額 (unit value)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">個別ドローダウン (individual drawdowns)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">0</th>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.000</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">1</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.976</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>−2.4</strong></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.990</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">3</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.012</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">4</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.045</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">5</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.001</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−4.2</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">6</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.994</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−4.9</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">7</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−1.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.982</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−6.0</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">8</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.949</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>−9.2</strong></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">9</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.974</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">10</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.051</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">11</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.121</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">12</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.144</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>単一のドローダウンのみを測定しても、追加情報との比較がなければ多くの洞察は得られない。特定のファンドにおいて投資家が経験した損失の文脈をよりよく理解するために、追加の指標を計算することができる。平均ドローダウンは、一定期間における最大のドローダウンのうち指定数の平均であり、最大ドローダウンは期間内での最大のピークからボトムへの損失である。ドローダウン期間は、最大ドローダウンを経験し、その後回復するまでの時間である。これらの中で最も一般的に用いられるのは最大ドローダウンである。</p>
+<p>米国商品先物取引委員会 (US Commodity Futures Trading Commission) によれば、最悪のピークからボトムへのドローダウン（最大ドローダウン）とは、ある期間において、初期の月末純資産価値 (net asset value) がその後のいかなる月末純資産価値によっても回復または上回られない期間における、プール、口座、またはトレーディングプログラムが被った損失による累積的な最大の下落率を指す。この下落は、初期の月末純資産価値に対する割合として表されるとともに、その初期水準から最も低い月末純資産価値に至るまでの月および年を示さなければならない。23</p>
+<p>図表15 (Exhibit 15) は、2つのヘッジファンドの2年間の月次リターン24と、それに対応する基準価額および個別ドローダウンを示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s09-EXH15">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 15<span style="display: block;">Two Hedge Fund Return Series</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM0018-R-s09-EXH15-title" class="table" data-active-table="true">
+<caption class="cfa-curriculum-table-caption-hidden" id="CIPM0018-R-s09-EXH15-title">図表15：2つのヘッジファンドのリターン系列 (Two Hedge Fund Return Series)</caption>
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Month</strong></th>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;">ファンドA (Fund A)</th>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">ファンドB (Fund B)</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">基準価額 (unit value)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">個別ドローダウン（太字）(individual drawdowns)（%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">最大ドローダウン（太字）(maximum drawdown)（%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">基準価額</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">個別ドローダウン（太字）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">0</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.000</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.000</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">1</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.026</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.987</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–1.3</strong></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.126</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.019</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">3</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.199</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.030</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">4</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.153</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–3.8</strong></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.8</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.974</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–5.4</strong></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">5</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.172</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.065</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">6</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.163</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.9</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–13.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.924</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–13.2</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">7</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.124</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–6.2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.890</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–16.4</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">8</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–11.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.997</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–14.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–16.8</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.868</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–18.5</strong></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">9</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.974</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–16.9</strong></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–18.8</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.938</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">10</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.002</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–16.4</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.945</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">11</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.048</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–12.5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.940</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.5</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">12</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.145</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–10.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.845</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–10.5</strong></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">13</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–7.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.063</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–7.1</strong></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–11.3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.877</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">14</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.070</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–10.8</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.984</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">15</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.047</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–12.6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.934</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.1</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">16</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.995</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–7.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–17.0</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.932</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–5.3</strong></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">17</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.982</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–8.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–18.1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.972</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">18</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–4.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.942</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–12.0</strong></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–21.4</strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.088</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">19</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.031</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.030</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–5.3</strong></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">20</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.089</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.052</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">21</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.200</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.120</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">22</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.135</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5.4</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.129</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">23</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.117</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–6.9</strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.096</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>–2.9</strong></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">24</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.122</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.122</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s09-Ta">
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table class="table" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">2年間合計 (two-year total)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンドA</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファンドB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">累積リターン (cumulative return)</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.2%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">年率リターン (annualized return)</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.9</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">標準偏差 (standard deviation)</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>両ファンドは2年間で同じ累積リターンを達成しているが、ドローダウン指標および標準偏差は異なる。本例における標準偏差は、年率換算ではなく、2年間の月次リターンの母集団標準偏差として計算されている。</p>
+<p>先に述べたように、個別ドローダウンとは負のリターンの連続による累積損失である。最大個別ドローダウンは最大ドローダウンとは異なり、正のリターンが現れた時点で個別ドローダウンの系列は終了するが、最大ドローダウンはピークからその後のボトムまでの間に正のリターンを含む場合がある。</p>
+<p>図表15における個別ドローダウンは太字で示されており、ドローダウン系列内の各月の負のリターンと区別されている。ファンドAが期間中に経験した最大個別ドローダウンは−16.9%であり、続いて−12.0%、−7.1%、−6.9%の順である。同一期間内でもファンド間でドローダウンの数は大きく異なるため、比較可能性を高めるために平均ドローダウンは通常、一定期間における最大個別ドローダウンのうち指定数の平均として示される。例えば、2年間におけるファンドAの平均ドローダウン（3）は、最大3つの個別ドローダウンの平均、すなわち (−16.9% − 12.0% − 7.1%)/3 = −12.0% として計算される。最大個別ドローダウンを計算する際には、より大きな累積ドローダウンの一部となっている大きな累積ドローダウンを重複して含めることはできない。例えば、図表15の−14.9%は−16.9%ドローダウンの一部であるため、最大3つの個別ドローダウンには含められない。</p>
+<p>ファンドAの最大ドローダウンは図表16 (Exhibit 16) に示されている。最大ドローダウンは、期間中にファンドが経験したピークからボトムへの最大の下落率を定義するため、正および負のリターンの両方の期間を含む。図表16は、ピークとボトムによって示されるファンドAの相対的な価値を示している。この例では、最大ドローダウン期間の開始となるピークは期間中の最高値ではなく、その後により高いピーク（ハイウォーターマーク (high-water mark)）が存在する。このハイウォーターマーク後のドローダウンは−6.9%にとどまったが、ファンドAの最大ドローダウンは−21.4%であった。</p>
+<figure class="cfa-curriculum-exhibit-figure" id="CIPM0018-R-s09-EXH16">
+<figcaption class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 16<span style="display: block;">Peaks and Troughs, Fund A Drawdowns</span></figcaption>
+<div class="cfa-curriculum-graphic"><img alt="Months from 1 to 25 on x-axis, relative value 0.90 to 1.25 on y-axis. Line rises from 1 at month 1, reach peak at 1.20 at time 4, falls to 0.98 at time 10, rises to 1.15 at time 13, reach trough 0.93 at time 19, rises to recovery at 1.20 at time 22." aria-describedby="CIPM0018-R-s09-EXH16-extended-desc" class="cfa-curriculum-image" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1368/files/224026" data-api-returntype="File" data-width="600" loading="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABYoAAARFCAYAAAAQIfZUAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAp/dJREFUeNrs3et120gWKNwar/5/eSNoTAStjsBwBK2JwHQEVkdgOgJ1RyA5ArkjEB2B5QjEiUC6EehjfSwMIZgP8InX3mthgRIBECiABOrw8CAEAAAAAAAAAAAAAICuuJwPd/PhZT7kDa3DxXx4SuswtksOFvfjTcP7FAAAAAAouQ+LgN224SlNG4fJfMhOuE6j9BqPlXXIG2qju0o7dEWd/bqpTScb5pvssT5XLdqnAAAAAMAKeVhmzZYDw9dhERRcFVC+PtG6jNKyr0M7goqT0jrcd3C/Pq7Yd5c158/CMvu3OC723Q/X4efgc+6tBwAAAADtUg4IrgqIZvPhe3gd6Ls58TqVXy8/0WvE5Y63TBOzYSdhEcTumovKPvt+wPwXR1if+yBQDAAAAACtNQnbM2djoPSc5QPOEVQsymn02V1ln2U7zDsOx/1SQKAYAAAAABr25sD5n+fD58r/Pna4PfIwjGDl35W/xzvM+0caf/b2AQAAAIB+eHOEZcwqf4862hZxvW8Gst+n8+Gh9Pf7mvNlYVHPeLpivwMAAAAAHfXLEZbxfMC8MThb1LmdheMHH/PSOj5sWY9YAiHbYdlZab3Poe621BWzim9K2zKeD7db5hmn8ZczrucpnPq4AwAAAIDemITtNYqjcdj9hnYxSFetkxuHWO/4csN8derZrlt2sW5ZZfo8/Fxn+TG91v2KbR+X1mNSed37DcOqbdk2TRZe31SwvH6TI+zjp5r7uDz9045tfhc2B+DX7dPrFe1zXZl31TTjDa+VV16vfEO/3FseAAAAAH42Cae5md04LINzl2n6+FrloOW6YPO2QPFlZRlx/bKwCCiWg6zl8hhFsPGxsr2T0hBdVdaxGiguXv97ZZrrsLocR1HqomiLixXLekrrNU7be1WznfbZxy8r1mHVfpvUbPPJhjavu0/zSnver2jDy8q+m6x5nevSMorjrhqEH3vbAwAAAMBrk7A5UFyUa9gUOK3KwzIwOlrzXDGsyizeFigugqiPK54rBxzHW7Z31XaMw8+By8madnnash2FIniZVf5/EZZB4tGK58rtdHXAPs5C/Wzw+zXrekib19mnl2H7FxZ19l2R3Vx1VWmDzFsfAAAAgKGpezO7GKzM0xADdzGg+Bhe16P9ELYHiotA5J/h59rG07DfDdYKF2EZVJ2teP6f0uNsj7a6Tev4z5bpnsPrWr9/bJg2tuXXFetbZCF/XtFOD5Xlfzxg/88qyxqvaZss7evqup66zUM4rAZ2cewWJSs+rHj+r8q6f/KxAAAAAMDQ1A0Ul+vvxqzMcVgE4GLQMgbf/m/YfiO0GBTNwiIoN10zzbQy/S7icoug4vMJ26zODdr+Lj0u2mpde1RvDBf/l6fH69r0v5XpswO25+/K3+MV0xTB6C8NtfkhivafbljHWelx7mMBAAAAgKGpGyiezod/paEcKM1CvcBpdFGa52XNcEgZhRgE/H0+/Cf8nDkag7J/HKnN6gREZ+F10HvVdn1M031dsa6Fde1UzXrNDtieh8q6rspQHq9Z13O1+SHepnG+oT3zI7UlAAAAAHTSmz3miUHBIlha3JBtVGO+ImA3Dcug87ZhV7OwCGbG9cvC8iZ5dzXX8ZjKmbrVMhpx3fLwczZvqKxn3XaaHriuXyqvPy79PU7/+7sDbR42tOcpjzsAAAAA6LR9AsWz8Dp7NGYK71LX9eLE21TUpI01lGN2bAxwxtIYX87ctuV6vll4HXwtsnZvV8z3WwPHwW14XX7hY811bVubr5J7mwMAAADAZm/2nC8GQW9Lf8fSCnVrCsegYnai7YlB6Me0PnEd/x0WGa5N1c9dl1U8Tu23bb3yM67rl0o75ml8sWVd29bmm44NAAAAAGCFNwfM+2d4XZ+4bgmKqE5Qebzj+mRhcbO94sZl5RIZTbktrUMelpnFm0o5/Cg9fl+zLY9R4uGvSnt9DOtvYtfmNq+apvHoRMcdAAAAAHTeIYHiGBAsl6CIgbi7DdN/Kz3+FDYHN7OwCDzv4mNpmX+3pH1jG32tbHcM/j6E9TcBnJUej8PmTNhdakTvuq6XaYjrM+1Qm6/arnL7b5KH3cqoAAAAAEAvvDlw/hjs/LP0dx4WZQdWKQchY3CxyEStKgLOX3dcl7aWFigHUC/D+pvYFaaVvzcFgmNd4BgInR1pXT+v2BefO9Dm/2fDc/9U1nfdFxBF0P2rjwUAAAAAWJrMh5c0PG2Z9r40bRzGNad7DMtSDFEMpH5Pz+Vb5s83PHdfeS5P21A8f53+Xw4aXpWev6u0Q7lkwWVpurpZz/eVttyWAXxTaaen1E5ZaR3ut7T1vnZZ17sD23zbPg3p9cttkW04Tqv7rvBYmeZ7WJbsGKU2fEzrm3nrAwAAAMBSEbBdF6Ari8G2p8r0Vyumu1gx3arhes3rlAN+48pzV5VlxADkJCwDkeXteUp/fy/Nn1fmjwHNu/BzsPQ6vA441jGusW3V9nys0U53J9jvuwTCD23z6nFWZ78/pteYhGVw927FvrvfsG/XDVfe9gAAAACwCGhOws+Zv9UA3Sr5mnluwutM0YuwOQi6KjgZX7MaDIwBwuuwDBjH4Or3Fct7Sq9/sWLdqqUTvq+Y96K0fdfh50D33YY2KSu2Oau5L7I121MOyo5OdBwU67qttMQ+bZ6VjrVt+3TTsVXeh5MVx1BeWcZl2PwlxbW3PwAAAABD9cua/38Lr28+V8c0LG5ul22ZLtY1/j0sgoF/lP4fa+3+HdbfOO1HGtaJ87+rLDfWp70NyxuaxXq7b9O2/RVe3+gsVOb/luadlZ7/f2H/m7bF+X4L9esJzyrtNCptZ7FdpxLb6WNYf8O9Y7X5tn1aPrbehdc3zysv7yJNs2qfFb6maa7S+pTb+cuG4w4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABr0rxrT5PPh43z4PB8ejvja4/nwx3wYpb+f58M/8+FrelxXloZ1no+83gAAAAAAgzGeD4/z4SUN+ZGWGwPD30vLrQ7xNS92WN7jhmW9pO0AAAAAAGAHl2F18DU/wrK3BYmL4SnUCxaPaywHAAAAAIANflnxvxjM/ZAe34VlaYhjuAqLAHAsBRFLWXxN/4//uw7LYPQovfa/tyzvU9hcWuIfuxgAAAAA4DD34bgZxTHD927D83fhdUbwpqzicVBaAgAAAADg5I4ZKI7zx0DxpgzlUXgdKJ5smPYxDQAAAAAAHODNGV8rBoFjuYnnDdPE56Y1ljWeD9l8mJUeAwAAAABwAscuPVHHpPSal2umWXWzvfsN0wMAAAAAsKcmAsXlOsXZiufH4ecgcTVgPLLrAAAAAADqedPCdSpuYDcNi9ISq3ze8HweFhnHF3YvAAAAAMB2v7RsfWJwN0uPP6+Z5rbyd5x+PB8+hmUmcRzfzId3YXNN5FNux7XDCwAAAABogS/h57jqK20LFH9M47jS05rzzMKirnGcJ5atKDKJ4/gqPXduMVCdO/4AAAAAgBb4tm2CNgWK87DIDI4ZwH/uMf9sPvweFjWK8/S/GHieNLhND3tuCwAAAADAod6HRcx1q7YEimMGblGq4dByEf8JixrFo7DM7J02tF3PDb42AAAAADBsed0J23IzuxgkjqUiPoRFFu4hYnD2b8cAAAAAAEA9bQgUj9MQSzTcHmmZX+1aAAAAAIB6mg4Uj+fDTVgEiP864nLLWcnPdjMAAAAAwHpNBopjqYkiSPzhyMvO0jgGiR/sZgAAAACA9ZoKFMcg8X3YHiSON6Mb77H8yzRWqxgAAAAAYItTBIpjkPYqLIK8qxRB4pjpuylInKXpflvx/2zDfPF1P82HWThuOQsAAAAAgF76ZYdpRzWmmYRFkDZ6Px9+rzwfg8g3aVlxuN/wWhfp8X8q89+lx/GGdTHQXK5BXJSzKOZTnxgAAAAA4ADZfHiaDy9puKsxz31p+jhclJ4bV56rM3yvLP+q8nxcvxgYnpRe+3vldZuQp3W5dxgBAAAAAA2ZhEWccrLPzOPwOkBcHR5rvPCq6V72GK4qyyiykNet16QlOyAPAsUAAAAAQLMmoWageFXpids07PvCs7DIRq4u419H2LBYSuJdWGQMZ2n8kF7zwX4HAAAAANjdLydY5u0Z1vshDV/tQgAAAACAw7zRBAAAAAAAwyZQDAAAAAAwcALFAAAAAAADJ1AMAAAAADBwAsUAAAAAAAMnUAwAAAAAMHACxQAAAAAAAydQDAAAAAAwcALFAAAAAAADJ1AMAAAAADBwAsUAAAAAAAMnUAwAAAAAMHACxQAAAAAAAydQDAAAAAAwcALFAAAAAAADJ1AMAAAAADBwAsUAAAAAAAMnUAwAAAAAMHACxQAAAAAAAydQDAAAAAAwcALFAAAAAAADJ1AMAAAAADBwAsUAAAAAAAMnUAwAAAAAMHACxQAAAAAAAydQDAAAAAAwcALFAAAAAAADJ1AMAAAAADBwAsUAAAAAAAMnUAwAAAAAMHACxQAAAAAAAydQDAAAAAAwcALFAAAAAAADJ1AMAAAAADBwAsUAAAAAAAMnUAwAAAAAMHACxQAAAAAAAydQDAAAAAAwcALFAAAAAAADJ1AMAAAAADBwAsUAAAAAAAMnUAwAAAAAMHACxQAAAAAAAydQDAAAAAAwcALFAAAAAAADJ1AMAAAAADBwAsUAAAAAAAMnUAy0xcV8uJkPT/PhXnMAAAAAnI9AMXTf9Xz4Ph9eagxxurv5MG7R+l+m9fqe1mtklwIAAJxMTNK5r9mHrPYj9dcAdpSnD1NZkZz7ZP9UOpkXmbkxkBwzdR9XnOwvWrDel2EZLH7x3gEAADibmxX9xNiHnKShmpT02JJ+JFDfJL1/J5qiGXkQ7KL5k/yq4++qcpJ/atFJfhwEigEAAM4pr/QR8y19tbb1I4HtJqFmoFjpCeiX/255/q/58Gfp7/izoeuWrPvM7gMAADirhxrT3La4HwkckUAxDE8MFj+X/s6Db4MBAACG6PmAfmSm+aBfBIphmKaVvwWKAQAA2KSafZxpEuiXXzQBDNKPsLiBXJ0TfPxZ0UXl4qDOt877zgcAAEC/5KXHs7Bb6cH8gH7lIfOeYtvrrEOWhmmlb71ru8HOBIphmH6r/D1dc3L6FBY3Lqi6DYsaVc9rToKfwuqbIEzTfA87rm9ch/drnttneQAAAOymnAj0vKYfWVbUMh6v6Rt+COsDn5vm3dQf3daXXdcn3XRD9er01+HnX+VWp9ln2y9Tv7dI6vpXmv86LS/6Wnpc9RBe15Jet13vHMpwXnlY3E3wXlNwZpOwvBPtpuPvKby+a+1oxQXAUxrG6UQbT1bfS/N8XzHfZen5m9LzV+H1HXKzDe+bdete3ra7oFwGAADAMZT7hnmNvmYctt3MLvbXHlP/76rUp7yv9A0v1sxb9Fknad5R6mOW5x3tMO9VpR88rsw3WrGN92F9UPaitB75hv50nW2/TG31UhkuV/zvPq37U839FlL/uejDZw73QZqU3hM0IA8CxTT75t90/G07wY9KJ7WLFc+VT2B3lefLz607Ob2kk+W6982qdR+FZZB6bDcDAAAczbaA41VlmlVJQ+v6b6sCwfcb+n5ZWAZBV/Uby33Omx3nzWts692G5ZddhvUB5123/SKtS7Wv/pT+N1nRf6/uk0374yZsDybTb8UxNNEUzciDQDHNvvlXnbyLn75sO8HfbPkAqZ6QsjUXGJvWbbLlpF1+71yk9XwKr+sqAwAAcLhyP+4q9c0uU/+xmul6HTYHJct9v3WB1mqm7MWK/ujjmnk3BZmL5542rFs5K/lxS7/0acO23qx5nUO2fRTWJ3Vl4edAb7ktxmteb1Tq+zNcxXE52TahGsXQXxelE9dz5QQX//57PvwVfq7rdFmaJq/5OrPK60xXTPew5zYUJ/93QS1iAACAU1pXUiLWvr0N9W4GV9xf5r9r+pTZij7oQ/r/OP3vy5plfw7LchJfKsssXuvrhnX7XHqN4vVuS89P07pcpNe4rDwf0v/HqT99rG0PK9r2c+nxLPxc0/jv0mt8WrGeobStfzu0oTnxjSqjmCZMwutvV8s/YYnDVdgc/M3DzzWQtg2TFSfn0YqT6H3YLaO4XNdJPWIAAIDTWFWOoZr5elNzWdkBfcqrUK/m7ra+8GTLtN+3bNc4vP4VblWxntkRt33VvqijnPE9XvP8psxohmESlJ5oVB4Eimn2zb/v8Tc+4MS86gKh+DnOU9gtUPx04HYAAABQz7q6vdXShXVKAebhOMHeXefd1t8su9nS3xxV+qTVdYnB17sjb/uqfbFrH/5xzfpcO8QHb1LzvRHeaCugJDvCMoq70T6mE1P8idK/w+ufzWzzXDm5ObEBAACcV+zLlcv/3ezYZzwki/WUGbD/rdEfvS39/b7SP41t8KXB9S+L6zkr9efHK9Zb2QlqEygG1rnYc57HsKzz9HuoX8eqbJYuSgpXYX1xfgAAAE7jQ6k/F4OfdzvM+/aA1z1k3v9zhO0uB1djXzRLjz+m/urXE67/rspJWZ9K+yqu9zT8XNsY1hIoBsrK3xa/rzF9/OlRnh7HE+d9WN7MrnxBsY94Y4Db0t8xq1itYgAAgPP2EcuByNgnm9Sct26piss9552s6SPmO2zfbMP/y8HgcerzxvX6cuJt39Vtqe+dpXUdp7+/OITZhUAxsO4kGU+4V1umj8HbUenEOTryyaj8U6eipIUi/AAAAOcTk3jKQdOYtZqvmbacfJSF7UHlT2GZrVudN98w30Wat5jnn8pzWc1t+7bhuXJW8fuwDL7+dYJtP1R1XWPmc7WEBtCQ+GHmJlw0YRI23521jvJdU582nJyLG9UVgdvyzQPGG94XdW5md185wZZvJHBnNwMAABzNupvZlY1W9BXXJfHcV5Y5XjPdVXo+K73GU43XGKX+7k2l3/gS6t3Q7r60/F36xy+V1zzmtq/aF7uotl2tG5cxGBPHRLPyIFBMM64POLEUxpVlFCfDPCx/GnO34kOmfOfY75UT+mXlpHVfmievvG9WvXcuK+vj5nYAAACHu6j0tTaVQsgr01b7feumK/qUl6V+5U1YHXidVOYr7oFT7q8WwduLDf3h2P/MVqxbVprmqkb7XIV6gfRjbHs4sD9fbbvM4U3l2JhoimYUHwwCxZxb9dvOfWv63qw4ub2suCgIlRN29YQ+CctvVO9WzF++sJiEzdnQ1XW6srsBAAAOUg2EbsuYnazo110c0KesBpqLbOFt807WrN/3yvKzNcu+qdk+5Uzdur/a3Xfb87BbUHrTuvolLqvetxNN0YzizS1QzDmM05v9ccXJJ54krvf8MLjZ8aS2bp7H9J64WLGMLK3/qvnuS+udr7lYuPdBBwAAsJMs9aPW9fmKfla+Zv77NX3E6i8/r7f0KdclNo3WvEadkgpx3rtKn/g+DUUQdddfqBbtNN5hnl22PU/TP63oz9+E3QLGxeteOswpmYSageJ/aauTyNOH0HQ+vNMcnNhFqHeDt+mex/IfpZNYLIYfbxJwu2GeePJ8mx7/CK/vwBpPVrGw/rfS/7et/zRdyGRH3jYAAIAhGoV6vz6dhdc3PK8zf7VvFvtxH3fsU5b7ln+U+ovxZnF/r1mnbX3ZUOqHznZsr7gNMWD7n1Lftu58dbZ9W393tsM6P6bxvx3mlEzC4uaJn4Nku0bEDyQZxQAAAACcQx6UF2C1Sd1j4422AgAAAIBOe5/Gt5qCfQkUAwAAAEB35WFRquM27F5aA/5HoBgAAAAAuiHe+6d6E8G79NxnzcMhftEEAAAAANAJH0uPL8LyZnkfgmxiDiSjGAAAAAC64Vvl7+ewCBLfahoOJaMYAAAAALphEhaZw1lYBIm/BpnEHIlAMQAAAAB0x60m4BSUngAAAAAAGDiBYgAAAACAgRMoBgAAAAAYOIFiAAAAAICBEygGAAAAABg4gWIAAAAAgIETKAYAAAAAGDiBYgAAAACAgRMoBgAAAAAYOIFiAAAAAICBEygGAAAAABg4gWIAAAAAgIETKAYAAAAAGDiBYgAAAACAgRMoBgAAAAAYOIFiAAAAAICBEygGAAAAABg4gWIAAAAAgIETKAYAAAAAGDiBYgAAAACAgRMoBgAAAAAYOIFiAAAAAICBEygGAAAAABg4gWIAAAAAgIETKAYAAAAAGDiBYgAAAACAgdsWKM7mw818eJkP+RFft7zc8nC34+tcpHmqy7iwawEAAAAADpOFnwO5+ZGWPZ4PT+HnIHF5uK65nGL6SVq/Sfr7KT3flDytx71DCQAAAABoyCQs46d7zRwDrY/h+IHiLCyDxHF8n4bqa8XhasNyLjdMd1V6rqnM4jwIFAMAAAAAzZqEAwLF5eBqOYCbH2HF7korNqo8Vw7wFoHk0YpljMIy2Px9zesU6/3Y0A7Ig0AxAAAAANCsSagZKF5Vo/ih9Hh2xJWKAd6YCfxnWrHnyvN/pefK0+crlnMVlgHkL2te62saZ6HZEhQAAAAAAK335oyvFTOVZ2EREF7nr/A6OL2qdMT70uPpmuX8U3r80W4GAAAAAFjvzZlf70ONaR42PBcDx1mNaacb5gEAAAAAoOScgeJpWJ8BXPajMk/ZZenxbIfXzu1qAAAAAIDV3rRwnd6mcaxhPK0891vp8WzLcsrzZnY1AAAAAMBqbQwUF3WJv654brTnMn+1qwEAAAAAVmtboHgcFsHgmE3855ZpZzssN7OrAQAAAABW+6Vl6/MpjT+HRbB4k/92oH3z+fCyw/T/ckgCAAAAAOfWpoziq7DI/J3Oh7/sGgAAAACA82hLoDjWJY7ZxLP58J+a8+xSd/ihoe2ahkWWcN0BAAAAAODs2hAojjWJb9LjGCTeVHKi/Fy2ZbkXpcf/z64GAAAAAFitDYHiGCTO5sO7sD3z98cOyx2VHj/Y1QAAAAAAqzUdKI5B4sv58CHUC+ZOS4/zDdNlG+YDAAAAAKCkyUBxDBKPwyJI/LXmPNNQr/zExYZ5gP2NNQEAAABA/zQVKC4HiW83TJfPh+vK//6uPL/K29LjL3YzHM2nsDmbHwAAAIAeup8PL2nIa0xf3Jguzne5ZpqbtLzxhuVk6fmnFdON0v9f0uus8pie/95Qu+Vb1g+6KHNcAwAA0AOTNMBQjveXYxzz5UDxuMb0N6XpYzB3tOH5usNoxetchvUB7KvS6180tAPyIKBG/4zDbl8cAQAAQNtc6NsyMJNwQKA4S2+Uq/A6YBuzcy+3vInuK/Nkpef2CRLfbXitcVgGhMdpvW5C80HiEASK6afye9ixDQAAQBeNS33ba83BAExCzUDxLyv+l8+H9+nxtPLcxzX/L/wdloHk2/kwKz2XbZgvbFjeOsXy45v6Jv3vOf3/z+AGdnBseeVxvsd7GgAAAJqUlR7HhMg/NQmczqjyphuiPMi6pF+Kn+bEbP0bxzcAAAAdVf01/IUmoecmoWZG8ZsTvHjM5J3ZB9AreRpP58Pn0v9yTQMAAECHFIHhhzR+r0lg4Y0mAGp4m8bfwuKLoNv09ydNAwAAQEdkYfFL+KhIgrrULLAgUAzUkafxtHJCzYOsYgAAALohK/Vtv4bFr+Lj/5SfgLD6ZnYAZfGEOUon0If093X6O/4/1iye7bjMuJxdbxhwaE3kJl4zerfj9NdHuEj5Myx/RlXHOBz+c6svYZlpXve4uu7gPt3nNY+xTx1HjiPHkeOoLfvUceQ4chw5jhxHjqMuH0dZqZ3iOk/DIqM433HfQi8JFAPb5Gk8TeNReJ1FnIXz3MAyb3Dbz+niCK872uNi6dDX/LbHOtqnjiPHkePIceQ4chw5jhxHjiPHkeOoiX1atNOHsAgUx4D+X7r/DJ1AMbDN28oFSvyWtfim92M6qc7SCbau5z3W492B29HEa+7jzz0uQKt2/Sb8Niy/CNjXbI917OI+fW5onzqOHEeOI8dRW/ap48hx5DhyHDmOHEddPo7u0jxFdngc4q9kY9A526O9AbbK58NLOM5PL6BpL2nIVjyXbXkeAAAA2ta/LbtL/7vSPPTUJB3jk20TupkdsEmexrOw+pvV+L/b9PiT5gIAAKDl/dtqZvg/afxeEzF0AsVAnRPpdMM0n9N4HGQVAwAA0E7Fje9mlf9/LT2vT8ugCRQDm1TrE68ST7K36bGsYgAAANro1zT+Ufl/rMk8TY9zzcSQCRQDmxQnyemW6WQVAwAA0GYXG/q3RfmJPzQTQyZQDKyTp/EsbL/za3z+Nj2WVQwAAECb+7hVRfmJy/kw0lQMlUAxsO0kOq05/Zc0HgdZxQAAALRHkU0cy0zMVjwf/1fc5O5SczFUAsXAOsVPbv6pOf00LIPKsooBAABoiyyNHzZM86XSF4bBESgGVok/tdlUv2kdtYoBAABom6J/u+lG7cpPMHgCxcAqeRrHb1ufd5hvGmQVAwAA0C5v03i2YZpZWGYc55qMIRIoBjadRKd7zCurGAAAgDYpMooftkxX9IGVn2CQBIqBVfI0/rbHvNMgqxgAAIB2GIVlKYltgeKiTrEb2jFIAsXAqpPoPvWJy2QVAwAA0Aa79G9jIHmW+sWCxQyOQDFQlZdOkM97LmNaOgl/1KQAAAA03Med1Zy+uKmd8hMMjkAxUFWcDKcHLqecVeyOsQAAADThtzT+UXN65ScYLIFioCpP438OXM40DTFIfKVZAQAAaECWxg81py+Xn8g1H0MiUAxUT6DFSXR6hOUVWcUfg6xiAAAAzm+fe/AU0yo/waAIFANl+R4n0G0n1zjIKgYAAKCpPu5sx/mKX9gqP8GgCBQDZW/T+NsRlymrGAAAgCYU2cQPO84Xb2gXb+6elZYBvSdQDJTlaTw94jLjsmZBVjEAAADn9Wsa/9hj3q9p/F4zMhQCxUAhC8etT1wmqxgAAIBz26c+cUH5CQZHoBgo5Gn89QTLvg2yigEAAGimnzvbY17lJxgcgWKgUNzN9duJli+rGAAAgHMpgrsx2DvbcxnTNM41J0MgUAyEyolveqLl3wZZxQAAAJxHlsYPByyjKD+hTjGDIFAMRPGb1hjAfT7wJLqNrGIAAADO1c+NDvnV7NfSsjJNSt8JFANRnsbTE7/ObZBVDAAAwOm9TePZAcuIyVRFsNhN7eg9gWKgfAL9dobXKmcVAwAAwCkUGcWH/mpW+QkGQ6AYiPI0np7htW7DMqt4rOkBAAA4slFYljs8NFCs/ASDIVAMnKs+cVmRVfxJ8wMAAHCCfm40PcKynkvLyTUtfSZQDBR1lr6e8TVvwyKrOAuyigEAADiuPI1nR1peUX7iD01LnwkUA+esT1wmqxgAAIBT+C2NfxxpeeUb2o00L30lUAzkaTw98+veBlnFAAAAHF+WxscqrzgrLetS89JXAsUwbHnppDdr4PX/TmNZxQAAABzLMWsUF76ksfIT9JZAMQxbfoKT5y5uw+LGAFmQVQwAAMDx+rmzIy9X+Ql6T6AYhq2p+sSFGCSWVQwAAMCxFNnED0de7qy0zFwz00cCxTBsxclt2uA6/BVkFQMAAHAcv6bxjxMsu+g7Kz9BLwkUw3AVBfjjN6KzBtdDVjEAAADHcor6xIUvlf409IpAMQzX2xOePHclqxgAAIBjyNN4doJlF4lWsUaxYDG9I1AMTp7fWrAusooBAAA4VFbqY85O9BrFTe2Un6B3BIphmOK3n6f8Oc4+ZBUDAABwiFPdyK5M+Ql6S6AYhikvnTyfW7JO5azi93YRAAAAOzpHoLhcfiLX5PSJQDEMU5vqE5cVWcW5Ey4AAAB79nV/nPh1ir608hP0ikAxDFOext9atl5qFQMAALCvLI0fTvw6/6Sx8hPAVvl8eJkP95qCFhql4/MlPW7j+j2l9cvtLgAAAHbs655D0W+90PS03CQdq5NtE8oohuEpvvGchvbUJy6TVQwAAMCuzlGfuOxrGrvHDr0hUAzDU9Rs+tbidfwrjfMgqxgAAIDtir7juQLFyk/QOwLFMNyT57TF6xizim/TY1nFAAAAbPNrGv840+t9TX3XLCg/QU8IFMOwZGFZ3H/a8nX9nMZ5kFUMAADAZucuPVHuV+uz0gsCxTAseeVk1mazIKsYAACAepoIFBflJ9QpphcEimFYulCfuExWMQAAANsU/cVZOO9N24sb2sUgdWY30HUCxTDMk+fXjqxvPMnfpseyigEAAFglS+OHM7/uc6l/7aZ2dJ5AMQxH8Q3ncwMnz0PIKgYAAGCT39L4RwOvrfwEvSFQDMORp/G0Y+s9C7KKAQAAWK+J+sQF5SfoDYFiGI6u1ScuK2cVO/ECAABQlqdxE4Hi+KvdaWU9oJMEimF4J85pB9d9FmQVAwAA8LMsjZ9T37EJRfmJP+wOukygGIYh/gRmFLpXn7isyCoeB1nFAAAALPu7oeG+bvmGdiO7hK4SKIZhyNN42uFtmAVZxQAAALzWhkDxrPT6l3YJXSVQDMPQ5frEZbKKdzNykQIAAAykv/uj4fX4ksbKT9BZAsUwDHkaf+34dsyCrOK64rfqj/PhLo0nwU+gAACA/snSuOkyi8pPACvl8+FlPtxrClp0PD72bHtegqzida5KbVQdboI78QIAAP0wKvV12uB7Whe/7KRNJum4nGybUEYx9F+extOebM+0tC2yin++SIoZxNfp7/iN9v+dDx9KbTYOiy+x4hcHV8E33QAAQHe1oT5xtb8aKT8B/E8eZBTTHvfpeBz38D0mq/j1BdL3UrtcrZgmtlXMKH4KP2cZX2hCAACgYyalPk1b+mUvqc8FbXufTDRFM/IgUEx79DWget+yC4ImjcMy+PsUtgd9R2mecmD5Jf09DrKMAQCAbrgJ6xNlmvIYlJ+gXSZBoLhReRAopl3H4mOPt23oWcU3pXaInzm7Bnkvws9Zxk9BljEAANB+RfJL3qJ1ug6SmmiXSRAoblQeBIpp14dBX09QQ84qzsLrjOBDP/BjgDl+C/8YXmcZxzYeeysBAAAtVPRb2vSrSOUnaJtJEChuVB4EimmHvt9xNQ/DzCq+DK9LTVyeoF3LmcrF61wHNaEBAIB29Qfb+AvaIgEnt5togUkQKG7Fh5VAMU0ahXZ+u3psRVbx9cA+4IuawtmJjyFZxgAAQBuNU//kroXrdjOwfirtNgkCxY3Kg0AxzbsMy2DiEN5vMeO1zwHxUVgGxZsot3GZLsDKAePHdKLJvN0AAIAzK2oBT1rcH3+0m2iBSRAoblQeBIppz0lzCN9g3vf8Qy/WuCqXmhg3uC5ZaudqlvFdcFdfAADg/P3AtvZDij6cm4TTtEkQKG5UHgSKaV7f6xOves/1Mav4KrwuNdGmi4zL8DrLuZxlPPIWBAAATqjt96tRfoK2mASB4kblQaCYZg2lPnFZ37KK434rl3q4a/G+zNLFz1N4HTS+CW7eAAAAnKYPUiQLtZXyE7TFJAgUNyoPAsW044T0fYDvuz5kFV+EZUZ4HK46tO7jsDrL+CrIMgYAAI7b52173EX5CdpgEmoGit9oK+ilt2k8HdA2x22dhUUw8qrD2zFOFzvxQuJ5Pvw+H/7q0Prfzod38+Hf6XHchiwsM45vXCQBAAAHKvoUDx3op0a5XQbDFT8AZBTTpOJGY0M7GY1Dt7OKixpWxedHHzJwR2m/lDOki2z3cZBlDAAA7K4o0zfuSB/1u11GgyZB6YlG5UGgmOZkYRmMG6LHDn4AZuF1ILWvH97xW/8YDC/XMpZlDAAA7Nvvy1u+nuX7B2V2Gw2ZBIHiRuVBoJjmjAd+/BXb35Ws4suwDJw+pb/7rigP8hheZxnfh/ZnBAAAAM33J7qUHFVkP1/ZdTRkEgSKG5UHgWKac+MDoDNZxZPwuhRDNtDPy3LJjSJgfh184w4AAKzuQ3SpnMM4KD9BsyZBnKgVH1oCxTRhqPWJV52I25pVPEqfD0Vg9MZhK8sYAACo5apj/SjlJ2jaJAgUNyoPAsU0IwvDrk9c1tas4liLt1xqYmxX/SSW37gLrwPGj2lfurACAIBh6+KvaItEIf0/mjAJAsWNyoNAMc0Yp2PvTlO8yipui+Kb7+JnR27gtlmWTmTVLON4fF9qHgAAGKTiRuB5h9b5Sl+dBk2CQHGj8iBQTDMUyX+tCDCOG16PUXidIXsXunGjvTa5DK/LdZSzjLUlAAAMR9Ef6FI/IOvoetMPkyBQ3Kg8CBTTjKKkgUzVhXFYBhSbEvfF99JFgSD+4RdY16VjXY1nAAAYjosW9PH2VfQLx3YjZzYJAsWNyoNAMc2dMJ80xStNZhWPw+t6xAL4x29fN4UAAIDh9QG6GG9RfoKmTELNQPEbbQW9kafxVFO88jmNP535dW/SMEr75N/z4cHuOKrbNDSxfwEAgPP7LY2/dXDdv6bxZVB+gpYSKIb+eNvhE+Yp3c6HWVhknI7P8Hrxdb6XXisGqt/Nh2e74iSKLwLGQVYxAAD0XfErzS4m4czSEOV2JQxHfMMrPcG5qU+8XvETn1PXsboMr0tNXGr6s7gJahUDAMCQ+r1ZR9f/Wt+FBkyCGsWNyoNAMeelPvFmo9IFxfjEH7xx+B5ktzbxmatWMQAA9FdWuu7Xd4f6JkGNYhiUPI2/aoqVYtmHv9PjY9eyjUHo+9Jyb+fD72H5kyJObxqWtbnVKgYAgH66KF3/d9VD6ivGfqRfoNI6AsXQD3+ksfrE6/0VFgHjLBwvqzheqMRyFnla9oc0cH5qFQMAQL91uT5x2ddKPx7ouTwoPcF5+dl9PZNwvFrFV+F1qQm1oZt3H9T7AgCAvroLpy0neC7KT3Buk6BGcaPyIFDM+Y+3R02x1TFqFY9KFygv6fFI07bqveBLEwAA6J/HdK2f92Bbnnq0LbTfJKhRDINRnFimmmKrQ2sVx29+4xdARS2pP+fDf9Jyad40qFUMAAB9FJNzsh71fZWfgAHJg4xizqf4uf1YU9S+wNgnq3hcmi+OlZpo9+evrGIAAOjfdf73nmzPZfDLYM5nEmQUw6BOmNFUU9RSzip+X3OemzSMUjv/O3T/Bgp9NS29F8aaAwAAeqEvN7IrfA3Lm61LQqI1BIqh2y5LJ8uZ5qjtr3RSzsPmmlDxpB2/sR6nvz/Ph3dBqYm2+5zGH4P60QAA0Ae/pfF/e7RNRfmJ93YvbSFQDN32No2nmmIndWoVxyB8DBJfpOljLeKJpuuEaRpikPhKcwAAQOdd9LDv+0+p7wn0WB7UKOY8vqdjzYlld+VaxXnluUlY1rmNbZxprs5+Dj8FWcUAANB1Rf9s1NPtUn6CU5oENYqh90ahn9+qnsuqrOLYpvelv2/nw+9BWY8uiu+JhyCrGAAAuq7o985C/8oAFuUncruZNhAohu4qTiQPQc3cff1VassYTHxMj2N7fkgD3VV8EaBWMQAAdFc5UNw3RfkJdYpphbqB4nE4/U+vz/Ea0CfqEx8uBoRv0+PrsAgmxsD7u9L/6a7bdDEpqxgAALqruJHdtx5uW5FRHIPhmV1N0zYFiouOdcywuznhATs+8DXiz8RfNgw3djM9lff4ZHlOnysn6RgkftAsvdu/sooBAKCbioziPvbTnsMyWOzeQ7RS7EhPwvImT8WQt/A18rA5SByHrIE2LNbLzew45fu0r8X8mxC/UJJx2l+PoWbhfgAAoHWK2FHW0+0bh+WN1OEUJuGAm9nFgMmv4bQ/uz7Wa3za8nxc/szxQA8V3zROg/rExxBrEf+lGXpLVjEAAHRTVrqGn/V0G5WfoDPitxmnyCg+xmvkob0ZYsW6ySjmVG6CDEnYhaxiAADonsswjPhKERsb2+WcwCQckFFcdo5MxX1f41OaVxYgQ5Sn8VRTQC3lrGIAAKAb+lyfuOxLGv9hl9OkNy1Yh9ke82RhESibBj+7Z3iysPw5ylRzQC236XwTf7Y21hwAANAJv6Xxj55vZ/mGdsrl0Zg2BIr/u8c8n0pvoOInCGNvJgYiT+OppoCdfK6cQwAAgHYrMopnPd/OuH1F1vSl3U5T3nRwnbPwczZYHhY1Wx+9oRiAt2n8TVPATm7TBdiq8wgAANA+WRpPB7Ctyk/QuC4GijfVl4wZxXdhETSGvsrT+KumgJ3JKgYAgG71fR8Gsr3KT9C4LgaK/5wP/0rDu9Tpn1WmGQfBYvop/uwmC4va3A+aA3Z2m94/WZBVDAAAbe//RrOBbO+stK253U8Tfun4+k/TMJkPV2GRIVZ86xIDAP+EZrMus7RudU0ckmyRl459YD9/p/NFHG41BwAAtNJQbmRXFmNYMb71R/ArYloo3iTuJQ35iV5jcsTXiN82PZWW972hdstL67DLANvcpGPlSlPA3kalc8VYcwAAQCsVMal8QNt8kbb5ye7niCbpuJpsm/CXnm14/Cn+f9KHSfEGy0JzP1OIr/vF8cgR5aVjHdhPLD0hqxgAAPR/2yZu6ywsYlmxVrGsYlqlaxnFhZszrPe2D7OXsAxYwzGMguxzOOb7SVYxAAC005Aza6/Ttrv3FscyCTUzit/0tAH+cQzQQ3kaTzUFHKzIKo4+aQ4AAGiV4kZ2Q/w1bfHL9EuHAefW10Dx1K7FiRLY4q+wCBhnQVYxAAC0SZbG3wa47Q+pnxJ/BZk7FDinNwN5g0EfvB3wiRJOoZxV/FFzAABA6/q/Q43pFLWJ/3AocE59DRTnpTfWs91Mz45rX37A8RRZxRfBt/UAANAWxS9qZwPd/qKkqvITnFVfA8VFZthnu5geniRnmgOORq1iAABolywsyi5EQ84oLsrkXTgkOJdjB4rjwVvcRf665jxvS49HNT4s7ubDfVj/rUq8K2Q+H/4MMi/pj3zgJ0k4pSKrOA+yigEAoGlZGk8H3g5F+Yn3DgnOZVuguBy4rdN5/lSa56r05q77Gm+3TDsOiwBxXJe7NBR/x+e+p/Hn1PGHvvgtjdUnhuOTVQwAAO2Rp/HQE6WUn6A1b8hJWGTtvlSGm/TcOneV6UdHfo0sLDOWVw2PoR3ZYHlan3uHE0fymI6pXFPASWSlc4n3GQAANKeILV1piv/1UZSf4BCTdBxNtk34y4bnvoXdsxc/pHEMEH8J228kt+trzObD72FRg7j8JonfMsVvWqb2PT2UBT+9gVOL55fbsPhVyifvNQAAaEwR71F6cVF+ovglvfaAjopvYBnFHMul4wnOIguyigEAoGnFNTmLRJbYFt81BQeYhJoZxW+0FbReUbvbt4dwWrOwyCqO1CoGAIDzy/V/XyluaBezrDPNwakJFEP7FT+7cSM7OL3PpQvUXHMAAEAj/d+Zpvj/xZKuRbDYTe04OYFiaL88jX2jCqcXL0hv02NZxQAAcF6/pfEPTfE//6Txe03BqQkUQ7vlaTwLvlGFc5FVDLTBOCzuTzDWFAAMSJbGU03xP8pPcDYCxdBu7vYK5zcLy6xi39oDTYmfP7nPIQAGJtcH/slzqT1yzcEpCRRDuxU3slOfGM6ryCoeB9/aA8240CEEYKDnvuc0sPQljf/QFJySQDF040Tp21Q4r1lQqxhoTjYfRqW/c00CgP7voJVvaDfSHJyKQDG0u5OYpcdTzQFnJ6sYaLqjXMg1CQAD6QNHflH7s1lYBtAvNQenIlAM7e8kTjUFNHYxdpseyyoGmrgGmKXxW00CwAAU5zsZxaspP8HJCRSDkySw/WJsHGQVA+e/Big+g3JNAsAAVL8o5TXlJzg5gWJo/0nSz26gOdOwzOqXVQyc+xrga6mznGsWAHosC8vgp2Sp1WauCzg1gWJor9xJElpBrWKgyY7yVIcQgIGc/0JQenGbIqtY+QlOQqAY2qnoDM6Cn91A06ZBVjFwPtV7FBS/LFKnGIAh9IElSm1WlKVyQztOQqAY2t1JdJKEdpBVDDR1DTCtdKABoI9+S+P/aoqN4vXBLCx+fSRYzNEJFEM7FVlD6hNDO0yDrGLgvNcAP9J4FtQjBKD/JEvVp/wEJyNQDE6SQD3lrGJ3GQbOeQ0wTeNc8wDQU1nlnMd6yk9wMgLF0M4TpJMktM+09J680hzAia4BVt3xXZ1iAPosX3HuY73YTs/pmiHXHByTQDG0T/UmNkB7FFnFH4OsYuB81wDTSkcaAPp4/ptpitqUn+AkBIqhfYpsId+mQvtM0xCDxLKKgVN1lKvXALOgTjEA/fVrGv/QFLX9k8bKT3BUAsXQ3k6iG9lBO8kqBk7l7YaO8jSNc80EQE/7wFNNUVvMKI7lJ7JS+8HBBIqhfXInSWi1+N6M2X6yioFTdZRX/apInWIA+t4HnmmKnRTlJ95rCo5FoBjae4J81hzQWn+nsaxi4FiysPpGdoVp5VoBAPqg+JL0OQgU70r5CY5OoBjaeZKcagpotdt0ISurGDjXNcAsqFMMQP9kaewePbv7WmrDuyCBhSMQKIZ22VSbEGgXtYqBY7qo0VGepnGuuQDo2fnPPXr28yEssrFjVvG9fgmHEiiGdp4kp5oCWu82yCoGjqfOl8XqFAPQ1/PfTFPs3Sd5FxbB4hhPECyGFsrnw0t6g0JdWTpuXjQFdMY4vWefXJABB3pKnycXrhUAcP5jRxeltvyuPamYpGNjsm1CGcXQrg/2aKopoDNug6xi4HBZ2Hwju8IsLDOudAAB6LpRzfMf28X2e5euE4rMYtcK7EygGNqj+MmN2kzQLUWt4veaAthTlsbTGtMW0+SaDYCOkyx1XDFY/HsaxwC8YDE7EyiG9p0kfZMK3XIbFt/cZ2FRigJgV/kO1wDqFAPQt/PfTFMcTaxV/C68DhZfahbqEiiG9p0kp5oCOqfIKv6kKYA9/JbGP2pMO61cNwDAEM5/1FcEi+M1QwwW3wUJLdQkUAztUHT2ZulDHeiW2yCrGNjfLr8qKq4VRsHPSQHotmyH8x+7KYLFt+nvG/0U6hAohnZ1EKeaAjpLVjGwj9EeHeXieiHXfADoB7PBh/A6WDzRJGwiUAztUNQZ9JMb6K54ARa/uc+Cb+uB03aS1SkGoOvyNJ5pipOLweK/0uOY1HKjSVhHoBi620kE2ufv0gUYwC4d5V1+djutzAsAXe0DKztxHn+GRcA4GgfBYtYQKIbmZUFtJuiL+E29rGJgF/vcyOchqFMMQLf9usf5j8PchtfB4rt0LQH/I1AMzZNNDP0RAzeyioF9rgN2/bK4uG7INSEA+sHUdBsWweLYb7mcD/dBsJgSgWJoXlFf8JumgF6QVQzUtc+N7ELlukGdYgC6KE/jmaY4u9v58C71WWLAXrCY/xEohvacIJWdgH6QVQzUdUg21bRyHQEAXTv/xevmmeZoRIw/VIPFylkhUAwd7yQC7SSrGKgjT+N9OsnqFAPQVVnpXEZzimDxLAgWkwgUQ3s6iM+aA3qjnFX8XnMAa+xzI7uyaeV6AgC6oAhGKr/YvBgs/j2N45fPgsUDJ1AMzcorHT2gP4qs4jwI4gCbO8r7ZlSpUwxAFxXnrZmmaIXYZ3kXXgeLLzXLMAkUQ7MOzSQC2n3BpVYxsE75RnbTPZdRzJdrTgA65NAvSjlN3+VduraI1yh3QQk9OJp4sf4SFt/CwCZP6Vjx0w7op1HpfZ5rDmDF9eJ31xIADOz6+CUNtNNNaR+NNUcvTNL+nGybUEYxNCdLJ8nIN6nQT7KKgXXyI10DTCvLA4A2czP39vswH27T4xg0nmiS4RAohuY7iE6Q0G+3pfd8rjmA5Fjlp9QpBqCL/eCZpmi1GCz+Kz2OCS83mmQYBIqh+Q6iO71Cv8WL4NvSRRZAdKz6jNNKxxsAutAPdp+e9vszLALG0TgIFsPe4oW6GsVs8z0dJ+4mCv2XhWWdr1xzwOAduz6jOsUAdK0f7Jq4O8al65a7sCyhSXdMQs0axZxGHgSK2a74oPUhC8Nw49wAVK4Vvx9peXdpeVeaFoCO9IPplnFYfjEdr1/EMbplEtzMDlrfQYxmYXGzK6D/Ppfe/7nmANcB4Xg3s1WnGICu9YPpltv58C4s4hfxF0wx+UWwuIcEiqHZE+RUU8BgzIJaxcDCseszTivXFwDQRlkaP2iKTor7rRosVvaqZwSKoR8dRKAbylnFLqpguI51I7tyxy122kY+WwDQD+aEimDxLAgW95JAMTQjT+OppoBBiRdUt+nxR80BgxSDudkJrgOKZemsAdBWF/rBvRCDxb+ncbyuESzuEYFiOL8sLGv5+MkNDE+RVTwOy2ARMLxO8rGvAdQpBqDt8jSeaYrOi79kehdeB4svNUv3CRRDcyfHqaaAQYoXxrfpsVrFMNzrgGMHiqeV5QNAm2Rp/BwEivuiCBbHa5AYLL4Li2QYOkygGM6vqMv0TVPAYMkqBtcBx67PWNQpznyuANBCp/pFDc0qgsW36e+bIFjcaQLFcH65EyQM3iyoVQw6ysf3ULnWAIAhnP9o3ofwOlg80STdJFAMzZ0gp5oCBu2fymcC0H+nupFdQZ1iANqqODf90BS9FYPFf6XHscTejSbZKGvjSgkUw3nlaTwLi59oAMM1S2OBYhiOU2dTTSvXGwDQFtmJz4G0w59hETCOxkGwuHodeBUWtZyf5sN1G1fyF/sJziqvdOSA4Soukkdp8OURDKODcMpO8rTUGY/DTJMD0ALlX9QIFPffbRoX9Yrj/v8wwP5OPOYvwyKbPk/tUH2+dWQUw3m5kR1QVlwoyyqGYV0HnPJnt9M0zjU3AC2hPvHw3IZlcDgGS+/Dz4HSvsnCMov6MQ3XafuLxKCvYZF1/e/58HsbN0JGMZxX7gQJlMzShXMcppoDdJSP4Fu63ngblhk9AKAfzLndpn1+n66B4vhd6E9m8Sgd23+kcVZ5/jn18b6lcSeOf4FiOJ8sLL9FcoIEophVGL9h/lVTwCCc44a2cdmfgoxiANrj19K1L8MSYx8xOFwOFn8I3YyJFIHhopTExZrrsCIwPO3iDhMohvPJSx+UAOXPA6UnwHXAsRSdkiyoUwxAOyg9oc8Tg8V34XVmcReOhzwss4Yv1mzbP6HDgeEqgWI4H/WJgapZ5eIZ0Ek+hmmpY3Or6QEY0DmQdor7PtbkrZahaNsxUVw/FVnDq7YjXmcVWcO9u0GfQDGc9wOn6LwBlC+WR2FZmgbop3PcyK6gTjEAbesHz1zrDl7c/6vKUHxtcJ0uwuvAcPWGe/G4nYZl1rBjmL0/CF/SQQ+FlzSMNAVQ8j19NuSaArzXj3wt+qjZAWjYOJ2T7jQFSYyJ3IdljGR8xtfO5sNVOh6fSuvwUrp2uknrlPWozSdp+ybbJpRRDOdRdApj9qBvoICyWVh8kx2HqeaA3jrHjexC5TWyoE4xAM065y9q6IYis7gIyN6k/9+e4LXidVAelhnD2Yp1iddN8ddYX10zCRTDueRprCYTUBUvmi/D8m7QQH+vA87Z+ZgGdYoBaJ76xKzzIY3HYREszkKNjNctRmF587k8bA4MTx2XPxMohvNwIztgnYfKRTSgk3wM6hQD0AZ5A+dAuiMGi2PwNpaD+BQWyTMfdph/FF5nDK/qU03DMjA81eQ09UGoRjFlRe0bgSCg6iJ9PjxpCuitm1CzLtwJrkfVKQagKZnrXGoah2Wd4Jsa1zjxmup7+LnG8Ev6/yS4B0zZpIFrUVZcmAsU4+QI1OFml9BvTd20svhsyewCABpwGcRGqG9cuna5K/WN4vXTJLy+AV41MHydjjf9qdUmwc3soDWKTqGf2gDrxM8HN7SD/mqqPuM0qFMMwPDOf3RTca1SBH3j8TMKPwd/Z+ka5580ftZ0x/NGE8DJqU8MbDOrXEwD/ZGX3ufn7sgU1x5v7QYAGlCcf35oCmq6nQ/v0jVTFhZB4ln6f6xd/O80xMdfgyDx0ckohvN1EKeaAlgjXjzHb81/1RTQO01mU8Vrj09BjT4AmpE1eA6ku+Lx8i5dv8Rg8EyTnI9AMfS7gwh052Ko/HkB9Efxy6ImsqmmpY56pqMFwBmNgkAxh/WPHDcNUHoCTisvfcj5SQSwziyNM00BvVN8ATRt6PWnlWsSADjn+U+wDzpEoBhOK3dyBGooPiMyTQE6ykdW1Cn+za4AQF8Y2ESgGE7LjeyAuh4qF9VAfzrJs9DcL4umPlsAaEBx7w03soMOESiG83QQfYsKbDNL40xTQG+04We309K6jOwSAAZ0DgR2JFAMpz0xxg7Zs5MjUEORbZFpCuiNJm9kVzZN49wuAeCM/eGgLwzdIlAMToxAOxSfFW81BfTuWmDa8Hp88/kCwBnlaTwLbuoOnSJQDKfzttI5A9hklsaZpoDeaMuXxmqgA3BOWUvOf8COBIrh9J3DqaYAanioXFgD3Zan8Sw0n001LV2bqFMMwKm1pfQSsCOBYjiNUVB6AtidrD/ojzZdBzz7fAFgoOdAYAcCxXD6E6OaTEBdszTONAV0XtuyqaZprE4xAOfsDwMdIlAMp5E7MQJ7KAJKmaaA3nSSpy1Zn2+VaxQAOIV4HVuUOZppDugWgWI4DTeyA/bxUPkMAbqrbdlU09J6qVMMwKnPf1NNAd0jUAzD6BwC3TBL40xTQC+uA+J7ui0lqNQpBkBfGNhIoBhOc2IcVTpkAHUUnxmZpgCd5BOYprFfLQBwKm2r0Q/sQKAYhtM5BLpBxh/oJJ+KOsUAnKs/PNMU0D0CxXB86hMDhyguqjNNAZ3vJE9btl7T0vqpUwzAsY1K17BTzQHdI1AMw+kcAt1QZCBmmgI6K0/jtv26SJ1iAM7RF/brWugogWI4rpGTI3CgWRqrIQrd7iTH9/JzC9dv6jMGgBOfA/WFoaMEiuF0J8ZnzQHsYZbGmaYAneQTUKcYgFMpavT/V1NANwkUw3HlLe8cAu03TeNMU0CnO8ltvdt78RmjTjEAx6YMI3ScQDEclxvZAccwS+NcU4BO8pGpUwzAqc+BEqegowSKwYkRaJ9ZGmeaAjon78C1wDSN1SkG4Nh94XgdqwwjdJRAMRz3xDgKrzN1APZR/Coh0xTQyU7yc8s7yeoUA3Cqc+BMU0B3CRTD8U+MgsTAoYoLbNl+4FrgFKal9VWnGIBjKGr0K8MIHSZQDMejPjFwLLM0zjQF6CSfgDrFABybxCnoAYFiOP6JcaopgAMVnyOZpgCd5BN/zvjlAgBDOwcCawgUw3GMgkAxcFyzNM41BXRG3qFO8rdKxx4A9pWFZSmjmeaA7hIohuPw7SlwbLPShTfQnWuB5450kqdpnNt1ABzpHDjVFNBtAsVwHLkTI3BkRbZfpimgU53krnxprE4xAEM9BwJrCBTDcRT1/X5oCuBIZpXPF6Dduni392ka53YfAEc4B+oPQ8fVCRTHC8e7cNr6ZYe8xjjNe5/GY7uVBvipDXBsszTONAV06lqgS9lURYfeF1IAHOMcONMU0F95WARfX9KQt+w1Ysf5e5rvcT7cpPFLWuao4bYr1oNhnBTj/n7SFMCR/X/s3U1vXNuaGOZl4QwdNAeNeNCAtS8at0cxxHsDBAngQPv8AKd5Bj31KSWjJANJgyToeHBK8cD2iEcIbA/JM04a1IWDIAngqORBOmggTWngoNEesPQLxOvueKpwXa51a6vEYn2wan+t5wE2dp0jski+LO611rvfelceH4Hh/L1WA/qeK9cZAB7oyFgCvTdNf6PTXT65Dl8mbw+RKH7o14gXok/pcy6W/u0i/f/L0F2yuA4SxSWZrHgtAjzUVTjczVpgf4Z809h1BoCHqMMiBwP00zRsmCh+tOKP/PXN8d2BJ9P5a1zv8PkxIXeUPvfZ0r89S/8/fo0fvBZogf7EwKHM07kSCui1IW/iM2usAQCgpDEQWHJXonh6c7xJx+xAX/fHxtfY9mJSNyay5+HrRPN1et7ohUkvLQ6MM6EA9ixvilUJBfTaEDeyW77O6FMMwEPGwI9CAcP3aIDfc7NK+FcrPqb5/7/3a+aAYmW7RDFwKPN0lsCBflNRDEDpY6D1MIxAHxLF20yoq6VJ7PsNnnMSut3YDgtDgF3NG+Mf0F/1gOcD88a1pvarBMCaGMrVh0Txr3eYhGfXaxbWyxcuONTCcCYUwAHka0slFND7BfL1HXPQoV1rar9OAHYYA+dht/2ngJ4ZWuuJJ3dMaFdp3s0y6eVQbGQHHNrcWAaDWCQPuZJKn2IAHjIGzoUCxmFoieJtKoPdzaLN1+RMKIADyRNvbZSgn4a8kV1YmsfUfp0AFDYGAg2PBvy9b5MIVh3BIcQk8VEY9ltNgf5717jmAP2cD0RDriieB+9eAKDMMRBo+GbA3/sQ3uofL5pvt/j4b70kBzkozoQCOKB5Oj8RCuileiSL5DifmaSfx9wGgG3WxBLFMBLfCMFBHQVVGWOmPzHQhnk6V0IBvZP/Lsfw7qL47oVJ8E48ADYfA4+W5qvAwA05Ufw7Oyyy2xbvqr30MhutOp1nQgEcUL7GaD0B/TOmSqrZ0vwGAO5TWQ/D+Aw5UbxuwVw1Hn/s6Hu8dtEcrSMDI9CiebrmxLHPW/ugf/PRMWziM29ca2rzGwDWqNPZ3BRGZGib2W1zAaqWJr5gUASGan7H2AZ07+nI5gOzpXkOAKyS98/4KBQwHkNLFDd7wW6zWJbMY99sZAe06d3StQfo13xgLHPNfK3RpxiA0sZAIAwvUfym8bgKi8bpy+rG47kLFwdgIzugTfN0fiIU0Bt5LjqGjeyy2R1zaQBYNQ42xw5gBIaWKI4T8WayeNUktllx9ZNfMwdQGxSBFs2XJuRA98ZYSTVvXG9qv2IA1qyHFeXByBwiUXycLhpHG37872z5/K8bj/9wxcfk/x8Tyz/6NXOgheGYKoiAfpstXX+A/swH3o3s55otJQEAYNUYaD0MI7NNoniTxO+Lm+Py5nibjm0uMFG14eQ1J39P7vi+6sbE9lW4TebBPtVLCymANszvGDeB7oxtI7tMn2IA1snt0LRihJG5L1EcE7BV47+/3+D5mhW+xxssZpe/xh9u+H2/SpPy+PlvwyJZXN8cF+nxeVBNjEERGI95OldCAb0w1mqqWWNeDQB3qZbGDGDEJuG2KvjzHcencH+l8HTpY+/7Gm93/BpZTA5fND7vsvH5LzqOYZ2+l7deTqN0lX6/FlBAm/IYOxUK6MUCOc9BxzzX8Q4GAO6Sx8AjoQBryXVepC9ctThRz1/zpCe/gDpIFI/V0cgXhkB/TdK150IooHMnI5/rnaWf74VfNQBLjsP64kCgX6Zhw0TxNwf44m23e5gHLSZoT53OdncF2jZP50oooBeL5DHPB2Kf4km47VNsng1ASWMgFO2REMBOg+JMKICWzZauQ0B38kZvY92vIC/+a79qAJZU6fxOKGB8JIrBwhAYjut0liyGbo29mup9ut4cud4AsGJNrKIYRkiiGLZTp/NMKIAO5Al5JRTQmfj3d1TAInm2NPcBgCjfQJwLBYyPRDFsPyBeGxSBjrxfuh4B3c0HZiP/OfNbip/6lQOQVKGMm6VQLIli2FxdyMIQ6K+P6fxEKKAzpWziM1ua/wBAZU0M4yZRDJvLiRn9iYGuaD0B3StlvwJ9igFYVi/NSYGRkSiG7QfFmVAAHdF6ArpXSkVxc85T+7UDEBbFUx+FAsZJohg2E6tpqqVFE0DbrtMRSRZD+6pQVm9GfYoBaCrpZikUSaIYNlMbEIGe0H4Cul8gzwr5eWdL8yAAylYVNg5CcSSKwcIQGBbtJ6D7+UApN471KQYgqwsbA6FIEsWwmfyWy3dCAXQs94R7IhTQ2XygpI1tZ+lc+/UDFC3fMJwLBYyXRDFsJi+O3D0Fuqb1BHS/SC5pPqBPMQBRLlL4IBQwXhLFsPmicB7cPQW6p/UEdKMKZW1kl83SufYSACh+HGyOC8AISRTDenWBi0Kgv67TEUkWQ3tK3a9An2IArIuhEBLFsF5+i43+xEBfaD8B7Sux7UQ2S+faywCg6DGwWbAAjJBEMaxXF7wwBPpJ+wloX4kb2WX6FAOUreSbpVAUiWK4X3ybZZUez4QD6ImP6fxEKKA1VcGL5DwHqr0MAIoeA73LFkZOohjuVy8tkAD6QOsJaFfzxnGJiWJ9igHK9rTgMRCKIlEM9/MWG6CPtJ6AbuYDs4JjkH/22ssBoNhxcC4UMG4SxXC/fOfUW2yAPmluJCJZDIdXp3PJN471KQYoUxVu31FS+jgIRZAoBgtDYJi0n4D25H7gHwqOwWxpbgRAGaqlcQAYMYliWK359pq5cAA9o/0EtD8nKPnGsT7FAGWqjYFQDoliMCACw/QxnZ8IBRxU6RvZNc3SWaIYoBxPluaewIhJFMP6AVF/YqCPcsLqSCjgoGxkt6BPMUB5qqW5JzBiEsWwWm1ABHrs/dK1CjAfOLSZ6w5AcdwwhYJIFMPdmm8zNSACfXSdjhBsaAeH5C23C81NNF13AMbvJJ3nQgFlkCiGu9XpPBMKoMeaSRvgMGxk96XZ0lwJgPH6Q+tiKItEMdztqUUhMADaT8BheYfR1/QpBihnDMwVxa+FA8ogUQx3O15aDAH0UX4r/GOhgIPOB9w4Xpilcy0UAKMWk8RHaQw0DkIhJIrhbrWFITAAWk+A+UDbZo3rjmsPwHg9T+efhALKIVEMqxeF86BpP9BvWk/AYeWN7D4IxRdmrj0Ao3YcFu+qORcOKIdEMdw9KEaqh4C+u05HVAkHmBO0RJ9igHH7Pp3PG3NNoAASxfC1p0uLIIA+034CDsNGdqvleNRCATBKk3TWdgIKI1EMX1M9BAyJ9hNgPtC2WTpXwU0qgLGZhNubpfPgRikUR6IYvtRc8BgUgSH4mM6PhQL2qk5nieK7zZbiBMA45LYTqomhQBLF8KXjpcUPQN9pPQGHYSO7++lTDDA+cT5Zp8fnwgHlkSiGL+XFjuohYCi0noDD0HrifjPXHoDReZ7Ob8Jt6wmgMBLFcPei0EZ2wFBch8Vu1JVwwF7YyG69WeO649oDMA4n6aztBBRKohi+VKez6iFgSLSfgP1STbyZ2dL8CYDhOklzyXm4rSgGCiRRDAt5kTMP3mYDDIv2E3CYOYFE8f30KQYYj7yJnSQxFEyiGBZUDwFD9et0fiwUsBc2stvMLJ1roQAYtCos2k68Fg4ol0QxLORqGP2JgaGZNSb5wMO5ebz9tcf1B2C4Jo3r+lw4oFwSxWBRCAxfntDXQgEPZiO77cxcfwAGL7edsIkdFE6iGG5VFoXAgM2XrmfA7tw43o4+xQDDVqf54/XNcS4cUDaJYvhyUTgTCmCg8vWrEgp48II5kije7tpTCwXAIOVq4nOhACSK4dZTi0Jg4ObpXAsFPEjeFNJGdpuZpXMV3KgCGJrYbmmSHms7AUgUQ5Irim1kBwzVx3R+LBSwlzmBm8ebmy3FDoBhmDTGPOMeIFEMSW1RCAzcLJ0roYAH0Y5qe/oUAwxTbjvxWiiASKIYFkniefhyQyiAIZkvXdOA3ecEbhxvZ+b6AzA4x+mIm9i9EQ4gkigGbzEFxmHeeFwJB5gTtGjWiN+RcAAMwvN0jknia+EAIoliWLxNUn9iYOhm6VwJBezkSTrbyG73608tFAC9F2/qnaTHNrEDfkuiGPQiBMZjns61UMCD5gQqireXY6ZPMUD/xSTxUZo7WgcDvyVRTOmqsKi8sygEhu5jOj8WCtiJm8e7y+/MqoUCoPdy2wmb2AFfkCjGgtCCEBiPfC2rhAK2VqezG8cPu/7oUwzQb1VjHXwuHECTRDGl058YGJN5OtdCAVvTduJhrhuxcw0C6K9cTXwebGIHLJEoxqLQohAYj3njcSUcsJW8kd1HodjZLJ31KQbor0k6/0oogGUSxZSuXlrYAAxdvp5VQgFb0Y7q4fQpBui3SVhsYvdGOIBlEsWULC9i4iDpLTfAWMyXrnHAZrzL6OFmjVjqUwzQP9+n809CAdxFohgLQpVDwLjkt80/FgrYWJ3O8+Dm8UPoUwzQX1Xj2nwuHMBdJIopWe6f90EogBGZNRYDwGZUE+//GqRPMUC/TNI5tpyYCwdwF4liLApVFAPjkif+tVDAxvJGdm4eP5w+xQD9pO0EsJZEMaWqwqLaTvUQMCbzpWsdsJ6bx/sza8RUn2KAfjhJ88LYIsgmdsBKEsVYEAKMT762VUIBW80L3Dx+uFL6FMfXzFlYvJUboM9yNfG5UAD3kSimVLlv3juhAEZons7HQgFr1Y2/GxvZ7cdsab41FrFCenJzXKYjPj4L2mwA/b92naTHr4UDuI9EMaVSOQSM2cd0fiwUYE7QgbH1Kc7Vw1fpHP+7WTl9EdyYA/prks6zYBM7gE7ESfHnm+OtUPTW53TonQcYh6BsZ+nvZSoUe3M0grlWs3r4c+PIlcRH6bhs/H/zSqCPrtJ1aiIUUKyp+a4FOut/P1dCAYxUla5zn4QC1sqJvlooDhLXk4F937l6+FNYJIc/hUUl8bKjxsea+wN9Xft+Cm5mQcmmYcNEsdYTlMhGdsDYzdP5yKIANp4XaD2xX3meNYQ+xXf1Hj5Kr4lnN8fP0vmu10hsQfFtOtfhNqEM0Bd5E7s3QR9+gM7ESaKqgv66SL+fF0IBjNjboEoSNp2zeZfR/p2ERUuGvtq2evg+k8ZzTPz6gR5otgHSRx3KNg1aT/Ri0SFR3E+fDJZAAXLfVTfFYLUX6e/kQij2rq99ijfpPfzQRZibdEAfTEL/b9gB7chzlOm6D9R6gtJUjQWAt5gCY/YxnR8LBaz0JJ0/CMXeXTfmWnUPvp9cPXwVFhXD8Xs8vzl+kY7z8LC3Zk/Tc0QXQVEC0K3n6fxaKAC6FSfDKor7aeJ3AxiLgMRGdod1Grp9m+Mhq4fv+5qXja+jTzzQhePQz3d1AN2YBq0nLM7p5YIFoC1VWPTbBO5mEX1YJx3NiffZe3gXR42vbT0AdCG3ILPBJhBNg1xYp2oTw97KFR4nQgEUQBIM1s/XbGR3OM0+xW18rUlot3r4PjEhnZPFEjVA29fefP2phQMIEsW9WXhIFPePpAlQkrcWCbCSjezacej2Hl1XD99n0vieJl4KQMvXHjdCgWwabGYHX8kLlHl42EYlAEMxT2cbKsHX8kaPNrI7rNnSPGwfmtXDzYrhuHnes5vjZ+nc9cbF5zfHq/T4LLhpB7Tj+3S2iR2wtW+EgILUSwsWgLH7mM6PhQK+cmxe0IqciH+6p9/Z83DbQiy/Oyze/H8TbhMi73v480/TNXgSbqvXv+3p9wmMQ9VY954LB0A/xAuz1hP9c5F+Ly+EAjAeQfG0o2pHFR7Wp7hvvYd3/RkuG9+31xxwKHnzdm2VgKZp0KPYwpyv5N513oINlKIKi36dwMJx0L+xTVdh+z7Ffe49vIvm5lLWCMCh17w2bweapkGiuFO1SWDvVKG9XbcB+kTVJHxtElRctelsw8XJGKqH7xMT3DmJc+ZlAezZSXATFLjbNNjMDr5Qp/NMKIDC5F6Y3k0BC0/S2UZ27XiXzqv6FOfq4auwqBiOvYfPb45fpOM8DH8z4ng9fpkeT9IBsC95E7ufhAKgX+qgorhvcq+mqVAAhdGfHb72NmzfCoHdVeHrd3aNvXr4PtPGz+s1COz7OlsJB7Bi7jEVim7UQaK4b/IiRK8moNRJwalQwG9pydK+3Kc43rQaU+/hXZ01fnbv+AD2Nd+TgwDuu0ZMhaIbtYu0BSFAT5wYk+ALNrLrxln4snK4lOrhVY7CopDh0hwVeKB8M24iFMAdpkGPYvitOp3nYfi97QC2NU9nFWvw5d/CXChalfsUj7H38C7iz/xtOsfXpI0VgV3FooCqcX0F2JlEMSWo03kmFECB8mZ2R0HFGkR5I7t3QtGqOA97dnP8LJ3fC8kXyeI4Xz0TEmAHf5jO50IBPJREMSUtCO1sDpQqJ2RUFcPi70Cisl3zUG718Lrr88v0eBK8bRzYzlHjuvFaOICHkiimBHU6z4QCKNQ8nSWKYTEvkCimL85vjlfp8VnjNQqwzqQxps2FA3goiWLGrgqLt1pbEAKlyu+oeCwUFC7fLLm2oKZnpmHxtvGL4MYesJnn6ayaGNgLiWLGrk7nmVAABdN6Ar78G3DzmD56mV6bscjhLOgrD6xf61bh9ubnG+EA9kGimLGzYQ2A1hNgXsAQNDe3i9frCyEB7vF9Or8J+r8DeyJRzNjV6TwTCqBguXryKKhQo2wqium7ZrI4zmPPhAS4Q5zPnaTH2k4AeyNRjAUhQBm0nwAb2TGc6/XL9HgSFptVAWQxSXyUrhfGNGBvJIopZTHorThA6ebpLFFMqWxkx5Cc3xyv0uOzxrwWIMqb2P0kFMA+SRQzZnlC7Q4rQAgf0vmxUFAo7zJiaKbhNmEcXQQ3+oDFeJavB+fCAeyTRDFjZsMagAWtJzAvMC9geF6m63d8i/lZ0GceWGxidx68cxbYM4lixqxOZ5VDAFpPgIpihqi5uV18DV8ICRRvks7aTgB7J1HMWFXhtuLi2oIQ4DfytfAoqEijTPXS3wIMRTNZHF/HZ0ICxZqkedz85pgJB7BvEsVYDAKUQ/sJSmUjO8Zw/X6ZHk/CoqIQKEtuO6GaGDgIiWLGSh9CgK/N01mimNJoO8EYnN8cr9LjWFVcCwkUpWr83Z8LB3AIEsWMVR5AZ0IB8Fsf0vmxUFAYN5AZi2lYJIhiv2I3/qAcz9P5TfDuGOBAJIoZK5VDAF/TegLzAhi+l+m1HPuUngV956EUJ+ms7QRwMBLFjFHdWAxeCwfAb83TuRIKCp4bwNA1N7eLN0EuhARG7yTN3+Jc7o1wAIciUYzFIEA58nWxEgoKYiM7xqiZLI5z3zMhgVHLm9hJEgMHJVHMGOlDCLBaThbXQkEhqqXXPozpev4yPZ6kAxjnOJbbTrwWDuCQvtngghQnHLFp+ndhvxuDxV5aL8LtnbHmBD7u5LvNXbJ4wTxeM4Fy160stQUhwErzNG5WQkEh8jzRDWTG6Dxdz38It1XF82AzZxibSTrPgnfGAB2p0kTjc+Oo9zxhv0zP+zbcJnvjxe9T+n+nGz7PUeNzVh11B/GrGz8b7b92P6fXBQBfm6br5FQoKMTb9Jo/EQpG7KwxB7ZhKYzLVfr7nggF0MUaMH9yvhjtO+Eak7vNJHHTcePrvdjie111XHX0C6iDRHFXJmIPcK8T10kKk4sKKqFgxJprrMv038Dw1UEhFPBw07Bhoviu1hNv0ifmyca+J9WxWjjf5X629G+xVcB5uE32nabvZX7PZOh5+pxfrfiYmddCcZ6ms7eXAtwtj6uVUFCAKs0ZbWTH2OXN7a7SWusi/TcwbHkTu3OhAPogv1VvXxXFVeP5Lld8TLOq+OKe55qG7lpLrFMH1Vpduezx6wKgL/I4C2Ongp7SxLVUrqI/Ew4YtKPGnE1LGeAhpmHDiuJHLX9jzxuPV1UBxwrh68bkvlpxwYzPNQuqhvnydXHceB0BsHqsjWqhYORsZEeJ1/eX6fEk6GkKQzZp/F1b3wKtaDtRfHLHIvW+Bezy52Sxf3FMClbh9k75JOjDxZdJ4mvhAFhpns6VUDByTzeYd8LYnN8cr9LjuFaqhQQGKbedeC0UQFvaTBRXSwvS+xJ57++Y4Ge5mjg/5yRNgK7SWcK4XLXFIMBGPjTGURgz7zSiVNOw6Gl6EbxtHYY4fsUj5k3eCAfQljYTxcuTk9k9H/vrxuPlxO+LcHcyOP6/SbhNGNd+tUWykR3AZt4vXTdhjKrGnHEuHBToZbrex78DBTUwLLk4LiaJvVsWaE2XieJN1Uv/HS+UcQff+Haq8zsm/nECFDcsOfHrLY6qIYDN5LGzEgoKmBfMhIJCXad103X6e7gQEhiEmNPI+YyfhANo06MBfs/v04R/enM8uzl+liZAy4uAMwvg4haDR2kiLFEMsH4sDcZJCpgbBPMCCtdMFtdpjQT020la286Dm51Ayx6N5OeYpQnQj43/Fy+sP3T8fcXJ2OctDiwGAdryvjFWwRjl1iofhALX+9+0oYgm6QD6K7edsIkd0LpHI/t54gSomSyOkyC9uMpaDOpPDLCZeTpXQsFIuYkMC+fhtnVfFKuKayGBXqoa49e5cABtezTCn+ll+LJvcZc7/M5ujr+xxcHDF4MzoQDYyIfGggTGuNDOxQISxXBrGhaJp4uO10nA3XI1cfxbtYkd0Lo2E8XzHT9vtsPnvPKrLcpRUDUEsOu4/FQoGCE3kOFuL9N8Oc6fz4J3X0LfTNL5V0IBdKHNRPFyAu++ScnTOxay27AoKHMxGF9j7roCbCaPr5VQMPK5AbDQ3Nwu/p1cCAn0xiQsNrF7IxxAF9pOFF/fMYFfZ5ees/MVjxmn2mIQYGuzdK6EghGykR2s1kwWx3n0mZBAL3yfzj8JBdCVtnsUN++K3Zcoru9YyG4jP/c8SBSXtBi0kR3AduZ3jLswBiqK4X7xb+NlejwJi7e7A92oGvOxc+EAutJ2orh5Z+zpmol9vkDOd/g6+U6cXsUWgwCsNm8sTmBMi20b2cF65431UqwqroUEOjNJ5zdBsRvQY29vjs/p2GTiECflp+H+XXSbz3lXn+LTxr9XKy6gk7C6x3GdPvdth3Hrw/dQiuMU609CAbC1abqGToWCETkxD4OtnDXm08fCAZ24Sn+HJ0IB9Hnd10zqTraYZNyXuKvSv8WPOV36t+PGv931zb9oPH+8kNYr/v0ydLuDb22B0pqJWAO4hkLD6Yp5JnC3o7R+yusooF35BqfiJ+BQpuGBieLjxuLxc2PSUIf73576dulzju95/mZCuE5fL/+/szUL2uZxtfR1T0O3SeIQJIrbdBZUwwE8dLy6EgpG4qgxn5wIB+z0t1MLB7TqIrjBCRzWNDwgdxYn1W/XHKvkO2GbJEmPGxfE5ufUG/xwn5Y+L/53n/pq1UGiuC2XJrQAD5LHUhjTJNjND9heLsA4EwpozVG4v/UmwD7nyNMuvni8uNVbfk69w9c5Cv1NDtZBorjtQfVIOAB2knvi1ULBCOYFqolhd8fm1tC63D5T7gA4pGnYMFH86ABffH5zzLb8nNkOX+d6x89jXJPZ6H16PQCw27gdVULBCBbbR+k1fS4csLX36YgmwgGteJ7OPwkF0AePhIABq9N5JhQAO3uXzpVQMGBHjcX2K+GAnb1O5+dCAa2sZ+P8KxY9vREOoA8kihmyp+n8QSgAdjZfuqbCEKkmhv2IyaqYtKqClkRwaN8v/d0BdE6imCHLrSdmQgGws3k6V0LBgKkmhv1oVjZ+LxxwMPHm5iQ9fi0cAONWBw3pDy1vtvFJKAAeLG9eBEM0Sa/fK6GAvc6zbWoHhx+7LoUCaME0dLiZHbQ1gY1mQgHwYPN0roWCAfohnVUTw37Y1A4OL78TRjUx0CsSxQyV/sQA+zNP50ooGJhJet3G1/C5cMDe2NQODuc4LAqfbGIH9IpEMUMeXKOZUAA82Lt0roSCgVFNDIdhUzs4nHwD5jzYxA7oGYlihij2SpMoBtifeTo/FQoGZBJUE8Oh2NQODreWPUmPfxIOoG8kihminCR+LxQAezFP50ooGJBcTay/IxxG/tuaBJvawb6cpL+nOPeaCQfQNxLFDFGdzgZWgP3I19NKKBiISXq9xqrHc+GAg7CpHexfrtB3kxPoJYlihshGdgD7N0/nWigYgGY1sf6OcDg2tYP9qRrzrHPhAPpIopgh0p8YYP/m6eztxfTdJCyqiX8UDjgom9rB/jxf+rsC6B2JYoYmJomP0sA6Fw6AvXnXuM5Cn6kmhvbY1A72Z5LONrEDekuimKFRTQxwGPN0fiIU9HyRXQXVxNAmm9rBwzU3sXsjHEBfSRQzNPoTAxzGPJ0roaDHVBND+2xqBw+XK/JVEwMUqL45Pt8cb4Vi7y5TbGuhANi7z+mAPpqk1+enoKoRuvr7uxIK2FrVmGNVwgF0YJquQdN1H6iimCGJi0KtJwAOZ57O+hTTR6qJoTs2tYPdTRpr2LlwAH0mUcyQ5Enpe6EAOIi8eKmEgh7OAeLrUm9i6IZN7WB32k4AgyFRzJCoJgY4rHdL11voC9XE0D2b2sH24iZ2VRq7zoUD6DuJYobERnYAhzVP5ydCQY/U6VBNDN2yqR1s7w/T+VwogCGQKGZoC8VoJhQABzFP50oo6BHVxNAfuar4uVDAWrHyfrL0twNAgepwu5vgW6HYm+Ow2OkcgMPJu3JDn+ZUn4K3ukMfHKW/x8/Bpnawzov0t3IpFEDHpul6NF33gSqKGdJCMZoJBcBBzdNZn2L6IFcTnwfVxNAHNrWDzeXKe9XEwGBIFDMUuV+m/sQAhzVP50oo6FgdFjeKLbKhP2xqB5uNYXEu1by5AtB7EsUMaaCNZkIBcFDv0llFMV1rVhPPhQN6w6Z2sF6uuI9JYu+IAQZDopghiJUKVXo8Ew6Ag5qn8xOhoEN1WNwkfiUc0Ds2tYP7168nS38rAIMgUcxQFovRe6EAOLh5OldCQYdUE0O/5SrJKtjUDpbFJPFR+LL6HmAQJIoZgvz255lQABzcbOnaC22rg2pi6Dub2sFqudL+J6EAhkaimCF4ms42sgNoLwEQSRbTBdXEMAw2tYOvHTfmT+fCAQyNRDFDUKfzTCgAWpHfJlkJBR2M+XncV00M/R8rbGoHX8q9ic+DTeyAAZIopu/y3dg4yM6FA6C1xX/zGgxtUU0Mw2JTO/hS3gzYu2GBQZIopu/qdJ4JBUBrPi4tdqANVVBNDENjUzv4Ur7JbhM7YJAkiuk7d2QB2qf1BF1QTQzDY1M7WDhqzJ1mwgFAVt8cn2+Ot0LxYFcplrVQALS60PmcDmhD1XjNVcIBg3Lc+Pu1qR3yACFcCgXQM9N0fZqu+0AVxfSZO7IA3bgOiw1Y9CmmDaqJYbhsage36sbfBMAgSRRjoAVg1cI/qoSCA4uvsUl6rDcxDJNN7UDbRGAEJIrps1zFNhMKgNa9X7oWw6GoJobhs6kdLG6uK3QCBkuimD57ms7uyAK072M6PxEKDryonqTHPwkHDJZN7UChEzACEsX0WW2gBeiM1hO04YfGWG+8h2HL7ScmwaZ2lLt2VU0MDJpEMX2V78bG6oS5cAC0TusJDq0KehPD2MYNm9pR+vpVohgYNIli+qpO55lQAHTiOh3NxQ/sk2piGB+b2lEqG9kBoyBRTN8H2ndCAdAZ7Sc4lPiamqTHqolhPGxqR6lUFAOjIFFMX9UGWoDOaT/BoagmhnGyqR2lkigGRkGimD6Km19UjQUkAN34mM5PhII9imP8JD1WTQzjY1M7SlOn8zws2nYBDJJEMX0eaGdCAdAprSc4BNXEMP6xw6Z2lEQ1MTAaEsUYaAG4b7HfvC7DQ8Xqwkl6rJoYxsumdpTERnbAaEgU00dP09lGdgDdug6Lt1BKFrMPL9J5FlQTw5jZ1I6SHDfGNoBBkyimj/JkUkUxQPe0n2BfYjVxri5UTQzjZlM7SuIdscBoSBTT10F2ng4AuqX9BPsSq4ljsngWVF1BCWxqRwnqxvrVRnbA4EkU09eB1t1YgH74mM5PhIIHUE0M5bGpHSVQTQyMikQxfZMTEfoTA/RnoR+pBuMhVBNDmWxqRynrVxvZAaMgUUzf1OnsjixAP7xfuj7DtprVxD8JBxTFpnaMXZXOM6EAxkCimL4tJA20AP1yHRY99yrhYAe5mnh+c5wLBxQ3htjUjjGr01mhEzAKEsX0cZCdCQVAr+TFTyUUbElvYsCmdoxVcyN2G9kBoyBRTJ8Wkj+kx+7GAvSL9hPsSjUxYFM7xspGdsDoSBTTF6dpoI13YlUcAfTLx3R+LBRsQTUxkNnUjjGykR0wOhLF9MEkLKoLvgvetgPQN1pPsAvVxEBmUzvGSEUxABuJk5/PN8dbodhocP2U4jUVDoBeOkrX6c9CwRavmTy+T4QDuHGWrglnQsFI5LlRJRRAz02DvFun6iBRvOki8kqsAAbhk8UQO0xGr4QCSI7DIrFmUzvG8nr+JBTAgObm03UfqPUEXYrVBFW4fUvqd8IB0GvaT7ANvYmBu8YRm9oxFtpOAKMkUUxXYt/Ck/RYX2KAYSzwo1ooWGMS9CYG7mZTO8Yib2T3TiiAMZEopgvx7utpevwyuAsLMAQf0/mxULDGD+msmhhYZlM7xrSmDdaywNhIFNO2WGF00Zgo/igkAIOg9QSbmIRFW6lz4QCWXKc1QPS9cDBg9dL8CADuHTRs0Ha3i7DY3MYmFgDDcRQWmxDBKnmT2olQACvY1I6xvIZtZAcMxTTYzI4e0pcYYLiuG9ftSji4wySoJgbWs6kdQ6ftBDBaEsW0OZjqSwww/MV9VAkFd8i9iV8LBbCGTe0YsjwPspEdMDoSxbQhvqUst+HQlxhguHKiuBYKlkzSwjlWnZ8LB7CGTe0YsqdL8yKA0ZAopg2xL/FRGkifCQfAYP06nR8LBUua1cRaSwHr2NSOIdN6AoCt1MFmdtk0LBr9HwsHgPGN0Zk0xnobUwGbsqkdQ1QFG9kBwzMNNrOjB+qwqDDSlxhg+OaN6ztkqomBXdjUjiFSTQyMmkQxhxKrAi7S4/OgXyHAGMwbjyvhIHzZm9geBMC2bGrH0OREsY3sgFGSKOZQmn2JXwoHwGjM0rkSCoJqYuBhbGrH0OSN7OZCAYyRRDGHME0TvTjpe2bhCDAqeWFkQc8kqCYGHsamdgyN1hPAqEkUs2910JcYYMw+pvNjoSieamJgH3L7iUmwqR39VjVeo9a5wChJFLPvgVNfYoBxmzWu+ZSrDqqJgf2wqR1Dcbw0FwIYHYli9klfYoDxm6dzLRRFU00M7JNN7RgCbSeA0ZMoZl9O08AZF4vfWTQCjNa88bgSjiLVYbEXgWpiYB9sascQ5I3sPggFMFYSxezDyc3xIj2Om9fNhQRg1GbpXAlFkVQTA/tmUzuGQEUxADupb47PN8fbAn7W6ub4lH7eU796gCKcpev+VCiKnePEsd+mU8A+Hafry2fXF3q67s2vT4ChmW66flNRzEPpSwxQno/p/FgoipOric+DamJgv2xqR5/ZyA4ogkQxD7HclxiAMuRFUiUURanDonfoa+EADsCmdvSVthNAESSK2ZW+xADlytf8WiiK0qwmNu4Dh2BTO/rqSTrbyA4YNYlidhHvpp6lxz+GxcYTAJRh3nhcCUcR6rBI2rwSDuBAbGpHn9fAkYpiAHZaTI11M7vYj/gy/XyXftUAxXqbxoJaKIr6fZ8JBXBgNrWjj2tgG9kBQzYNNrPjQJp9ib8VDoBizdO5ForRq4NqYqA9NrWjb2xkBxRDophtTBqTtbh5nd3OAcr1MZ0fC8Xo6U0MtM2mdvRJnc7GQGD0JIrZVLyLepoex2qimZAAFC2PA5VQjH5xXDfGf4A22NSOPrGRHVAMiWI2EXsynaVzTAxMhQSgePN0toAfN9XEQBdsakef2MgOgAeJi+YxbWZ3ln6eT8GGEgAs5I1dKqEYpcrvGOiQTe3oAxvZAWMwDTazY08mQV9iAO42S+dKKEZJNTHQJZva0QeqiYGiSBSzblDUlxiAVeZLiyjGowqLxIzexEBXbGpH1+p0ligGiiBRzCrxLTYXQV9iAFb7mM6PhWJ0VBMDfWBTO7pmIzugKBLFrHKWJmRxcfidcABwh1k6qygelzj+T9Jj1cRAl2xqR9e0ngDgweow7M3sXoRFw36LfwBWqcJis1PGI29ieyYUQA/Y1I6u2MgOGItpsJkdD5iI5b7EL4M7pwCsNm8spCzex6EKi2rin4QD6AGb2tHl2jhYEwMlkSimKfcljuJbvH4UEgDWmC0tphi2Hxq/15lwAD1hUzu6IFEMFEeimKZmX+JnwgHABuZLiymGK84BJumx3sRAn9jUji7YyA4ojkQxWexLfJIef5cmYgCwzsd0fiwUg6eaGOgrm9rRBRXFAOxFHYa1mV1zg4gXfn0AjHjM425VYy5QCwfQ8zWLvvi0wUZ2wFhMg83s2NBRY3GvLzEA25o3FvAMl2pioO9sakeb6sbrDqAYEsXEzeuO0gCoLzEA25qn81FQ4TVUVdCbGBgGm9rRluOleQ5AESSKyzYNt3dKY8+vZ0FfYgB2M1taVDEsqomBobCpHW2xkR1QJInictWNheHL4C01AOxuns4SxcMTq8An6bFqYqDvbGpHW/KcZiYUQEkkistdFF6kx+fpAIBdfUznx0IxOC8aC2GLYWAIcvuJSdDyiMPJiWIFVUBRNk0U1wcchI/T88ej2vE56sbBes2+xC+FA4AHmi0tqhiGOBfIfT5VEwNDYVM7Dq1O53nQnhHgC3Hgvbo5Pof9J2HrxnM3j9OweVI6VsF8Wvr8Tz2YMNTpe3nbw9/ptBEnC3oA9qFqjC0Mx7TH8xWAdevUz2k9Cfv2Ir2+LoQCGNm8f/qQgXc5iVsfYGD/HBZveazShTj+v8uwPll81liU5u+tDovE8VmHv4C6pwuvuhH3ib8TAPYojy/eBjwMR405Uy0cgGsY/FbONUyFAhiJ6UOuaxfpOAuHSRQfN55zeseAnxPUFxv8gHd9X3XoPhmav4c+JYqr0I8kOgDjdGnBPsjJompiYKjOrG0wpwHYau4/3dcFcp8XybdhUQl8V9XRi8bXPLnj36vGv1+s+b5XfY1Dq3u4+MoxuQyqvQDYv/yuoBdC0XvNSryJcAAD1SxAsr5hn7yugLGZhg0Txes2s9t34/Y6LBLOsxXP/6bx+PSOf/+h8fhXK77OT42FkAXrbRyPU7y/CxryA7B/H9L5sVD03os0R5rfHOfCAQyUTe04hDqd59bNQIketfz1njcev1vxMfN0RFX4esO1ZpXxbMVzNP//94X/jk/CIln+rBFbANj3gj0EG6X23VFjPvZKOICBe33HOhMeolqa1wAUpe1E8ckdC8q7zFd8zkn48u0f8zWL1XyhL3XRGn/23LPrx/BltTYA7FMekyWK+001MTAmcX1zndY9tXCwB0/S+YNQACVqM1G8PHDf9zaOZrXx08bj5uJz3R2+63u+diku0mIwxuqllzsAB5TH5aOgp19fqSYGxiau+XIxzPfCwR7knMNMKIAStZkorlYsKLf5vKdLk4JNFqyh0AXrcl9iADg07Sf6TTUxMEa5/cQkuFHJw9VLcxqAonSZKD705zU9Kez3qi8xAF3I441Ecf+oJgbGyqZ27Euev1wHG9kBhfpm4BOCbRZHrfud3zk6+t/+9/+jbvNr/pN//I+O3ry5+E1f4l/+8j+c/dN/9s/jAFd7qQNwaM8mf//6L/7iL8Lv/u7vPvkX/8v/auzpkf/kP/6PYpL46Pd+7/eu/+c/uZibGwBj8g/+wR/P/s9/+S9jku/5n/7ff6YSlJ381//Vf1n/+Z//P3EdP297HQ9w4HXa47hO28SQE8W/7vs3+Pu///txsvK2ra/313/9V+Ff/7//+jePf/4HfxD+6T/757WFIACtTUD+8/8i/Hf/7X8T/vbffjwJqrp641/9q8XWD//oH/+TozbnJgBt+OM//u/Dn/3Zn4W//qu/qv78z//87S9/+UtBYWs//4Ofh5go/qM/+qNW1/EAh/Z3/+5/GkpIFPfev/t3/1+s5m3tjvaPp6f1v/nLv4wPr1+//h/dSQegVX/zb/578VT/5b/5zVg0E5Hu/frX10f/8B/+D795K+3f+3v/2fuf//wPvJUWGOX483f+g79T/emf/l/Vn/zJ/3T9y1/+0lqIrX14/z6Ol0f//t/6W/H1Y7wExrMm+Lf/tgr7ae37m7ton9NRP/C5po3n+rzFx35a8f1cbPG9T1v+HdTp67Z5F3Kyx98VAOwqj0U2FOqHi/T7uBQKYOSOjUHsaQ5TCQUwMtOwYX60zc3strmr+zsrPm/eeLxu8K8LmxSdpsdxg5qZvwEAOvK+MTbRrZN0RM+EAyhg/LGpHQ9ZU0exknguHECpukwUVxtcpJc/70Pj8TZ3iWcj/h3GOJylc/w5p17WAHRofsdYTnfzg+hVaLEVFkCHXqfzc6FgS3neYrwEitZmongevrwzV61Z3GTvGo9nd1zI77vI3/V5Y3Oaft545/M7L2kAOpZv6j4Wik7lm8hxwTsVDqAQb9K6KK41a+FgC0/S+Z1QACV71PLX+6nxeNXAHRc1zbd9vGn8W1zszBv/vSpZ3Pz/5yP+/cUYTtLj74KG+wB07/2acZ7D03ICKFVz/fi9cLAFFcUAG9jnZnZR1Xi+y3sWN/dtQjdp/PuLFc9xFrrd2K0O7W1mN70nDgDQxUIrj8ET4WhdvOH+KXSzmS9A38Yhm9qxKRvZAWM23df6YNtEcRyUr9Z88WnjOY/v+Zqf7hnYL9PHXK1ZIF109AuoQ3uJYgDo60TkU9CruG0X4f4b8gAlyOtFBTVsomrMWwDGvD6b7muA3XSQvWh8/H134/LzLidSJ2GzxPRxWCSDl7+vs8YCqas7yHWQKAagbHlOcBVUdLWl+a4sCXqgZJOwurAIVo2f1u/AWE3DAxLFdfrE5aRvTMyernnS5c9ZtTCM/z8niy/Tc541vk69wffZTBafpee4alzgu1yU1gYaAAp3tDQuc/h4azkB8PU1sRYO1pgaPwHXuVvf3PNvH8Ji5/JNvQq3VcRH6fGqzdXi//9FuL3TGzcZeJr+/8twu/ncJpuyxSbzP7s5fgi3SeMq/b9XYdwb2AHAEMSxPG60+jYsbkJbgB3OWZp/vRdngN9uapfXmzMh4R45H2EjOwAOIi6IVVABwJdtpU6E4yC0nAD4mk3t2FSuPq+EAhipadiwoviRWAEAB3QeFu/0ObMI27ujFNcovqtKNRTArfeNa+JEOFihCosbCXPhAEonUQwAHNqztFiPC7GLoLJrn7ScAFjtdTo/FwpWyO/EmQkFgEQxANCO2K/4Oi3IToVjL07Cop3HM+EA+MqbNPZU4XYT9UpIWJITxd6RAxAkigGAdszDbbI4mgRvA34oLScA1otJ4pdhcaMyJotfCAsNeSO7D0IBwKHUwWZ2AHCXF8HGa/twkWJ4KRQAa1Vpbfa5sU7TBonokzkJUIBp2HAzOw6jDhLFALBKTnJ+slDfyUmQbAfYRfNm5aewaN9DmarG6wFgzKZBorhTdZAoBoBVYnL40li5c+w+megB7Oy4MQbFwyar5ToxFwEKMd10/aBHMQDQttgr8lk618HmdtuIfYljQuN9kCgG2EW8fv4i3PZ3j2Ky8DKNR5TFRnYAtCJOMtyZBID7TcKiosvbf9fTcgJg/+u2q8a1Nd64VF1cjty3eiIUwMhNg3ckdj7hkCgGgPVOw6JXpOTnalpOABzu+prHorxJqPGoDDayA0oxtY7oVh0kigFgU5eNxblKrrtdNGIEwP7Fd23kxKHF9PgdBRvZAeWYGtu6VQeJYgDYZrGWF+dnwvEVLScA2huPLsKX1cWVsFizAwzcNNjMDgAYiLip3bfp8eTmeCEkvxWTFjl5HjdesuEOwGHHo+/CYsPVeHPu0rg0SnU6G1cBaGXQcXcSALbzIiyquGrh+A0tJwC6UYXFZmd5bac90vjG14lQAAWYBq0nOlUHiWIA2MVZWGxuV/qCXMsJgO41b2J+Stdmhu8quDENlGMaJIo7VQeJYgDYRUwONze3KzkOn0zoAHrhuDE2xeMiuJk59DHWRnZASabWFd2qg0QxADxkQZ6TpKeFxkDLCYD+LrTjcRVUow59vW6MBUobv6ZC0e3AI1EMALtptl2YFPyzazkB0L+13lXjOh1vaKouHpZp+t2dCQVQ2HVvKhTdTR4kigHgYU7DoidkKQlTLScAhnGtzmNUrkx1Y2848rt2XggFUIip9UW36iBRDAD78LaxCC+hYkvLCYDhiO8AyTf3LMCHw0Z2QGmmxqlu1UGiGAD24aixoLsY+c+q5QTAMMepi/BldXElLL3+fdnIDijNNEgUd6oOEsUAsC/HYfzVWlpOAAzbpHEdj2dtDfq9VvfOHaAkU+uMfgw+EsUAsL8FeE4W1yP8+bScABi+KixaJuX1oI3u+mUabGQHlHvtm677wEdiBQAMwHk6ooswrrf1nqQjeuZXDTBY85vj25vjZfrvOty2TzoRmt54ks4fhAKAtsQJgYpiANivWJV1GcZVeavlBMA4HTfGrNxnX3Vx9/LvpBYKoCBT641u1UGiGAAOoQqLxOoY3jaq5QRAGYvzeFwFCcqu2cgOKHksmgpFN+ogUQwAh3LSWOhNRvJzHPu1Aox6fXjVuOafBtXFXa7T3ZwFSjMNEsW9GIAkigHgsJOdWF08xCSrlhMAZYnX/dOwSBZfBjcJ2/Yi2MgOKHvtZN3RkTpIFAPAoeW2DVdheJVZWk4AlCm+myTfKLRob9dZivkLoQAKMzXmdKsOEsUAcGgxOXw1wDFXywkA49dF+LK6uBKWg7ORHVCqaZAo7lQdJIoBoA0x0TqkFg5aTgCQTRpjQjyrdD2snJjXHxoozdT6o1t1kCgGgDYX2nnxd9Lz71XLCQCaqrRu/NxYQ0pkHm6NfiUUQIGmYcNE8SOxAgAG7jwd0Vno79t3T8Iikf3Mrw2AG/Ob49ub42X67zrcJjNPhGavcqun90IBsJpEMQAwBs/S4i/3fexbNVb8fvIu668sVAFY8uPN8YulsayP49lQPUnnD0IBQNvqoPUEALStCotej2c9+960nABgU9OwaEVxFWy+tg82sgOMK3oUd6YOEsUA0OUYHI9JT76nk8b3dOxXBMCG49lVY/w4DaqLH8JGdkDJpkGiuBeLVIliAGjfi9CfxGxckH4yMQNgxzHktDGmXQY3HB+yPreRHVCqqfVIPwYiiWIA6EZu9fApdFs9pOUEAA91EhY3HS30t5dvIF8IBVCo6abjh83sAIAxWt7crquF/Unj+wGAXby5OX6WztEP4fYGZCU0G7GRHQCdqoOKYgDoWnx7bq7AOm35a2s5AcAhTBrjy6dgc7ZNvA02sgPKNrUu6VYdJIoBoC8L6vxW3ZMWv66WEwAcSpXGF2vOzdjIDijdNEgUd6o2aANAb+SNgGLlVRubAJ2E/mymB8A4Nd+5UgvHSsfBRnYA06BHMQDAb7wMi37FZ+GwFUX5a0Sv0tcFgH27vjlep8enwrFSvmFrPAbYgEQxAFCCb9Oi+vjAC+qciI4L0qmwA3BAPzbGtolw3MlGdgBbkCgGAEoQF9LfpsdxMf3iAF/jJCz6ID8TcgBaGNtyVfEPwnEnFcUAdK4OehQDQB+9CIv+wfUen7fZK3IqzAC0pDn+TITjK3nMr4QCKNjUOqVbdZAoBoC+OguLze321a/4Ij3npfAC0FECwIZtXzpujPcAxgmb2QEAfKW5ud0+bupqOQFAl2Kv4nm4rZqdCMdvaTsBsCWJYgCgNLGn47Own83tYrL5LD1+ZTEKQEfj2qv0+Iewv3fLDF3eyO6dUADQpTpoPQEAfXcSFr0LJzs+h5YTAPTFVdCDsultiseJUACFmxofulUHiWIAGILTsOhfeLzl5zYTzcdCCUDHJmH/PfiHzEZ2ALemQaK4U3WQKAaAocgVR5dbLKybu8ybcAHQF6qKb9nIDmBhGmxmBwCwke/C7SZAcVF5tuHnxI+LyeL3FuMA9EjuVfw8lF1VbCM7gB1IFAMApYubAH2XHsd2EtM1H38SFv0OnwkfAD1yHm6TozFJ/KLgOFTpbCM7ADpXB60nAGBoJmHRz7Be8TFaTgAwlPVoyb2KbWQHsDC1funHwCxRDADDctZYXFd3/PtFWPQzBoC+yonSs0J//nxTt/JSAJAo7lodJIoBYIhi5dVluDsZfBIWFcfHQgXAANakJSZLq2AjO4CmabCZHQDA1nK/4nhubm531HgcNwqyOQ4AfTZLR/RDYT+7jewAdiRRDADwpXlYbFI3SUdMEh+lRedUiAAYgFeNsawq6OfOiWIb2QFsSaIYAOBrbxoL7NOw2AznmdAAMBCzUGZV8dN0nnsJAGxHohgA4G7TcJswzjvGazkBwNA03yFTFfIzaz0BsCOJYgCA+xfY86DlBADDFMew8/T4rICftwqLG7wSxQBbkigGAFgtb26n5QQAQ5VbKdXpGLNcTTzzawfYnkQxAMD93gdVSQAM1zwsqorH3qtY2wmAB5AoBgAAgHErpao4b2T3wa8cYHsSxQAAADBu81BGVbGKYoAHkCgGAACA8XsZbnvv12GcVcVVsJEdwINIFAMAAMD4xSTx6/T4dIQ/n43sAB5IohgAAADK8GO4TRjHpOpkZD+bthMADyRRDAAAAGVoVhWPrVfxk3S2kR3AjiSKAQAAoBy5qrgK46oqVlEM8EASxQAAAFCOMVYVx03sqvRYohhgRxLFAAAAUJZYVTwP46kqtpEdwB5IFAMAAEBZYlXxq/Q4VhUfDfznqdN57lcLsDuJYgAAACjPeVhUFb8Y+M9iIzuAPZAoBgAAgDLlquLnYdhVxTayA9gDiWIAAAAo03m4rSqOSeKhVhU3N7Kb+ZUC7E6iGAAAAMo19Kpi1cQAeyJRDAAAAOU6D7dJ1qFWFdfpLFEM8EASxQAAAFC2l+k8xKpiG9kB7IlEMQAAAJRtlo6YJD4d2Peu9QTAnkgUAwAAALlX8SQsNofrOxvZAeyRRDEAAAAwC4tk6w8D+Z5VEwPskUQxAAAAEA2tqliiGGCPJIoBAACAaBaGVVVsIzuAPZIoBgAAALJn6TwJ/a8qVlEMsEcSxQAAAEA2vznO0+Oznn+vOVE882sDeDiJYgAAAKAp9yqu09FH+ftSTQywJxLFAAAAQNM8LKqK+9qr+LjxvQKwBxLFAAAAwLK+VxXbyA5gzySKAQAAgGXz0O+qYv2JAfZMohgAAAC4y8ub4zr0s6o4J4r1KAbYE4liAAAA4C4xSfw6PT7t0fdVp/M8fY8A7IFEMQAAALDKj+E2GRsreCc9+Z5UEwMcgEQxAAAAsEqzqrgvvYptZAdwABLFAAAAwH1yVXEV+lFVbCM7gAOQKAYAAADu07eqYq0nAA5AohgAAABYJ1YVz0P3VcV1OsfvxUZ2AHskUQwAAACsE5Oyr9LjWFV81NH3UaWzamKAPZMoBgAAADZxHhZVxS86+h5sZAdwIBLFAAAAwKZyVfHz0E1VsY3sAA5EohgAAADY1Hm4rSqOSeIuqorrdNZ6AmDPJIoBAACAbXRVVZyria+DjewA9k6iGAAAANjGebit6G27qjgnilUTAxyARDEAAACwrZfp3GZVcd7I7p3wA+zfN/f8W3VzTG6Op+G2/1C8EJ/v8WvHgeQkPX/V+BpvwnZvIanSsUp8LncbAQAAYH9m6ahvjtOb41kLX1NFMUAH4kX+883x6eZ4e3Ncpv++alyYH+IkPffn9NxvG//9Kf37pq7S5606ph3Er05f+62XEgAAACNVN9beVQtfr82vBTAW0/CAHOlZWCRsm0nhFyv+/7ZOwt0J4VhhfNm48G+SLJ6E+5PEn0K7jfWXB0uJYgAAAMbsbVr/nh346xw31vkAbG4adkwU52TwqkRtHgAud/zGqrCoHL6r4f1R+LKyuFrzfFdhUfV81/Gio19AHSSKAQAAGL86tFPpO7HOBtjJNOyQKG4maa/WXJh3LVc+a3z+qkrfZrL6bINBYtLjgdIABgAAwNi1UVWcW2ROhRtgK9Ndrp/NBO3pio85Cl+2ddhW/tz7EqhV+LJ9RLXi467C6oR21+ogUQwAAEAZqnD4quKcjD4RboCtTMOGieJHjcffNx5/WPHx12Gxu+jRlhfoesOPm6fjvs87SYPPfIvnBQAAAPYvrs3P0+NDVRXntf974QY4jJwojknf46WL/CrXjcdPt/ha22yAN1/zNZ43BormW1xqv1IAAABo3avGOn3fa/MqnWM+Yi7UAIeRE8XLSdz77tC9azzeJvl7tOLxuq9RLf3bqkFnEm6TxqcbPD8AAACwP/OwqCr+Yc/PnXMPqokBDigniuul/3+94edXWw4azYv8fcncx2sGiFk67hJ7Lb8NksUAAADQpkNVFedE8TshBjicRw/8/GqLj12+83ey4/P+eHN8m46/kc7ndwwiNpIDAACA9szDYaqKc0tKFcUAB/TNHf/v+kBf630aNKrGoHG+4UBzn1k6XofbPsX5TmM8T8MGO/od0LYJ62+9JAEAABiwl+G2MKxOx2xPa+tIohigBdNwuyFcPC63+NjPW36dk6XPjYndZouIKtz2GG5+zHSL5z9K33/+3KuO4lkv/QybHgAAADCWHMPlHp6rsmYG2Ms1ebruA++qKD4+4Df2JtxWEU/Sf8dzTB7nu4J1+LqC+M0Wzx+rob9Lg9FRGlCOQ3d3HePXfen1CAAAQEFiy8jnaT0+CZu9m3iVnKOYCStAO6Zh88rW5sfu2gc4Jocvl77mRRpAmhXFu1YEN5+j7iCe9QPjAwAAAEM2Dft5p29+nlMhBXjQdXS67gPzZnazLZ78aePxrv2MY5XwL8LtZnT5iJXA5+HLTe5+2vH5f+U1AAAAAJ2JVcUxZ1CFxbuKd5FzEB+EFOCwcqJ4uTXDpu0n3u35+5mExWZ312lg2cXMrxYAAAA6E9f0r9PjHx7wPDayA2jJo8YFvHnRrTa4SEezPX4vR0uDx7Owe8Vy1fi5Zn7NAAAA0LpY/DUPu1cVx887So8ligEO7FHj8evG46cbXqT3eaH+ISwSvOdhu03sltWN5wEAAADaF4u3XjXW/Edbfr6N7AA6Ei/Yn8L9zeZfhMUmcZN7LuT1ll970njeyz38HFfpZznqKJZ1sJkdAAAAhLRG32gjpSXTYCM7gIea7ngN/s1Gcjlhe3LPxf3tBp+/acJ30vics3B/crcOi2T26R0fW6Wv+zlsn6zepzpIFAMAAEBz3b9tQdfbcH+hGgDrTcOOieLorHEBz2/ziBfyi7BIAB+tuYjn475N8eJznDY+9sUG39uLpee/Ss8xTd/3p3TUHf8C6iBRDAAAANkuVcX5c46FD2Bn0/CARHHzCXKyM1fxrqv4bSZ+P93x73W4TfaehS+riKsNv6/4tS/Dl8ni5tdb9/21pQ4SxQAAAJBNwnZVxUeN9T4Au5uGDRPF39zzBOfhtpVEvDj/KtxuLjdf83wvb46P6XPu2oyuTuf4Md+F24b011v8YPFjf5G+r+Ydxfg877d8LgAAAKAd5zfH87SWjwVk0zUfbyM7AEahDiqKAQAA4K618iZVxdNgIzuAfcjX0+m6D3wkVgAAAEALZunIexbd50k6fxA2gHZIFAMAAABteZXOk3D/fkW59cRcyADaIVEMAAAAtGUWFn2Hf1jxMbHiuGp8PAAtkCgGAAAA2rSuqjhXE78XKoD2SBQDAAAAbZqF+6uK63SWKAZokUQxAAAA0LZn6TwJX1cV28gOoAMSxQAAAEDb5jfHeXp8tvRvWk8AdECiGAAAAOhC7lVch0W7CRvZAXREohgAAADowjwsqopzr2LVxAAdkSgGAAAAurJcVVyn/5YoBmiZRDEAAADQlXn4sqrYRnYAHZEoBgAAALr08ua4DiqKATolUQwAAAB0KSaJX6fHR+k8ExaAdkkUAwAAAF37MdwmjCPVxAAdkCgGAAAAutasKpYoBuiARDEAAADQB7mq2EZ2AB2QKAYAAAD6IFcVqygG6MA3QgAAAAD0xI9CANANiWIAAACgL66FAKAbWk8AAAAAABROohgAAAAAoHASxQAAAAAAhZMoBgAAAAAonEQxAAAAAEDhJIoBAAAAAAonUQwAAAAAUDiJYgAAAACAwkkUAwAAAAAUTqIYAAAAAKBwEsUAAAAAAIWTKAYAAAAAKJxEMQAAAABA4SSKAQAAAAAKJ1EMAAAAAFA4iWIAAAAAgMJJFAMAAAAAFE6iGAAAAACgcBLFAAAAAJuZ3ByXN8dnoQDGRqIYAAAAxu9tuE1uPvSYFhi76uY4vTk+3RxnN8exlxMwRt8IAQAAABTl/c1x3fjvKh3ZbOnjY2L0qOB4xdj8OsXlxMsHgG3U4fZO61uhAAAAoAfiGjVWxN5VDTsNX1YN3+VF+rfTgmN4tEGcAPomX+On6z5QRTEAAACU4WW4rSbexY83x9NQdtuFay8hYMz0KAYAAIAynD/w838SQoDxkigGAACA8Xu2h+eI1ciSxQAjJVEMAAAA43e+h+eY3/E8sW/vcjuKOqzf/O4ofVyXrSzy91Dv6fm6/nmA/5+9u71u3FYTAIybzY/9d9VBuBVEt4IwFcSpYDgVxFPBcCpwUoGcCjxTgZUK7KnASgV2KvAKa3ANc0SJ1Let5zkHx7QIkhIMg8QrEGQj5igGAAAAhirn6d08VfM0naef03J82F0MwMb5fH9N63LxoXi/zVPRev3zPP2xIP+ih8THUc2XK/Ism4/5bJ4+hqeg7ix7L9P0HvK5iGcpLXORPvso2+bXsP580AC8sRPmY8fJCgAAAI5JnfqwTVomBlnvWvmv0+uPC15vxCDqTSt/7DtX83SfbVO1jjdKefM8dSvPeMF+yo73P0nr78Pz6N9Rek+PHSmXv55/pna6D6tHVQPss42vFcVhlEGgGAAAgNehDv0DxWVKkyx/DJbep/1cZa9fZNvdLOknj8PyYHFI++oKFDfyYG+5YH2VrT9rrRu13sMkHad9rMfW577J9lW29nGuagFH1MbXiuIwyiBQDAAAwOtQh/6B4na/d1FQuBnh2zjP8nXN4ZvnWTQaN3+PdY/PUS5Yf7fiM+bB6ElHnscVeaps/ZWqBRxRG1+vyuhhdgAAAMAm4py+n7Lf49y8l9nvv6Wfs9A9b+/v4Xlu4Bgk3vZo3CJ8Oy9y21+t/Ku8X/DaLFs29QTwqggUAwAAAJuIwd+HjnVleA66zlbs53O2/MuW32PRI8+DPyVwygSKAQAAgF0pB+T9mi2Pt/w+pq3fix193qk/OfBaCRQDAAAAx+B2x/ufZsvVgvV5cPqLPwdwagSKAQAAgFPwITxPLxHnTc4Dw6PwPJdye45lgJPwvSIAAAAA9qAckHe2g+PHAPDP83QVnqaeuA5PAeF/5uldem06T78G8xUDJ0igGAAAANiV9nQSZ+HlQ+tyo2z58w7fUzzO5Tz9nb32ZzrmrT8ZcKoEigEAAIBdicHXWXh+eNwvoTsInE8F8ecax/oxWx517D+OIo7B4Pf+NAAvmaMYAAAA2MRoxfpP2XIVXgaEc+/Sz0Uje28X5MuPPwlPo5Ubi45xkfLGVPZ435uWxUjVACCecB7D0zeVAAAAcMwmqQ/bpLLHNmetbYoBx7gL3wZym/X3YXGAddQ6Xuxv1+Ep+Bv3d5OWH7P9NOsbjz3TdXgOKi97D0WPchEsBg6tTu1RrSgOowwCxQAAABx3v7UOTw92awdKmyBrvWS7+9Y2d+n1cskxJ61jTNI2N+m1+LNYsn0dFgd243aj1vpm/3lAugr9g8XNPoqU8ve56DM35XIXFge0AQ6laRtXtkXmKAYAAIDT9TWlof5YY5s4L3CcezhOHVGEp8DtNDzNYRz3d7li+zrljduXadsv8/R7lieuj1NdxOkrHlrbx9c+pjx/zdMP4dvAdJG9Nkr5m6kzvqS0zJ+qFAC5eMIyohgAAACORxwRHEf89pkOIvbr7/XrgTegDkYUAwAAAPyfOOdwnIYijmp+6JF/Gp4eoPeg6IBT8Z0iAAAAAN6wGCA+T8sPA7Ypw+qpJgDeDIFiAAAA4C3Lp5qID7irVuSP6+OUE9Owet5kgDfD1BMAAADAW3abUhwlHIPGk5Sm4enBdn/P07/T+iZPfPDde0UHnBKBYgAAAOAti9NN/Bye5imustfLBXln8/QhGEkMnCCBYgAAAOCti8HiOEI4BoHL8DRyOI4iLubpa8oTRxHfKirgVAkUAwAAAKciBow/pwRAxsPsAAAAAABOnEAxAAAAAMCJEygGAAAAADhxAsUAAAAAACdOoBgAAAAA4MQJFAMAAAAAnDiBYgAAAACAEydQDAAAAABw4gSKAQAAAABOnEAxAAAAAMCJEygGAAAAADhxAsUAAAAAACdOoBgAAAAA4MQJFAMAAAAAnDiBYgAAAACAEydQDAAAAABw4gSKAQAAAABOnEAxAAAAAMCJEygGAAAAADhxAsUAAAAAACdOoBgAAAAA4MQJFAMAAAAAnDiBYgAAAACAEydQDAAAAABw4gSKAQAAAABOnEAxAAAAAMCJEygGAAAAADhxAsUAAAAAACdOoBgAAAAA4MQJFAMAAAAAnDiBYgAAAACAEydQDAAAAABw4gSKAQAAAABOnEAxAAAAAMCJEygGAAAAADhxAsUAAAAAACeuK1BczNNknu7n6XGe7ubpYp5GWzz2+TzdpP03x5ikY/dVztNVto+4v8qfFQAAAABgM1V4DhDHwO1Z+vmYXh9vuP8YbG4CxNfpeDFofJcdo+qxn4ss/3naJt/v6IBlWGbvAwAAAADgEOrwFKesh25YhufRueetdXlgdt0gbB4knixZF9OygHT+XsYd+zhkkLYMAsUAAAAAwGHVYY1AcQyyNiOJb1asXzcA2gR47zrWF+HlVBSLAtJllqdesf78QH+AMggUc5wNQ60YOBJlqo+lokAbCdpItJEwQJHqY6UoOBJVqpOFouCIz+ODA8XNRo9LGtxJlmfohWuRbXuxJF8+5/CiD3Cdre/6J8ynsTjEFBRlECjm+DT/N/BqT1SgjUQbCdpITp7+NsemiVOVioLXfm2ZP8zut2x52pH/S0f+Ps6y5X+W5MuP8a61bpz9481SWqR5/6PWcQEAAAAAaGkCxWV4OfJ21pH/Nls+C8NG6/7UM980Wy7Cy1HD73q8x+hrxzYAAAAAALTkgeLG7ZL8s9bv4wHH6htUbh+j6DjeX0v2kX+G0p8ZAAAAAKBbEyjOR/s+rNgmX1+uedx/D8g73sLxxv7UAAAAAACLfbfgtdmKbW7XPNa6AeZR62ef9zHr2AcAAAAAAC1NoDgfcfv3jo6VTxURj1d05OsKCLdHBS8b+TzzpwUAAAAA6KcJFO9jxO3n1u+Tjnxl6/cHfyYAAAAAgN35bo/Hms3Tp+z3cp6uwvPI4jhi+CK9lltnqovCnxYAAAAAoJ/v088YjO37wLdNHgxXh6cH2Z2n389Sasxa7yUuNyOKh4wsLo6kfIv0meGYqJMcg5+yn+ok2kjQRqKNhL5+0N/myBTp57sw7JlcsO9ry5WaQPHDgka3y6bTVHyYpy/z9Et4GRCOcxjH6Snus7x/Zsu3Gxzz4YCNxUf1kSOjTnJMShdTaCNBG4k2EvS3eQMqRcBrl48oLrPGtq/pmseddmwb/6maQHQM7l621s+y91cOOP7tnss1vs9PqhcAAAAAcASmfTNW8/SY0t2SfOMsX0zbfgjeXbbvesH6Sbb+Ysl+6izftXoAAAAAALBaDPj2CQCfZXmutvwe6mzfNz2OvywAnAeUz/15AQAAAAD6yYOrZx15LrI81RaPnY9UjnMUF0vy5qOORyvy3Iftj3oGAAAAAHizivAcgJ105GkCsF0jfmPAtw5Po3j7BmhjvvvwHNgdr8hfheXB6jzoXPuzAgAAAAAMU4fnIGs7YHu+ZF3jPqwONufifvLg87jn+7wO3fMpX2f7M5oYAAAAAGANzRQUMQgbp6AownMAOQaCqyXb5vMcL5tDuNlnE1iOU1oMCerGvDfhea7kcUpXYXjQGQAAAACABeLo4Xx0cDNCuFix3XXonhaiSPtoArz3PffZZRRezqvc7LMORhIDAAAAAPT2rxXr46jcGHS9naeHnvssU97b1uuj8DzKd5bStpTp59SfFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4Ff9SBDtVztNv8/SrouDIXM3TaJ4+zNOt4mAPipT6mqUE26yDH+fpjzXavTKlH+fp6zxNU4JNVKlOfRiwzSht90Oq019Tff6sODlgG7nI2TyNs98/u+ZkjTby3Tz9PHC7cap/sZ18mKe/U/1zXck67WJTl0apLg095zbXkE19/GeeLtVHNjy3Nn2ShzXbt1JR7l8s9Ot5ekwJjkmd1U0NBPtyl9W7PqlWZGzxIn+yZrsXOwVXabv7dG6/T79P0noYqsraxOuB2913tJnX6iMHaCO79tXU05t0Pi/VT9ZsI4f0pUdZH/wuLd9l5/BzRcsAF0v6KbFtG/doD6+X7MN1JEOMV/SnLwaeq1f1xdmisqMxgGNqYB6DQDH7bxsfB6axYmPLwY+h7d4odQSaDsGo43VYN/gxJFBcZdvcdXQWrhUxe2wjF9XR+6wuFoqYLbSRffvSo/Dyi9xcXs8vFDM9THr0Ve6X9Ffy+rgs5deX0GXcsz5NtlS/J4p8u+Koo7Pw7bdPcAxGCy6+SsXCntrGPJDRle6yIAhs6iJ1Oqs12718JHH7Ir7Q6WSNi/xJqn/tNnGVIjyPaC9ar984r7OmOjyNsDxrdUDXqUMTHUw2VKS6c7YgiNHH9Yo2NR/Mdaa4WaLKrv/q1CYWqd60z7l3K9rEu7S/cUp1+DbgVytyVrjJ2rezVB/L8PJO8SZVPdra/K6LRcmArR0SKObYNF9g3OhQsucL/763VzXBE4E3tu16YLtXhtWB4DzYVyhiBsjrV59A8SR0B9/ao5Z0ONlHG9mun4LEbNN4YF+6CquDwHm7a0ACy9ykOlJ0nHOvWvXzbEnfp6t+5+fte0VOj2vGSc/2ctXdjhN9l8MSKOaYnGUNTB0EitmfumfHcRRMO8HuDA2C9Mmfd0wFRxgiv6jvEyiuwvIv2vI72WrFy5rn6nWuDetg6hMO35fOA3fL2sr8zspKEbOkPzJekWfZF7RVWP1lRBXcDUQ/Fz3Or3XPNrPo22/5TrnDSZzwYmMwC8OerA7bcNuz3jXfxs+Cp6JzWEXrgv12Sd1u11/o2y4OcRmenmrd5Z9seap42ZPYTn5My7F+vlckHEh+Dl7WVubt40+KjY5rwN9XnKdjHfu8Yj+r+j6XipoBPm2pPjXn7K/BiOKDMaKYY9F8y958M1oH315yvPXUtBPswpARxVXofzug0SBsep24jVGYF8GITjazzrVhPjqzVoQcqC9dDMib13PTT7CtNnPd9i+/NnU3JbtuM9ttZdMOxmcVfHMnhhHF8LY1DymJ30IZpcmxGoXn0SB/Kg4O7MdseVW7OcuWXeRzyPYzjnBy1xD7UoWXo5EuFQkHUqz4PTftmQ+GmG5w/g7p/K2fzrZ01aWPHe1nHGxwF1p3RwoUw9u+cPqYGotacXDETDvBMRkS8J0tuOCHfbpIde9n7Sd79C5b/pyuOeM0Z/m8nfGBOpWiYsdmA87hztNsy09Z/Zuusf0oq6ufFSdb7Lt0DboqUl196KiP8e7eWlHunqknOLSbdMFetF6vg1ulOS6mnWDXhkw9kee92mJeWHSduO50EcWC+icIwrqGXBuOWv2cJjh8k+rkXWu9h32y6770fc/6VuujswV5G1ituY8q20ehSNnQRXY+7nMtWITnhy62p6OoFOfxnNxgVxf81YadAdjnxZZb99mVdQPF9YC85odlnevEofUm1t+bBRf2TQdBO8om14192sizVr27XrDNpJWnVsTssC/drm9Fj3p+r4jZsL282cJ1qbaRbfSlmy/LqjW2P19wLVko1uM4ucE2jcPy0W1DOgOwa02H00NF2CWBYo71OnFovSlSHa5a9e9xCx1XTteQa8O6Zz+nXT+NeGdXfenYLranPWnXt6qVxzmbdeRBuXW/mD1bUk9h3fP3Jm1a1Wpz3eV7JCc32ObJ6y4sv+1gSGcAdm3ihMQe7CNQ7PZq1rlO3DRYUYZvbx08U7ys2dEcGii+W1E33c7KvvrSVfh2VNxVSvfhZZDYSE7W1UyXd75BX72pj+4AYlPjrD5t+qVDfm6/8TA7eFviw+uKefojNRzlgvRDq3FpXveNJofQBDT+VBQcoR9XrC+y5b8VFwcwDU8PsntondthH2Yr6uaso72Ebbucp/+E5weLjdI15jj1i35t5fcAMYaqUp2Kde33NfcxSXXzQ/AAWjYzCs+DVNrXgeuos3O268gdMqKYQ9e7oalUfOyZaSfYlyEjii9C/9GeRsux6fl6W7c/5/W2Vrys0UFcZ0Txqvp7pV5yJH3pSTDtBOtbNbXjkHbW9SLbbNO2eRfZ/19LGlEMwKH8kn4a1cEx+ZotD7nTwsgQDumLImBPHga0kV8VF0egCC+Dc58UCQPEIPF1us57v+Y+Yv37mOrepSJlQxepTr3fcj/6n6ZP870yhjfl5x553mUXS/ltL4Ic7JtpJzhG01bnoEuZLc+0oRxRvX1QHBxBG9mmXnIoH7Plz606DMvEL8Ou0nXeurf3x353HP15GdxZweZifYpzZL8Pu/vSQZ9mh0w9wbGqg+kmODzTTrBPQ6ae6Jv/PHg6MJtfJ27rFugi22eheNnxtWH+AMVlt73mU6KY85BD9KXPwsuHL3omC33FunKT0qp6U66of6seeFw4d9NDFfpN5bRufboOYkSv5uQGh+4MwC408yoJsLEPQwPFZVgdBG7m3rx3cc8G14nbChTXwdybbOfasBqYf1kA5Ea95IB96XE6Rzfnal9W0FcTJO5zjTcJi+curtL2k57HqhQ7S1Sh35cO4zXbu6bv83912dQT+2to3G4F8My0ExzynLzKNDzdnnqWLsw+tc7j46wOx6epzxQrA+QX70WP/Oep3sZ6dtmxv4+pjr5XvKzh3wPrZB2enjMwTm1kbAdvF3Q6m7r+QRFzgHb2Oms7fw1up6b/deJ1qkOfQ3cA94fUzhULzr1xm0k6L/8dukeA/pj2MQqe2UK3vvXpp1SfZq32rk7XibNUV6cLztdXYbN5uOl5Ysq/BT1TJByROhhRzGGZdoJ9X/Dnt0lfDNiuGQ2Xf3tfdLwOfZ23rhOLAdeUd6nDME4pntPvg9FybOYmq2NXA/o7zWjN9q3Z+bpK8bLmdeK605ZUWf27CqaboL+87eqb7hfUv8eByfUkXeo16lPd2sd1a/1Vuhatw/Mdkn2mWGFNFwv+CPmthW6x5tgam1JxcACmnWAfqnTuXXTBfxP63Qo9ys7rd61zfK2IGei64zrxfsl1Yv6FxbIOpot71m0j7xbUqaa9WxWgG2f18z51OK+yfRgswz760s1dPhdZfb5R/1jD0CBxO8g7XmN7Awvpcr5mfSoWnO+78t6l47zwL2W/VeMVF+pxqLhbXji0Ims8boNpUdi/ZnTHB20ie2rrukx77qsMz1+sxTbzUtvJGsoV67uuE0epE1ksqL/O4+yyjexbv87Cy6By3M5t1OyrL32R6vLXlGfq+pIdnacXmYXnKchGYb27e6aKnjXP033rU5HO1aNWPnUPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3oD/UgQAAHByinmq5um/52mmOAAA+F4RAADwRlThKQDaNpunyyPc7yGU8/Qufabo0zxNVR0AAASKAQB4a2IgtGi9Ng3rjZyN+5m0Xrudpy+vsFyuwlOgeKSKAAAAAABvXQyEPrbSZM19XbT2cx9eR6C1WPI+889Uqy4AAETfKQIAAN6Yh/DtdApnYXiAN+avWq/dpv0fuxgYH3es+1sVAQCgTaAYAIBTEIO+5wO3OQ+vc5qGMqUut6oDAABtAsUAALxl02z5tzAs8Bvzx9HDry2weuHPDgDAUALFAAC8ZZ+y5RgkPuu5XZXyfw6vY6qJxrIpJwAAoNP3igAAgDdsGp5GBDfB04/zdNlju4/pZww0D30QXhOQ/ik8PVQupPfwJXw7d3JbOU/v5umv7H02r8V9zebpzwX7iceMI4mr7LU8YNxnZHSf47Tz/5Id56+Uf5yOd6n6AQAAAACHdD1Pj2m5SstNqlZse5byTVr7ekzLq7a9z/LG4O1da/uitU0zf3Ker06vT1rvvesz3HXkW/S+ywHH6RqB3ZTpXdrHxYL3DwAAAABwUHmgOMqDmHc9tx23fl8VKK5Snvvw7fQPeSA2ri9a667Dc4A5phh4vUnLV+Ep8HrX2sey9x5T2ZGnXHCc+/Q+6h5lVS4pi+Zz1qogAAAAAHBo7UBxFV6OlC07tivDt0HQPoHicVg9YvlqxX4uwstAcAzgFtn6UXgZTC6XfO6+geLmvYyWHKcr6F0v2Hezba0KAgC8Lh5mBwDAKWg/lO5jR7536eengfv/2DrWIh+y5TJ8G1D+mi3H+YT/E57mCm48tPZdbqlcfm6VTVyeZr8XrW2a339asD9zEwMAvFICxQAAnIIYwPwj+70M3wZai/AUvJ2F1Q+da2/XzOU7DS+Drrm43/yBcr8sWN/4q2Mff2+5XL72eH3ckSeW36I5l/8YWH4AABwBgWIAAE7F763f37V+b0YFDx1NXA7I+yVbPnul5fil9dnjPMZxOooivTYLAsUAAK+OQDEAAKeiPS1CFZ6Dm3Fu3Ri4nYXhUycUA/LevoFy/H1BGcWybALGI1UNAOD1ESgGAOCUtEcLN6OIz8NTgPOPHR//4Y2U4/vwNOdy+/NU4SlgPFbVAABeF4FiAABOySwsHlX8W9jOg9hOKUAaRxb/T3gKvucB4xhwXzR3MQAAR0ygGACAU/Nn6/er8DyaeJ0Rv7NsOe6n6Lnd9JWWXxWep5eI5VXP03/m6XOrHCpVDQDg9RAoBgDg1EzDyyBtMwr4coP95aolefMRx3++0vKLDwFsP4hvNk+/tsrwJ1UNAOD1ECgGAOAUtecqvgwvRwYPMQsvA6RxGouuB7r9mH7Gkbifl+zz31v4jPl7GIftPmTuXcfrH1rlAgDAKyFQDADAWzRq/WybhpeBzE899rVsf/mD3WKeiwV5YrC2Ssvvw7fTXIw7lof4K1t+l95LHP173bHvdUf9lmH11BJ/qYYAAAAAwKGcz9NjSpPQHdytUp6rnvtq0nlH3hiAvc/yXYXnkbxVtq5asG3zALhm2/vwbbA45rnL8sTlouMztVOV7eNmxXGKBcfJyzB/n3V4GZS/Sq9fq4YAAAAAwCHkAcxFaZEYBC3X2FdXMLRYsu11x7HqHu/7esD7uAgvA8HVgOP0+bzx5014GRTPly9URQCA1+dfigAAALYujq7NR+rOwv7n7C12dMz4uW6zYxTZuvj6gz8/AMDr878CDACAQpK8MaKULAAAAABJRU5ErkJggg==" style="width: clamp(250px, 100%, 600px); max-width: 100%;"/>
+<details class="dp-panels-wrapper" id="CIPM0018-R-s09-EXH16-extended-desc" style="font-size: 10pt; margin-top: 20px;">
+<summary class="dp-panel-outside-panel">Expand / Collapse Extended Description</summary>
+<p class="dp-panel-outside-panel">横軸は1から25の月、縦軸は0.90から1.25の相対価値。線は月1で1から始まり、時点4で1.20のピークに達し、時点10で0.98に下落し、時点13で1.15に上昇し、時点19で0.93のボトムに達し、時点22で1.20まで回復する。</p>
+</details>
+</div>
+</figure>
+<p>最大ドローダウンを計算するには、期間中の最も高い基準価額とその後の最も低い価額を特定し、高値からその後の安値への下落率を計算する。このプロセスを繰り返し、期間中の最大の下落率を特定する。例えば、図表15ではファンドAの最高基準価額は1.200（第21月）であるが、その後の最安値は1.117であり、これは−6.9%のドローダウンを表す。次に高いピークは1.199（第3月）であり、その後の最安値は0.942である。このピークからボトムへのドローダウンは (0.942 − 1.199)/1.199 = −21.4% であり、これが期間中の最大ドローダウンである。</p>
+<p>ドローダウン期間 (drawdown duration) は、ファンドが最大ドローダウンを経験してから回復するまでの時間の長さを測る指標である。図表15では、ファンドAは第3月（1.199）のピーク後に最大ドローダウンを経験し始め、第21月（1.200）まで完全に回復しなかった。したがって、ドローダウン期間は21 − 3 = 18か月である。</p>
+<p>他の条件が同じであれば、最大ドローダウンがより大きい（より負の値が大きい）ファンドは、よりリスクが高いとみなされる。</p>
+<p>ドローダウン指標は、ヘッジファンドや商品ファンド (commodity funds) のリターン分析で頻繁に用いられる。ヘッジファンドは一般に、投資最低額が高く、規制が比較的緩い集団投資ビークルである。多様な戦略を含むが、一般に、より高い投資の柔軟性、低い透明性、少ない規制、そして伝統的な株式・債券ファンドに比べて評価頻度が低いという特徴を持つ。</p>
+<p>ヘッジファンドのリスク分析においてドローダウン指標が広く用いられる主な理由は2つある。</p>
+<p>第一に、多くのヘッジファンドのリターン系列は、伝統的な投資と比較して正規分布 (normal distribution) から大きく乖離している。その結果、従来のボラティリティに基づくリスク尺度は有用性が低い場合がある。特に流動性の低い投資を含む戦略では、価格付けが頻繁に行われる戦略よりもリターンのボラティリティが低く見えることがある。投資家がこれを低リスクと誤認すると、実際には大きな損失リスクを含んでいる可能性を見落とすことがある。ドローダウン指標はリターンが正規分布に従うという仮定に依存しない。25</p>
+<p>第二に、ドローダウン指標はヘッジファンドのビジネスリスクについても有用な情報を提供する。これは報酬体系に関連している。ヘッジファンドは通常、固定の運用報酬（例：運用資産の2%）と、ハイウォーターマークを超える価値の増加に対する成功報酬（例：20%）で運用者に報酬を支払う。初期に高いリターンを達成して高い評価額に達した後、パフォーマンスが悪化し評価額が低下した場合、運用チームは損失を取り戻して成功報酬を得ることが困難だと判断する可能性がある。この状況は、ハイウォーターマークを超えて報酬を得るために、より高いリスクを取る誘因を生み、投資家にとってビジネスリスクとなる。また、パフォーマンス低下に伴う報酬減少により主要スタッフの離職が発生し、回復の可能性が低下する場合もある。さらに、ドローダウンはしばしば資金流出（redemptions）と関連しており、投資家はパフォーマンスが悪化した後に資金を引き揚げる傾向があるため、最悪の場合ファンドの清算につながることもある。なお、ファンドが過去に大きな最大ドローダウンを経験していても、その後回復し新たなハイウォーターマークに到達している場合もあり、そのような過去のドローダウンが現在のスタッフ離職リスクを必ずしも示すとは限らない。</p>
+<p>最大ドローダウン (maximum drawdown) の他のリスク尺度に対する欠点の一つは、時系列データに基づく単一の観測値である点である。より高頻度のリターンやより長いトラックレコードといった形でデータが増えるほど、最大ドローダウンは大きく算出される傾向がある。そのため、複数のヘッジファンドの最大ドローダウンを評価する際には、同一の期間およびリターン頻度で比較することが重要である。</p>
+<figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0018-R-s09-Ba">
+<figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Knowledge Check: Hedge Fund Drawdown Measures</figcaption>
+<div class="dp-content-block">
+<div class="dp-qc dp-qc-built"><fieldset>
+<div class="dp-qc-question"><legend>
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0018-R-s09-Q1"><legend><span class="cfa-curriculum-question-with-label">1. </span>
+<p>2つのヘッジファンドを評価しているアナリストが、平均ドローダウン (average drawdown) の計算に用いるドローダウン数を3から5に増やすことを検討している。5つのドローダウンを用いて計算された新しい平均ドローダウンは次のうちどれか：</p>
+</legend></div>
+</legend></div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse0-0" id="dp-qc-0-0" name="dp-qc-0" type="radio" value="true"/><label for="dp-qc-0-0">
+<p>A. より負でない（小さい）</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response dp-qc-correct" id="dpQcResponse0-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>Aが正解である。平均ドローダウンの計算に含めるドローダウン数を増やすと、平均ドローダウンは常により小さく（負の程度が弱く）なる。平均ドローダウンには最大（最も負の）個別ドローダウンが用いられるため、追加される観測値はそれらより小さい（負の程度が弱い）個別ドローダウンとなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-1" id="dp-qc-0-1" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-1">
+<p>B. 変化しない</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse0-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>Bは不正解。正しい解答を選択して詳細を確認しなさい。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-2" id="dp-qc-0-2" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-2">
+<p>C. より負になる</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse0-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>Cは不正解。正しい解答を選択して詳細を確認しなさい。</p>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc dp-qc-built"><fieldset>
+<div class="dp-qc-question"><legend>
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0018-R-s09-Q2"><legend><span class="cfa-curriculum-question-with-label">2. </span>
+<p>図表15 (Exhibit 15) はファンドB (Fund B) のリターン系列を示している。ファンドBの最大ドローダウンは次のうちどれか：</p>
+</legend></div>
+</legend></div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse1-0" id="dp-qc-1-0" name="dp-qc-1" type="radio" value="true"/><label for="dp-qc-1-0">
+<p>A. −20.6</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response dp-qc-correct" id="dpQcResponse1-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>Aが正解である。ファンドBの最高値は第22月の1.129であるが、このハイウォーターマーク (high-water mark) の後の最安値は−2.9%のドローダウンにとどまる。次に高いピークは第18月の1.088であるが、その後のドローダウンは−5.3%に過ぎない。期間中の最安値は第12月の0.845であり、その直前の最高ピークは第5月の1.065である。このピークからボトムへの下落は−20.6%であり、これが期間中の最大ドローダウンである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-1" id="dp-qc-1-1" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-1">
+<p>B. −18.5</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse1-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>Bは不正解。正しい解答を選択して詳細を確認しなさい。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-2" id="dp-qc-1-2" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-2">
+<p>C. −13.2</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse1-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>Cは不正解。正しい解答を選択して詳細を確認しなさい。</p>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc dp-qc-built"><fieldset>
+<div class="dp-qc-question"><legend>
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0018-R-s09-Q3"><legend><span class="cfa-curriculum-question-with-label">3. </span>
+<p>ファンドBの最大個別ドローダウン (largest individual drawdown) は次のうちどれか：</p>
+</legend></div>
+</legend></div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-0" id="dp-qc-2-0" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-0">
+<p>A. −20.6</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse2-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>Aは不正解。正しい解答を選択して詳細を確認しなさい。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse2-1" id="dp-qc-2-1" name="dp-qc-2" type="radio" value="true"/><label for="dp-qc-2-1">
+<p>B. −18.5</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response dp-qc-correct" id="dpQcResponse2-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>Bが正解である。最大個別ドローダウンは最大ドローダウンとは異なり、途切れのない負のリターンの連続でなければならない。途切れのない負のリターンによる最大の累積損失は−18.5である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-2" id="dp-qc-2-2" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-2">
+<p>C. −13.2</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse2-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>Cは不正解。正しい解答を選択して詳細を確認しなさい。</p>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc dp-qc-built"><fieldset>
+<div class="dp-qc-question"><legend>
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0018-R-s09-Q4"><legend><span class="cfa-curriculum-question-with-label">4. </span>
+<p>ファンドBのドローダウン期間 (drawdown duration) は何か月か：</p>
+</legend></div>
+</legend></div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse3-0" id="dp-qc-3-0" name="dp-qc-3" type="radio" value="false"/><label for="dp-qc-3-0">
+<p><span class="cfa-curriculum-option-label">A. </span>5.</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse3-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>Aは不正解。正しい解答を選択して詳細を確認しなさい。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse3-1" id="dp-qc-3-1" name="dp-qc-3" type="radio" value="false"/><label for="dp-qc-3-1">
+<p><span class="cfa-curriculum-option-label">B. </span>7.</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse3-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>Bは不正解。正しい解答を選択して詳細を確認しなさい。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse3-2" id="dp-qc-3-2" name="dp-qc-3" type="radio" value="true"/><label for="dp-qc-3-2">
+<p>C. 13</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response dp-qc-correct" id="dpQcResponse3-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i></span>
+<div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>Cが正解である。ドローダウン期間は、ピーク（第5月）からボトム（第12月）までの下落期間に加え、完全回復（第18月）までの期間も含む。第5月から第18月までの期間は13か月である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a>
+</fieldset></div>
+</div>
+</figure>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist"><i aria-hidden="true" class="dp-icon fas fa-clipboard-list" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Reference List</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel0">参考文献 (References)</h3>
+<div aria-labelledby="dpPanel0" class="dp-panel-content" id="dpPanel0Content" role="region" style="display: none;" tabindex="0">
+<ul id="CIPM0018-R-s09-ref1">
+<li id="CIPM0018-R-s09-R1list">Rogers, D. and Van Dyke, C. (2006). “Measuring the Volatility of Hedge Fund Returns.” <em>Journal of Wealth Management</em> 9 (1): 45–53. <a class="external" href="https://doi.org/10.3905/jwm.2006.628683" rel="noreferrer noopener" target="_blank"><span>https://doi.org/10.3905/jwm.2006.628683</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip7Content" role="tooltip" style="display: none;">
+<p>23 17 CFR 4.10。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip8Content" role="tooltip" style="display: none;">
+<p>24 図表を簡略化するために2年間の月次リターンを示しているが、ドローダウン指標の計算には3年間の月次リターンの方が一般的であり、統計的にもより頑健である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip9Content" role="tooltip" style="display: none;">
+<p>25 Rogers および Van Dyke（2006）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip0Content" role="tooltip" style="display: none;">
+<p>ピークからボトムへの下落の様々な側面を捉える尺度。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip1Content" role="tooltip" style="display: none;">
+<p>ファンドのピーク評価の後に生じる価値の下落（負のリターンの連続として表される）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip2Content" role="tooltip" style="display: none;">
+<p>ファンドのピーク評価の後に生じる価値の下落（負のリターンの連続として表される）。個別ドローダウン (individual drawdown) を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip3Content" role="tooltip" style="display: none;">
+<p>一定期間における最大のドローダウンのうち指定数の平均。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip4Content" role="tooltip" style="display: none;">
+<p>ある期間における最大のピークからボトムへの損失。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip5Content" role="tooltip" style="display: none;">
+<p>最大ドローダウン (maximum drawdown) を経験し、その後回復するまでに要する時間；ピークからボトム、そして再びピークに至るまでの期間。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip6Content" role="tooltip" style="display: none;">
+<p>一定期間における最大のピークからボトムへの損失。</p>
+</div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1368_modules_items_99346_108_Measures_of_Downside_Risk.html" >← 前へ</a>
+  <span class="title">1.09 | Drawdown Measures</span>
+  <a href="courses_1368_modules_items_99348_110_Value_at_Risk_and_Stress_Tests.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

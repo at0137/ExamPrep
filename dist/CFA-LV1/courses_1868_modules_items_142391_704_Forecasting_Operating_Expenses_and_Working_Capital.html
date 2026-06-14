@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.04 | Forecasting Operating Expenses and Working Capital</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2429-R-s04-R-1" title="7.04 | Forecasting Operating Expenses and Working Capital">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール7：企業分析：予測（Forecasting）7.04｜営業費用および運転資本の予測（Forecasting Operating Expenses and Working Capital）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">企業の営業費用および運転資本を予測するアプローチを説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>発行体（issuers）の営業コストに関する開示は、通常、収益に関する開示ほど詳細ではない。地理的地域、事業セグメント、または製品ラインごとにコストを個別にモデル化するのではなく、アナリストはしばしば、連結財務諸表の項目（例：売上原価（cost of sales）、販売費及び一般管理費（SG&amp;A））や、連結またはセグメントベースのEBITDAマージン（EBITDA margins）のような集約的な指標を予測対象として用いざるを得ない。それでも、収益とコストの予測は整合的であるべきである。例えば、低マージンの製品、セグメント、または地域の売上が他よりも速く成長すると予測される場合、各対象の正確なマージンが不明であっても、全体の利益率の低下をある程度予測すべきである。例えば食品・食料品は通常、粗利益率（gross profit margins）が低いため、高マージン製品（例：アルコール製品や医薬品）も扱う食料品チェーンを分析する場合、製品ミックスの変化を予測に反映させる必要がある。</p>
+<section id="CFA2429-R-s04-01-01">
+<h3 class="dp-heading">売上原価と粗利益率（Cost of Sales and Gross Margins）</h3>
+<p>売上原価（cost of sales、または売上原価（COGS：cost of goods sold））は、製品の製造または販売を行う企業にとって通常最大のコスト項目である。売上と直接的な関係があるため、売上に対する割合（または粗利益率）として予測するのが一般的に有効な方法である。もし企業が低価格の代替製品との競争により市場シェアを失っている場合、粗利益率は低下する可能性が高い。一方、差別化された製品の導入やコスト優位性の確立により市場シェアを拡大している場合、粗利益率は上昇する可能性が高い。</p>
+<p>売上原価は通常大きなコストであるため、粗利益率の予測における1ベーシスポイント（bps）の違いでも、営業利益（operating profit）やフリー・キャッシュフロー（free cash flow）の予測に大きな影響を与える可能性がある。アナリストは、より詳細な分析（例：セグメント別、投入要素別、製品ライン別、または数量と価格の要素別）が可能かどうかを検討すべきである。例えば、一部の企業は変動する投入コストに直面しており、そのコスト増を顧客に転嫁できるまでに時間差がある場合がある。特に粗利益率が低い企業では、投入コストの急激な変動が営業利益に大きな影響を与える。航空会社の利益がヘッジされていないジェット燃料価格の変動に敏感であることが好例である。このような場合、短期予測のためにはコストと売上の双方を数量と価格に分解することが不可欠であるが、長期予測では売上と投入コストの全体的な関係を用いることもある（Exhibit 3参照）。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2429-R-s04-EXH-1-3">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">Exhibit 3 価格とコストが粗利益およびマージンに与える影響（The Effect of Prices and Costs on Gross Profit and Margin）</h4>
+<p>ある企業の売上原価（COGS）が売上の25%であり、第2期の販売数量が第1期と同じであると仮定する。第2期に投入コストが2倍となり、その増加分をすべて25%の価格上昇として顧客に転嫁できた場合、売上原価の売上比率は（分子と分母に同額が加わるため）40%に上昇する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">第1期（Period 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">第2期（Period 2）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Sales</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">125.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">COGS</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">25.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">50.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">粗利益（Gross profit）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">75.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">75.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上原価／売上比率（COGS as % of sales）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">25%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">40%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">粗利益率（Gross margin %）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">75%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">60%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>したがって、粗利益の絶対額は変わらないにもかかわらず、粗利益率は75%から60%へ低下する。</p>
+</div>
+<p>アナリストは企業のヘッジ戦略（hedging strategy）を予測に組み込むべきである。例えば、コモディティに依存する企業では、必要な原材料価格が大きく上昇すると、変動費が製品価格より速く上昇するため、粗利益率はほぼ自動的に低下する。ヘッジ戦略によって、この収益性への影響を緩和することができる。例えばビールメーカーは、ビール製造に必要な主要原材料である大麦（barley）のコストを1年前にヘッジすることが多い。企業は通常、具体的なヘッジポジションを開示しないが、その戦略は財務諸表の注記に記載されていることが多い。さらに、製品需要が価格弾力的（price elastic）である場合、販売価格の引き上げによる販売数量への悪影響は、段階的な価格引き上げによって緩和できる。例えば、大麦価格の上昇が見込まれる場合、ビールメーカーは翌年の急激な値上げを避けるために、徐々に価格を引き上げることができる。</p>
+<p>競合他社の粗利益率は予測のクロスチェックとして有用であるが、ビジネスモデルの違いにより比較可能でない場合がある。例えば、自社で店舗を所有・運営する小売業者もあれば、フランチャイズ型の小売を展開する卸売業者もある。フランチャイズモデルでは、運営コストの大部分はフランチャイジーが負担し、卸売業者は小さなマークアップで商品を販売する。このため、自社店舗型小売と比較して、卸売業者は粗利益率が低いが、営業費用も大幅に低い。</p>
+</section>
+<section id="CFA2429-R-s04-01-02">
+<h3 class="dp-heading">販売費及び一般管理費（SG&amp;A Expenses）</h3>
+<p>SG&amp;A費用はもう一つの主要な営業コストである。売上原価とは対照的に、SG&amp;A費用は収益との直接的な関係が弱い場合が多い。COGSとSG&amp;Aの利益への影響を示す例として、タイのセメントおよび建材企業であるSiam Cement Groupの2017年から2018年のケースを考える。同社の主要な損益計算書項目の概要をExhibit 4に示す。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-EXH-1-4">
+<h4 class="cfa-curriculum-exhibit-table-title">Exhibit 4 Siam Cement Group 2017–18年財務データ（Financials）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">2017年（THB十億）</th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">2018年（THB十億）</th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>YoY%</strong>
+</th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">売上比率（Percentage of Sales）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2017</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2018</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">純売上（Net sales）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">450.92</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">478.44</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6.1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">100.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">100.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">COGS</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">349.31</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">383.46</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">9.8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">77.5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">80.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">粗利益（Gross profit）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">101.61</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">94.98</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−6.5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">SG&amp;A</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">52.58</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">55.09</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4.8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11.7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">SG&amp;Aの主な項目（Selected SG&amp;A items）：</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">給与および人件費（Salary and personnel expenses）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">24.24</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">23.98</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−1.1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5.4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">輸送費（Freight costs）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11.63</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11.55</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−0.7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">研究開発（Research and development）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4.18</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4.67</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11.7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">0.9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">販促および広告（Promotion and advertising）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2.62</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2.58</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−1.5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">0.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">0.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">営業利益（Operating income）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">49.03</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">39.89</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−18.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10.8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">8.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：「YoY%」は前年比変化率（year-over-year percentage change）を意味する。</p>
+<p>出所：Siam Cement Groupの年次報告書に基づく。</p>
+</div>
+<p>Exhibit 4に示されているように、Siam Cementは2018年において、顧客に十分転嫁できない投入コストの上昇の影響を受けた。その結果、売上が6.1%成長したにもかかわらず、粗利益は6.5%減少し、粗利益率は低下した。同社はその他の営業費用の増加を抑制することに成功し、SG&amp;A費用は4.8%増加したが、売上比率ではわずかに低下した。営業利益は18.6%減少した。この経験は、2016年（図示なし）において投入コストの低下により粗利益率が前年比で240bps拡大した状況とは対照的である。</p>
+<p>SG&amp;A費用全体は一般に売上原価ほど収益と密接には連動しないが、特定のSG&amp;A費用は他よりも変動性が高い場合がある。特に販売費や流通費は変動費の割合が大きく、売上に対する割合としてモデル化できる。一方、一般管理費はより固定的であり、賃金インフレなどを前提とした固定的な成長率でモデル化する方が適している場合がある。</p>
+<p>セグメント開示には、通常、セグメント別の営業利益率やEBITDAマージンが含まれるが、売上原価やSG&amp;Aなどのコスト項目はセグメント別には含まれないのが一般的である。アナリストがセグメント別予測に基づくモデルを構築する場合、Example 1に示されているように、セグメントベースの要約指標を使用することがある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2429-R-s04-EXM-1-1">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例1 複数セグメントを有する消費財企業の分析（Analysis of a Consumer Goods Company with Multiple Segments）</h4>
+<section>
+<p>ある消費財企業は、2X19年において基礎的営業利益率（underlying operating margin）19.1%を報告した。Exhibit 5に示されているように、営業利益率は最も成長率の高いセグメントであるホームケア（Home Care）で最も低い。一方、他の2つのセグメントはより高い利益率を有しているが、成長率はより低い。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-EXH-1-5">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 5<span style="display: block;">Segment Revenue and Profits (EUR millions, unless noted)</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">セグメント（Segment）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X19</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X18</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">’19/’18前年比（YoY）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">平均成長率（2X17–2X19）（Avg. Growth Rate, 2X17–2X19）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ビューティー＆パーソナルケア（Beauty &amp; Personal Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">21,868</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">20,624</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">食品・リフレッシュメント（Foods &amp; Refreshments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19,287</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">20,227</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ホームケア（Home Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,825</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,131</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">総収益（Total revenues）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">51,980</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">50,982</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td colspan="5" style="text-align: left; vertical-align: bottom; padding: 8px; ">基礎的営業利益（Underlying operating profit）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ビューティー＆パーソナルケア（Beauty &amp; Personal Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4,960</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4,543</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">9%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">食品・リフレッシュメント（Foods &amp; Refreshments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,382</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,576</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ホームケア（Home Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,605</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,344</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">Total</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">9,947</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">9,463</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; ">基礎的営業利益率（Underlying operating profit margin）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ビューティー＆パーソナルケア（Beauty &amp; Personal Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.0%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">食品・リフレッシュメント（Foods &amp; Refreshments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ホームケア（Home Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">13.3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">Total</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">18.6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：基礎的営業利益（underlying operating profit）は非IFRSの営業利益指標であり、IFRSの営業利益にリストラクチャリング費用（restructuring costs）などの項目を調整したものである。</p>
+<p>出所：Unileverの例を基に作成。</p>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>以下の2つのアプローチを用いて、売上、営業利益、および営業利益率を推定せよ：(A) 今後5年間にわたり総売上成長率を2.0%、全体の基礎的営業利益率を19.1%と仮定する、(B) 各セグメントの売上成長率および基礎的営業利益率が2019年と同じ水準で継続すると仮定する。5年後の基礎的営業利益はどちらのアプローチでより高くなるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Exhibit 6は、5年後の営業利益がアプローチAでは10,962百万ユーロ、アプローチBでは11,549百万ユーロとなることを示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-EXH-1-6">
+<h6 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 6<span style="display: block;">Sales and Operating Profit, 2X19–2X24E (EUR millions, unless noted)</span>
+</h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">アプローチA（Approach A）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X19A</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X20E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X21E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X22E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X23E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X24E</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">総収益（Total revenues）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">51,980</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">53,020</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">54,080</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">55,162</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">56,265</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">57,390</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">         </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">基礎的営業利益（Underlying operating profit）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">9,947</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,127</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,329</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,536</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,747</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,962</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">         </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">基礎的営業利益率（Underlying operating profit margin）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.1%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">アプローチB（Approach B）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Sales</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X19A</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X20E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X21E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X22E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X23E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X24E</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ビューティー＆パーソナルケア（Beauty &amp; Personal Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">21,868</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">23,187</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">24,586</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">26,069</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">27,641</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">29,308</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">         </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">食品・リフレッシュメント（Foods &amp; Refreshments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19,287</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">18,391</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17,536</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">16,721</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15,944</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15,203</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">         </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">−5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ホームケア（Home Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,825</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11,567</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">12,359</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">13,205</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14,110</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15,077</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">7%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">総収益（Total revenues）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">51,980</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">53,144</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">54,481</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">55,995</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">57,695</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">59,588</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">マージン（Margins）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X19A</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X20E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X21E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X22E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X23E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X24E</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ビューティー＆パーソナルケア（Beauty &amp; Personal Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.7%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">食品・リフレッシュメント（Foods &amp; Refreshments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ホームケア（Home Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14.8%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">基礎的営業利益（Underlying operating profit）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X19A</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X20E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X21E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X22E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X23E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X24E</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ビューティー＆パーソナルケア（Beauty &amp; Personal Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4,960</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,259</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,576</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,913</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6,269</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6,648</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">食品・リフレッシュメント（Foods &amp; Refreshments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,382</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,225</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,075</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,932</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,796</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,666</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ホームケア（Home Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,605</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,715</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,832</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,958</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,092</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,235</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">Total</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">9,947</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,199</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,484</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,803</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11,157</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11,549</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>問題1における2つの代替アプローチ（AおよびB）の結果を比較し、説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>アプローチAは、総売上成長率が一定の2%、基礎的営業利益率が安定的に19.1%であると仮定している。したがって、営業利益の成長率は売上成長率と一致し、一定の2%となり、セグメント間の成長率や収益性の違いが存在しないことを前提としている。一方、アプローチBは、ビューティー＆パーソナルケア、食品・リフレッシュメント、ホームケアの各セグメントについて、それぞれ6%、−5%、7%の売上成長率を仮定している。このアプローチは、アプローチA（2%）に比べてより高い全体の複利成長率（3%）をもたらし、さらにセグメントごとのマージンの違いによるミックス効果により、基礎的営業利益率が平均して年間6ベーシスポイント（bps）上昇する。2024年予想（2024E）において、アプローチAの基礎的営業利益率は19.1%となる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>次の5年間において、各セグメントの売上が以下の成長率で増加すると仮定する：ビューティー＆パーソナルケア3.0%、食品・リフレッシュメント2.0%、ホームケア4.0%。しかし、ビューティー＆パーソナルケアの基礎的営業利益率は、競争の激化、成長の制約、持続可能な包装（sustainable packaging）導入に伴うコストにより、今後5年間毎年20bps低下する。一方、食品・リフレッシュメントおよびホームケアの営業利益率は、製品需要の増加や工場の稼働効率向上により、今後5年間それぞれ毎年15bpsおよび50bps上昇する。このとき、今後5年間の全体の基礎的営業利益率を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Exhibit 7に示されているように、全体の基礎的営業利益率は2X19年の19.1%から2X24年には19.5%へと改善する。これは、ビューティー＆パーソナルケアのマージン低下が、食品・リフレッシュメントのマージン上昇およびより高成長のホームケアセグメントによって相殺されるためである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-EXH-1-7">
+<h6 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 7<span style="display: block;">Sales and Operating Profit, 2X19–2X24E (EUR millions, unless noted)</span>
+</h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Sales</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X19A</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X20E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X21E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X22E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X23E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X24E</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ビューティー＆パーソナルケア（Beauty &amp; Personal Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">21,868</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22,524</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">23,200</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">23,896</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">24,613</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">25,351</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">食品・リフレッシュメント（Foods &amp; Refreshments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19,287</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19,673</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">20,066</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">20,468</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">20,877</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">21,294</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ホームケア（Home Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,825</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11,258</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11,708</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">12,177</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">12,664</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">13,170</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">総収益（Total revenues）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">51,980</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">53,455</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">54,974</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">56,540</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">58,153</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">59,816</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">マージン（Margins）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X19A</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X20E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X21E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X22E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X23E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X24E</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ビューティー＆パーソナルケア（Beauty &amp; Personal Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">21.9%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">21.7%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">食品・リフレッシュメント（Foods &amp; Refreshments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">18.0%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">18.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">18.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ホームケア（Home Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15.3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">16.3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">16.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17.3%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">基礎的営業利益（Underlying operating profit）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X19A</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X20E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X21E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X22E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X23E</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2X24E</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ビューティー＆パーソナルケア（Beauty &amp; Personal Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">4,960</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,064</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,169</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,277</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,386</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,496</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">食品・リフレッシュメント（Foods &amp; Refreshments）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,382</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,479</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,579</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,681</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,786</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">3,894</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ホームケア（Home Care）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,605</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,725</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,853</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,988</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,131</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,282</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">Total</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">9,947</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,268</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,601</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,946</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11,303</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11,672</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">マージン（Margin）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.4%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.4%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19.5%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA2429-R-s04-01-03">
+<h3 class="dp-heading">運転資本の予測（Working Capital Forecasts）</h3>
+<p>運転資本の予測は通常、前のモジュールで説明した効率性指標（efficiency ratios）を予測対象として用い、これを売上およびコストの予測と組み合わせて、売掛金（accounts receivable）、棚卸資産（inventory）、買掛金（accounts payable）、およびその他の流動資産・負債を予測する（Example 2参照）。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2429-R-s04-EXM-1-2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2 効率性指標を用いた運転資本の予測（Working Capital Forecasts with Efficiency Ratios）</h4>
+<section>
+<p>Exhibit 8は、架空の企業YY Ltd.について、1年目から3年目までの収益、売上原価（COGS）、および期末運転資本残高を示している。このデータに基づき、問題1～3に答えよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-EXH-1-8">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 8<span style="display: block;">YY Ltd. Financial Data (CNY millions)</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Year</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>1</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>3</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">収益（Revenue）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">174,915</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">205,839</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">245,866</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">COGS</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">152,723</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">177,285</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">209,114</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">売掛金（Accounts receivable）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,598</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6,949</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,161</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">棚卸資産（Inventory）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">29,481</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">32,585</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">41,671</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">買掛金（Accounts payable）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">46,287</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">59,528</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">72,199</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>期末残高を用い、会計年度を365日と仮定して、1年目から3年目の売掛金回転日数（DSO：days sales outstanding）、棚卸資産回転日数（DOH：inventory days on hand）、および買掛金回転日数（DPO：days payable outstanding）を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>売掛金回転日数（DSO）は売掛金／（売上高／365）、棚卸資産回転日数（DOH）は棚卸資産／（売上原価（COGS）／365）、買掛金回転日数（DPO）は買掛金／（売上原価（COGS）／365）であることを思い出すこと。Exhibit 8のデータを用いると、1年目から3年目のこれら3つの指標は以下の通りである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Year</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>1</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>3</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">売掛金回転日数（Days sales outstanding）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">12</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">12</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">棚卸資産回転日数（Inventory days on hand）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">70</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">67</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">73</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">買掛金回転日数（Days payable outstanding）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">111</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">123</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">126</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>同僚のLiangは、YY Ltd.の4年目、5年目、6年目の売上成長率をそれぞれ18%、16%、13%、粗利益率（gross margin）をそれぞれ17%、17%、16%と予測している。Liangの予測を用いて、4年目から6年目の予想売上および売上原価（COGS）を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Liangの年間売上成長率および粗利益率の予測とExhibit 8のデータを用いると、4年目から6年目の予想売上および売上原価は以下の通りである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-T-1-c">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">年（CNY百万）（Year (CNY millions)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>1</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>3</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>4</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>5</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>6</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">売上（Revenue）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">174,915</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">205,839</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">245,866</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">290,122</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">336,541</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">380,292</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">成長率（Growth rate）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">         </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">18%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">19%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">18%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">16%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">13%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">COGS</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">152,723</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">177,285</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">209,114</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">240,801</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">279,329</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">319,445</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">粗利益率（Gross margin）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">13%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">14%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">17%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">16%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>Liangは、4年目から6年目における売掛金回転日数（DSO）、棚卸資産回転日数（DOH）、買掛金回転日数（DPO）が3年目と同水準で推移すると予測している。Liangの予測および売上と売上原価の予測を用いて、4年目から6年目の期末売掛金、棚卸資産、買掛金残高を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>効率性指標は3つの変数のうち2つが既知であるため、運転資本残高を求めるように式を変形することができる。この場合、効率性指標は3年目の水準で一定と仮定され、売上および売上原価はすでに予測されている。</p>
+<p>売掛金回転日数（DSO）は売掛金／（売上／365）であるため、売掛金はDSO ×（売上／365）となる。同様に、棚卸資産はDOH ×（売上原価（COGS）／365）、買掛金はDPO ×（売上原価（COGS）／365）である。</p>
+<p>Exhibit 8のデータおよび売上と売上原価の予測を用いると、期末の運転資本勘定残高は以下の通りである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-T-1-d">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">年（CNY百万）（Year (CNY millions)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>1</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>3</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>4</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>5</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>6</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">売上（Revenue）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">174,915</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">205,839</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">245,866</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">290,122</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">336,541</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">380,292</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">COGS</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">152,723</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">177,285</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">209,114</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">240,801</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">279,329</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">319,445</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">売掛金（Accounts receivable）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">5,598</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6,949</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">10,161</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11,990</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">13,908</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15,716</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">棚卸資産（Inventories）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">29,481</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">32,585</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">41,671</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">47,985</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">55,663</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">63,657</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">買掛金（Accounts payable）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">46,287</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">59,528</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">72,199</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">83,139</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">96,442</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">110,292</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">売掛金回転日数（Days sales outstanding）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">12</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">12</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">15</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">棚卸資産回転日数（Inventory days on hand）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">70</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">67</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">73</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">73</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">73</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">73</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">買掛金回転日数（Days payable outstanding）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">111</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">123</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">126</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">126</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">126</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">126</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>運転資本の効率性指標については、過去実績（historical results）アプローチが一般的であるが、アナリストは他の予測アプローチを用いることもできる。Exhibit 9では、Elaine NguyenがWarehouse Club Inc.の営業費用および運転資本に対して用いることができる予測対象とアプローチを示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s04-EXH-1-9">
+<h4 class="cfa-curriculum-exhibit-table-title">Exhibit 9 Warehouse Club Inc.の営業費用および運転資本の予測アプローチ（Forecast Approaches for Warehouse Club Inc.’s Operating Costs and Working Capital）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">予測対象（Forecast Object）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">予測アプローチ（Forecast Approach）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">Warehouse Club Inc.における対象とアプローチの例（Example of Object and Approach for Warehouse Club Inc.）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="4" style="text-align: left; vertical-align: top; padding: 8px; ">粗利益率（純売上ベース）（Gross margin (on net sales)）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">過去実績（Historical results）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">2X10年から2X19年にかけて、Warehouseの粗利益率は平均して毎年2ベーシスポイント（bps）上昇している。この上昇は、規模の拡大によるサプライヤーに対する交渉力の向上を反映している可能性があり、Nguyenは同様に毎年2bpsの粗利益率上昇を予測に用いることができる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">過去の基準成長率と収束（Historical base rates and convergence）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">業界平均の粗利益率およびWalmartのようなより大規模で成熟した小売業者の粗利益率はいずれもWarehouseより高い。しかし、Warehouseのビジネスモデルは、純売上に対して低い粗利益率を設定することで、高マージンの会員収益を生み出すものである。そのため、Nguyenはこのアプローチを用いない可能性が高い。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">経営陣ガイダンス（Management guidance）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Warehouseの経営陣がマージンに関するガイダンスを提供している場合、Nguyenはその信頼性を評価したうえで、予測にこのアプローチを用いることができる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">アナリストの裁量的予測（Analyst’s discretionary forecast）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Nguyenは、粗利益率と、Warehouseの商品カテゴリーにおけるインフレ／デフレ（inflation/deflation）、および会員の節約額が競合他社に対して年会費の5倍となるようにするという経営方針との関係を分析することで、裁量的に粗利益率を予測することができる。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">予測対象（Forecast Object）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">予測アプローチ（Forecast Approach）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">Warehouse Club Inc.における対象とアプローチの例（Example of Object and Approach for Warehouse Club Inc.）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="4" style="text-align: left; vertical-align: top; padding: 8px; ">売上に対する販売費及び一般管理費（SG&amp;A）（Selling, general, and administrative expenses (SG&amp;A) as a percentage of sales）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">過去実績（Historical results）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">SG&amp;Aは店舗運営や一部の商品配送コストを含み、その主な構成要素は従業員の給与である。売上に対する比率は概ね9%前後で安定しており、Nguyenはこの水準が維持されると予測することができる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">過去の基準成長率と収束（Historical base rates and convergence）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">WarehouseのSG&amp;Aの売上比率は、店舗生産性やコストリーダーシップを重視するビジネスモデルの違いにより、大手小売競合企業（および業界平均）よりもすでに低い。したがって、NguyenはこのアプローチをSG&amp;Aの予測には用いない可能性が高い。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">経営陣ガイダンス（Management guidance）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Warehouseの経営陣がSG&amp;Aに関するガイダンスを提供している場合、Nguyenはその信頼性を評価したうえで、このアプローチを予測に用いることができる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">アナリストの裁量的予測（Analyst’s discretionary forecast）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">SG&amp;Aは主に従業員給与から構成されるため、Nguyenは従業員生産性（例：店舗当たり従業員数）や賃金水準の予測に基づいてSG&amp;Aを予測することができる。賃金水準は、経済全体の賃金成長率などのマクロ経済変数に基づく可能性がある。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">予測対象（Forecast Object）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">予測アプローチ（Forecast Approach）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">Warehouse Club Inc.における対象とアプローチの例（Example of Object and Approach for Warehouse Club Inc.）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="4" style="text-align: left; vertical-align: top; padding: 8px; ">運転資本比率（例：DSO、DOH、DPO）（Working capital ratios (e.g., DSO, DOH, DPO)）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">過去実績（Historical results）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">2X19年時点で、WarehouseのDSO、DOH、DPOはそれぞれ3日、30日、28日であった。DSOとDPOは過去10年間安定しており、DOHは2X10年以降7日減少している。Nguyenは今後数年間、DSOとDPOは安定、DOHは緩やかに低下すると予測することができる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">過去の基準成長率と収束（Historical base rates and convergence）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Warehouseの運転資本比率およびキャッシュ・コンバージョン・サイクル（cash conversion cycle）は、ビジネスモデルの違いにより、長年にわたり業界平均や一部の大手同業他社よりも大幅に優れている。したがって、Warehouseがビジネスモデルを変更しない限り（例：Eコマース事業の開始など）、Nguyenはこのアプローチを用いない可能性が高い。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">経営陣ガイダンス（Management guidance）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Warehouseの経営陣が運転資本（例：売上に対する純運転資本比率（net working capital to sales ratio））に関するガイダンスを提供している場合、Nguyenはその信頼性を評価したうえで、このアプローチを予測に用いることができる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">アナリストの裁量的予測（Analyst’s discretionary forecast）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Nguyenは、例えば商品カテゴリー別（例：生鮮食品、加工食品、非食品）の純運転資本対売上比率を推定し、それをカテゴリー別に分解した純売上予測に適用することで、裁量的に運転資本を予測することができる。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2429-R-s04-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット（Question Set）</h4>
+<section>
+<p>以前のモジュールで紹介されたEコマース小売業者Iliso Marketplace Ltd.（Iliso）は、商品カテゴリー別にGMVを報告している。2X19年の構成は、食品・食料品55%、メディアおよび電子機器20%、家庭用品および装飾品8%、アパレルおよび美容製品17%であった。ただし、Ilisoは集計された財務結果のみを開示しており（セグメント開示はない）。</p>
+<p>Ilisoの売上原価（cost of revenue）は主に、Ilisoが総額ベースで収益を認識する商品の在庫コストから構成される。在庫コストには配送および取扱費用が含まれる。さらに、売上原価には出荷および物流関連費用、ならびにIlisoが配送サービス提供者である第三者販売事業における配送サービス費用が含まれる。また、在庫処理および配送資産に関連する減価償却費（depreciation expense）も含まれる。</p>
+<p>Ilisoの販売費及び一般管理費（operating, general, and administrative expenses）には、フルフィルメントセンターの運営および人員配置にかかる費用、顧客サービス費用、決済処理手数料、Ilisoの技術インフラの設計・運用・維持に関連する費用、および一般的な企業管理機能に関する費用が含まれる。</p>
+<p>Ilisoは、顧客がクレジットカードで支払い、1週間未満で決済されるため、売掛金はほとんどない。一方で、棚卸資産、買掛金、未払費用（accrued expenses）は貸借対照表上で大きな比重を占める。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>アナリストは、Ilisoのカテゴリー別GMV開示をどのように活用できるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>アナリストは、特定のカテゴリーの商品を主に販売する他の小売企業を参照することで、カテゴリー別の売上原価／売上（cost of sales/sales）および粗利益率（gross profit margin）を推定することができる。これらの企業の情報は、Ilisoの粗利益率が商品カテゴリー構成から示唆される水準と整合的かどうかを検証するために利用できる。また、カテゴリー構成が変化すると予想される場合、アナリストはそれに応じて全体の売上原価／売上や粗利益率を調整することができる。ただし、この情報を直接用いてカテゴリー別の詳細な予測を構築することは適切ではない。なぜなら、そのような予測は検証可能性に乏しく、アナリストの時間の効率的な使用とはならないためである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2429-R-s04-Q8">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>Ilisoの売上原価（cost of revenue）をどの基準に対する割合として予測するのが最も適切か：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 小売売上（retail sales）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。売上原価はIlisoの小売売上に基づくべきである。売上原価は、第三者販売者がIlisoのフルフィルメントネットワーク（fulfillment network）を倉庫保管や配送に利用しない限り、第三者販売には影響されない。同社は第三者によるそのような利用について情報を開示しておらず、そのコストはIlisoの小売売上に関連する売上原価と比較して小さいと考えられる。Ilisoの売上原価は主に、Ilisoが総額ベース（gross basis）で収益を認識する商品の在庫コストから構成されている。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 総収益（total revenues）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。売上原価はIlisoの小売売上に基づくべきである。売上原価は、第三者販売者がIlisoのフルフィルメントネットワークを倉庫保管や配送に利用しない限り、第三者販売には影響されない。同社は第三者によるそのような利用について情報を開示しておらず、そのコストはIlisoの小売売上に関連する売上原価と比較して小さいと考えられる。Ilisoの売上原価は主に、Ilisoが総額ベースで収益を認識する商品の在庫コストから構成されている。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 総GMV（total GMV sales）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。売上原価はIlisoの小売売上に基づくべきである。売上原価は、第三者販売者がIlisoのフルフィルメントネットワークを倉庫保管や配送に利用しない限り、第三者販売には影響されない。同社は第三者によるそのような利用について情報を開示しておらず、そのコストはIlisoの小売売上に関連する売上原価と比較して小さいと考えられる。Ilisoの売上原価は主に、Ilisoが総額ベースで収益を認識する商品の在庫コストから構成されている。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>他の小売企業の財務データを用いて算出した過去の基準成長率と収束（historical base rates and convergence）アプローチを、Ilisoの営業費用の予測に用いることについて論ぜよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>IlisoのEコマース（e-commerce）ビジネスモデルおよび小売業全体の広範性を考えると、業界平均はIlisoに適さない可能性がある。しかし、より規模が大きく成熟したEコマース小売企業が存在し、それらの統計を算出できる場合には、このアプローチは適切となり得る。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2429-R-s04-Q10">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>食品・食料品（food and grocery）がIlisoの小売売上に占める割合が増加した場合、次のうち最も増加する可能性が高いものはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 棚卸資産回転率（inventory turnover）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。食品・食料品は腐敗しやすい（perishable）ため、棚卸資産回転率は上昇する。売上に対する棚卸資産の割合は低下し、その結果、売上に対する流動資産の割合も低下する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 粗利益率（gross profit margin）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。食品・食料品は腐敗しやすいため、棚卸資産回転率は上昇する。売上に対する棚卸資産の割合は低下し、その結果、売上に対する流動資産の割合も低下する。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 流動資産／売上（current assets/sales）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。食品・食料品は腐敗しやすいため、棚卸資産回転率は上昇する。売上に対する棚卸資産の割合は低下し、その結果、売上に対する流動資産の割合も低下する。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142388_703_Forecasting_Revenues.html" >← 前へ</a>
+  <span class="title">7.04 | Forecasting Operating Expenses and Working Capital</span>
+  <a href="courses_1868_modules_items_142394_705_Forecasting_Capital_Investments_and_Capital_Structure.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

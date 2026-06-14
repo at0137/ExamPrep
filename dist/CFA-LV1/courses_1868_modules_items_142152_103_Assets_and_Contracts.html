@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.03 | Assets and Contracts</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s03" title="1.03 | Assets and Contracts">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.03｜資産と契約（Assets and Contracts）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">資産および市場の分類を説明する（describe classifications of assets and markets）</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>個人、企業、政府は、財務目標の達成やリスク管理のために、多様な資産や契約を利用する。最も一般的な資産には、金融資産（financial assets）（銀行預金、譲渡性預金（certificates of deposit）、貸付金（loans）、住宅ローン（mortgages）、社債および国債（corporate and government bonds and notes）、普通株式および優先株式（common and preferred stocks）、不動産投資信託（real estate investment trusts）、マスター・リミテッド・パートナーシップ持分（master limited partnership interests）、集合投資商品（pooled investment products）、上場投資信託（exchange-traded funds）など）、通貨（currencies）、一部の商品（commodities）（金や石油など）、および実物資産（real assets）（不動産など）が含まれる。最も一般的な契約には、オプション契約（option contracts）、先物契約（futures contracts）、先渡契約（forward contracts）、スワップ契約（swap contracts）、保険契約（insurance contracts）がある。個人、企業、政府は、資金調達、投資、情報動機型取引による利益獲得、リスクヘッジ、または資金形態の変換のためにこれらを利用する。</p>
+<section id="CFA0161-R-s03-01">
+<h3 class="dp-heading">資産および市場の分類（Classifications of Assets and Markets）</h3>
+<p>実務家は、顧客、他の実務家、規制当局とのコミュニケーションを円滑にするために、資産およびそれらが取引される市場を、共通の特性に基づいて分類することが多い。</p>
+<p>最も活発に取引される資産は、証券（securities）、通貨（currencies）、契約（contracts）、商品（commodities）である。また、実物資産（real assets）も取引される。証券には一般に、債券（debt instruments）、株式（equities）、および集合投資ビークルの持分が含まれる。通貨は国家の通貨当局（national monetary authorities）によって発行される貨幣である。契約は、将来において証券、通貨、商品、または他の契約を交換する合意である。商品には、貴金属、エネルギー製品、工業用金属、農産物が含まれる。実物資産は、不動産、航空機、機械などの有形資産である。証券、通貨、契約は金融資産（financial assets）に分類され、商品と実物資産は実物資産（physical assets）に分類される。</p>
+<p>証券はさらに債券（debt）または株式（equity）に分類される。債券（固定収益証券（fixed-income instruments）とも呼ばれる）は、借入金の返済を約束するものである。株式は企業の所有権を表す。集合投資ビークルの持分は、投資ポートフォリオに対する不可分の持分を表す。このポートフォリオには、証券、通貨、契約、商品、実物資産が含まれる場合がある。他の企業の株式のみを保有する上場投資信託（exchange-traded funds）などの集合投資ビークルも、一般に株式とみなされる。</p>
+<p>証券はまた、公募証券（public securities）か私募証券（private securities）かによっても分類される。公募証券とは、取引所やディーラーを通じて公開市場で取引されるよう登録された証券である。多くの法域において、発行体は公開証券を発行するために、開示義務やコーポレートガバナンス基準（corporate governance standards）を含む厳格な最低規制基準を満たさなければならない。</p>
+<p>私募証券はそれ以外のすべての証券である。通常、適格投資家（qualified investors）のみが私募株式（private equities）や私募債（private debt instruments）を購入できる。投資家は発行体から直接購入するか、これらの証券を保有するために設立された投資ビークルを通じて間接的に購入する。発行体は、公的開示基準が過度に負担である場合や、公募株式に伴う規制基準に従いたくない場合に私募証券を発行することが多い。ベンチャーキャピタル（venture capital）は、企業の設立時または設立直後に投資家が提供する私募株式である。私募証券は一般に流動性が低い。一方、多くの公募証券は流動的な市場で取引され、売り手は容易に買い手を見つけることができる。</p>
+<p>契約は、その価値が他の基礎資産（underlying assets）の価格に依存する場合、デリバティブ契約（derivative contracts）と呼ばれる。基礎資産が実物商品か金融証券かによって、デリバティブは実物型または金融型に分類される。株式デリバティブ（equity derivatives）は株式または株価指数に依存する契約であり、債券デリバティブ（fixed-income derivatives）は債券または債券指数に依存する契約である。</p>
+<p>実務家は、市場を、即時受渡しの取引か将来受渡しの取引かによって分類する。将来の受渡しを伴う契約を取引する市場は先渡市場（forward markets）または先物市場（futures markets）である。即時受渡しで取引される市場はスポット市場（spot markets）と呼ばれ、同じ基礎資産に関する先渡市場と区別される。オプション市場（options markets）は将来受渡しの契約を取引するが、受渡しはオプション保有者が行使（exercise）した場合にのみ行われる。</p>
+<p>発行体が投資家に証券を販売する場合、それはプライマリー市場（primary market）での取引と呼ばれる。投資家がその証券を他の投資家に売却する場合、それはセカンダリー市場（secondary market）での取引と呼ばれる。プライマリー市場では資金は購入者から発行体へ流れるが、セカンダリー市場では資金はトレーダー間で移動する。</p>
+<p>実務家は金融市場をマネーマーケット（money markets）とキャピタルマーケット（capital markets）に分類する。マネーマーケットでは満期が1年以内の債務証券が取引される。代表的な例として、レポ取引（repurchase agreements）（第3.2.1節参照）、譲渡性預金（negotiable certificates of deposit）、国庫短期証券（government bills）、コマーシャルペーパー（commercial paper）がある。一方、キャピタルマーケットでは、債券や株式などの長期の金融商品が取引される。これらの価値は発行体の信用力や、将来支払われる利息や配当（dividends）に依存し、不確実性を伴う。企業は一般にキャピタルマーケットで資金調達を行うが、コマーシャルペーパーなどの短期証券を発行して資金調達する場合もある。</p>
+<p>最後に、実務家は伝統的投資市場（traditional investment markets）とオルタナティブ投資市場（alternative investment markets）を区別する。伝統的投資には、公開市場で取引されるすべての債券および株式、ならびにそれらを保有する集合投資ビークルの持分が含まれる。オルタナティブ投資には、ヘッジファンド（hedge funds）、プライベートエクイティ（private equities）（ベンチャーキャピタルを含む）、商品、不動産証券および不動産、証券化債務（securitized debts）、オペレーティングリース（operating leases）、機械、コレクティブル（collectibles）、宝石などが含まれる。これらの投資は取引や評価が困難であることが多く、本質的価値（intrinsic value）から大きく乖離した価格で取引されることがある。その割引は、投資家が評価のために行う調査コストや、ポートフォリオの一部を換金する際に容易に売却できないことに対する補償である。</p>
+<p>本節の残りでは、個人、企業、政府が取引する最も一般的な資産および契約について説明する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM5">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例5：資産および市場の分類（Asset and Market Classification）</h4>
+<section>
+<p>ある投資信託の投資方針は、セカンダリー市場で取引される公募株式のみに投資することを許可している。このファンドは以下を購入できるか。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>大規模な証券取引所で取引されている企業の普通株式か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s03-01-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>可能である。普通株式は株式であり、大規模な取引所で取引されるものは通常、公募株式でありセカンダリー市場で取引される。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>ディーラーを通じてのみ取引される公開企業の普通株式か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s03-01-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>可能である。ディーラー市場（dealer markets）はセカンダリー市場であり、その証券は公募株式である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>国債か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s03-01-01-03">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>不可である。国債は公募証券であるが、株式ではなく債券である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>単一株先物契約（single stock futures contract）か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s03-01-01-04">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>不可である。単一株先物の基礎資産は通常公募株式であるが、単一株先物は株式ではなくデリバティブ契約である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">5. </span>
+<p>適切に登録された公開企業が初めて販売する普通株式か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s03-01-01-05">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>不可である。発行体からの購入はプライマリー市場での取引となるため、このファンドは購入できない。他の投資家から購入できるようになるまで待つ必要がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">6. </span>
+<p>資本10億ユーロを有する非公開銀行の株式か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s03-01-01-06">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>不可である。これらは私募株式であり、公募株式ではない。企業の知名度が高くても、適切に登録されていない限り公募証券にはならない。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CurrenciesContent">
+<p>国家の通貨当局によって発行される貨幣。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SpotMarketsContent">
+<p>特定の資産が現在の価格で交換される市場。スポット市場はしばしば現物市場（cash markets）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PrimaryMarketContent">
+<p>証券が初めて販売され、発行体が収益を受け取る市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SecondaryMarketContent">
+<p>証券が投資家間で取引される市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MoneyMarketContent">
+<p>短期債務証券（満期1年以下）の市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CapitalMarketsContent">
+<p>債券や株式などの長期の証券を取引する金融市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TraditionalInvestmentMarketsContent">
+<p>伝統的投資の市場。これには、公開市場で取引されるすべての債券および株式、ならびにそれらを保有する集合投資ビークル（pooled investment vehicles）の持分が含まれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AlternativeInvestmentMarketsContent">
+<p>伝統的な証券投資（すなわち、従来の普通株式および優先株式、ならびに従来の固定収益証券（fixed income instruments））以外の投資の市場。この用語は通常、不動産（森林地（timberland）や農地（farmland）を含む）および商品（貴金属（precious metals）を含む）への直接および間接投資、ヘッジファンド（hedge funds）、プライベートエクイティ（private equity）、ならびに特別なデューデリジェンス（due diligence）を必要とするその他の投資を含む。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="HedgeFundsContent">
+<p>公開株式や公開債券、プライベート資本（private capital）、および／または実物資産（real assets）に投資する可能性のある私募投資ビークルであるが、その特徴は投資対象ではなく投資手法によって区別される。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142150_102_The_Functions_of_the_Financial_System.html" >← 前へ</a>
+  <span class="title">1.03 | Assets and Contracts</span>
+  <a href="courses_1868_modules_items_142154_104_Securities.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

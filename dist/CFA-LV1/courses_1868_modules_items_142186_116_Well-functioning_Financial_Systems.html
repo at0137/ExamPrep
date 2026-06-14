@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.16 | Well-functioning Financial Systems</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s16" title="1.16 | Well-functioning Financial Systems">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.16｜よく機能する金融システム（Well-functioning Financial Systems）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">よく機能する金融システムの特徴を説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>金融システムは、トレーダーが資金調達およびリスク管理の問題を解決することを可能にする。よく機能する金融システムでは：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0161-R-L30">
+<li class="cfa-curriculum-list-item">投資家は、負担するリスクに対して公正な収益率（rate of return）を得ながら、現在から将来へ容易に資金を移転できる；</li>
+<li class="cfa-curriculum-list-item">借り手は、将来返済することを信頼できる形で約束できる場合、現在のプロジェクトを遂行するために必要な資金を容易に調達できる；</li>
+<li class="cfa-curriculum-list-item">ヘッジャー（hedgers）は、自らが懸念するリスクを容易に売却または相殺できる；そして</li>
+<li class="cfa-curriculum-list-item">トレーダーは、必要とする通貨や商品と他の通貨や商品を容易に交換できる。</li>
+</ul>
+<p>これらの問題を解決するために必要な資産や契約が取引可能であれば、その金融システムは完全市場（complete markets）を有している。これらの取引を成立させるコストが低ければ、その金融システムは運用効率的（operationally efficient）である。資産や契約の価格がファンダメンタル価値（fundamental values）に関するすべての利用可能な情報を反映していれば、その金融システムは情報効率的（informationally efficient）である。</p>
+<p>よく機能する金融システムは、以下の特徴を有する：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0161-R-L31">
+<li class="cfa-curriculum-list-item">人々が金融上の問題を解決するのに役立つ金融商品が取引される、十分に発達した市場の存在（完全市場（complete markets））；</li>
+<li class="cfa-curriculum-list-item">取引コスト—手数料（commissions）、ビッド・アスク・スプレッド（bid–ask spreads）、注文による価格インパクト（order price impacts）—が低い流動的な市場（運用効率的市場（operationally efficient markets））；</li>
+<li class="cfa-curriculum-list-item">市場参加者が証券のファンダメンタル価値を評価できるようにする、企業および政府による適時の財務開示（情報効率的市場（informationally efficient markets）を支える）；そして</li>
+<li class="cfa-curriculum-list-item">価格がファンダメンタル価値を反映し、主としてファンダメンタル価値の変化に応じて変動し、情報を持たないトレーダーによる流動性需要によっては変動しないこと（情報効率的市場（informationally efficient markets））。</li>
+</ul>
+<p>このような完全かつ運用効率的な市場は、以下を行う金融仲介機関（financial intermediaries）によって支えられている：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0161-R-L32">
+<li class="cfa-curriculum-list-item">買い手と売り手をマッチングする取引所（exchanges）、ブローカー業務（brokerages）、および代替取引システム（alternative trading systems）を組織する；</li>
+<li class="cfa-curriculum-list-item">トレーダーに対して必要に応じて流動性を提供する；</li>
+<li class="cfa-curriculum-list-item">資産を証券化（securitize）し、投資家にとって魅力的な投資商品を生み出すことで、借り手の資金調達コストを低減する；</li>
+<li class="cfa-curriculum-list-item">預金を受け入れ貸出を行うことで、投資家と借り手を結びつける銀行を運営する；</li>
+<li class="cfa-curriculum-list-item">相関の低いリスク（uncorrelated risks）をプールする保険会社を運営する；</li>
+<li class="cfa-curriculum-list-item">投資家が低コストで資産を管理・成長させるのを支援する投資助言サービス（investment advisory services）を提供する；</li>
+<li class="cfa-curriculum-list-item">すべての参加者が取引および契約を履行することを保証する清算機関（clearinghouses）を組織する；そして</li>
+<li class="cfa-curriculum-list-item">誰も資産を失わないようにする保管機関（depositories）を組織する。</li>
+</ul>
+<p>よく機能する金融システムの便益は非常に大きい。このようなシステムでは、将来に資金を移転したい投資家は、新しい製品やサービスを開発するために現在資金を必要とする起業家と容易に結びつくことができる。同様に、リスクが高すぎるために本来有益なプロジェクトを避けてしまう生産者も、そのリスクをより適切に負担できる他者に容易に移転できる。最も重要なのは、これらの取引が通常、見知らぬ者同士の間でも成立するため、膨大な数の潜在的なマッチングから取引の利益が得られる点である。</p>
+<p>これに対し、金融システムが十分に機能していない経済では、資本を必要とする多くの企業の間で資本を配分することが非常に困難である。信頼できる取引相手を見つけることが難しい場合、金融取引は家族内の取り決めに限定される傾向がある。このような経済では、資本配分は非効率となり、リスクの共有も困難であり、生産も非効率となる。</p>
+<p>運用効率的（operationally efficient）な金融システムの極めて重要な副産物は、情報効率的（informationally efficient）な価格の形成である。価格が情報効率的であるとは、ファンダメンタル価値（fundamental values）に関するすべての利用可能な情報を反映していることを意味する。情報を反映した価格は、資源が最も価値の高い用途へ配分されることを助けるため、経済の厚生にとって極めて重要である。資源を最も価値の高い用途に用いる経済は配分効率的（allocationally efficient）である。これに対し、資源を最も価値の高い用途に用いない経済は資源を浪費し、その結果としてしばしば貧しくなる。</p>
+<p>十分な情報を持つトレーダーが価格を情報効率的にする。彼らが過小評価されていると考える資産や契約を購入すると、その価格を押し上げる傾向がある。同様に、過大評価されていると考える資産や契約を売却すると、その価格を押し下げる傾向がある。このような取引の効果により、価格は彼らの持つ価値に関する情報を反映するようになる。</p>
+<p>価格がどの程度正確にファンダメンタル情報を反映するかは、ファンダメンタル情報を取得するコストと、情報を持つトレーダーが利用できる流動性に依存する。意味のある適時の財務開示を生み出す会計基準（accounting standards）および報告要件（reporting requirements）は、ファンダメンタル情報の取得コストを低下させ、分析者がより正確なファンダメンタル価値の推定を行うことを可能にする。流動性の高い市場では、情報を持つトレーダーは低コストで注文を執行できる。注文執行コストが非常に高い場合、情報に基づく取引は収益性を持たなくなる可能性がある。その場合、情報に基づいて行動するトレーダーはデータの収集や分析に資源を投入せず、取引も行わなくなる。そのような調査やそれに伴う取引がなければ、価格はより情報性の低いものとなる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM29">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例29 よく機能する金融システム</h3>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>新興国株式を専門とする金融アナリストとして、よく機能する金融システムが国の経済的繁栄に寄与することを理解している。新たに小規模な市場を持つ国をカバーすることになった場合、その金融市場の質を評価する際にどのような要因を考慮するか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s16-01-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>一般に、以下を検討する：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0161-R-L33">
+<li class="cfa-curriculum-list-item">その国に、企業および居住者がプロジェクトの資金調達、将来のための貯蓄、リスクの交換を行うことを可能にする市場が存在するか；</li>
+<li class="cfa-curriculum-list-item">それらの市場における取引コストが低いか；そして</li>
+<li class="cfa-curriculum-list-item">価格がファンダメンタル価値を反映しているか。</li>
+</ul>
+<p>具体的には、以下を確認することができる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0161-R-L34">
+<li class="cfa-curriculum-list-item">債券市場（fixed income markets）および株式市場（stock markets）が、借り手が投資家から容易に資本を調達できるようになっているか；</li>
+<li class="cfa-curriculum-list-item">企業が、IFRS（International Financial Reporting Standards）など広く認められた報告基準に従い、財務および営業データを適時に開示しているか；</li>
+<li class="cfa-curriculum-list-item">フォワード（forward）、先物（futures）、およびオプション（options）市場が、企業がリスクヘッジに必要とする商品を取引しているか；</li>
+<li class="cfa-curriculum-list-item">ディーラーおよび裁定取引者（arbitrageurs）が、トレーダーが望むときに取引できるようにしているか；</li>
+<li class="cfa-curriculum-list-item">ビッド・アスク・スプレッド（bid–ask spreads）が小さいか；</li>
+<li class="cfa-curriculum-list-item">取引および契約が常に期待どおりに決済されるか；</li>
+<li class="cfa-curriculum-list-item">投資運用者（investment managers）が合理的な手数料で高品質な運用サービスを提供しているか；</li>
+<li class="cfa-curriculum-list-item">銀行およびその他の金融会社が十分に資本化されており、投資家が借り手に資本を提供するのを支援できるか；</li>
+<li class="cfa-curriculum-list-item">証券化資産（securitized assets）が利用可能であり、妥当な信用リスクを持っているか；</li>
+<li class="cfa-curriculum-list-item">保険会社が十分に資本化されており、リスクにさらされている主体がそれを保険でカバーできるようになっているか；そして</li>
+<li class="cfa-curriculum-list-item">価格変動（price volatility）がファンダメンタル価値の変化と整合的であるか。</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CompleteMarketsContent">
+<p>非公式には、取引される証券の種類が非常に広範であり、将来のあらゆる状態において望ましいペイオフが実現可能である市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OperationallyEfficientContent">
+<p>取引コストが比較的低い市場、金融システム、または経済を指す。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="InformationallyEfficientMarketContent">
+<p>資産価格が新しい情報を迅速かつ合理的に反映する市場。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142184_115_Secondary_Security_Market_and_Contract_Market_Structures.html" >← 前へ</a>
+  <span class="title">1.16 | Well-functioning Financial Systems</span>
+  <a href="courses_1868_modules_items_142189_117_Market_Regulation.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

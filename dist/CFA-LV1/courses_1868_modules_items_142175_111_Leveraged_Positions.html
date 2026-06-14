@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.11 | Leveraged Positions</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s11" title="1.11 | Leveraged Positions">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.11｜レバレッジド・ポジション（Leveraged Positions）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">レバレッジ比率（leverage ratio）、マージン取引（margin transaction）の収益率、およびマージンコール（margin call）が発生する証券価格を計算・解釈する（calculate and interpret the leverage ratio, the rate of return on a margin transaction, and the security price at which the investor would receive a margin call）</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>多くの市場では、トレーダーは購入価格の一部を借り入れることで証券を購入できる。通常、その資金はブローカーから借りる。この借入金はマージンローン（margin loan）と呼ばれ、この方法で購入することをマージン取引（buy on margin）という。マージンローンに対する金利はコールマネーレート（call money rate）と呼ばれ、政府短期証券利回りより高く、交渉可能である。機関投資家は個人投資家より有利な金利を得ることが多い。</p>
+<p>トレーダーの自己資本（equity）とは、購入者自身が負担する証券価格の部分である。マージン取引では最低証拠金要件（minimum margin requirements）があり、初期証拠金（initial margin requirement）は購入価格に対する最低自己資本割合を示す。これは政府、取引所、またはクリアリングハウスによって設定される。ブローカーはこれ以上の自己資本を要求することも多い。</p>
+<p>多くの市場では、ポートフォリオ・マージン（portfolio margining）と呼ばれる制度により、リスクモデルに基づいて追加の借入が認められる。</p>
+<p>マージン取引は、同じ自己資本でより多くの証券を購入できるため、利益も損失も増幅する。この借入とリスクの関係を財務レバレッジ（financial leverage）という。レバレッジが高いほど、自己資本に対するポジション規模は大きい。</p>
+<p>レバレッジ比率（leverage ratio）は、ポジションの価値を自己資本で割ったものである。これは自己資本の何倍のポジションを取っているかを示す。最大レバレッジ比率は「1 ÷ 初期証拠金率」であり、例えば40%なら2.5倍である。</p>
+<p>レバレッジ比率はリスクの大きさを示す。例えば40%マージンで株価が10%上昇すると、自己資本収益率は25%（2.5×10%）となる。一方、10%下落すると−25%となる（利息や手数料は除く）。</p>
+<p>レバレッジ投資の総収益率（total return）は、価格変化、配当・利息、マージン金利、売買手数料に依存する。以下の例で計算方法を示す。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM19">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例19：レバレッジ株式投資の総収益率（Computing Total Return to a Leveraged Stock Purchase）</h3>
+<section>
+<p>投資家がマージンで株式を購入し、1年間保有したとする。配当と利息は年末に支払われる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0161-R-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">購入価格：20ドル／株</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">$20/share</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売却価格：15ドル／株</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">$15/share</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">購入株数</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">レバレッジ比率</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">コールマネーレート（call money rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">配当</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.10ドル／株</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">手数料</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.01ドル／株</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>この投資の総収益率は？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s11-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>まず初期自己資本と売却後の自己資本を求める。総購入額は20,000ドル。レバレッジ比率2.5より、自己資本は40%＝8,000ドル。残り12,000ドルは借入。購入時手数料10ドルを加え、初期投資額は8,010ドル。</p>
+<p>年末に株価は5ドル下落し、5,000ドルの損失。借入金12,000ドルに対する利息5%で600ドルを支払う。一方、配当は100ドル受け取る。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0161-R-Tc">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">初期投資額</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,010ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">購入手数料</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–10</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売買損益</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−5,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">支払利息（margin interest）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–600</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">受取配当</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売却手数料</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–10</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">残存自己資本</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,490ドル</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>or</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0161-R-Td">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売却代金</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15,000ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">借入金返済（payoff loan）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−12,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">支払マージン利息（margin interest paid）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–600</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">受取配当（dividends received）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売却手数料（sales commission paid）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–10</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">残存自己資本（remaining equity）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,490ドル</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>したがって、初期投資額8,010ドルに対する収益率は、(2,490 − 8,010) / 8,010 = −68.9% となる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>なぜ損失は市場価格の25%下落よりも大きいのか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s11-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>実現損失は株価リターン（(15 − 20) / 20 = −25%）よりも大きい。その大部分はレバレッジによるものであり、残りは主に借入利息の影響である。他のキャッシュフローを無視すれば、レバレッジのみから自己資本リターンは −62.5%（2.5倍のレバレッジ × −25%の株価リターン）となるはずである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>上記の例において、株価が初期マージン40%を超えて下落した場合（手数料・利息・配当を無視）、トレーダーの自己資本は負になる。その場合、投資家は株価以上の負債をブローカーに負うことになる。投資家が返済しなければ、ブローカーは損失を被る。</p>
+<p>このような損失を防ぐため、ブローカーは最低維持証拠金（maintenance margin requirement）を設定する。通常はポジション価値の25%であるが、ボラティリティやブローカーの方針により異なる。</p>
+<p>自己資本が維持証拠金を下回ると、マージンコール（margin call）が発生し、追加証拠金の拠出が求められる。応じない場合、ブローカーはポジションを強制決済する。</p>
+<p>マージン取引では、どの価格でマージンコールが発生するかを把握する必要がある。これは初期自己資本と維持証拠金に依存する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM20">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例20：マージンコール価格（Margin Call Price）</h3>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>トレーダーが株価20ドルの株を40%マージンで購入し、維持証拠金が25%の場合、どの価格でマージンコールが発生するか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s11-02-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>初期自己資本は20ドルの40%で8ドル／株。自己資本は価格変動と同じだけ変化するため、自己資本は 8 + (P − 20) となる（Pは現在価格）。マージンコールは自己資本が25%を下回るときに発生する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0161-R-E">
+<math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>Equity/share</mtext>
+</mrow>
+<mrow>
+<mtext>Price/share</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>$</mi>
+<mn>8</mn>
+<mo>+</mo>
+<mi>P</mi>
+<mo>−</mo>
+<mn>20</mn>
+</mrow>
+<mi>P</mi>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>25</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math>
+</div>
+<p>この条件を満たす価格はP = 16である。価格が16ドルを下回ると、自己資本は4ドル未満となり、価格の25%を下回る。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>空売りトレーダーも証拠金規制の対象である。価格上昇により自己資本が減少し、維持証拠金を下回ると追加証拠金が必要となる。応じない場合、ブローカーは買い戻してポジションを解消する。</p>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MarginLoanContent">
+<p>証券購入のためにブローカーから借りる資金（margin loan）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CallMoneyRateContent">
+<p>マージンローンに対して支払う利率（call money rate）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="InitialMarginRequirementContent">
+<p>取引初日および追加証拠金が必要な日に適用される証拠金要件（initial margin requirement）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FinancialLeverageContent">
+<p>資本構成における負債の利用（leverage）。営業利益／（営業利益−利息費用）、総資産／自己資本、負債／自己資本などで測定される。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MaintenanceMarginRequirementContent">
+<p>取引初日以外の日に適用される証拠金要件（maintenance margin requirement）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MarginCallContent">
+<p>先物などの証拠金口座を初期証拠金水準に戻すために追加資金の拠出を求める要請（margin call）。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142172_110_Positions_and_Short_Positions.html" >← 前へ</a>
+  <span class="title">1.11 | Leveraged Positions</span>
+  <a href="courses_1868_modules_items_142177_112_Orders_and_Execution_Instructions.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

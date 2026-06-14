@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.02 | Evaluating Sources and Uses of Cash</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2421-R-s02-R-1" title="5.02 | Evaluating Sources and Uses of Cash">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール5：キャッシュ・フロー計算書の分析 II 5.02｜キャッシュの源泉と使途の評価</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">報告されたキャッシュ・フロー計算書および共通サイズ化されたキャッシュ・フロー計算書（common-size cash flow statements）の双方を分析および解釈すること</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>キャッシュ・フロー計算書の評価は、次のように、3つの主要区分におけるキャッシュの源泉と使途の全体的な評価、および各区分におけるキャッシュ・フローの主なドライバーの評価を含むべきである：</p>
+<ul class="cfa-curriculum-list-step">
+<li class="cfa-curriculum-steplist-item">ステップ1：営業活動、投資活動、および財務活動を含むキャッシュ・フローの主要な源泉と使途を評価する。</li>
+<li class="cfa-curriculum-steplist-item">ステップ2：営業キャッシュ・フローの主要な決定要因を評価する。</li>
+<li class="cfa-curriculum-steplist-item">ステップ3：投資キャッシュ・フローの主要な決定要因を評価する。</li>
+<li class="cfa-curriculum-steplist-item">ステップ4：財務キャッシュ・フローの主要な決定要因を評価する。</li>
+</ul>
+<section id="CFA2421-R-s02-01-01-01">
+<h3 class="dp-heading">ステップ1：キャッシュ・フローの主要な源泉と使途を評価する</h3>
+<p>企業にとってのキャッシュの主要な源泉は、その成長段階によって異なり得る。成熟企業においては、営業活動がキャッシュ・フローの主要な源泉であることが期待され、かつ望ましい。長期的には、企業は営業活動からキャッシュを生み出さなければならない。営業キャッシュ・フローが継続的に負である場合、企業は不足分を賄うために借入や株式発行（財務活動）に依存する必要がある。最終的には、これらの資本提供者は営業活動から返済される必要があり、そうでなければ資本供給を行わなくなる。営業活動から生み出されたキャッシュは、投資活動または財務活動のいずれにも使用することができる。企業に価値創出型の投資機会がある場合、そのキャッシュを投資活動に用いることが望ましい。収益性のある投資機会がない場合には、そのキャッシュは資本提供者へ還元されるべきであり、これは財務活動に該当する。</p>
+<p>新興企業または成長段階の企業においては、事業拡大のために棚卸資産や売掛金（accounts receivable）（新規顧客への信用供与）といった資産に投資するため、一定期間営業キャッシュ・フローが負となる場合がある。この状況は長期的には持続不可能であるため、最終的にはキャッシュの主な源泉は営業活動に移行し、資本が資本提供者に還元される必要がある。最後に、営業キャッシュ・フローが設備投資（capital expenditures）を賄うのに十分であること（すなわち、レッスン3でさらに議論されるフリー・キャッシュ・フローを有していること）が望ましい。要約すると、本ステップで考慮すべき主な点は次のとおりである：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2421-R-s02-L2">
+<li class="cfa-curriculum-list-item">キャッシュ・フローの主な源泉と使途は何か。</li>
+<li class="cfa-curriculum-list-item">営業キャッシュ・フローは正であり、かつ設備投資を賄うのに十分か。</li>
+</ul>
+</section>
+<section id="CFA2421-R-s02-01-01-02">
+<h3 class="dp-heading">ステップ2：営業キャッシュ・フローの主要な決定要因を評価する</h3>
+<p>営業活動の区分において、アナリストは営業キャッシュ・フローの最も重要な決定要因を検討すべきである。企業は営業活動のためにキャッシュを必要とし（例：売掛金や棚卸資産の保有、従業員や仕入先への支払い）、また営業活動からキャッシュを受け取る（例：顧客からの支払い）。売掛金、棚卸資産、買掛金などの増減を分析することで、企業が営業活動においてキャッシュを使用しているのか、それとも創出しているのか、そしてその理由を把握することができる。</p>
+<p>また、営業キャッシュ・フローと当期純利益を比較することも有用である。成熟企業においては、当期純利益には非現金費用（減価償却費および償却費）が含まれるため、営業キャッシュ・フローが当期純利益を上回ることが期待され、かつ望ましい。当期純利益と営業キャッシュ・フローの関係は、利益の質（earnings quality）の指標でもある。もし企業が高い当期純利益を計上しているにもかかわらず営業キャッシュ・フローが低い場合、それは利益の質が低い可能性を示唆する。企業が当期純利益を増加させるために積極的な会計処理を行っている一方で、実際のキャッシュを創出していない可能性がある。アナリストはまた、利益とキャッシュ・フローの変動性を検討し、この変動性が企業のリスクおよび将来キャッシュ・フローの予測能力（バリュエーション目的）に与える影響を考慮すべきである。要約すると：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2421-R-s02-L3">
+<li class="cfa-curriculum-list-item">営業キャッシュ・フローの主な決定要因は何か。</li>
+<li class="cfa-curriculum-list-item">営業キャッシュ・フローは当期純利益より高いか低いか。その理由は何か。</li>
+<li class="cfa-curriculum-list-item">営業キャッシュ・フローはどの程度安定しているか。</li>
+</ul>
+</section>
+<section id="CFA2421-R-s02-01-01-03">
+<h3 class="dp-heading">ステップ3：投資キャッシュ・フローの主要な決定要因を評価する</h3>
+<p>投資活動の区分において、アナリストは各項目を評価すべきである。各項目はキャッシュの源泉または使途のいずれかを示しており、これによりキャッシュがどこに使われているか（またはどこから得られているか）を理解することができる。この区分は、将来に向けて有形固定資産（property, plant, and equipment）にどれだけ投資されているか、企業買収にどれだけ使用されているか、株式や債券などの流動性の高い投資にどれだけ配分されているかを明らかにする。また、これらの資産の売却によってどれだけのキャッシュが調達されているかも示す。企業が大規模な設備投資を行っている場合、アナリストはこれらの投資を賄うキャッシュの源泉（例：営業キャッシュ・フローの余剰か、ステップ4で述べる財務活動によるものか）を検討すべきである。資産が売却されている場合には、その理由を特定し、企業への影響を評価することが重要である。</p>
+</section>
+<section id="CFA2421-R-s02-01-01-04">
+<h3 class="dp-heading">ステップ4：財務キャッシュ・フローの主要な決定要因を評価する</h3>
+<p>財務活動の区分において、アナリストは各項目を検討し、企業が資本を調達しているのか、あるいは返済しているのか、またその資本の性質を理解すべきである。企業が毎年借入を行っている場合、返済がいつ必要となるかを検討すべきである。財務活動の区分には、配当支払いおよび株式の買い戻しも含まれ、これらは資本を所有者に還元する代替的手段である。資本が調達または返済されている理由を評価することが重要である。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2421-R-s02-EXM-1-1">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例題1 キャッシュ・フロー計算書の分析</h4>
+<section>
+<p>Derek Yee（CFA）は、自身のバリュエーションモデルへの入力としてGroupe Danoneのキャッシュ・フロー予測を作成している。彼は、図表1に示された2016年および2017年のGroupe Danoneの過去のキャッシュ・フロー計算書、および図表2に示されたDanoneの2017年登録書類（Registration Document）の抜粋をレビューしている。Yeeは、Groupe Danoneが国際財務報告基準（International Financial Reporting Standards, IFRS）に準拠して財務諸表を作成していることに注目している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2421-R-s02-EXH-1-1">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 1<span style="display: block;">Groupe Danone Consolidated Financial Statements Consolidated Statements of Cash Flows (in EUR millions)</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">12月31日終了年度</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2016</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2017</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期純利益</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,827</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,563</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">持分法適用会社の利益持分（受取配当控除後）（share of profits of associates net of dividends received）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">52</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(54)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">有形資産および無形資産の減価償却費、償却費および減損損失</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">786</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">974</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">引当金の増加（または戻入れ）（provisions）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">51</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">153</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">繰延税金の変動</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(65)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(353)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">有形固定資産および金融投資の処分に伴う（利益）損失</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(74)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(284)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">グループ業績連動株式（group performance shares）に関連する費用</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">24</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">22</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">純金融負債（net financial debt）のコスト</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">149</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">265</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">純支払利息</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(148)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(186)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">利息収益（費用）の純変動</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">—</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">80</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">キャッシュへの影響を伴わないその他の項目</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">13</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(15)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">正味運転資本（net working capital）の変動前の営業活動によるキャッシュ・フロー</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2,615</strong>
+</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>3,085</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">棚卸資産の（増加）減少</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(24)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(122)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売掛金（trade receivables）の（増加）減少</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(110)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(190)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">買掛金（trade payables）の増加（減少）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">298</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">145</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他の債権および債務の変動</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(127)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">40</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他の運転資本需要（working capital requirements）の変動</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">37</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(127)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業活動によるキャッシュ・フロー（の流入／流出）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2,652</strong>
+</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2,958</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">設備投資（capital expenditure）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(925)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(969)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">有形固定資産（property, plant, and equipment）の売却による収入</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">27</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">45</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">子会社および金融投資の取得による純キャッシュ流出</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(66)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">（10,949）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">子会社および金融投資の売却による純キャッシュ流入</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">110</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">441</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">長期貸付金およびその他の長期金融資産の（増加）減少</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(4)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">投資活動によるキャッシュ・フロー（の流入／流出）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>(848)</strong>
+</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">（11,437）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">資本金および払込資本剰余金（additional paid-in capital）の増加</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">46</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">47</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">自己株式（treasury stock）の取得（売却控除後）およびDanoneコールオプションの購入</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">32</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">13</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">永久劣後債（perpetual subordinated debt securities）の発行</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">—</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1,245</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">永久劣後債に係る利息</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">—</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Danone株主への配当支払い</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(985)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(279)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">非支配持分（non-controlling interests）の買収</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(295)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(107)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">配当金の支払い</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(94)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(86)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">資本増加に対する非支配持分からの拠出</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">非支配持分との取引</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(383)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(193)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">ヘッジデリバティブ（hedging derivatives）に係る純キャッシュ・フロー</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">50</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(52)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期に発行された社債</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">11,237</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期に償還された社債</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(638)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">（1,487）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他の流動および非流動の金融負債に係る純キャッシュ・フロー</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(442)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(564)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">短期投資に係る純キャッシュ・フロー</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">（10,531）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">9,559</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">財務活動によるキャッシュ・フロー（の流入／流出）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">（1,616）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>8,289</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">為替レートの影響およびその他の変動</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(151)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">272</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">現金および現金同等物の増加（減少）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>38</strong>
+</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>81</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">期首の現金および現金同等物</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">519</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">557</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">期末の現金および現金同等物</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">557</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">638</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">補足開示（supplemental disclosures）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; "></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期の法人所得税の支払い</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(891)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">（1,116）</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：連結キャッシュ・フロー計算書の数値は企業の開示資料から直接取得したものであり、端数処理により一部の小計は正確に一致しない場合がある。</p>
+</div>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2421-R-s02-EXH-1-2">
+<h5 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>
+                  Exhibit 2<span style="display: block;">Excerpt from Groupe Danone 2017 Registration Statement</span>
+</h5>
+<p>財務諸表注記2：</p>
+<p>「2016年7月7日、Danoneは植物由来食品および飲料ならびに有機農産物の世界的リーダーであるThe WhiteWave Foods Company（“WhiteWave”）の買収契約締結を発表した。当該現金による買収は1株当たりUSD56.25であり、契約日時点において、負債およびWhiteWaveの特定のその他負債を含めた総企業価値（enterprise value）は約USD125億であった。…」</p>
+<p>「Danoneの連結財務諸表において認識された買収関連費用は税引前で合計€51百万であり、そのうち€48百万は2016年にその他営業収益（費用）（Other operating income (expense)）として認識され、残額は2017年に認識された。」</p>
+<p>「WhiteWaveの2017年連結売上高への寄与は€27億であった。当該取引が2017年1月1日に完了していた場合、グループの2017年連結売上高は€257億、経常営業利益（recurring operating income）は€36億となっていたであろう。」</p>
+<p>「一方で、当該期間の統合費用は€91百万であり、その他営業収益（費用）として認識された。」</p>
+<p>活動の概要（Overview of Activities）：</p>
+<p>「強固で収益性が高く持続可能な成長を実現するための変革計画の一環として、Danoneは2020年に向けた目標を設定した。これには既存事業ベースの売上成長率（like-for-like sales growth）4％から5％、2020年における経常営業利益率16％超が含まれる。さらに、Danoneはフリー・キャッシュ・フローの拡大に引き続き注力し、2020年に純有利子負債／EBITDA（Net debt/EBITDA）を3倍未満とする財務デレバレッジを目指す。Danoneは2020年にROIC（投下資本利益率）約12％の達成を目標としている。」</p>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>Groupe Danoneの主なキャッシュの源泉と使途は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>キャッシュ・フローの主要区分は次のとおり要約される（単位：百万ユーロ）：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2421-R-s02-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2016</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2017</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業活動によるキャッシュ・フロー</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,652</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">2,958</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">投資活動による（または使用された）キャッシュ・フロー</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(848)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">（11,437）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">財務活動による（または使用された）キャッシュ・フロー</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">（1,616）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">8,289</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">現金に対する為替レートの影響</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">(151)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">272</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">現金の増加</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">38</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px; ">81</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>2016年におけるGroupe Danoneの主なキャッシュの源泉は、営業活動による2,652であった。同年、同社は設備投資に925を支出しており、これは投資活動による848のキャッシュ流出の大部分を占めている。しかし2017年には、Groupe Danoneの主なキャッシュの源泉は財務活動であった。投資活動の区分では、子会社の取得に伴う大きなキャッシュの使用が示されている。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>営業活動によるキャッシュ・フローは設備投資を賄うのに十分か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>はい。2016年および2017年のいずれにおいても、通常の設備投資を賄うのに十分な営業キャッシュ・フローがあった。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>当期純利益と営業活動によるキャッシュ・フローの関係は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>両年度ともに、営業キャッシュ・フローは当期純利益を上回っている。両年度において営業キャッシュ・フローが当期純利益を上回っていることは、好ましい兆候である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>Groupe Danoneはどのような財務キャッシュ・フローを有しているか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>注記には総額USD125億の大規模な買収が開示されており、その一部は以前の社債発行による資金調達で賄われている。この資金調達は2016年の財務活動の区分においてキャッシュ・フローとして計上されている。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143575_501_Introduction.html" >← 前へ</a>
+  <span class="title">5.02 | Evaluating Sources and Uses of Cash</span>
+  <a href="courses_1867_modules_items_143580_503_Ratios_and_Common-Size_Analysis.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

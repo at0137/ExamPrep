@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.16 | Money-Weighted Rate of Return</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Performance Evaluation: Rate-of-Return Measurement › Module 2: Performance Evaluation: Rate-of-Return Measurement</nav>
+<h1 class="page-title screenreader-only">2.16 | Money-Weighted Rate of Return</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0005-R-s16-R-1" title="2.16 | Money-Weighted Rate of Return"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール2：パフォーマンス評価（Performance Evaluation）：収益率測定（Rate-of-Return Measurement）2.16｜マネー加重収益率（Money-Weighted Rate of Return）</h2></header><div class="cfa-curriculum-los-box"><h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"></i>Learning Outcome</h3><p class="p1">The candidate should be able to:</p><ul id="CIPM0005-R-s16-los-1"><li class="cfa-curriculum-los-item">マネー加重収益率（money-weighted rate of return）および時間加重収益率（time-weighted rate of return）を計算し、解釈せよ。</li></ul></div><hr class="dp-hr-solid-light dp-hr-color-dp-primary"/><p>ここで最初に扱うリターンの概念は内部収益率（internal rate of return, IRR）の計算である。大まかに言えば、IRRとは、キャッシュフローの大きさとタイミングを考慮したときに、ポートフォリオの最終価値を生み出す一定の収益率である。これは、ポートフォリオの価値が大きい期間により大きな重みを与え、価値が小さい期間には小さな重みを与える。このため、IRRはマネー加重収益率（money-weighted rate of return）とも呼ばれる。</p><p>IRRは、ポートフォリオの期首価値 V₀ と期末価値 V₁、および外部キャッシュフローの金額とタイミングから計算される。慣例として、ポートフォリオへのキャッシュフローは正のフローとする。もしキャッシュフロー C が保有期間の途中で発生した場合、期首価値と期末価値は次のように関係づけられる。</p><div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s16-E"><em>V</em><sub>1</sub> = <em>V</em><sub>0</sub>(1 + <em>R</em>) + <em>C</em>(1 + <em>R</em>)<sup>1/2</sup></div><p>複数のキャッシュフロー Cₖ（k = 1, 2, …, K）がある場合、この式は次のように一般化される。</p><div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s16-E20"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/msub&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;munderover&gt;&lt;mo&gt;&amp;#x2211;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;mi&gt;K&lt;/mi&gt;&lt;/munderover&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;C&lt;/mi&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;/msub&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;W&lt;/mi&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-1-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="7.17ex" role="img" style="vertical-align: -2.968ex;" viewbox="0 -1809.3 15217.1 3087" width="35.343ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMAIN-31" y="-213"></use><use x="1315" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2371,0)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMAIN-30" y="-213"></use></g><g transform="translate(3575,0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><use x="1723" xlink:href="#MJMATHI-52" y="0"></use></g><use x="2872" xlink:href="#MJMAIN-29" y="0"></use></g><use x="7059" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(8060,0)"><use x="0" xlink:href="#MJSZ2-2211" y="0"></use><g transform="translate(85,-1110)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-6B" y="0"></use><use transform="scale(0.707)" x="521" xlink:href="#MJMAIN-3D" y="0"></use><use transform="scale(0.707)" x="1300" xlink:href="#MJMAIN-31" y="0"></use></g><use transform="scale(0.707)" x="576" xlink:href="#MJMATHI-4B" y="1627"></use><g transform="translate(1611,0)"><use x="0" xlink:href="#MJMATHI-43" y="0"></use><use transform="scale(0.707)" x="1011" xlink:href="#MJMATHI-6B" y="-213"></use><g transform="translate(1184,0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><use x="1723" xlink:href="#MJMATHI-52" y="0"></use></g><use x="2872" xlink:href="#MJMAIN-29" y="0"></use><g transform="translate(3261,477)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-57" y="0"></use><use transform="scale(0.5)" x="1335" xlink:href="#MJMATHI-6B" y="-213"></use></g></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>V</mi><mn>1</mn></msub><mo>=</mo><msub><mi>V</mi><mn>0</mn></msub><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mi>R</mi></mrow><mo>)</mo></mrow><mo>+</mo><mstyle displaystyle="true"><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><mrow><msub><mi>C</mi><mi>k</mi></msub><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mi>R</mi></mrow><mo>)</mo></mrow></mrow><mrow><msub><mi>W</mi><mi>k</mi></msub></mrow></msup></mrow></mstyle></mrow></semantics></math></span></span><script id="MathJax-Element-1" type="math/mml"><math id="m1"><semantics><mrow><msub><mi>V</mi><mn>1</mn></msub><mo>=</mo><msub><mi>V</mi><mn>0</mn></msub><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mi>R</mi></mrow><mo>)</mo></mrow><mo>+</mo><mstyle displaystyle="true"><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><mrow><msub><mi>C</mi><mi>k</mi></msub><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mi>R</mi></mrow><mo>)</mo></mrow></mrow><mrow><msub><mi>W</mi><mi>k</mi></msub></mrow></msup></mrow></mstyle></mrow></semantics></math></script><span class="cfa-curriculum-display-formula-number">23</span></div><p>ここで Wₖ はキャッシュフロー k が適用される期間の割合（fraction）であり、すなわち次のように定義される。</p><div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s16-E21"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;W&lt;/mi&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mtext&gt;TD&lt;/mtext&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;D&lt;/mi&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mtext&gt;TD&lt;/mtext&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-2-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.071ex" role="img" style="vertical-align: -1.733ex;" viewbox="0 -1437.2 7114.5 2183.3" width="16.524ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-57" y="0"></use><use transform="scale(0.707)" x="1335" xlink:href="#MJMATHI-6B" y="-213"></use><use x="1691" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2747,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="4127" x="0" y="220"></rect><g transform="translate(60,676)"><use xlink:href="#MJMAIN-54"></use><use x="722" xlink:href="#MJMAIN-44" y="0"></use><use x="1709" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2709,0)"><use x="0" xlink:href="#MJMATHI-44" y="0"></use><use transform="scale(0.707)" x="1171" xlink:href="#MJMATHI-6B" y="-213"></use></g></g><g transform="translate(1320,-686)"><use xlink:href="#MJMAIN-54"></use><use x="722" xlink:href="#MJMAIN-44" y="0"></use></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>k</mi></msub><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><mtext>TD</mtext><mo>−</mo><msub><mi>D</mi><mi>k</mi></msub></mrow><mrow><mtext>TD</mtext></mrow></mfrac></mstyle></mrow></semantics></math></span></span><script id="MathJax-Element-2" type="math/mml"><math id="m2"><semantics><mrow><msub><mi>W</mi><mi>k</mi></msub><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><mtext>TD</mtext><mo>−</mo><msub><mi>D</mi><mi>k</mi></msub></mrow><mrow><mtext>TD</mtext></mrow></mfrac></mstyle></mrow></semantics></math></script><span class="cfa-curriculum-display-formula-number">24</span></div><p>ここで TD は期間中の総暦日数（total number of calendar days）、Dₖ は期間の開始からの経過日数である。この日数ウェイト（day-weighting fraction）は、キャッシュフローが営業日の終了時点（end-of-day）に発生することを仮定している。もし営業日の開始時点（beginning-of-day）に発生する場合や他のタイミング仮定を用いる場合には、この割合を適切に調整する必要がある。例えば、営業日開始時点のキャッシュフローを仮定する場合には、分子として TD − Dₖ + 1 を用いる。</p><p>IRRは式20を満たす収益率 R である。残念ながら、IRRには閉形式（closed-form）の解は存在せず、数値近似アルゴリズム（numerical approximation algorithm）によって計算する必要がある。しかし、これは通常問題とはならない。多くのスプレッドシートや金融計算機にはIRR関数が備わっているためである。ただし、キャッシュフローのパターンによっては、式20を満たす R が複数存在する場合があるという問題がある。しかし、キャッシュフローが期首および期末の価値に対して小さい場合には、通常はIRRを一意に求めることができる。</p><p>IRRはキャッシュフロー発生時点での評価額を必要とせず、期間の期首と期末の評価額のみを必要とする点に注意せよ。もちろん、期間中にキャッシュフローが存在しない場合には、IRRは通常の保有期間リターン（holding period return）と完全に一致する。</p><figure class="dp-content-block cfa-curriculum-example-box" id="CIPM0005-R-s16-EXM26"><figcaption class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"></i>Example 26<span style="display: block;">Internal Rate of Return: Calculation</span></figcaption><div class="dp-content-block"><div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0005-R-s16-Q1"><fieldset><span class="cfa-curriculum-question-with-label">1. </span><p>次の評価時点および外部キャッシュフロー（単位は百万ドル）をもつポートフォリオの内部収益率を計算せよ。</p><div class="cfa-curriculum-table-wrap" id="CIPM0005-R-s16-Ta"><div class="cfa-curriculum-table-container"><div class="dp-table-scroll"><table class="table" data-active-table="true"><tbody><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">市場価値（Market value）</th><td style="text-align: left; vertical-align: top; padding: 8px; ">3月31日</td><td style="text-align: center; vertical-align: top; padding: 8px; ">$56.3</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">市場価値（キャッシュフロー前）（Market value (prior to cash flow)）</th><td style="text-align: left; vertical-align: top; padding: 8px; ">4月11日</td><td style="text-align: center; vertical-align: top; padding: 8px; ">$58.2</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">拠出（営業日終了時に実施）（Contribution (made at end of the day)）</th><td style="text-align: left; vertical-align: top; padding: 8px; ">4月11日</td><td style="text-align: center; vertical-align: top; padding: 8px; ">$9.8</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">市場価値（Market value）</th><td style="text-align: left; vertical-align: top; padding: 8px; ">4月30日</td><td style="text-align: center; vertical-align: top; padding: 8px; ">$69.6</td></tr></tbody></table></div></div></div><div class="dp-panels-wrapper dp-accordion-default"><h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel0" style="display: inline-block;">解答を確認（Check Answer）</h4><div aria-labelledby="dpPanel0" class="dp-panel-content cfa-curriculum-solution" id="dpPanel0Content" role="region" style="display: none;" tabindex="0"><section><h3 class="cfa-curriculum-solution-title">解答（Solution）</h3><p>69.6 = 56.3 × (1 + R) + 9.8 × (1 + R)^(19/30)。R = 5.61% はこの式を満たす：56.3 × 1.0561 + 9.8 × (1.0561)^(19/30) = 69.6。</p></section></div></div></fieldset></div></div><div class="cfa-curriculum-notes"><p>注：4月11日の期中評価はIRRの計算には必要ない。</p></div></figure><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip0Content" role="tooltip" style="display: none;"><p>キャッシュアウトフローの現在価値とキャッシュインフローの現在価値を等しくする暗黙の割引率（implied discount rate）、または有効複利収益率（effective compounded rate of return）。マネー加重収益率を計算する一般的な方法。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip1Content" role="tooltip" style="display: none;"><p>内部収益率（internal rate of return）を参照。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip2Content" role="tooltip" style="display: none;"><p>マネー加重収益率の計算に関連して、特定のキャッシュフローが適用される期間の割合。</p></div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1366_modules_items_99514_215_Rates_of_Return_with_External_Cash_Flows.html" >← 前へ</a>
+  <span class="title">2.16 | Money-Weighted Rate of Return</span>
+  <a href="courses_1366_modules_items_99517_217_Time-Weighted_Rate_of_Return.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

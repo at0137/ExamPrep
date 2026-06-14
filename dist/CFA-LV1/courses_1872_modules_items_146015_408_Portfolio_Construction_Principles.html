@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.08 | Portfolio Construction Principles</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0184-R-s08" title="4.08 | Portfolio Construction Principles">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール4：ポートフォリオ計画と構築の基礎 4.08｜ポートフォリオ構築の原則</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">ポートフォリオ構築の原則およびIPS（investment policy statement）に関連する資産配分の役割を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>戦略的資産配分（strategic asset allocation）自体は、まだ実際の投資ポートフォリオを表すものではない。これは投資戦略を実行するための第一段階である。定量志向のポートフォリオマネージャーにとって、次のステップはしばしばリスク・バジェティング（risk budgeting）である。</p>
+<p>本資料におけるリスク・バジェティングとは、ポートフォリオにおいてどの程度のリスクを取るか（全体のリスク予算）を決定し、そのリスクを投資収益の源泉（例えば、戦略的資産配分、戦術的資産配分（tactical asset allocation）、および銘柄選択（security selection））に配分するプロセスである。取るべき総リスク量の決定はIPSの作成段階で行われるため、この段階ではそのリスクの配分に焦点を当てる。</p>
+<p>戦略的資産配分で規定されるシステマティックリスク（systematic risk）へのエクスポージャーに加えて、投資戦略のリターンは他に2つの要因に依存する：戦術的資産配分と銘柄選択である。戦術的資産配分とは、短期的な資産クラスのリターン予測に基づいて価値を付加する目的で、システマティックリスク要因に対する政策的エクスポージャー（すなわち資産クラスの政策ウェイト）から意図的に乖離する意思決定である。例えば、株式が短期的に他の資産クラスより高いリターンをもたらすと予想される場合、投資家はSAAで定められた以上に株式への配分を一時的に増やすことがある。銘柄選択は、資産クラスのベンチマークを上回るリターンを得るために、より高い期待リターンを持つ証券を選択する試みである。例えば、ある運用者がIBM株のパフォーマンスがベンチマークより良いと予想する場合、ベンチマークにおける比率よりも多くIBM株を保有し、その資金を他の劣後すると見込まれる銘柄の売却によって賄うことがある。政策ウェイトからの逸脱や銘柄選択によってベンチマーク超過を狙うことは、当然ながら追加的なリターンの不確実性を生む。このリスクはポリシーポートフォリオに内在するリスクに加わるものである。そのため、投資方針はこれら3つの活動それぞれに対してリスク制限および期待される成果を設定すべきである。</p>
+<p>リスク・バジェティングは、各資産クラスについて銘柄選択を収益源として用いるかどうかをポートフォリオマネージャーが選択する必要があることを意味する。この選択は一般にアクティブ運用（active management）とパッシブ運用（passive management）の選択と呼ばれる。戦略的資産配分とは異なり、銘柄選択は長期的にリスクに対する報酬が保証されるものではない。銘柄選択はゼロサムゲーム（zero-sum game）であり、すべての投資家は誤評価された資産を見つけるために競争している。市場参加者全体の総収益は市場リターン（システマティックリスクの報酬）に平均的に一致する。これは、平均的なアクティブ投資家は市場リターンと同程度のリターンとなり、ある投資家の超過リターンは別の投資家の劣後リターンに対応することを意味する。しかし、アクティブ運用者は頻繁に取引を行い、アイデア創出のための人件費などのコストを負担するため、平均的にはコスト控除後で市場を下回る傾向がある。ただし、このことは一貫してベンチマークを上回る優れた運用者が存在しないことを意味するものではないし、すべてのパッシブ運用者がベンチマークを完全に追随できることを意味するものでもない。指数の回転率（turnover）が高いほど、パッシブ運用者は取引コストを多く負担し、ベンチマーク追随が困難になる。</p>
+<p>銘柄選択によって大きな付加価値を生み出せるかどうかは、運用者のスキルと対象資産クラスの市場効率性（informational efficiency）に依存する。資産クラスまたはそのサブセット（地域別株式市場、債券市場、不動産市場、あるいは株式市場の時価総額区分など）が効率的であるほど、付加価値を生み出すためにはより高度なスキルが必要となる。一般に効率的市場とは、新しい情報が迅速に価格に反映される市場を指す。これは、多数の投資家が合理的期待のもとでリスクとリターンを取引し、類似の価格モデルを用い、同等の情報アクセス機会を持つことを意味する。米国大型株式市場（US large-capitalization equities）は非常に効率的であると考えられる。一方で、一部の地域の債券市場や株式市場では、情報伝達の技術的・制度的基盤が不十分であり、その結果として生じる非効率性を熟練した運用者が利用できる可能性がある。</p>
+<p>場合によっては、アクティブ運用とパッシブ運用の選択は、資産クラスを資産配分に組み入れる段階で暗黙的に決定されることもある。例えば、非上場不動産（non-listed real estate）やインフラ資産（infrastructure assets）の市場は流動性が低く、分散されたエクスポージャーを取得することが難しい。このため、これらの市場に投資するには銘柄選択を伴わざるを得ない。</p>
+<p>ポートフォリオが構築され、その価値が投資先資産のリターンによって変動するにつれて、資産クラスのウェイトは徐々に戦略的資産配分の政策ウェイトから乖離していく。この現象はドリフト（drift）と呼ばれる。定期的に、または一定の乖離幅（バンド幅、bandwidth）を超えた場合には、ポートフォリオを政策ウェイトに戻すためのリバランス（rebalancing）を行うべきである。このプロセスを規定するルールがリバランス方針（rebalancing policy）である。明示的なリスク予算が存在しない場合でも、リバランス方針の策定は重要なリスク管理の要素である。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0184-R-EXM11">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例11 ヨーロッパの慈善団体における戦略的および戦術的資産配分</h3>
+<section>
+<p>あるヨーロッパの慈善団体は、年初時点で図表11に示された資産クラスとウェイトによる資産配分を有している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0184-R-EXH11">
+<h4 class="cfa-curriculum-exhibit-table-title">図表11 ヨーロッパの慈善団体の資産配分（年初）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">資産クラス（Asset Class）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">政策ウェイト（Policy Weight）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">許容幅（Corridor（±））</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">上限（Upper Limit）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">下限（Lower Limit）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">欧州株式（European equities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">国際株式（International equities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">欧州国債（European government bonds）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">22.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">社債（Corporate bonds）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">22.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">現金およびマネーマーケット商品（Cash and money market instruments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.0%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>図表11が示すように、この慈善団体は資産クラスのウェイトが政策ウェイトから±2%（コリドー）以上乖離してはならないという方針を持っている。この結果として、資産クラスの上限および下限が表の右側に示されている。実際のウェイトが政策ウェイトから乖離する理由は2つある：意図的な意思決定（戦術的資産配分またはマーケットタイミング）と、資産クラス間のリターン差による自然な乖離（ドリフト）である。この例では、年初時点では資産クラスのウェイトは政策ウェイトと完全に一致している。</p>
+<p>半年後、投資ポートフォリオは図表12のようになった。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0184-R-EXH12">
+<h4 class="cfa-curriculum-exhibit-table-title">図表12 ヨーロッパの慈善団体の資産配分（6か月後）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">資産クラス（Asset Class）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">政策ウェイト（Policy Weight）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">許容幅（Corridor（±））</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">上限（Upper Limit）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">下限（Lower Limit）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">期間リターン（Period Return）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">期末ウェイト（Ending Weight）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">欧州株式（European equities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32.4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">国際株式（International equities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">欧州国債（European government bonds）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">22.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18.9%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">社債（Corporate bonds）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">22.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">19.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">現金およびマネーマーケット商品（Cash and money market instruments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.0%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>ポートフォリオのリターンについて説明し、主要な資産ウェイトの変化についてコメントしなさい。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0184-R-s08-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>当該投資ポートフォリオは、期首（ポリシー）ウェイトに基づいて計算されたリターンが6.55%（四捨五入して6.6%）であった（= 0.30 × 15% + 0.15 × 10% + 0.20 × 0.5% + 0.20 × 1.5% + 0.15 × 1.0%）。主に強い株式市場によって牽引されたものである。一方、債券のリターンは比較的低調であり、その結果、資産クラスのウェイトに大きなドリフト（drift）が生じた。特に、欧州株式のウェイトは許容される実際のウェイトの上限を超過した。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>投資委員会（investment committee）は、欧州株式をポリシーウェイトまで引き下げ、固定収益（fixed income）および現金（cash）投資をポリシーウェイトに向けて増やすという判断を行わないことを決定した。このリバランス（rebalancing）は慎重な対応であったものの、委員会はこの市場が年内を通じて引き続き強いと予想し、戦術的資産配分（tactical asset allocation）を実施することにした。その結果、欧州株式を許容レンジ（bandwidth）（ポートフォリオの32%）内に戻すにとどめ、得られた資金を現金に配分することとした。図表13はさらに6か月後の結果を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0184-R-EXH13">
+<h4 class="cfa-curriculum-exhibit-table-title">図表13 欧州の慈善団体（European Charity）の資産配分（さらに6か月後）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">資産クラス（Asset Class）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">ポリシーウェイト（Policy Weight）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">期首ウェイト（Starting Weight）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">許容レンジ（Corridor）（±）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">上限（Upper Limit）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">下限（Lower Limit）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">期間リターン（Period Return）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">期末ウェイト（Ending Weight）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">欧州株式（European equities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–9.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29.7%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">国際株式（International equities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–6.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14.9%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">欧州国債（European government bonds）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">22.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">社債（Corporate bonds）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">19.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">22.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">現金およびマネーマーケット商品（money market instruments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.0%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ポリシーウェイトへのリバランスを行わないという前回の判断は、良い結果をもたらさなかった。投資委員会の予想に反し、欧州株式および国際株式はいずれも不調であり、一方で債券は回復した。その結果、ポートフォリオのリターンは−2.0%となった。</p>
+<p>このリターンのうち、どの程度が戦術的資産配分（tactical asset allocation）に起因するか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0184-R-s08-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>戦術的資産配分とは、ポリシーウェイトから意図的に乖離する意思決定であるため、そのリターン寄与は、実際のリターンと、資産クラスのウェイトがポリシーウェイトと等しかった場合に得られたであろうリターンとの差として定義される。図表14では、この差は−0.30%であることが示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0184-R-EXH14">
+<h6 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 14<span style="display: block;">Returns to Tactical Asset Allocation</span>
+</h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">資産クラス（Asset Class）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">ポリシーウェイト I（Policy Weight I）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">期首ウェイト II（Starting Weight II）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">ウェイト差 III（= II – I）（Weights Difference III）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">期間リターン IV（Period Return IV）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">TAA寄与 V（= III × IV）（TAA Contribution V）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">欧州株式（European equities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–9.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.18%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">国際株式（International equities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">0.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–6.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.03%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">欧州国債（European government bonds）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–1.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.05%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">社債（Corporate bonds）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">19.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–0.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.04%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">現金およびマネーマーケット商品（money market instruments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–0.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.01%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100.0%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–2.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.30%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>投資戦略の実行プロセスは、各資産クラスに対して適切な運用者（manager）を選定し、それらに資金を配分することへと続く。これにより、投資ポートフォリオ管理プロセスは実行段階（execution stage）に本格的に入る。</p>
+<p>投資マネージャーのパフォーマンスは、戦術的および戦略的資産配分（tactical and strategic asset allocation）の結果とともにモニタリングされる。資産クラスのウェイトがその許容レンジ（corridor）を外れた場合、戦略的資産配分（SAA）と比較して過大となった資産クラスから資金が移され、不足している資産クラスへと配分される。運用者および戦略的資産配分は、このモニタリング結果に基づいて見直される。また、資本市場の期待（capital market expectations）は変化する可能性があり、顧客の状況や目的も変化し得る。これらの変化は、戦略的資産配分の調整につながる可能性がある。</p>
+<section id="CFA0184-R-s08-02">
+<h3 class="dp-heading">ポートフォリオ管理における新たな展開（New Developments in Portfolio Management）</h3>
+<p>これまで提示してきたポートフォリオの計画および構築の枠組みは、やや硬直的なプロセスに依存している。それにもかかわらず、特筆すべき2つの比較的新しい、より柔軟な展開が存在する。</p>
+<p>第1の展開は、上場投資信託（exchange traded funds, ETFs）の提供の拡大と、アルゴリズムに基づく金融アドバイス（robo-advice）との組み合わせである。ETFは、資産クラスの指数またはサブ指数のパフォーマンスを追跡するファンドであり、容易に取引可能で、アクティブ運用ファンドや運用口座（managed accounts）と比較して比較的低コストである。主要な株式および債券指数に加え、コモディティをカバーする幅広いETFの提供により、個人投資家（retail investors）は資産クラスへの迅速で低コストかつ流動性の高いエクスポージャーを得ることが可能となっている。ロボアドバイス（robo-advice）は、分散の効いたポートフォリオを構築するためのコストをさらに低下させている。</p>
+<p>第2の展開は、適切な投資期間における資産クラスのリターン予測に対する批判、および資産クラス間の相関やボラティリティの不安定性に関する認識に関連している。一部の市場参加者は、投資ポートフォリオの不振な結果は、現代ポートフォリオ理論（modern portfolio theory）に基づくポートフォリオ構築手法が、リターン予測や推定相関のわずかな誤差に対して非常に敏感であることを反映していると主張している。これに対応して、実務家は各資産クラスをリスク寄与（risk contribution）に基づいて配分する投資アプローチを開発した。このアプローチはリスクパリティ投資（risk parity investing）として知られている。リスクパリティの支持者は、従来のポートフォリオは株式に大きなリスクを偏らせていると主張する。すなわち、機関投資家のポートフォリオにおける株式の高いウェイト（通常60%以上）は、そのリスク影響を過小評価している。なぜなら、株式は固定収益（fixed income）よりもはるかにボラティリティが高いからである。一方で、リスクパリティに反対する者は、2007年から2009年の世界金融危機（global financial crisis）以降のリスクパリティ・ポートフォリオの好成績は、債券市場のパフォーマンスを押し上げた長期的な金利低下によるものであると主張している。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RiskBudgetingContent">
+<p>個人、グループ、または組織の部門に対して、許容可能なリスク水準の配分を考慮に入れた目標を設定すること。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TacticalAssetAllocationContent">
+<p>短期的な市場トレンド、経済状況、またはバリュエーションの変化に基づいてポートフォリオ内の資産クラス配分を調整し、一時的な市場の非効率性や機会を活用してリターンの向上やリスク管理の改善を図る積極的な戦略。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SecuritySelectionContent">
+<p>個別証券を選択するプロセスであり、通常、証券選択（security selection）の目的は、ポートフォリオのベンチマーク（benchmark）に対して優れたリスク調整後リターンを生み出すことである。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RebalancingPolicyContent">
+<p>ポートフォリオの資産クラスウェイトを戦略的資産配分（strategic asset allocation）で規定された水準に回復させるプロセスを導く一連のルール。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_146009_407_Strategic_Asset_Allocation.html" >← 前へ</a>
+  <span class="title">4.08 | Portfolio Construction Principles</span>
+  <a href="courses_1872_modules_items_146020_409_ESG_Considerations_in_Portfolio_Planning_and_Construction.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

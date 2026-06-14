@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.04 | Issuer Use of Derivatives</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2459-R-s03" title="3.04 | Issuer Use of Derivatives">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3：デリバティブの利点、リスク、および発行体と投資家の利用 3.04｜発行体によるデリバティブの利用（Issuer Use of Derivatives）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">発行体と投資家におけるデリバティブの利用を比較せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>発行体（issuers）、投資家（investors）、および金融仲介機関（financial intermediaries）は、財務目的を達成するために、原資産へのエクスポージャーを増加、減少、または変更するためにデリバティブ商品を利用する。金融アナリストは、実務で見られる多様な戦略を解釈・再現するために、市場参加者におけるデリバティブの様々な利用方法についてより深い理解を得る必要がある。</p>
+<p>非金融の企業発行体は、原資産価格の変動により、資産、負債、および収益に対するリスクに直面することが多い。例えば、事業運営において取引されるコモディティを使用する企業発行体は、投入価格の変動により収益のボラティリティが高まる。この追加的な収益ボラティリティは、企業の借入コストを上昇させる可能性があるだけでなく、投資家が将来の企業収益を予測することを困難にする可能性もある。為替変動が企業発行体の収益に与える影響は、以前の例を拡張することで示される。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2459-s03-EXM-1-6">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 6<span style="display: block;">Foreign Exchange Risk and Earnings Volatility</span></h3>
+<p>例1で示したように、モンタウ社（Montau AG）は75日後に6億5,000万韓国ウォン（KRW650,000,000）でレーザー切断機を引き渡す予定であり、受け取るKRWを売却し、引き渡し時にユーロ（EUR）を購入する店頭（over-the-counter, OTC）の為替フォワードを金融仲介機関と締結することで為替エクスポージャーをヘッジしている。</p>
+<p>モンタウは、KRW/EURのフォワード為替レート[F₀(T)]を1,350（すなわち1,350 KRW = 1 EUR）で合意し、75日後に6億5,000万KRWを売却して481,481ユーロ（650,000,000 / 1,350）を受け取ることになる。生産マネージャーは、この機械のコストを43万ユーロと見積もっている。モンタウの財務マネージャー（Treasury manager）は、異なるKRW/EURスポットレート（S_T）における以下の利益率シナリオをまとめた。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2459-s03-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: middle; padding: 8px;">スポットKRW/EUR（S_T）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">ヘッジなしのユーロ収入（Unhedged EUR Proceeds）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">ヘッジなしの利益率（Unhedged Profit Margin）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">ヘッジありのユーロ収入（Hedged EUR Proceeds）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">ヘッジありの利益率（Hedged Profit Margin）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">1,525</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">€426,230</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−1%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">€481,481</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">11%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">1,400</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">€464,286</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">7%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">€481,481</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">11%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">1,280</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">€507,813</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">15%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">€481,481</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">11%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">1,225</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">€530,612</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">19%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">€481,481</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">11%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img alt="A graph of profit in EUR against the K R W slash E U R exchange rate showing the effect of a forward contract. The x-axis shows the K R W slash E U R exchange rate and the y-axis shows the profit in E U R." aria-describedby="CFA2459-s03-EXP6-extended-desc" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1870/files/461001" data-api-returntype="File" id="CFA2459-s03-EXP6" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/></p>
+<details class="dp-panels-wrapper" id="CFA2459-s03-EXP6-extended-desc" style="font-size: 10pt;">
+<summary>Expand / Collapse Extended Description</summary>
+<p>このグラフには、EUR51,481の水平の赤線が描かれており、これはフォワードレートF₀(T)で1億KRWを売却した際の利益を示している。また、時点0で合意された将来時点Tのフォワードレートを示す垂直の白線がF₀(T)の位置に描かれている。さらに、損益分岐点を示す0の水平白線も描かれている。このグラフは、フォワード契約が時点Tの為替レートに関わらず、EUR51,481の利益を固定することを示している。</p>
+</details>
+<p>モンタウがKRW/EURエクスポージャーをヘッジしない場合、機械引き渡し時のスポットレートに応じて利益率は変動する。KRWがEURに対して下落すれば利益率は低下し、KRWが上昇すれば利益率は上昇する。</p>
+</div>
+<p>例6は、企業発行体によって最も一般的に使用されるデリバティブ戦略の1つを示している。FXフォワードのペイオフは、通貨変動によるモンタウの損益計算書およびキャッシュフローのボラティリティを相殺する。</p>
+<p>デリバティブ会計（derivatives accounting）は、オフバランス処理から、これらの商品を公正価値（fair market value）で貸借対照表に計上する方法へと進化してきた。この変化は、デリバティブの損益の認識を、そのリスク管理目的と整合させ、デリバティブ利用の透明性と開示を向上させる。多くの企業発行体はまた、デリバティブ利用に関する目的、ガイドライン、リスク限度、および内部承認プロセスを定めたリスク管理方針を策定している。</p>
+<p>デリバティブ会計基準は、購入または売却されたデリバティブは、資産または負債に組み込まれている場合やヘッジ会計（hedge accounting）の適用要件を満たす場合を除き、損益を通じて時価評価（mark to market）されなければならないと規定している。ヘッジ会計は、ヘッジ手段（通常はデリバティブ）とヘッジ対象取引または貸借対照表項目を相殺することを可能にし、財務諸表のボラティリティを低減する。ヘッジ指定の種類によってデリバティブを分類することは、その意図と予想される財務諸表への影響の双方を明確にし、金融アナリストおよびステークホルダーにとって有益である。</p>
+<p>例えば、外国為替、金利、またはコモディティのような変動金利資産または負債の変動キャッシュフローを吸収するように指定されたデリバティブは、キャッシュフローヘッジ（cash flow hedges）と呼ばれる。キャッシュフローヘッジは、フォワード契約または条件付請求権のいずれでもあり得る。例えば、例6のFXフォワードは、KRW建ての商業取引から得られるモンタウの機能通貨（EUR）収入の変動を相殺するキャッシュフローヘッジである。変動金利負債を固定金利に変換するスワップも、キャッシュフローヘッジの一例である。</p>
+<p>公正価値ヘッジ（fair value hedge）は、資産または負債の公正価値の変動を相殺する目的でデリバティブが使用される場合に適用される。例えば、発行体は、債券の満期まで固定金利を受け取り市場参照金利を支払う金利スワップに入ることで、固定金利債の発行を変動金利負債に変換することができる。また、コモディティ生産者は、将来の価格下落を見越して在庫をフォワードで売却する場合がある。</p>
+<p>ネット投資ヘッジ（net investment hedges）は、外国子会社の持分に対する為替リスクを相殺するために、外貨建て債券やFXスワップ、フォワードなどのデリバティブが使用される場合に生じる。図表4は、これらのヘッジ区分を要約している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2459-s03-EXH-1-4">
+<h3 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 4<span style="display: block;">Hedge Accounting Designation Types</span></h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: middle; padding: 8px;">ヘッジの種類（Hedge Type）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">説明（Description）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">例（Examples）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">キャッシュフロー（Cash Flow）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">変動金利資産または負債（予測取引）の変動キャッシュフローを吸収する</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">変動金利負債を固定金利に変換する金利スワップ／予想売上をヘッジするFXフォワード</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">公正価値（Fair Value）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産または負債の公正価値の変動を相殺する</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">固定金利負債を変動金利に変換する金利スワップ／在庫をヘッジする商品先物</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ネット投資（Net Investment）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">外国事業の持分に対する為替リスクを相殺するよう指定される</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">通貨スワップ／通貨フォワード</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>デリバティブに対するヘッジ会計処理は、企業発行体にとって非常に望ましいものである。なぜなら、関連するヘッジ対象取引と同時にデリバティブの損益を認識することが可能になるからである。デリバティブの時価評価による変動は、純資産の一部（その他の包括利益、Other Comprehensive Income）に計上され、基礎となるヘッジ対象取引が損益として認識されるのと同時に振り替えられる。</p>
+<p>この処理の適用要件を満たすためには、デリバティブの契約日、想定元本（notional amounts）、およびその他の契約条件が、基礎となる取引のそれらと密接に一致していなければならない。このため、発行体は、自らの特定のニーズに合致したカスタマイズされたヘッジを構築するために、店頭市場（over-the-counter, OTC）を利用する可能性がはるかに高い。例えば、モンタウ社（Montau AG）は、例6のように金融仲介機関との75日物の店頭FXフォワード契約ではなく、標準化された2か月の外国為替先物契約を使用した場合、デリバティブポジションからの収益の変動に直面することになる。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2459-s03-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Question Set</h3>
+<section id="CFA2459-s03-01-01">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-h1">発行体によるデリバティブの利用（Issuer Use of Derivatives）</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>ヘッジ会計（hedge accounting）の処理を説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>ヘッジ会計は、発行体がヘッジ手段（通常はデリバティブ）をヘッジ対象取引または貸借対照表項目と相殺することを可能にし、財務諸表のボラティリティを低減する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>以下のヘッジ指定の種類を、それぞれの記述と対応付けよ：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2459-s03-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">A. キャッシュフローヘッジ（Cash flow hedge）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1. 資産または負債の公正価値の変動を相殺するために使用されるデリバティブ</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">B. 公正価値ヘッジ（Fair value hedge）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2. 変動金利資産または負債の変動キャッシュフローを吸収するように指定されたデリバティブ</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">C. ネット投資ヘッジ（Net investment hedge）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3. 外国事業の持分に対する為替リスクを相殺するように指定されたデリバティブ</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<ol class="cfa-curriculum-list-decimal" id="CFA2459-s03-L1">
+<li class="cfa-curriculum-list-item">正解はBである。公正価値ヘッジは、資産または負債の公正価値の変動を相殺するために使用されるデリバティブである。</li>
+<li class="cfa-curriculum-list-item">正解はAである。キャッシュフローヘッジは、変動金利資産または負債の変動キャッシュフローを吸収するように指定されたデリバティブである。</li>
+<li class="cfa-curriculum-list-item">正解はCである。ネット投資ヘッジは、外国事業の持分に対する為替リスクを相殺するように指定されたデリバティブである。</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>発行体が使用し得る公正価値ヘッジの例を説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>発行体は、債券の満期まで固定金利を受け取り市場参照金利を支払う金利スワップに入ることで、固定金利債の発行を変動金利の負債に転換することができる。あるいは、コモディティ生産者は、将来の現物価格の下落を見越して在庫をフォワードで売却する場合がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="HedgeAccountingContent">
+<p>ヘッジ手段（通常はデリバティブ）をヘッジ対象取引または貸借対照表項目と相殺することで、財務諸表のボラティリティを低減することを可能にする会計基準。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CashFlowHedgeContent">
+<p>外国為替、金利、またはコモディティのような変動金利資産または負債の変動キャッシュフローを吸収するようにデリバティブが指定される特定のヘッジ会計区分を指す。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FairValueHedgeContent">
+<p>デリバティブが資産または負債の公正価値の変動を相殺するものとみなされる場合に適用される特定のヘッジ会計区分を指す。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="NetInvestmentHedgeContent">
+<p>外貨建て債券またはFXスワップやフォワードなどのデリバティブが、外国事業の持分に対する為替リスクを相殺するために使用される場合に適用される特定のヘッジ会計区分を指す。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1870_modules_items_145283_303_Derivative_Risks.html" >← 前へ</a>
+  <span class="title">3.04 | Issuer Use of Derivatives</span>
+  <a href="courses_1870_modules_items_145289_305_Investor_Use_of_Derivatives.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

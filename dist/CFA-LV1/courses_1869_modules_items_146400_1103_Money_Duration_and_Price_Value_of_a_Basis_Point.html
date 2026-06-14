@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11.03 | Money Duration and Price Value of a Basis Point</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2441-R-s03-R-1" title="11.03 | Money Duration and Price Value of a Basis Point">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール11：利回りベースの債券デュレーション指標とその特性（Yield-Based Bond Duration Measures and Properties）11.03 | マネーデュレーション（Money Duration）とベーシスポイントの価格価値（Price Value of a Basis Point, PVBP）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">修正デュレーション（modified duration）、マネーデュレーション（money duration）、およびベーシスポイントの価格価値（price value of a basis point, PVBP）を定義し、計算し、解釈せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>修正デュレーション（modified duration）は、最終利回り（yield-to-maturity）の変化に対する債券価格の百分率変化を測定するために用いられる。関連する指標としてマネーデュレーション（money duration）がある。債券のマネーデュレーションは、価格変化を通貨単位で測定する指標である。マネーデュレーションは、額面100あたりで表すことも、実際のポジションサイズに基づいて表すこともできる。米国では、マネーデュレーションは一般に「ドル・デュレーション（dollar duration）」と呼ばれる。</p>
+<p>マネーデュレーション（MoneyDur）は、年率換算修正デュレーション（annualized modified duration）と債券のフルプライス（full price, PV Full）との積であり、額面比率またはポジションの通貨価値で表される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E6"><em>MoneyDur</em> = <em>AnnModDur</em> × <em>PV<sup>Full</sup> </em>.<span class="cfa-curriculum-display-formula-number">6</span></div>
+<p>通貨単位での債券価格の変化の推定値は、式4と非常に類似している。違いは、最終利回りの年率変化（Δ Yield）が与えられたとき、修正デュレーションは価格の百分率変化を推定するのに対し、マネーデュレーションは通貨単位での変化を推定する点にある。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E7">Δ<em>PV<sup>Full</sup> </em> ≈ −<em>MoneyDur</em> × Δ<em>Yield</em> <span class="cfa-curriculum-display-formula-number">7</span></div>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="CFA2441-R-s03-Ba">
+<h3 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"> </i></h3>
+<p>BRWAの5年満期、クーポン3.2%（半年複利）の債券で、2030年10月15日に満期を迎え、利回り3.2%で価格付けされているものを考える。2025年12月11日に決済（settlement）され、最初のクーポン期間の57日目（t / T = 57/180）に機関投資家（institutional investor）が購入したと仮定する。</p>
+<p>この債券のフルプライスは額面100あたり100.504であり、年率換算修正デュレーションは4.43092である。投資家が額面USD100,000,000のポジションを保有しているとすると、</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2441-R-s03-L1">
+<li class="cfa-curriculum-list-item">投資の市場価値（market value）はUSD100,503,921であり、</li>
+<li class="cfa-curriculum-list-item">投資のマネーデュレーション（money duration）はUSD445,324,719（= 4.43092 × USD100,503,921）である。</li>
+</ul>
+<p>したがって、最終利回りが100ベーシスポイント（basis points）上昇し、3.20%から4.20%になった場合、予想損失は約USD4,453,247（= –USD445,324,719 × 0.0100）である。</p>
+</div>
+<p>類似の指標として、ベーシスポイントの価格価値（price value of a basis point, PVBP）がある。これは、最終利回りが1ベーシスポイント変化した場合の債券のフルプライスの変化を推定するものである。PVBPは、修正デュレーションの近似計算と同様の式で算出できる。式8がPVBPの算出式である。PV–およびPV+は、それぞれ最終利回りを1ベーシスポイント減少および増加させて計算したフルプライスである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E8"><math>
+<semantics>
+<mrow>
+<mtext>PVBP</mtext>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mfenced>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mo>−</mo>
+</msub>
+</mrow>
+</mfenced>
+<mo>−</mo>
+<mfenced>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mo>+</mo>
+</msub>
+</mrow>
+</mfenced>
+</mrow>
+<mn>2</mn>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">8</span></div>
+<p>PVBPは「PV01」とも呼ばれ、「0.01の価格価値（price value of an 01）」または「0.01の現在価値（present value of an 01）」を意味し、ここで「01」は1ベーシスポイントを表す。米国では「DV01」とも呼ばれ、「1ベーシスポイントのドル価値（dollar value）」を意味する。PVBPは、コーラブル債（callable bonds）のように将来キャッシュフローが不確実な債券に特に有用である。関連する指標として「ベーシスポイント価値（basis point value, BPV）」があり、これは単にマネーデュレーションに0.0001（1ベーシスポイント）を掛けたものである。</p>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="CFA2441-R-s03-Bb">
+<h3 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"> </i></h3>
+<p>PVBP計算の数値例として、再びBRWAの5年満期、クーポン3.2%（半年複利）の債券（2030年10月15日満期、利回り3.2%）を考え、2025年12月11日に決済され、最初のクーポン期間の57日目（t / T = 57/180）に機関投資家が購入したとする。</p>
+<p>この債券のPVBPを求めるために、最終利回りを増減させて新しい価格を計算する。まず、利回りを1ベーシスポイント（0.01%）上昇させ、3.20%から3.21%にすると、PV+は100.459400となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mo>+</mo>
+</msub>
+<mo>=</mo>
+<mfenced close="]" open="[">
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.60</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1.01605</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mn>1</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mn>...</mn>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>101.60</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1.01605</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>10</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+<mo>×</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1.01605</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>57</mn>
+<mo>/</mo>
+<mn>180</mn>
+</mrow>
+</msup>
+<mo>=</mo>
+<mn>100.459400.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>次に、最終利回りを1ベーシスポイント低下させ、3.20%から3.19%にすると、PV–は100.548465となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E___1"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mo>−</mo>
+</msub>
+<mo>=</mo>
+<mfenced close="]" open="[">
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.60</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1.01595</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mn>1</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mn>...</mn>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>101.60</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1.01595</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>10</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+<mo>×</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1.01595</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>57</mn>
+<mo>/</mo>
+<mn>180</mn>
+</mrow>
+</msup>
+<mo>=</mo>
+<mn>100.548465.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>これらの結果を式8に代入することで、PVBPが求められる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E___2"><math>
+<semantics>
+<mrow>
+<mtext>PVBP</mtext>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100.548465</mn>
+<mo>−</mo>
+<mn>100.459400</mn>
+</mrow>
+<mn>2</mn>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>0.044532.</mn>
+</mrow>
+</semantics>
+</math></div>
+</div>
+<p>図表3（Exhibit 3）は、各種利回りベースのデュレーション指標の概要を示している。要約すると、これらは他のすべての変数（特に満期までの期間）が一定であり、かつキャッシュフローが確実であると仮定した場合に、最終利回りの変化に対する債券価格の瞬間的な変化を測定する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-EXH3">
+<h3 class="cfa-curriculum-exhibit-table-title">図表3 利回りベースのデュレーション指標の概要（Exhibit 3 Summary of Yield-Based Duration Statistics）</h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">指標（Measure）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">計算（Calculation）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Use</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マコーレー・デュレーション（Macaulay duration）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">将来の各キャッシュフローに対応するフルプライスの構成比で加重した、約束されたキャッシュフローの受取までの平均時間</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">投資家にとって再投資リスクと価格リスクが均衡する保有期間</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">修正デュレーション（Modified duration）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">価格を利回りで微分した一次導関数；マコーレー・デュレーションを1＋期間利回りで割ったもの</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">最終利回りの変化に対する債券価格の百分率変化の推定値</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネーデュレーション（Money duration）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">修正デュレーションに債券またはポジションのフルプライスを掛けたもの</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利回り変化に対する債券投資の価格変化（通貨単位）の推定値</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ベーシスポイントの価格価値（Price value of a basis point）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利回りが1ベーシスポイント低下した場合の価格と、1ベーシスポイント上昇した場合の価格との差を2で割ったもの</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">最終利回りが1ベーシスポイント変化した場合の債券価格の変化の推定値</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="CFA2441-R-s03-01-01">
+<h3 class="dp-heading">ゼロクーポン債および永久債の利回りデュレーション（Yield Duration of Zero-Coupon and Perpetual Bonds）</h3>
+<p>ゼロクーポン債（zero-coupon bonds）は満期時に額面のみの単一の支払いを持つため、キャッシュフロー受取までの現在価値加重平均時間は満期までの期間（time-to-maturity）と一致する。これは、その単一のキャッシュフローの現在価値ウェイトが1.0であるためである。したがって、ゼロクーポン債のマコーレー・デュレーションは満期までの期間に等しく、修正デュレーションはそれを1＋利回りで割ったものとなる。</p>
+<p>永久債（perpetuity）または永久債券（perpetual bond）は満期を持たない債券であり、時点Tにおいて額面や償還価値は存在しない。投資家は、債券がコール（call）されない限り、永久に一定のクーポン支払いを受け取る。ノンコーラブルの永久債（non-callable perpetuities）は稀であるが、興味深いマコーレー・デュレーションを持つ。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E9"><em>MacDur</em> = (1 + <em>r</em>)/<em>r</em>.<span class="cfa-curriculum-display-formula-number">9</span></div>
+</section>
+<section id="CFA2441-R-s03-01-02">
+<h3 class="dp-heading">変動金利ノートおよびローンのデュレーション（Duration of Floating-Rate Notes and Loans）</h3>
+<p>以前のレッスンで述べたように、変動金利商品（floating-rate instruments）の利息は、市場参照金利（market reference rate, MRR）にスプレッドを加えた水準に応じて変動する。あらかじめ定められた日付において、支払額はMRRの変化を反映してリセットされる。したがって、金利リスクはリセット日間にのみ生じ、次のリセット日においてクーポン支払いは新しいMRRに調整される。したがって、変動金利ノートまたは債券のマコーレー・デュレーションは、次回リセット日までの残存期間の割合に等しい。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E10"><math>
+<semantics>
+<mrow>
+<mi>M</mi>
+<mi>a</mi>
+<mi>c</mi>
+<mi>D</mi>
+<mi>u</mi>
+<msub>
+<mi>r</mi>
+<mrow>
+<mi>F</mi>
+<mi>l</mi>
+<mi>o</mi>
+<mi>a</mi>
+<mi>t</mi>
+<mi>i</mi>
+<mi>n</mi>
+<mi>g</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mfenced>
+<mrow>
+<mi>T</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mi>T</mi>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">10</span></div>
+<p>クーポン期間が180日で、前回のクーポンから57日が経過している場合、マコーレー・デュレーションは</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E___3"><math>
+<semantics>
+<mrow>
+<mi>M</mi>
+<mi>a</mi>
+<mi>c</mi>
+<mi>D</mi>
+<mi>u</mi>
+<msub>
+<mi>r</mi>
+<mrow>
+<mi>F</mi>
+<mi>l</mi>
+<mi>o</mi>
+<mi>a</mi>
+<mi>t</mi>
+<mi>i</mi>
+<mi>n</mi>
+<mi>g</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mfenced>
+<mrow>
+<mn>180</mn>
+<mo>−</mo>
+<mn>57</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>180</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>0.683333.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>変動金利商品（floating-rate instruments）は、クーポン期間が通常6か月未満であるため、一般的にデュレーションが非常に低い。その結果、固定利付ポートフォリオ（fixed-income portfolios）におけるデュレーションを低下させるために、投資家によって一般的に利用される。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2441-R-s03-Bc">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">知識チェック（Knowledge Check）</h4>
+<section>
+<p>あるアナリストは、2030年10月15日満期のBRWA 3.2%債と、同じく2030年10月15日に満期を迎え、クーポンが半年ごとにリセットされる変動金利ノート（floating-rate note, FRN）の金利リスクを比較している。</p>
+<p>直近のリセット日である2027年10月15日において、FRNのクーポンレートは3.2%であった。同時点で、BRWA債は利回り3.2%で価格付けされていた。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>なぜFRNはBRWAの固定利付債よりもデュレーションが低いと考えられるのか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>変動金利商品（floating-rate instrument）のマコーレー・デュレーション（Macaulay duration）は次回のクーポンリセット日までの期間を反映するのに対し、固定利付商品（fixed-rate instrument）のマコーレー・デュレーションは主に満期までの期間（time-to-maturity）を反映し、さらにクーポンレート、利回り、およびクーポン期間の経過割合にも依存する。FRNのマコーレー・デュレーションの最大値は6か月であるのに対し、BRWA債のマコーレー・デュレーションは満期（5年）よりわずかに短い。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>次の表を完成させよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">マコーレー・デュレーション（Macaulay duration）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">BRWA</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">FRN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2027年10月15日</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2027年11月15日</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2027年12月15日</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2028年1月15日</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2028年2月15日</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2028年3月15日</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2028年4月15日</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">マコーレー・デュレーション（Macaulay duration）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">BRWA</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">FRN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2027年10月15日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.8843</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0000</td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2027年11月15日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.8002</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.8306</td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2027年12月15日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.7169</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.6667</td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2028年1月15日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.6336</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4973</td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2028年2月15日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.5502</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3279</td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2028年3月15日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.4669</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1694</td>
+</tr>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2028年4月15日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.4221</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>例えば、2027年12月15日の場合、次のクーポンからの経過日数は61日である。クーポン期間の日数は183日であり、これはMicrosoft ExcelまたはGoogle Sheetsを用いて次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2441-R-s03-E___4">= COUPDAYS(DATE(2027,12,15),DATE(2028,4,15),2,1).</div>
+<p>したがって、マコーレー・デュレーション（Macaulay duration）は (183 − 61) ÷ 183 = 0.6667 となる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2441-R-s03-Bd">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット（Question Set）</h4>
+<section>
+<p>ディーパック・チョードリー（Deepak Chowdhury）は、額面ベースでUSD30百万の投資を、BRWA債、オーストラリア債、およびルーマニア債に対して評価している。すべての債券は同一通貨建てであり、3つの債券はいずれも2025年10月15日に発行されたと仮定する。</p>
+<p>チョードリーは、最初のクーポン期間の92日目である2026年1月15日時点でこれらの債券を評価しており、以下のデータをまとめている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Tc">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">特性（Characteristic）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>BRWA</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">オーストラリア</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ルーマニア</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン（Coupon）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">3.200%</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">0.000%</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">4.625%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン頻度（Coupon frequency）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">最終利回り（yield-to-maturity）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">3.200%</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">1.000%</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">4.250%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期（Maturity）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2030年10月15日</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2026年10月15日</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2055年10月15日</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フルプライス（Full price）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">100.815</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">99.262</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">107.429</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率換算マコーレー・デュレーション（Ann. Macaulay duration）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">4.405</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">0.744</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">16.939</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率換算修正デュレーション（Ann. modified duration）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">4.335</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">0.737</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">16.248</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>分析の一環として、チョードリーは利回りが1ベーシスポイントおよび100ベーシスポイント変化した場合の債券投資の価格変化の可能性を評価している。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>次の表を完成させよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Td">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">USD30百万の投資に対する影響（Effect on a USD30 million investment）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>BRWA</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">オーストラリア</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ルーマニア</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ベーシスポイントあたりの価格価値（Price value per basis point）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">投資の市場価値（USD）（Market value of investment (USD)）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネーデュレーション（額面比率）（Money duration (percent of par)）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">最終利回りが100ベーシスポイント上昇した場合の予想損失（USD）（Expected loss from a 100 bp YTM increase (USD)）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Te">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">USD30百万の投資に対する影響（Effect on a USD30 million investment）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>BRWA</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">オーストラリア</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ルーマニア</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ベーシスポイントあたりの価格価値（Price value per basis point）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.044</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.007</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.175</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">投資の市場価値（USD）（Market value of investment (USD)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30,244,381</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29,778,597</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32,228,627</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネーデュレーション（額面比率）（Money duration (percent of par)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">437.054</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">73.163</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1745.518</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">最終利回りが100ベーシスポイント上昇した場合の予想損失（USD）（Expected loss from a 100 bp YTM increase (USD)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1,311,163</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–219,490</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–5,236,553</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The calculations are shown in tabular form. Please refer to the candidate learning ecosystem online for a spreadsheet in the <a class="instructure_file_link instructure_scribd_file inline_disabled" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1802/files/382202" data-api-returntype="File" data-canvas-previewable="true" href="https://learn.cfainstitute.org/courses/1802/files/382202?wrap=1" id="382205" target="_blank" title="Interactive Spreadsheet Download">downloadable Microsoft Excel workbook</a>. Note that while solutions are rounded to three decimal places, other quantities are unrounded but shown only to three decimal places for presentation purposes.</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Tf">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">BRWA債（BRWA Bond）：最終利回りが1ベーシスポイント上昇した場合のフルプライス</th>
+<th colspan="3" style="text-align: left; vertical-align: bottom; padding: 8px;">BRWA債（BRWA Bond）：最終利回りが1ベーシスポイント低下した場合のフルプライス</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">最終利回り（期間ベース）（YTM (periodic)）</td>
+<td style="text-align: right; vertical-align: bottom; padding: 8px;">0.01605</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">最終利回り（期間ベース）（YTM (periodic)）</td>
+<td style="text-align: right; vertical-align: bottom; padding: 8px;">0.01595</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間（Period）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受取までの時間（Time to Receipt）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー（Cash Flow）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV+</strong></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間（Period）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受取までの時間（Time to Receipt）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー（Cash Flow）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.588</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.588</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.563</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.563</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.538</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.538</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.514</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.514</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.490</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.490</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.466</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.467</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.443</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.444</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.420</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.421</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.398</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.399</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">87.353</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.489</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101.600</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">87.435</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.771</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.858</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Tg">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="5" style="text-align: left; vertical-align: bottom; padding: 8px;">BRWA債（BRWA Bond）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PV+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.771</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フルプライス（Full price）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.815</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PV-</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.858</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Par</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30,000,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PVBP</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.044</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">市場価値（Market value）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30,244,381</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率換算修正デュレーション（AnnModDur）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.335</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネーデュレーション（MoneyDur）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">437.054</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フルプライス（Full price）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.815</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">MV</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30,244,381</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネーデュレーション（MoneyDur）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">437.054</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利回り変化（ChgYield）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">予想損失（Exp. Loss）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(1,311,163)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Th">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">オーストラリア債（Australian Bond）：最終利回りが1ベーシスポイント（basis points）上昇した場合のフルプライス</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">オーストラリア債（Australian Bond）：最終利回りが1ベーシスポイント（basis points）低下した場合のフルプライス</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right; vertical-align: top; padding: 8px;">最終利回り（期間ベース）（YTM (periodic)）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.0101</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">最終利回り（期間ベース）（YTM (periodic)）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.0099</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間（Period）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受取までの時間（Time to Receipt）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー（Cash Flow）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV+</strong></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間（Period）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受取までの時間（Time to Receipt）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー（Cash Flow）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">99.255</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">99.269</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">99.255</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">99.269</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Ti">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="5" style="text-align: left; vertical-align: bottom; padding: 8px;">オーストラリア債（Australian Bond）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PV+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">99.255</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フルプライス（Full price）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">99.262</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PV-</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">99.269</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Par</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30,000,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PVBP</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.007</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">市場価値（Market value）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29,778,597</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率換算修正デュレーション（AnnModDur）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.737</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネーデュレーション（MoneyDur）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">73.163</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フルプライス（Full price）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">99.262</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">MV</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29,778,597</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネーデュレーション（MoneyDur）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">73.163</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利回り変化（ChgYield）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">予想損失（Exp. Loss）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(219,490)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Tj">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">ルーマニア債（Romanian Bond）：最終利回りが1ベーシスポイント（basis points）上昇した場合のフルプライス</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">ルーマニア債（Romanian Bond）：最終利回りが1ベーシスポイント（basis points）低下した場合のフルプライス</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">最終利回り（期間ベース）（YTM (periodic)）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">0.0426</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">最終利回り（期間ベース）（YTM (periodic)）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">0.0424</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間（Period）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受取までの時間（Time to Receipt）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー（Cash Flow）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV+</strong></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間（Period）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">受取までの時間（Time to Receipt）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">キャッシュフロー（Cash Flow）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>PV-</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.484</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.484</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.300</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.302</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.125</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.127</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.956</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.959</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.794</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.798</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">…</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">…</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">…</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">…</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">…</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">…</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">…</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">…</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.394</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.402</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">104.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.251</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29.744</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">104.625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.424</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">107.254</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">107.604</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p> </p>
+<div class="cfa-curriculum-table-wrap" id="CFA2441-R-s03-Tk">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="5" style="text-align: left; vertical-align: bottom; padding: 8px;">ルーマニア債（Romanian Bond）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PV+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">107.254</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フルプライス（Full price）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">107.429</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PV-</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">107.604</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Par</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30,000,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PVBP</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.175</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">MV</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32,228,627</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率換算修正デュレーション（AnnModDur）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.248</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネーデュレーション（MoneyDur）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1745.518</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フルプライス（Full price）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">107.429</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">MV</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32,228,627</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネーデュレーション（MoneyDur）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1745.518</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利回り変化（ChgYield）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">予想損失（Exp. Loss）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(5,236,553)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>顧客が将来金利が上昇すると考えている場合、他の条件が一定であるとすると、どの債券投資が最も良いパフォーマンスを示す可能性が高いか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>オーストラリア債（Australian bond）が最も良いパフォーマンスを示す。これは、この債券が最も低いデュレーションおよびPVBPを持つため、利回り上昇による投資の予想損失がBRWA債およびルーマニア債よりも小さいためである。例えば、BRWA債における利回り100ベーシスポイント上昇時の予想損失は、オーストラリア債の約6倍（USD219,490に対して約USD1.3百万）である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MoneyDurationContent">
+<p>最終利回り（yield-to-maturity）の変化に伴う固定利付商品（fixed-income instrument）の価格変化を通貨単位で測定する指標。マネーデュレーションは、額面100あたりまたは実際のポジションサイズに基づいて表すことができる。米国では、一般に「ドル・デュレーション（dollar duration）」と呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PriceValueOfABasisPointPVBPContent">
+<p>最終利回り（yield-to-maturity）が1ベーシスポイント変化した場合の債券のフルプライスの変化の推定値。PVBPは「PV01」とも呼ばれ、「0.01の価格価値（price value of an 01）」または「0.01の現在価値（present value of an 01）」を意味し、ここで「01」は1ベーシスポイントを指す。米国では「DV01」とも呼ばれ、「1ベーシスポイントのドル価値（dollar value）」を意味する。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146393_1102_Modified_Duration.html" >← 前へ</a>
+  <span class="title">11.03 | Money Duration and Price Value of a Basis Point</span>
+  <a href="courses_1869_modules_items_146407_1104_Properties_of_Duration.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

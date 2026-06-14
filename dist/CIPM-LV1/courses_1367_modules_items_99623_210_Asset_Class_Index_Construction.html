@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.10 | Asset Class Index Construction</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Return Attribution and Benchmarks › Module 2: Introduction to Benchmarks</nav>
+<h1 class="page-title screenreader-only">2.10 | Asset Class Index Construction</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0146-R-s10-R-1" title="2.10 | Asset Class Index Construction"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール2：ベンチマーク入門（Introduction to Benchmarks）2.10｜資産クラス・インデックスの構築（Asset Class Index Construction）</h2></header><div class="cfa-curriculum-los-box"><h3 class="dp-has-icon cfa-curriculum-los-box">学習目標（Learning Outcomes）</h3><p class="p1">The candidate should be able to:</p><ul id="CIPM0146-R-s10-los-1CIPM0146-R-s10-los-2"><li class="cfa-curriculum-los-item">時価総額加重（market-capitalization-weighting）、等加重（equal-weighting）、株価加重（price-weighting）、およびファンダメンタル加重（fundamental-weighting）のインデックス構築手法を、それぞれの利点および欠点を含めて比較すること；</li><li class="cfa-curriculum-los-item">時価総額インデックスにおける浮動株調整（float adjustment）の目的と影響を説明すること；</li></ul></div><hr class="dp-hr-solid-light dp-hr-color-dp-primary"/><p>インデックスは、まず一連のルールを定義し、それを既存の証券集合に適用することで作成される。ただし、すべてのインデックスが同じ方法で構築されるわけではない。インデックス構築には主に3つの選択がある：組入基準（inclusion criteria）、証券の加重方法（security weighting）、およびインデックスの維持管理（index maintenance）である。さらに、インデックス提供者はインデックス値を算出し、そこからリターンが計算される。</p><p>第一の選択である組入基準は、インデックスがどの証券集団を代表するかを決定する。証券数が多く、かつ業種や規模で分散されているほど、インデックスは広範な市場パフォーマンスをより適切に測定できる。一方、より狭いユニバースは特定の証券群のパフォーマンス測定に適している。ベンチマークとして機能するためには、インデックスの組入基準はマネジャーのポートフォリオと類似した構成となるべきである。</p><p>第二の選択である証券の加重は、通常、株価加重（price weighting）、時価総額加重（value weighting）、または代替加重（alternative weighting）のいずれかから選択される。一部のインデックスでは特定の証券により大きなウェイトを与えるため、リターンとリスクが異なる。スポンサーは、マネジャーのポートフォリオとインデックスを比較する前にこれらの違いを理解しておく必要がある。インデックスの維持およびリターン計算のルールも、ベンチマークとしての適合性に影響を与える。</p><p>各インデックス提供者によって詳細は異なるものの、資産クラス・インデックスの構築における一般的なアプローチは、以下のステップに関するルールを定めることである：</p><section id="CIPM0146-R-s10-01-01"><h3 class="dp-heading">適格証券の定義（Define eligible securities）</h3><p>まず、特定の国におけるすべての普通株（common equity shares）など、出発点となる証券ユニバースを特定する必要がある。通常、インデックスの投資可能性（investability）を高めるために、さまざまな適格性ルール（eligibility rules）が適用される。代表的なものは以下のとおりである：</p><ul class="cfa-curriculum-list-bullet" id="CIPM0146-R-s10-L1"><li class="cfa-curriculum-list-item">取引要件（Trading requirements）：適格証券は主要な取引所に上場されていなければならない（例えば店頭取引（over-the-counter）銘柄は対象外）。</li><li class="cfa-curriculum-list-item">最低取引価格（Minimum trading price）：株式は一定の最低価格以上で取引されていなければならない。</li><li class="cfa-curriculum-list-item">最低浮動株数（Minimum available shares（float））：一般投資家に流通している株式が少ない企業は対象外となる。</li><li class="cfa-curriculum-list-item">最低流動性（Minimum liquidity）：一定期間における取引量または取引金額が一定水準以上である必要がある。</li><li class="cfa-curriculum-list-item">企業構造（Company structure）：有限責任組合（limited partnerships）、有限責任会社（limited liability companies）、クローズドエンド型投資会社（closed-end investment companies）などの構造を持つ企業は対象外となる。</li><li class="cfa-curriculum-list-item">株式の種類（Share types）：優先株（preferred stock）や転換優先株（convertible preferred stock）などは普通株インデックスから除外される。</li><li class="cfa-curriculum-list-item">国の割当（Country assignment）：証券がどの国に属するかは、設立国だけでなく他の基準にも依存する場合がある。企業は運営、税制、政治的、またはその他の財務上の理由で特定の地域に登記することがある。例えば、本社所在地や主要な取引市場などが考慮される。</li></ul><p>組入基準は証券数を管理可能な規模に減らし、通常はインデックスの投資可能性を向上させるために設定される。インデックス提供者は、すべての適格証券を含めるか、さらに絞り込むかも決定する。銘柄数に制限を設ける場合、市場を適切に代表するよう、セクターや業種の代表性を確保するルールなどが設けられる。</p><p>適格性ルールの範囲や詳細はインデックス提供者ごとに異なる。一部の提供者は委員会によって銘柄選定を行う。多くの場合、インデックス構成銘柄は対象市場全体のサンプルとみなされるべきであり、そのサンプルが基礎市場を適切に代表していることを確保することが目標である。</p><p>多くのインデックス提供者は、企業の時価総額（market capitalizations）に基づき、ほぼすべてのサイズ帯をカバーする包括的なインデックス・ファミリーを構築している。大型株（large-cap）、中型株（mid-cap）、小型株（small-cap）などを含む複数のインデックスで構成される。適格証券を定義した後、各証券をこれらのサイズ区分に割り当てるルールが適用される。</p></section><section id="CIPM0146-R-s10-01-02"><h3 class="dp-heading">インデックス加重の定義（Define index weighting）</h3><p>適格証券が決定された後、それらに対する加重ルールが適用される。証券の加重はインデックスのリスクとリターンに直接影響し、またマネジャーのベンチマークとしての妥当性にも影響するため重要である。</p><p>一般的に用いられる加重方式には以下がある：</p><ul class="cfa-curriculum-list-bullet" id="CIPM0146-R-s10-L2"><li class="cfa-curriculum-list-item">時価総額加重（Capitalization weighting）（market value weighting、market cap weighting、cap weightingとも呼ばれる）。最も一般的な方式であり、各構成銘柄は価格×浮動株数により算出される時価総額に比例して保有される。価値加重インデックスのパフォーマンスは、各銘柄の発行済み価値全体を保有するポートフォリオのパフォーマンスを表す。この方式は投資専門家に最も広く受け入れられている。</li><li class="cfa-curriculum-list-item">株価加重（Price weighting）：この方式では構成銘柄は株価に比例して加重される。インデックス値は単純に株価の平均として解釈できる。株価加重インデックスのパフォーマンスは、各銘柄を1単位ずつ保有するポートフォリオのパフォーマンスを表す。単純であることが利点だが、投資家の実際のポートフォリオ構成方法との関連性は低い。代表例はDow Jones Averagesであり、長い歴史と広い認知を持つ。日経平均株価（Nikkei Stock Average）も株価加重インデックスである。</li><li class="cfa-curriculum-list-item">等加重（Equal weighting）：純粋な等加重では、すべての構成銘柄が指定されたリバランス時点で同一ウェイトとなる。このインデックスのパフォーマンスは、各銘柄に同額を投資するポートフォリオのパフォーマンスを表す。セクターや業種単位で均等加重するなどのバリエーションもある。個別銘柄のリターン差によりウェイトが乖離するため、定期的（例：四半期ごと）なリバランスが必要である。Value Line Composite Averageは米国株の等加重インデックスである。</li><li class="cfa-curriculum-list-item">ファンダメンタル加重（Fundamental weighting）：Research Affiliates LLCが特許を取得した手法であり、売上高（sales）、キャッシュフロー（cash flow）、簿価（book value）、配当（dividends）など、市場価格以外の企業特性に基づいて加重する。評価に重要と考えられる変数に基づいてウェイトを決定することで、市場価格ではなく「本源的価値（true values）」に基づく加重を目指す。他の組織も類似のアプローチを採用し、さまざまな変数の組み合わせを用いたインデックスを開発している。このインデックスのパフォーマンスは、評価指標に基づいて投資するポートフォリオのパフォーマンスを表す。</li><li class="cfa-curriculum-list-item">最適化ベースの加重（optimization-based weighting）（最小分散（minimum-variance）および効率性加重（efficiency weighting））。低ボラティリティ・ポートフォリオ（low-volatility portfolios）と比較して、異常なリスク調整後リターン（abnormal risk-adjusted returns）の存在を示すいくつかの証拠がある。最小分散ポートフォリオ（minimum-variance portfolios）は、この見かけ上の異常を追求するための自然な出発点である。他にも、シャープレシオ（Sharpe ratio）（リスク単位当たりの超過リターン（excess return per unit of risk））を最大化する方法や、すべての資産間でリスクを均等化する方法（リスク・パリティ（risk parity）として知られる）がある。これらのタイプのベンチマークは、インデックス設計と投資戦略の区別を曖昧にし、実質的に投資戦略がインデックス設計に組み込まれている。</li></ul><p>これらのインデックスの相対的な利点および欠点については、「インデックス構築のトレードオフ（Index Construction Tradeoffs）」のレッスンで議論する。</p><p>ほとんどすべての時価総額加重インデックスは、フリーフロート（free float）で調整されている。フリーフロートとは、企業の発行済株式のうち一般投資家が取引可能な株式数である。この調整は、広く購入可能ではなく投資可能な機会集合（investable opportunity set）の一部ではない企業の時価総額部分を除外することを目的としている。この結果得られるインデックスは、フリーフロート調整時価総額インデックス（free-float-adjusted market capitalization index）、または単にフロート加重インデックス（float-weighted index）と呼ばれる。フロート加重インデックスは、取引可能なすべてのインデックス構成銘柄を保有するポートフォリオのパフォーマンスを表す。</p><p>除外される株式の例は以下のとおりである：</p><ul class="cfa-curriculum-list-bullet" id="CIPM0146-R-s10-L3"><li class="cfa-curriculum-list-item">クロス保有（Cross ownership）：同じインデックスに含まれる他の企業が保有する株式。</li><li class="cfa-curriculum-list-item">大口の企業または個人保有（Large corporate or private holdings）：例えば、発行済株式の10%を超える株式を保有する企業や個人の持分。</li><li class="cfa-curriculum-list-item">従業員保有株式（Employee-owned shares）：例えば、従業員持株制度（employee stock ownership plans）によって保有される株式。</li><li class="cfa-curriculum-list-item">IPOロックアップ（IPO lockups）：新規公開株式（initial public offering）において一定期間売却が制限される株式。</li><li class="cfa-curriculum-list-item">政府保有（Government holdings）：例えば、「政府（government of）」として記載される保有分は取引不能とみなされる。</li></ul><p>フリーフロート調整は、特に政府、創業家、他企業などが大きな株式割合を保有することが多い発展途上市場（less developed markets）において重要である。これらの株式は理論的には購入可能であっても、実際には高いプレミアムが必要となり、多くの投資家にとって魅力的ではない。このような実質的に購入不可能な株式を除外することで、インデックスはより容易に複製可能となる。もし取引不可能な株式がインデックスに含まれ、多くの投資家がそれを複製しようとした場合、需給の不均衡により大きな価格歪みが生じる可能性がある。すべての主要なグローバル・インデックス（S&amp;P Dow Jones、FTSE、MSCIなど）はフロート調整を行っている。フロート調整によりインデックスの投資可能性は向上するが、その調整は主観的であり、インデックス提供者によって判断が異なる場合がある。</p></section><section id="CIPM0146-R-s10-01-03"><h3 class="dp-heading">インデックス維持（Index maintenance）</h3><p>インデックスを継続的に維持するためには、さまざまなルールが必要である。例は以下のとおり：</p><ul class="cfa-curriculum-list-bullet" id="CIPM0146-R-s10-L4"><li class="cfa-curriculum-list-item">再構成およびリバランス間隔（Reconstitution and rebalancing intervals）：市場は常に変化しており、企業は合併（mergers）、スピンオフ（spinoffs）、IPO、破産（bankruptcies）、上場廃止（delistings）などによって出入りする。また、小型企業が大型化したり、大型企業が縮小したりする。したがって、インデックスが意図された設計を維持するためには、構成銘柄やウェイトの見直しが必要となる。多くの提供者は年次または四半期などの定期的な再構成を行う。非時価総額加重インデックスでは、加重を維持するためにリバランスが不可欠である。提供者は不要なターンオーバーを避けるため、銘柄が頻繁に入れ替わらないよう慎重にルールを設計する。大規模IPOをいつ、あるいは含めるかどうかの判断は重要な意思決定となる。</li><li class="cfa-curriculum-list-item">コーポレート・アクション（Corporate actions）：自社株買い（buybacks）、追加発行（secondary offerings）、スピンオフ（spinoffs）、株式分配（stock distributions）などにより発行済株式数は変化する。インデックス提供者は通常、これらの変化を発生時に定められたルールに従って処理する。</li><li class="cfa-curriculum-list-item">配当（Dividends）：配当は通常、後述するインデックス値の計算に反映される。配当を含むインデックスはトータルリターン・インデックス（total return index）と呼ばれ、配当を含まないものはプライスリターン・インデックス（price return index）と呼ばれる。</li><li class="cfa-curriculum-list-item">取引停止（Suspensions）：取引停止銘柄の価格付けに関するルールを定める必要がある。</li></ul><figure class="dp-content-block cfa-curriculum-shaded-box" id="CIPM0146-R-s10-Ba"><figcaption class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"></i><span style="display: block;">Free-Float Adjustment</span></figcaption><p>議論の中で述べたように、時価総額加重かつフロート調整されたインデックスは、すべての投資家が現実的に保有可能な唯一のインデックスである。フロート調整が広く採用される以前は、最も一般的なグローバル・インデックスは単純な時価総額加重であった。</p><p>フリーフロート調整はインデックス構成銘柄のウェイトに大きな影響を与えることがある。例えば、2001年11月30日にMSCI World Indexはフリーフロート調整を導入し、その後の組入・除外により総ターンオーバーは25.8%に達した。357銘柄の追加と130銘柄の削除が行われ、特にMSCI USおよびMSCI Japanサブインデックスで多くの変更があった。全体の63%にあたる979銘柄にフロート調整係数が適用され、日本ではすべての銘柄が100%未満の調整係数となった。</p></figure><figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0146-R-s10-Bb"><figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"></i>Knowledge Check: Index Weighting Schemes</figcaption><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0146-R-s10-Q1"><legend><span class="cfa-curriculum-question-with-label">1. </span><p>あるインデックス構成銘柄が政府、ミューチュアルファンド（mutual funds）、一般投資家にそれぞれ40%、20%、40%の割合で保有されているとする。この銘柄の総時価総額が120,000,000ドルである場合、フロート調整された時価総額インデックスに反映されるべき金額はいくらか。</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-0" id="dp-qc-0-0" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-0"><p>A. 120,000,000ドル</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse0-1" id="dp-qc-0-1" name="dp-qc-0" type="radio" value="true"/><label for="dp-qc-0-1"><p>B. 72,000,000ドル</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse0-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h4 class="cfa-curriculum-solution-title">解答（Solution）</h4><p>B（72,000,000ドル）が正しい。政府保有分は取引されないため、投資可能部分から除外される。Aは調整が行われていないため不正解。Cはミューチュアルファンドの保有分は売買されるため投資可能であり除外されないため不正解。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-2" id="dp-qc-0-2" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-2"><p>C. 48,000,000ドル</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0146-R-s10-Q2"><legend><span class="cfa-curriculum-question-with-label">2. </span><p>次のうち、広範な市場インデックスに対して大規模機関投資家が最も好むと考えられる構築手法はどれか。</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-0" id="dp-qc-1-0" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-0"><p>A. 時価総額加重（Market capitalization）</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-1" id="dp-qc-1-1" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-1"><p>B. 時価総額加重（上限付き）（Market capitalization, weight capped）</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse1-2" id="dp-qc-1-2" name="dp-qc-1" type="radio" value="true"/><label for="dp-qc-1-2"><p>C. 時価総額加重（フリーフロート調整）（Market capitalization, free-float adjusted）</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse1-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h4 class="cfa-curriculum-solution-title">解答（Solution）</h4><p>Cが正しい。時価総額加重かつフリーフロート調整されたインデックスは、実際に取引可能な株式のみを反映する。大規模機関投資家は、インデックス構成銘柄すべてに現実的に投資可能かどうかを考慮する必要がある。Aを選択した場合、これが満たされない可能性がある。Bは、特定の市場セグメントへのエクスポージャーを制限したい場合の特殊なケースであり、そのような前提は本問には示されていない。</p></section></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0146-R-s10-Q3"><legend><span class="cfa-curriculum-question-with-label">3. </span><p>次のうち、広範市場インデックス（broad market index）の例はどれか。</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-0" id="dp-qc-2-0" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-0"><p>A. ピアグループ・インデックス（peer group index）</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse2-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-1" id="dp-qc-2-1" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-1"><p>B. セクター特化型インデックス（sector-specific index）</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse2-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse2-2" id="dp-qc-2-2" name="dp-qc-2" type="radio" value="true"/><label for="dp-qc-2-2"><p>C. グローバル株式インデックス（global equity index）</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse2-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h4 class="cfa-curriculum-solution-title">解答（Solution）</h4><p>Cが正しい。Aはピアグループが広範市場から乖離している可能性があるため不適切である。Bは市場の一部セグメントのみを対象としており、範囲が限定的すぎる。</p></section></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div></figure><figure class="dp-content-block cfa-curriculum-shaded-box" id="CIPM0146-R-s10-Bc"><figcaption class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"></i><span style="display: block;">Index Returns and Time-Weighted Rates of Return </span></figcaption><p>インデックスは、時間を通じて保有される証券の持分を表すという意味でポートフォリオである。しかし、インデックス値は単純に保有株式の総市場価値ではない。銘柄の追加や削除などによる保有内容の変化は、インデックスが表す総市場価値の変化をもたらすが、そのような場合でもインデックス値自体は変化してはならない。これは、複数投資家の資産がプールされた投資信託などにおける単位価値（unit value）や1口当たり純資産価値（net asset value per unit）に類似している。インデックス値が測定するリターンは、インデックス保有資産の時間加重収益率（time-weighted return）である。</p><p>現代のほとんどのインデックスは少なくとも日次で評価され、多くの場合は1日に複数回評価される。インデックス値の計算を容易にするために、「除数法（divisor method）」と呼ばれる方法が一般的に用いられる。除数（divisor）と呼ばれる量Uが計算され、これは単位化されたファンドにおける総口数に類似している。取引開始前に、インデックス提供者は保有銘柄（株数および銘柄識別情報）と除数を公表する。取引日tにおけるインデックス値IVは、保有資産の価値を評価し、それを除数U_tで割ることで算出される。日中の任意の時点での保有資産価値をVとすると、IV = V / U_t である。</p><p>ある日の取引終了後、インデックス提供者はいくつかの調整を行う。最初の調整は、保有資産に関連する配当（dividends）の反映である。通常のポートフォリオでは、配当は配当落ち日（ex-dividend date）に受取債権として計上され、流動性準備部分へのキャッシュフローとして扱われる。インデックスには流動性準備が存在しないため、配当収入は市場価値には含まれず、インデックス値に直接反映される必要がある。日tの終了時点でのインデックス値は次のように計算される：</p><div class="cfa-curriculum-display-formula-container" id="CIPM0146-R-s10-E"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mtext&gt;IV&lt;/mtext&gt;&lt;/mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mtext&gt;DIV&lt;/mtext&gt;&lt;/mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;U&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-1-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.441ex" role="img" style="vertical-align: -2.103ex;" viewbox="0 -1437.2 7555.9 2342.8" width="17.549ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-49"></use><use x="361" xlink:href="#MJMAIN-56" y="0"></use><use transform="scale(0.707)" x="1572" xlink:href="#MJMATHI-74" y="-213"></use><use x="1745" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2801,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="4514" x="0" y="220"></rect><g transform="translate(60,676)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMATHI-74" y="-213"></use><use x="1161" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(2162,0)"><use xlink:href="#MJMAIN-44"></use><use x="764" xlink:href="#MJMAIN-49" y="0"></use><use x="1126" xlink:href="#MJMAIN-56" y="0"></use><use transform="scale(0.707)" x="2653" xlink:href="#MJMATHI-74" y="-213"></use></g></g><g transform="translate(1737,-686)"><use x="0" xlink:href="#MJMATHI-55" y="0"></use><use transform="scale(0.707)" x="966" xlink:href="#MJMATHI-74" y="-213"></use></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mtext>IV</mtext></mrow><mi>t</mi></msub><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mi>t</mi></msub><mo>+</mo><msub><mrow><mtext>DIV</mtext></mrow><mi>t</mi></msub></mrow><mrow><msub><mi>U</mi><mi>t</mi></msub></mrow></mfrac></mstyle></mrow></semantics></math></span></span><script id="MathJax-Element-1" type="math/mml"><math id="m1"><semantics><mrow><msub><mrow><mtext>IV</mtext></mrow><mi>t</mi></msub><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mi>t</mi></msub><mo>+</mo><msub><mrow><mtext>DIV</mtext></mrow><mi>t</mi></msub></mrow><mrow><msub><mi>U</mi><mi>t</mi></msub></mrow></mfrac></mstyle></mrow></semantics></math></script>,</div><p>ここでDIV_tは、日tに再投資されたと仮定される配当の価値である。配当額は通常、保有株数と1株当たり配当額に基づいて計算される。この計算は概念的には配当をポートフォリオ全体に比例配分して再投資することと同等である。ただし、市場全体のすべての株式を保有するインデックスは配当で追加購入を行うことができないため、保有株数自体は通常調整されない。</p><p>After adjusting the index value for dividends, the shares of the holdings are adjusted for corporate actions or any other additions to or deletions from the index per the construction rules. The shares added or removed are typically valued at closing prices, and the market value of the adjusted holdings, <span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;msup&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mo&gt;&amp;#x2032;&lt;/mo&gt;&lt;/msup&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-2-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.478ex" role="img" style="vertical-align: -0.498ex;" viewbox="0 -852.5 1475.8 1067.1" width="3.428ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="1167" xlink:href="#MJMAIN-2032" y="513"></use><use transform="scale(0.707)" x="1584" xlink:href="#MJMATHI-74" y="-213"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mi>t</mi></msub></mrow></math></span></span><script id="MathJax-Element-2" type="math/mml"><math id="m2"><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mi>t</mi></msub></mrow></math></script></span>, is calculated. The new divisor for the next day, <em>t</em> + 1, is then calculated:</p><div class="cfa-curriculum-display-formula-container" id="CIPM0146-R-s10-E___1"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;U&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;msup&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mo&gt;&amp;#x2032;&lt;/mo&gt;&lt;/msup&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mtext&gt;IV&lt;/mtext&gt;&lt;/mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-3-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.688ex" role="img" style="vertical-align: -2.103ex;" viewbox="0 -1543.5 5113.3 2449.1" width="11.876ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-55" y="0"></use><g transform="translate(683,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-74" y="0"></use><use transform="scale(0.707)" x="361" xlink:href="#MJMAIN-2B" y="0"></use><use transform="scale(0.707)" x="1140" xlink:href="#MJMAIN-31" y="0"></use></g><use x="2221" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(3277,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="1595" x="0" y="220"></rect><g transform="translate(60,676)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="1167" xlink:href="#MJMAIN-2032" y="513"></use><use transform="scale(0.707)" x="1584" xlink:href="#MJMATHI-74" y="-213"></use></g><g transform="translate(64,-686)"><use xlink:href="#MJMAIN-49"></use><use x="361" xlink:href="#MJMAIN-56" y="0"></use><use transform="scale(0.707)" x="1572" xlink:href="#MJMATHI-74" y="-213"></use></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mi>t</mi></msub></mrow><mrow><msub><mrow><mtext>IV</mtext></mrow><mi>t</mi></msub></mrow></mfrac></mstyle></mrow></semantics></math></span></span><script id="MathJax-Element-3" type="math/mml"><math id="m3"><semantics><mrow><msub><mi>U</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mi>t</mi></msub></mrow><mrow><msub><mrow><mtext>IV</mtext></mrow><mi>t</mi></msub></mrow></mfrac></mstyle></mrow></semantics></math></script></div><p>最初の式を2番目の式に代入すると、除数更新のための便利な式が得られる：</p><div class="cfa-curriculum-display-formula-container" id="CIPM0146-R-s10-E___2"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;U&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;U&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;msup&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mo&gt;&amp;#x2032;&lt;/mo&gt;&lt;/msup&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mtext&gt;DIV&lt;/mtext&gt;&lt;/mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-4-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.688ex" role="img" style="vertical-align: -2.103ex;" viewbox="0 -1543.5 9070.9 2449.1" width="21.068ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-55" y="0"></use><g transform="translate(683,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-74" y="0"></use><use transform="scale(0.707)" x="361" xlink:href="#MJMAIN-2B" y="0"></use><use transform="scale(0.707)" x="1140" xlink:href="#MJMAIN-31" y="0"></use></g><use x="2221" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(3277,0)"><use x="0" xlink:href="#MJMATHI-55" y="0"></use><use transform="scale(0.707)" x="966" xlink:href="#MJMATHI-74" y="-213"></use></g><g transform="translate(4316,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="4514" x="0" y="220"></rect><g transform="translate(1519,676)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="1167" xlink:href="#MJMAIN-2032" y="513"></use><use transform="scale(0.707)" x="1584" xlink:href="#MJMATHI-74" y="-213"></use></g><g transform="translate(60,-686)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMATHI-74" y="-213"></use><use x="1161" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(2162,0)"><use xlink:href="#MJMAIN-44"></use><use x="764" xlink:href="#MJMAIN-49" y="0"></use><use x="1126" xlink:href="#MJMAIN-56" y="0"></use><use transform="scale(0.707)" x="2653" xlink:href="#MJMATHI-74" y="-213"></use></g></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>U</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>U</mi><mi>t</mi></msub><mstyle displaystyle="true"><mfrac><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mi>t</mi></msub></mrow><mrow><msub><mi>V</mi><mi>t</mi></msub><mo>+</mo><msub><mrow><mtext>DIV</mtext></mrow><mi>t</mi></msub></mrow></mfrac></mstyle></mrow></semantics></math></span></span><script id="MathJax-Element-4" type="math/mml"><math id="m4"><semantics><mrow><msub><mi>U</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>U</mi><mi>t</mi></msub><mstyle displaystyle="true"><mfrac><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mi>t</mi></msub></mrow><mrow><msub><mi>V</mi><mi>t</mi></msub><mo>+</mo><msub><mrow><mtext>DIV</mtext></mrow><mi>t</mi></msub></mrow></mfrac></mstyle></mrow></semantics></math></script></div><p>述べたように、インデックス値から計算されるリターンは時間加重収益率となるよう設計されている。これを確認するため、日tのリターン比率IV_t / IV_{t-1}を考える。最初の2つの式を代入すると、次の式が得られる：</p><div class="cfa-curriculum-display-formula-container" id="CIPM0146-R-s10-E___3"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mtext&gt;IV&lt;/mtext&gt;&lt;/mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mtext&gt;IV&lt;/mtext&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mrow&gt;&lt;mtext&gt;DIV&lt;/mtext&gt;&lt;/mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;msup&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mo&gt;&amp;#x2032;&lt;/mo&gt;&lt;/msup&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-5-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.565ex" role="img" style="vertical-align: -2.227ex;" viewbox="0 -1437.2 8820.2 2396" width="20.486ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="2492" x="0" y="220"></rect><g transform="translate(512,676)"><use xlink:href="#MJMAIN-49"></use><use x="361" xlink:href="#MJMAIN-56" y="0"></use><use transform="scale(0.707)" x="1572" xlink:href="#MJMATHI-74" y="-213"></use></g><g transform="translate(60,-686)"><use xlink:href="#MJMAIN-49"></use><use x="361" xlink:href="#MJMAIN-56" y="0"></use><g transform="translate(1112,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-74" y="0"></use><use transform="scale(0.707)" x="361" xlink:href="#MJMAIN-2212" y="0"></use><use transform="scale(0.707)" x="1140" xlink:href="#MJMAIN-31" y="0"></use></g></g></g><use x="3009" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(4066,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="4514" x="0" y="220"></rect><g transform="translate(60,676)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMATHI-74" y="-213"></use><use x="1161" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(2162,0)"><use xlink:href="#MJMAIN-44"></use><use x="764" xlink:href="#MJMAIN-49" y="0"></use><use x="1126" xlink:href="#MJMAIN-56" y="0"></use><use transform="scale(0.707)" x="2653" xlink:href="#MJMATHI-74" y="-213"></use></g></g><g transform="translate(1067,-686)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="1167" xlink:href="#MJMAIN-2032" y="408"></use><g transform="translate(1120,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-74" y="0"></use><use transform="scale(0.707)" x="361" xlink:href="#MJMAIN-2212" y="0"></use><use transform="scale(0.707)" x="1140" xlink:href="#MJMAIN-31" y="0"></use></g></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle displaystyle="true"><mfrac><mrow><msub><mrow><mtext>IV</mtext></mrow><mi>t</mi></msub></mrow><mrow><msub><mrow><mtext>IV</mtext></mrow><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></mfrac></mstyle><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mi>t</mi></msub><mo>+</mo><msub><mrow><mtext>DIV</mtext></mrow><mi>t</mi></msub></mrow><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></mfrac></mstyle></mrow></semantics></math></span></span><script id="MathJax-Element-5" type="math/mml"><math id="m5"><semantics><mrow><mstyle displaystyle="true"><mfrac><mrow><msub><mrow><mtext>IV</mtext></mrow><mi>t</mi></msub></mrow><mrow><msub><mrow><mtext>IV</mtext></mrow><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></mfrac></mstyle><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mi>t</mi></msub><mo>+</mo><msub><mrow><mtext>DIV</mtext></mrow><mi>t</mi></msub></mrow><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></mfrac></mstyle></mrow></semantics></math></script>.</div><p>This equation’s numerator is effectively the portfolio value immediately before external cash flows at the end of day <em>t</em>, whereas the denominator is the portfolio value immediately after external cash flows at the end of day <em>t</em> – 1. Returns calculated from index values using the divisor method are thus time-weighted returns. The value after adjusting for share changes on day <em>t</em> – 1, <span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msub&gt;&lt;msup&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mo&gt;&amp;#x2032;&lt;/mo&gt;&lt;/msup&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-6-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.602ex" role="img" style="vertical-align: -0.622ex;" viewbox="0 -852.5 2380.2 1120.3" width="5.528ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="1167" xlink:href="#MJMAIN-2032" y="513"></use><g transform="translate(1120,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-74" y="0"></use><use transform="scale(0.707)" x="361" xlink:href="#MJMAIN-2212" y="0"></use><use transform="scale(0.707)" x="1140" xlink:href="#MJMAIN-31" y="0"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></math></span></span><script id="MathJax-Element-6" type="math/mml"><math id="m6"><mrow><msub><msup><mi>V</mi><mo>′</mo></msup><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow></math></script></span>—sometimes called the “beginning adjusted value for day <em>t</em>”—is disseminated with the holdings and the divisor; it should be interpreted as the opening holdings valued at the previous closing prices. At the inception date of an index, an index base value must be assigned to start the process.</p></figure><p>インデックスを構築する際、提供者はさまざまなトレードオフに直面する。これについては次に検討する。</p></section><div class="dp-content-block cfa-curriculum-reflist"><h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3><div class="dp-panels-wrapper dp-accordion-default"><h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel0">参考文献（References）</h3><div aria-labelledby="dpPanel0" class="dp-panel-content" id="dpPanel0Content" role="region" style="display: none;" tabindex="0"><ul id="CIPM0146-R-s10-ref1"><li id="CIPM0146-R-s10-R1list">Schoenfeld, Steven A.（2002）「完全は不可能―なぜ単に『良い』インデックスがより完全な解決策となり得るのか（Perfection Impossible—Why Simply ‘Good’ Indexes Can Result in a More Perfect Solution）」Journal of Indexes（第2四半期）。</li></ul></div></div></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip8Content" role="tooltip" style="display: none;"><p>18 Schoenfeld（2003, pp. 77–78）は、フロート調整されていないインデックスの潜在的問題に関する興味深い事例を示している。1999年、Yahoo! Inc.がS&amp;P 500に組み入れられる前日に、その株価は1日で24%上昇した。これは、翌日にYahoo!が時価総額全体でインデックスに組み入れられたためであるが、実際には株式の約10%しか一般に流通していなかった（大部分は従業員やベンチャーキャピタルなどが保有）。2004年にS&amp;P 500にはフロート調整が導入された。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip9Content" role="tooltip" style="display: none;"><p>20 通常、配当は配当落ち日に再投資されたと仮定され、前日の保有状況に基づいて計算される。前提は提供者や地域慣行によって異なる場合がある。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip0Content" role="tooltip" style="display: none;"><p>構成銘柄を価格×流通株数で算出される時価総額に比例して保有する最も一般的な加重方式（capitalization weighting）。market value weighting、market cap weighting、cap weightingとも呼ばれる。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip1Content" role="tooltip" style="display: none;"><p>時価総額加重（capitalization weighting）を参照。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip2Content" role="tooltip" style="display: none;"><p>時価総額加重（capitalization weighting）を参照。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip3Content" role="tooltip" style="display: none;"><p>時価総額加重（capitalization weighting）を参照。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip4Content" role="tooltip" style="display: none;"><p>構成銘柄を株価に比例して加重する証券加重方式（price weighting）。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip5Content" role="tooltip" style="display: none;"><p>指定されたリバランス時点においてすべての構成銘柄を等ウェイトとする証券加重方式（equal weighting）。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip6Content" role="tooltip" style="display: none;"><p>Research Affiliates LLCによって特許化された手法であり、売上高、キャッシュフロー、簿価、配当などの企業特性に基づいて加重する方式（fundamental weighting）。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip7Content" role="tooltip" style="display: none;"><p>最小分散および効率性に基づく証券加重方式（optimization-based weighting）。</p></div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1367_modules_items_99621_209_Market_Indexes_and_Style_Indexes.html" >← 前へ</a>
+  <span class="title">2.10 | Asset Class Index Construction</span>
+  <a href="courses_1367_modules_items_99625_211_Index_Construction_Tradeoffs.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.11 | Index Construction Tradeoffs</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Return Attribution and Benchmarks › Module 2: Introduction to Benchmarks</nav>
+<h1 class="page-title screenreader-only">2.11 | Index Construction Tradeoffs</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0146-R-s11-R-1" title="2.11 | Index Construction Tradeoffs"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール2：ベンチマーク入門（Introduction to Benchmarks）2.11｜インデックス構築のトレードオフ（Index Construction Tradeoffs）</h2></header><div class="cfa-curriculum-los-box"><h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"></i>Learning Outcome</h3><p class="p1">The candidate should be able to:</p><ul id="CIPM0146-R-s11-los-1"><li class="cfa-curriculum-los-item">資産クラス・インデックスの構築におけるトレードオフを説明すること；</li></ul></div><hr class="dp-hr-solid-light dp-hr-color-dp-primary"/><p>これまで、インデックスは資産クラスおよび一般的な「市場（market）」のパフォーマンスを表すために広く用いられていると述べた。また、投資ビークルの基盤としての利用も増加している。これらの用途を満たすためには、インデックス構築において多くの選択が必要であり、それぞれにトレードオフが伴う。本節ではSiegel（2003）に基づき、これらのトレードオフを検討する。</p><section id="CIPM0146-R-s11-01-01"><h3 class="dp-heading">網羅性（completeness）と投資可能性（investability）</h3><p>原則として、市場を完全にカバーしようとすれば、投資家が利用可能なすべての証券を含める必要がある。しかし、その場合、流動性が低く機関投資家にとって十分な規模で購入できない小型株（small-capitalization securities）も含まれることになる。取引が困難な証券を除外することで、インデックスの投資可能性は向上する。したがって、インデックス設計者は、十分な投資可能性を維持しつつ、どこまで広範なインデックスとするかを決定しなければならない。</p><p>例えば、Wilshire 5000は米国株式市場で最も広範なインデックスであり、5,000以上の銘柄を含む。しかし、多くの銘柄は流動性が低く、取引が困難または高コストである。その結果、これらすべてを完全に複製したファンドは存在しない。Wilshire 5000を追跡するインデックスファンドが作成された際には、約2,000銘柄が実質的に取引不能であった。実際、インデックスの投資可能性の一つの指標は、それを完全に複製する投資ファンドがどの程度存在するかである。</p><p>ただし、投資可能性は流動性と同義ではない。例えば新興国市場では、ある証券が国内では高い流動性を持っていても、政府の規制により外国投資家には投資不可能な場合がある。先進国投資家にとっての投資機会を表すインデックスは、こうした非取引可能な新興国証券を除外し、非居住者の観点からのフリーフロートを反映すべきである。</p><p>網羅性と投資可能性は、インデックスが投資ビークルの基盤として利用される場合に特に重要である。インデックスを選択する際、ファンド提供者はこのトレードオフのバランスを考慮すべきである。より網羅的なインデックスは、より広範で分散されたパフォーマンスを提供できる。一方、頻繁かつ不確実な資金流出に直面するマネジャーにとっては投資可能性が重要である。投資家が突然資金を引き出した場合、マネジャーは迅速に証券を売却する必要があり、低い買値で売却せざるを得ない可能性がある。また、人気の高いインデックスを追跡するポートフォリオは流動性が高いため、取引コストが低くなる傾向がある。</p></section><section id="CIPM0146-R-s11-01-02"><h3 class="dp-heading">再構成・リバランス頻度とターンオーバー</h3><p>再構成（reconstitution）とリバランス（rebalancing）は、インデックスを意図された構成およびウェイトに近づけるためのプロセスである。再構成は銘柄の追加・削除を指し、リバランスは既存銘柄のウェイト調整を指す。</p><p>原則として、より頻繁な再構成とリバランスは代表性を高めるが、その一方でターンオーバー（turnover）を増加させる。ターンオーバーは、取引コスト、ビッド・オファー・スプレッド、税金などの観点から、インデックスを追跡する投資家にとってコストとなる。したがって、代表性と低ターンオーバーの間にはトレードオフが存在する。インデックス設計者は、許容可能なターンオーバーを維持しつつ、再構成およびリバランスの頻度を決定する必要がある。</p><p>特定のサイズやスタイル・インデックスを追跡するマネジャーにとって、企業が分類間を移動する際のターンオーバーは重要な問題となる。そのため、これらのインデックスは再構成頻度が低く設定される。一方、広範市場インデックスでは、ターンオーバーは主に小型銘柄で発生するため、再構成時の取引量は比較的少ない。また、全銘柄を含むインデックスは、銘柄数が固定されたインデックス（例：S&amp;P 500）よりも再構成頻度が低い傾向にある。</p><p>リバランスは特に国際インデックスで重要であり、フロート調整が関係する。極端な場合、構成銘柄のフリーフロートを頻繁に精密に調整することも可能だが、その場合、頻繁なリバランスと高い取引コストが発生する。そのため、多くの提供者はバンド（band）を用いて調整を行う（例：60%～70%）。フリーフロートがこの範囲内にある限り、ウェイトは変更されない。バンドが狭いほどリバランス頻度は高くなる。また、国の分類（先進国、新興国、フロンティア市場など）の変更は、各インデックスの国別ウェイトに大きな影響を与えるため、慎重な判断が必要である。</p></section><section id="CIPM0146-R-s11-01-03"><h3 class="dp-heading">客観性・透明性と裁量（judgment）</h3><p>証券はインデックスに追加されると価格が上昇し、削除されると価格が下落する傾向がある。インデックスの再構成は、追跡するマネジャーにとってリターン低下をもたらす。なぜなら、追加銘柄を高値で購入し、削除銘柄を安値で売却する必要があるためである。この影響は人気の高いインデックスほど顕著である。</p><p>透明性と客観性は、投資家が将来の構成変更を予測しやすくするため望ましい特性である。これにより、投資家は事前に対応でき、事後的に反応する必要がなくなる。透明性が低く裁量が大きい場合、構成銘柄の予測が困難となり、インデックスの投資可能性が低下し、追跡コストが増加する。</p><p>ただし、すべてのインデックス提供者は何らかの裁量を用いている。これにより、ルールでは想定できない状況や特殊ケースに対応できる。一部の提供者は委員会を用いて銘柄を選定することもある。インデックス提供者は、どの程度裁量を用いるか、いつ用いるかを決定しなければならない。</p><p>要約すると、インデックス構築には多くの選択とステップがある。提供者は適格証券のユニバースを定義し、加重方法を決定し、維持およびリターン計算のルールを定める必要がある。利用者の観点では、インデックスはシンプルで透明性が高く、複製可能な方法で構築されるべきである。また、明確で曖昧さのないルールが公表され、データがタイムリーに提供される必要がある。利用者はインデックスの構築方法およびリターン算出の信頼性と一貫性に対して信頼を持つべきである。</p><figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0146-R-s11-Ba"><figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"></i>Knowledge Check: Trade-offs in constructing asset class indexes</figcaption><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0146-R-s11-Q1"><legend><span class="cfa-curriculum-question-with-label">1. </span><p>より大規模で網羅的なインデックスは、一般に次の問題を抱えやすい：</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse0-0" id="dp-qc-0-0" name="dp-qc-0" type="radio" value="true"/><label for="dp-qc-0-0"><p>A. 投資可能性の問題（investability issues）</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse0-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h4 class="cfa-curriculum-solution-title">解答（Solution）</h4><p>Aが正しい。より大規模で網羅的なインデックスは、小規模なインデックスよりも取引が困難な証券を多く含むため、投資可能性が低い。Bは誤りであり、大規模インデックスは小規模インデックスよりもリバランスによるターンオーバーが高くなるとは限らない。Cも誤りであり、大規模インデックスの方が一般に客観性が高い。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-1" id="dp-qc-0-1" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-1"><p>B. より高いターンオーバー（higher turnover）</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-2" id="dp-qc-0-2" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-2"><p>C. インデックス提供者の主観的判断（subjective choices of index providers）</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい解答を選択して詳細を確認すること。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div></figure></section><section id="CIPM0146-R-s11-01-04"><h3 class="dp-heading">加重方式：利点と欠点（Weighting Schemes: Advantages and Disadvantages）</h3><p>以下では、インデックスの加重方式の利点と欠点を比較する。一般的特性と、ベンチマークとしての適用可能性について検討する。</p><section id="CIPM0146-R-s11-01-04-01"><h4>時価総額加重インデックス（Capitalization-Weighted Indexes）</h4><p>時価総額加重は多くの市場インデックスで採用されており、それには十分な理由がある。第一に、市場価値による加重は構成銘柄の相対的重要性を客観的に測定する方法である。市場価格は、多数の投資家による合意的評価であり、単一の設計者による推定ではない。価格と取引可能株数は、特定時点における価値の明確な指標である。</p><p>第二に、フロート調整された時価総額加重インデックスは、すべての投資家が保有可能な唯一のインデックスである。すべての投資家が時価総額に比例して証券を保有すれば、すべての株式が完全に保有され、余剰は生じない。この性質はマクロ整合性（macro consistency）と呼ばれる。他の加重方式では、すべての投資家が同時に保有することはできない。したがって、時価総額加重インデックスは典型的な投資機会集合を最もよく表す。また、市場全体の価値や投資家の総資産の変化を簡潔に表現するのに優れている。</p><p>この性質はCAPMの中心的な結果とも関連する。CAPMの前提のもとでは、すべての資産を含む時価総額加重ポートフォリオは効率的であり、すべての投資家は市場ポートフォリオに比例投資する。この概念を時価総額加重インデックスは反映している。</p><p>第三に、時価総額加重インデックスは他の方式に比べてリバランスの必要が少ない。価格変動によって株数調整は不要であり、株式分割も自動的に反映される。構成銘柄に変更がなければ、ポートフォリオは自動的にインデックスに追随する。他の方式では定期的なリバランスが必要である。</p><p>しかし、欠点もある。第一に、市場価値加重のため割高な証券の影響を受けやすい。価格上昇に伴いウェイトが増加するため、バブルの影響を受けやすく、効率的な投資を必ずしも表さない。第二に、大型銘柄に集中しやすい。例えば2024年末時点で、S&amp;P 500の上位10銘柄は約37%を占めていた。より分散されたポートフォリオを好む投資家もいる。また、アクティブ・マネジャーや制約のある機関投資家はインデックスと異なるウェイトを取る必要があり、結果としてリスク・リターンが大きく乖離し、適切なベンチマークとならない場合がある。</p></section><section id="CIPM0146-R-s11-01-04-02"><h4>株価加重インデックス（Price-Weighted Indexes）</h4><p>最大の利点は構築の単純さである。また長い歴史的データが存在し、投資研究に有用である（例：DJIAは1896年に開始）。</p><p>欠点として、第一に高株価銘柄の影響が過大になる。市場価値ではなく株価で加重されるため、企業の経済的重要性を反映しない。第二に、株価上昇銘柄は株式分割によりウェイトが低下し、成功企業が過小評価されるため、リターンに下方バイアスが生じる。第三に、各銘柄を1単位保有する前提は現実の投資行動を反映していない。</p></section><section id="CIPM0146-R-s11-01-04-03"><h4>等加重インデックス（Equal-Weighted Indexes）</h4><p>主な利点は、大型株のウェイトを低くし小型株のウェイトを高くすることで、集中度を下げ分散性を高める点である。また、市場価格が常に真の価値を反映するとは限らないという観点から、等加重は情報に依存しない単純な加重として特定期間において優れたリターンをもたらす可能性がある。さらに、すべての銘柄リターンの平均を示すため、「市場の平均的な動き」を表す指標ともいえる。</p><p>しかし、この方式には小型株バイアス（small-issuer bias）があるという欠点がある。また、等ウェイトを維持するためには、好調銘柄の売却と不調銘柄の購入が必要となり、頻繁なリバランスと高い取引コストが発生する。さらに、小型銘柄の流動性不足により、追跡が困難となる場合がある。</p></section><section id="CIPM0146-R-s11-01-04-04"><h4>ファンダメンタル加重インデックス（Fundamental-Weighted Indexes）</h4><p>ファンダメンタル加重インデックスの支持者は、時価総額加重インデックスは割高な銘柄を過大評価し、割安な銘柄を過小評価すると主張する。これに対し、評価指標（valuation metrics）に基づいて加重することで、割高銘柄の過大ウェイトを回避しようとする。また、市場価格はバブルの影響を受ける可能性があるため、ファンダメンタルズに基づく加重の方が経済における企業の重要性をより適切に反映するとされる。</p><p>ファンダメンタル加重インデックスの欠点として、第一にインデックス提供者の評価観に依存する点が挙げられる。その評価が正しいとは限らない。業界内で複数の構築手法が存在すること自体が、主観的判断に依存していることを示している。第二に、評価基準が厳しい場合、時価総額加重インデックスよりも分散度が低くなる可能性がある。第三に、流動性（時価総額）ではなく評価指標に基づいて加重されるため、すべての投資家が保有できるわけではない。第四に、これらのインデックスはファンドの販売を目的として設計されることが多く、その構築手法は通常非公開（proprietary）である。この場合、構成やウェイトが完全に開示されないため、有効なベンチマークとはならない。</p><p>第五に、過去にファンダメンタル加重インデックスが時価総額加重インデックスを上回ったとしても、それが将来も続くとは限らず、またそれ自体が良いインデックスであることを意味するわけでもない。インデックスは「市場がどう動いたか」を示すものであり、その評価はパフォーマンスではなく代表性に基づくべきである。優れたパフォーマンスはアクティブ運用の目的であり、インデックスの目的ではない。また、ファンダメンタル加重インデックスの過去のアウトパフォーマンスは、小型株バリュー（small-cap value stocks）へのバイアスによるものであることが多い。大型株やグロース志向の投資家にとっては、適切なベンチマークとはならない。</p></section><section id="CIPM0146-R-s11-01-04-05"><h4>最適化加重インデックス（Optimization-Based Weighted Indexes）</h4><p>これらの加重方式の利点は、最小リスクまたは最大シャープレシオとなる証券の組み合わせを見つけようとする点にある。期待リターン、標準偏差、相関といった定量的情報を用いることで、等加重や時価総額加重のような単純な手法よりも優れたリスク・リターン特性を提供することを目的とする。現代ポートフォリオ理論（modern portfolio theory）に基づき、効率的フロンティア（efficient frontier）上に位置するポートフォリオの構築を目指す。</p><p>欠点として、リスク最小化を行うと公益株（utility stocks）など低リスクセクターに過度に集中する可能性がある。その結果、分散性が低下し、将来のパフォーマンスの安定性が損なわれる可能性がある。この問題への対処としてウェイト制約が用いられることがあるが、これには主観的判断が伴う。第二に、最適化は過去データに依存するが、それが将来を正確に反映するとは限らない。データ調整を行う場合も主観性が生じる。概念的には魅力的であるものの、ベンチマークとしての利用は広く普及していない。</p></section><section id="CIPM0146-R-s11-01-04-06"><h4>ベンチマークとしてインデックスを使用する場合の株式インデックス加重方式の選択（Choosing an Equity Index Weighting Scheme When an Index Is Used as a Benchmark）</h4><p>インデックスは大きく時価総額加重とそれ以外に分類できる。時価総額加重は、その客観性、実用性、理論的裏付けにより支配的な方式となっている。ほとんどの場合、ベンチマークは時価総額加重かつフロート調整されたものであるべきである。これは、ポートフォリオ・マネジャーが流動性の低い証券に対して小さなポジションを取る傾向を反映している。検討した中では、時価総額加重かつフロート調整されたインデックスが、最も低いトラッキングリスクとコストで再現可能であるため、ベンチマークとして最適である。FTSE、MSCI、S&amp;Pなどの主要な株式インデックスはこの方式を採用している。歴史的連続性のため、非フロート調整版が併存する場合もある。</p><p>非時価総額加重インデックスは、時価総額加重インデックスを上回るリターン（またはリスク調整後リターン）を目指して提案されることが多い。しかし、代替戦略の超過リターンを測定するためには、まず時価総額加重リターンを算出する必要がある。パフォーマンス・ベンチマークとしては、時価総額加重インデックスが最も優れている。なぜなら、マネジャーが市場全体に対してどの程度の成果を上げたかを最も適切に示すためである。株価加重や等加重インデックスは市場指標としては有用だが、一般にベンチマークとしては適切でない。ファンダメンタル加重インデックスは投資戦略としては有効な場合もあるが、代表性や透明性の点でベンチマークには適さない。</p><p>要約すると、時価総額加重インデックスが最も有効なベンチマークとなる可能性が高い。次に、それがベンチマーク妥当性基準を満たすかを検討する。特にフロート調整された時価総額加重インデックスが有効なベンチマークとなり得るかを詳しく見る。</p></section><section id="CIPM0146-R-s11-01-04-07"><h4>ベンチマークとしての市場インデックス（Market Indexes as Benchmarks）</h4><p>これまでの議論から、時価総額加重かつフロート調整されたインデックスが、多くのマネジャーにとって最適なベンチマークである可能性が高いと結論づけられる。この種のインデックスは広く利用可能で、一般に受け入れられ、理解されやすい。Bailey and Tierney（1998）の妥当性基準に照らしても、測定可能性（measurable）、明確性（unambiguous）、事前特定性（specified in advance）、投資可能性（investable）といった多くの基準を満たす。また、多くのマネジャーはこれらの構成銘柄について知識や見解を持っている。同一ユニバースから銘柄選択を行い、明確なスタイル・バイアスがない場合には、スポンサーにとって適切なベンチマークとなる。</p><p>しかし、いくつかの制約もある。第一に、時価総額加重はマネジャーの投資スタイルと整合しない場合がある（例：大型株への集中）。第二に、構築ルールが十分に透明でない場合がある。例えばフロート調整の方法は完全には開示されないことがあり、提供者間で標準化もされていない。さらに、再構成により構成が変化し、スタイルやセクター、リスク特性が時間とともに変動する可能性がある。インデックスのパフォーマンスも提供者の判断に影響される。</p><p>妥当性基準の観点では、マネジャーのスタイルがインデックスと異なる場合、そのインデックスは適切でない。マネジャーはそのようなベンチマークに対して責任を負うことを望まない可能性が高い。この問題は、市場インデックスが特定のマネジャーではなく市場全体を代表するよう設計されていることに起因する。広範市場インデックスのパフォーマンスは、多くの要因に影響され、その多くはマネジャーのスキルとは無関係である。</p><p>要約すると、市場インデックスはスイスアーミーナイフ（Swiss Army knives）のようなもので、多くの用途に有用であるが、必ずしも最適なツールとは限らない。市場インデックスがマネジャーのスタイルを十分に反映しない可能性があるため、スタイル・インデックス（style indexes）が開発されており、次にこれを検討する。</p></section></section><div class="dp-content-block cfa-curriculum-reflist"><h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3><div class="dp-panels-wrapper dp-accordion-default"><h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel0">参考文献（References）</h3><div aria-labelledby="dpPanel0" class="dp-panel-content" id="dpPanel0Content" role="region" style="display: none;" tabindex="0"><ul id="CIPM0146-R-s11-ref1"><li id="CIPM0146-R-s11-R1list">Amenc, Noel, Goltz, Felix and Tang, Lin (2011). EDHEC-Risk European Index Survey 2011. EDHEC Risk Institute (October): <a class="external" href="http://professoral.edhec.com/servlet/com.univ.collaboratif.utils.LectureFichiergw?ID_FICHIER=1328885973962" rel="noreferrer noopener" target="_blank"><span>http://professoral.edhec.com/servlet/com.univ.collaboratif.utils.LectureFichiergw?ID_FICHIER=1328885973962</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a>.</li><li id="CIPM0146-R-s11-R2list">Bailey, Jeffery V. and Tierney, David E.（1998）『複数マネジャー投資プログラムにおけるミスマッチ・リスクの管理（Controlling Misfit Risk in Multiple-Manager Investment Programs）』バージニア州シャーロッツビル（Charlottesville, VA）：CFA Institute Research Foundation。</li><li id="CIPM0146-R-s11-R3list">Calverley, J. P., Meder, A. M., Singer, B. D. and Staub, R.（2007）「資本市場予想（Capital Market Expectations）」『Managing Investment Portfolios: A Dynamic Process 第3版』。</li><li id="CIPM0146-R-s11-R4list">Christopherson, Jon A., Cariño, David R. and Ferson, Wayne E.（2009）『ポートフォリオ・パフォーマンス測定とベンチマーキング（Portfolio Performance Measurement and Benchmarking）』ニューヨーク：McGraw−Hill。</li><li id="CIPM0146-R-s11-R5list">Enderle, Francis J., Pope, Brad and Siegel, Laurence B.（2003）「米国株式市場の広範時価総額インデックス（Broad-Capitalization Indexes of the U.S. Equity Market）」Journal of Investing 12（1）：11–22。</li><li id="CIPM0146-R-s11-R6list">Gastineau, Gary L., Olma, Andrew L. and Zielinski, Robert G.（2007）「株式ポートフォリオ運用（Equity Portfolio Management）」『Managing Investment Portfolios: A Dynamic Process 第3版』。</li><li id="CIPM0146-R-s11-R7list">Schoenfeld, Steven A.（2002）「完全は不可能―なぜ単に『良い』インデックスがより完全な解決策となり得るのか（Perfection Impossible—Why Simply ‘Good’ Indexes Can Result in a More Perfect Solution）」Journal of Indexes（第2四半期）。</li><li id="CIPM0146-R-s11-R8list">Schoenfeld, Steven A.（2003）『アクティブ・インデックス投資（Active Index Investing）』ニュージャージー州ホーボーケン（Hoboken, NJ）：John Wiley &amp; Sons。</li><li id="CIPM0146-R-s11-R9list">Siegel, L.（2003）『ベンチマークと投資運用（Benchmarks and Investment Management）』バージニア州シャーロッツビル（Charlottesville, VA）：CFA Institute Research Foundation。</li></ul></div></div></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip0Content" role="tooltip" style="display: none;"><p>21 Schoenfeld（2003）、Enderle, Pope, and Siegel（2003）、およびChristopherson, Cariño, and Ferson（2009）は、本節で扱う多くの基準に基づき既存インデックスの評価を行っている。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip2Content" role="tooltip" style="display: none;"><p>22 より網羅的なインデックスは、最近取引されていない銘柄を多く含む可能性があり、価格が古いままとなり、ボラティリティや相関が過小評価される場合がある（Calverley ほか 2007）。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip4Content" role="tooltip" style="display: none;"><p>23 2024年12月のファクトシート（www.spglobal.com/spdji/en/indices）参照。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip5Content" role="tooltip" style="display: none;"><p>24 日本株のNikkei 225のように、高株価銘柄の影響を軽減するために調整が行われる場合もある（Gastineau ほか 2007）。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip6Content" role="tooltip" style="display: none;"><p>25 Amenc, Goltz, and Tang（2011, pp. 35–44）。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip7Content" role="tooltip" style="display: none;"><p>26 例えば、Dow Jones Wilshire 5000はフロート調整版と非調整版の両方が存在する。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip9Content" role="tooltip" style="display: none;"><p>27 市場インデックスの問題に関する詳細なレビューについてはAmenc, Goltz, and Tang（2011）参照。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip11Content" role="tooltip" style="display: none;"><p>28 この比喩はSchoenfeld（2002）による。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip1Content" role="tooltip" style="display: none;">Siegel, L. (2003). <em>Benchmarks and Investment Management</em>. Charlottesville, VA: Research Foundation of CFA Institute.</div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip3Content" role="tooltip" style="display: none;">Siegel, L. (2003). <em>Benchmarks and Investment Management</em>. Charlottesville, VA: Research Foundation of CFA Institute.</div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip8Content" role="tooltip" style="display: none;">Bailey, Jeffery V. and Tierney, David E. (1998). <em>Controlling Misfit Risk in Multiple-Manager Investment Programs</em>. Charlottesville, VA: Research Foundation of CFA Institute.</div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip10Content" role="tooltip" style="display: none;">Bailey, Jeffery V. and Tierney, David E. (1998). <em>Controlling Misfit Risk in Multiple-Manager Investment Programs</em>. Charlottesville, VA: Research Foundation of CFA Institute.</div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1367_modules_items_99623_210_Asset_Class_Index_Construction.html" >← 前へ</a>
+  <span class="title">2.11 | Index Construction Tradeoffs</span>
+  <a href="courses_1367_modules_items_99627_212_Equity_Style_Indexes.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

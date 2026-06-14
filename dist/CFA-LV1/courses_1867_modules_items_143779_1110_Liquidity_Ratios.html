@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>11.10 | Liquidity Ratios</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2422-R-s10-R-1" title="11.10 | Liquidity Ratios"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール11：財務分析手法（Financial Analysis Techniques）11.10｜流動性比率（Liquidity Ratios）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">活動性（activity）、流動性（liquidity）、健全性（solvency）、および収益性（profitability）の各比率を計算し解釈せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>流動性分析（liquidity analysis）は、企業が短期債務を履行する能力を測定する。短期的には、企業の流動性の源泉には通常、手元の現金および市場性有価証券（marketable securities）、ならびに負債発行が含まれる。より長期的には、非金融企業においては、流動性は営業キャッシュフローおよび負債構造（例えば債務満期のタイミング）の管理によって確保される（金融セクターについては後述）。</p>
+<p>必要な流動性の水準は業界ごとに異なる。特定の企業の流動性ポジションは、任意の時点における資金需要の見込みに応じて変化する可能性がある。企業が十分な流動性を有しているかを判断するには、過去の資金調達需要、現在の流動性状況、将来の資金需要の見込み、ならびに資金需要の削減または追加資金の調達（実際および潜在的な資金源を含む）に関する選択肢を分析する必要がある。</p>
+<p>一般に、大企業は小規模企業よりも負債の水準および構成をコントロールする能力が高い。そのため、公開資本市場や短期金融市場（money markets）を含むより多くの資金調達手段を持つ可能性がある。資本市場への裁量的なアクセスが大きいほど、必要とされる流動性バッファの規模は小さくなる。</p>
+<p>信用状（letters of credit）や金融保証（financial guarantees）などの偶発債務（contingent liabilities）も、流動性評価において重要となり得る。偶発債務の重要性は、非銀行セクターと銀行セクターで異なる。非銀行セクターでは、偶発債務（通常は財務諸表の注記に開示される）は潜在的なキャッシュ流出を意味し、必要に応じて流動性評価に含めるべきである。銀行セクターでは、偶発債務は銀行の財務状態に依存しない潜在的に大きなキャッシュ流出を意味する。通常の市場環境では流出は小さい場合が多いが、マクロ経済または市場の危機が発生すると、デフォルトや企業倒産の増加に伴い、偶発債務に関連するキャッシュ流出が大幅に増加する可能性がある。さらに、このような危機は一般に市場全体の流動性低下を伴うため、資金不足がさらに悪化する可能性がある。したがって、銀行セクターにおいては、偶発債務が流動性に与える影響には特に注意が必要である。</p>
+<section id="CFA2422-R-s10-01-01">
+<h3 class="dp-heading">流動性比率の計算（Calculation of Liquidity Ratios）</h3>
+<p>以前のCorporate Issuersで導入された代表的な流動性比率は、図表22（Exhibit 22）に示されている。これらの流動性比率はある時点における企業の状況を反映するため、通常は平均値ではなく期末貸借対照表のデータを用いる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s10-EXH-1-20">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 22<span style="display: block;">Definitions of Commonly Used Liquidity Ratios</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">流動性比率（Liquidity Ratios）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">分子（Numerator）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">分母（Denominator）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動比率（Current ratio）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産（Current assets）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債（Current liabilities）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当座比率（Quick ratio）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金＋短期市場性投資（short-term marketable investments）＋売掛金（Receivables）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債（Current liabilities）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金比率（Cash ratio）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金＋短期市場性投資（short-term marketable investments）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債（Current liabilities）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">防御期間比率（Defensive interval ratio）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金＋短期市場性投資＋売掛金</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1日当たりの現金支出（Daily cash expenditures）</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left; vertical-align: top; padding: 8px;">追加的な流動性指標（Additional Liquidity Measure）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">キャッシュ・コンバージョン・サイクル（net operating cycle）</td>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">DOH＋DSO−買掛金支払日数（Number of days of payables）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>防御期間比率は、追加的なキャッシュ流入がない場合に、既存の流動資産のみで企業が日々の現金支出をどれだけの期間賄えるかを測定する。この比率は、ベンチャーキャピタル（venture capital）や内部関係者によって資金提供を受ける初期段階企業でしばしば計算される「バーンレート（burn rate）」と類似している。分子には当座比率と同じ流動資産が含まれ、分母は1日当たりの現金支出の推計値である。1日当たりの現金支出は、期間中の現金支出総額を期間日数で割ることで求められる。現金支出総額は、売上原価（cost of goods sold）、販売費および一般管理費（selling, general, and administrative expenses）、研究開発費（research and development expenses）などの損益計算書上の費用を合計し、減価償却費などの非現金費用（depreciation and amortization）を差し引くことで近似される（通常、税金は含めない）。</p>
+</section>
+<section id="CFA2422-R-s10-01-02">
+<h3 class="dp-heading">流動性比率の解釈（Interpretation of Liquidity Ratios）</h3>
+<p>以下では、図表22に示された5つの基本的な流動性指標の解釈について説明する。</p>
+<section id="CFA2422-R-s10-01-02-01">
+<h4>流動比率（Current Ratio）</h4>
+<p>流動比率が高いほど流動性が高い（すなわち短期債務を履行する能力が高い）ことを示す。低い比率は流動性の低さを示し、短期債務の履行において営業キャッシュフローや外部資金調達への依存度が高いことを意味する。流動比率は、棚卸資産や売掛金が実際に流動性を持つことを前提としている（ただし、関連する回転率が低い場合にはこの前提は成立しない可能性がある）。</p>
+</section>
+<section id="CFA2422-R-s10-01-02-02">
+<h4>当座比率（Quick Ratio）</h4>
+<p>当座比率は、流動負債に対してより流動性の高い資産（quick assets）のみを含めるため、流動比率よりも保守的である。流動比率と同様に、当座比率が高いほど流動性が高いことを示す。</p>
+<p>当座比率は、前払費用（prepaid expenses）や一部の税金、従業員関連の前払などの流動資産が、当期の費用として既に支払われており、通常は現金に戻せないことを反映している。また、棚卸資産が容易かつ迅速に現金化できない可能性や、特に急いで売却する場合には帳簿価額と同額で売却できない可能性も反映している。棚卸資産の流動性が低い場合（例えば棚卸資産回転率が低い場合）、当座比率は流動比率よりも適切な流動性指標となる可能性がある。</p>
+</section>
+<section id="CFA2422-R-s10-01-02-03">
+<h4>現金比率（Cash Ratio）</h4>
+<p>現金比率は通常、危機的状況における企業の流動性を測定する信頼性の高い指標である。ここでは高い市場性を持つ短期投資と現金のみが含まれる。ただし、一般的な市場危機においては、市場性有価証券の公正価値が大幅に下落する可能性があり、その場合にはこの比率でさえ信頼性が低下する可能性がある。</p>
+</section>
+<section id="CFA2422-R-s10-01-02-04">
+<h4>防御期間比率（Defensive Interval Ratio）</h4>
+<p>防御期間比率は、追加的な現金流入がない場合に、企業が既存の流動資産のみでどれだけの期間費用を支払い続けられるかを測定する。例えば、防御期間比率が50であれば、追加的な現金流入がないと仮定した場合、企業は50日間運転費用を支払い続けることができることを意味する。比率が高いほど流動性が高いことを示す。企業の防御期間比率が同業他社や自社の過去と比較して著しく低い場合、アナリストはその低い比率を補うのに十分な現金流入が見込まれているかどうかを確認する必要がある。</p>
+</section>
+<section id="CFA2422-R-s10-01-02-05">
+<h4>キャッシュ・コンバージョン・サイクル（Cash Conversion Cycle）（純営業サイクル（net operating cycle））</h4>
+<p>キャッシュ・コンバージョン・サイクルは、企業が運転資本に投資してから現金を回収するまでに要する期間を示す。このサイクルが短いほど流動性が高いことを示す。短いキャッシュ・コンバージョン・サイクルは、企業が棚卸資産や売掛金を短期間のみ資金調達すればよいことを意味する。長いキャッシュ・コンバージョン・サイクルは流動性の低さを示し、棚卸資産や売掛金をより長期間資金調達する必要があることを意味し、流動資産を賄うためにより多くの資本が必要である可能性を示唆する。例9では、短いキャッシュ・コンバージョン・サイクルの利点および企業の戦略が財務比率にどのように反映されるかを示している。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2422-R-s10-EXM-1-9">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 9<span style="display: block;">Evaluation of Liquidity Measures</span></h5>
+<p>アナリストはAppleの流動性を評価しており、図表23（Exhibit 23）に示されているように、売掛金日数（days of receivables）、棚卸資産日数（inventory）、買掛金日数（accounts payable）、およびキャッシュ・コンバージョン・サイクル（cash conversion cycle）を計算している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s10-EXH-1-21">
+<h6 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 23<span style="display: block;">Liquidity of Apple</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">FY2017</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">FY2016</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">FY2015</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">DSO</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">DOH</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">控除：買掛金支払日数（Number of days of payables）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">112</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">86</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">等しい：キャッシュ・コンバージョン・サイクル（Cash conversion cycle）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(76)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(67)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(53)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>非常に低いDOHは、Appleがスリムな在庫を維持していることを示しており、これは製造を外部委託しているという同社のビジネスモデルの重要な特徴に起因する。単独で見ると、買掛金支払日数の増加（FY2015の86日からFY2017の112日）は、仕入先への支払い能力の低下を示唆する可能性がある。しかし、Appleの場合、（ここでは示されていない）貸借対照表から、同社が700億米ドル以上の現金および短期投資を保有しており、もし望めばより早期に仕入先へ支払うのに十分であることが分かる。むしろ、Appleは仕入先から付与された有利な信用条件を活用している。その結果、全体としてキャッシュ・サイクルは負となり、これはやや珍しい結果である。多くの企業が運転資本を賄うために追加資本を必要とするのに対し、Appleはこの3年間にわたり50日以上の余剰資金を投資に回すことができ（貸借対照表上では短期投資として計上）、利息を支払うのではなく受け取っている。</p>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2422-R-s10-EXM-1-10">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 10<span style="display: block;">Bounds and Context of Financial Measures</span></h5>
+<p>前の例では、多くの企業が主要な業績指標として重視しているキャッシュ・コンバージョン・サイクルに焦点を当てた。一般に、このサイクルの日数がより小さい（より負に近い）ほど望ましいと考えられる。しかし、これは常に正しいのだろうか。</p>
+<p>本例では次の問いを検討する：キャッシュ・コンバージョン・サイクルの日数がより大きく負であることが望ましい業績指標とされる場合、大きな負のキャッシュ・コンバージョン・サイクルを持つ企業は必ずしも良好な業績を示しているといえるのか。</p>
+<p>歴史的な例として、テクノロジー企業であるNational Datacomputerは、2005年から2009年の期間において大きく負のキャッシュ・コンバージョン・サイクルを示していた。2008年には、そのキャッシュ・コンバージョン・サイクルは−275.5日であった。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2422-R-s10-EXH-1-22">
+<h6 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 24<span style="display: block;">National Datacomputer Inc. (US dollar millions)</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">会計年度（Fiscal year）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2004</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2005</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2006</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2007</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2008</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2009</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Sales</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.248</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.672</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.045</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.761</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.820</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.723</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上原価（Cost of goods sold）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.919</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.491</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.898</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.201</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.316</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.228</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売掛金（合計）（Receivables, Total）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.281</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.139</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.099</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.076</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.115</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.045</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産（合計）（Inventories, Total）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.194</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.176</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.010</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.002</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">買掛金（Accounts payable）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.223</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.317</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.366</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.423</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.704</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.674</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">DSO</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.69</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.14</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19.15</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.95</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">DOH</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">45.29</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">37.80</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.82</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">控除：買掛金支払日数（Number of days of payables）*</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">66.10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">138.81</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">271.85</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">294.97</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">204.79</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">等しい：キャッシュ・コンバージョン・サイクル（Cash conversion cycle）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.88</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−79.77</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−251.89</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−275.54</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−187.84</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>* 購入額の近似として売上原価を用いて計算。2008年および2009年の期末棚卸資産は0百万ドルと報告されているため、2009年の棚卸資産回転率は測定できない。しかし、棚卸資産と1日当たり平均売上を用いると、2009年のDOHは0.00となる。</p>
+<p>出所：Compustatの生データ。比率は計算。</p>
+</div>
+<p>National Datacomputerが負のキャッシュ・コンバージョン・サイクルを示したのは、期間中に買掛金が大幅に増加したためである。2005年の約66日から2008年の295日へと、営業債務の支払いに要する日数が増加したことは明らかに否定的なシグナルである。さらに、同社の棚卸資産は消失しており、これは新たな棚卸資産を購入するための現金が不足していたこと、または仕入先から追加の信用供与を受けられなかったことが原因である可能性が高い。</p>
+<p>もちろん、アナリストはこれらのデータにおける負のトレンドや、財務諸表全体にわたる追加的なデータにも直ちに気付いたであろう。同社は経営者による議論および分析（MD&amp;A：management discussion and analysis）において、次のようにリスクを明確に報告している。</p>
+<div class="cfa-curriculum-blockquote">
+<p>当社は歴史的に損失を計上しており、営業活動から生み出された現金も限られているため、これまでのところ、主として有価証券の売却および2009年における製品ラインの売却によって営業活動の資金を賄ってきた。今後も事業を継続するためには、有価証券の売却などを通じて追加資本を調達する必要がある可能性がある。このような資金調達が受容可能な条件で利用可能かどうか、あるいはそもそも利用可能であるかどうかは不確実である。さらに、追加の株式による資金調達が可能であったとしても、既存株主に対する希薄化をもたらす可能性が高く、また負債による資金調達が可能であったとしても、厳格な財務制限条項や当社の資産の全部または大部分に対する担保設定を伴う可能性がある。必要な時に受容可能な資金調達ができない場合、通常の事業運営に必要な資源が不足し、当社の事業に重大な悪影響を及ぼす可能性がある。</p>
+<p>当社が営業活動から十分な運転資本を生み出すことができない場合、または追加資本を調達できない場合、当社が継続企業（going concern）として存続する能力について重大な疑義が生じる。（強調は会社による）</p>
+</div>
+<p>その後、同社の2010年Form 10-Kでは次のように報告されている。</p>
+<div class="cfa-curriculum-blockquote">
+<p>2011年1月、当社が財務上の義務を履行できなかったこと、および特定製品の販売権を付与する重要な流通契約の喪失が差し迫っていたことを受け、担保付貸付人（Secured Parties）はデフォルト事由に基づき、当社の資産の一部（現金および売掛金を除く）を、2010年1月10日付の資産購入契約（Asset Purchase Agreement）に基づき、無関係会社であるMicronet, Ltd.（Micronet）に売却した。Micronetに当該契約の締結を促すため、当社は特定の事業事項に関する表明および保証も提供した。</p>
+</div>
+<p>要約すると、比率は常に合理的な範囲内で検討される必要があり、比率の変化の背後にある理由を理解することが重要である。比率は単に計算されるだけでなく、アナリストによって解釈されなければならない。</p>
+<p>出所：Form 10-K, National Datacomputer Inc., 2009, p.7。</p>
+<p>出所：Form 10-K, National Datacomputer Inc., 2010。</p>
+</div>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DefensiveIntervalRatioContent">
+<p>流動性比率の一つであり、流動資産から企業が現金需要を何日間満たすことができるかを推定する指標；（現金＋短期市場性投資＋売掛金）を1日当たりの現金支出で割って計算される。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143777_1109_Activity_Ratios.html" >← 前へ</a>
+  <span class="title">11.10 | Liquidity Ratios</span>
+  <a href="courses_1867_modules_items_143781_1111_Solvency_Ratios.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

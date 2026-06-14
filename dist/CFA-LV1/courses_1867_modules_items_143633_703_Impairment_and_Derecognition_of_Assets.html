@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.03 | Impairment and Derecognition of Assets</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2424-R-s03-R-1" title="7.03 | Impairment and Derecognition of Assets"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール7：長期資産の分析（Analysis of Long-Term Assets） 7.03 | 資産の減損および認識中止（Impairment and Derecognition of Assets）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">有形固定資産（property, plant, and equipment）および無形資産（intangible assets）の減損（impairment）および認識中止（derecognition）が財務諸表および財務比率に与える影響を説明し、評価する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>減価償却（depreciation）および償却（amortization）が長期資産の償却可能原価（depreciable cost）を耐用年数にわたって配分するものであるのに対し、減損（impairment）は資産価値の予期しない低下を反映する。IFRSおよびUS GAAPの双方は、減損した資産の帳簿価額（carrying amount）を切り下げることを企業に要求している。識別可能な長期資産については、IFRSでは減損の戻入れ（impairment reversals）が認められているが、US GAAPでは通常認められていない。</p>
+<p>資産は、その帳簿価額が回収可能価額（recoverable amount）を上回る場合に減損しているとみなされる。IFRSとUS GAAPでは回収可能性の定義が異なる（以下で説明）ものの、一般に、資産の帳簿価額が回収不能である場合に減損損失（impairment loss）が認識される。以下では、異なる資産区分ごとの減損の会計処理について説明する。</p>
+<section id="CFA2424-R-s03-01-01">
+<h3 class="dp-heading">有形固定資産の減損（Impairment of Property, Plant, and Equipment）</h3>
+<p>会計基準は、有形固定資産について毎年減損テストを実施することを要求していない。むしろ、各報告期間の末（通常は会計年度末）において、企業は資産の減損の兆候（indications of impairment）があるかどうかを評価する。減損の兆候がない場合、減損テストは行われない。陳腐化（obsolescence）の証拠、製品需要の減少、技術進歩などの減損の兆候がある場合には、減損テストのために資産の回収可能価額を測定する必要がある。有形固定資産については、帳簿価額が回収可能価額を上回る場合（すなわち回収不能である場合）に減損損失が認識される。減損損失の金額は貸借対照表（balance sheet）上の資産の帳簿価額を減少させ、損益計算書（income statement）上の純利益（net income）を減少させる。減損損失は非現金項目（non-cash item）であり、営業活動によるキャッシュフロー（cash from operations）には影響しない。</p>
+<p>IFRSとUS GAAPは、減損が発生したかどうかの判定基準および減損損失の測定方法の双方においていくつかの違いがある。IAS第36号（IAS 36）の下では、減損損失は帳簿価額が回収可能価額を上回る部分として測定される。資産の回収可能価額は「売却コスト控除後の公正価値（fair value less costs to sell）と使用価値（value in use）のいずれか高い方」と定義される。使用価値は、将来の期待キャッシュフローの現在価値に基づく。一方、US GAAPでは、回収可能性の判定と減損損失の測定は別のステップで行われる。資産グループ（asset group）の帳簿価額が割引前の将来期待キャッシュフロー（undiscounted expected future cash flows）を上回る場合、その帳簿価額は回収不能とみなされる。帳簿価額が回収不能と判断された場合、減損損失は資産の公正価値と帳簿価額との差額として測定される。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2424-R-s03-EXM2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2 有形固定資産の減損（Impairment of Property, Plant, and Equipment）</h4>
+<section>
+<p>英国の架空の製造企業Sussexは、単一製品の生産に使用する機械を保有している。競合製品の導入以降、この製品の需要は大幅に減少している。同社は当該機械に関して以下の情報をまとめた：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2424-R-s03-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">帳簿価額（Carrying amount）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">18,000ポンド（GBP18,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">割引前の将来期待キャッシュフロー（Undiscounted expected future cash flows）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">19,000ポンド（GBP19,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">将来期待キャッシュフローの現在価値（Present value of expected future cash flows）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">16,000ポンド（GBP16,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売却した場合の公正価値（Fair value if sold）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">17,000ポンド（GBP17,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売却コスト（Costs to sell）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2,000ポンド（GBP2,000）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>IFRSの下では、当該機械はどのように報告されるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>IFRSの下では、帳簿価額（18,000ポンド）を、売却コスト控除後の公正価値（15,000ポンド）と使用価値（16,000ポンド）のいずれか高い方と比較する。帳簿価額は、より高い金額である使用価値を2,000ポンド上回っている。したがって、機械は回収可能価額である16,000ポンドまで切り下げられ、2,000ポンドの損失が損益計算書に計上される。機械の帳簿価額は16,000ポンドとなる。この新しい帳簿価額に基づいて、新たな減価償却スケジュールが作成される。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>US GAAPの下では、当該機械はどのように報告されるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>US GAAPの下では、帳簿価額（18,000ポンド）を割引前の将来期待キャッシュフロー（19,000ポンド）と比較する。帳簿価額は割引前キャッシュフローを下回っているため、回収可能と判断される。したがって、機械は引き続き18,000ポンドで計上され、損失は認識されない。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>例2では、有形固定資産の価値の切り下げはIFRSの下では発生したが、US GAAPの下では発生しなかった。例3では、IFRSとUS GAAPの両方で切り下げが発生する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2424-R-s03-EXM3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例3 有形固定資産の減損（Impairment of Property, Plant, and Equipment）</h4>
+<section>
+<p>英国の架空の製造企業Essexは、単一製品の生産に使用する機械を保有している。競合製品の導入以降、この製品の需要は大幅に減少している。同社は当該機械に関して以下の情報をまとめた：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2424-R-s03-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">帳簿価額（Carrying amount）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18,000ポンド（GBP18,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">割引前の将来期待キャッシュフロー（Undiscounted expected future cash flows）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,000ポンド（GBP16,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">将来期待キャッシュフローの現在価値（Present value of expected future cash flows）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14,000ポンド（GBP14,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売却した場合の公正価値（Fair value if sold）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10,000ポンド（GBP10,000）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売却コスト（Costs to sell）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,000ポンド（GBP2,000）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>IFRSの下では、当該機械はどのように報告されるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>IFRSの下では、企業は帳簿価額（18,000ポンド）を、売却コスト控除後の公正価値（8,000ポンド）と使用価値（14,000ポンド）のいずれか高い方と比較する。帳簿価額は、より高い金額である使用価値を4,000ポンド上回っている。したがって、機械は回収可能価額である14,000ポンドまで切り下げられ、4,000ポンドの損失が損益計算書に計上される。機械の帳簿価額は14,000ポンドとなる。この新しい帳簿価額に基づいて、新たな減価償却スケジュールが作成される。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>US GAAPの下では、当該機械はどのように報告されるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>US GAAPの下では、帳簿価額（18,000ポンド）を割引前の将来期待キャッシュフロー（16,000ポンド）と比較する。帳簿価額は割引前の将来期待キャッシュフローを上回っているため、回収不能と判断される。したがって、機械は公正価値である10,000ポンドまで切り下げられ、8,000ポンドの損失が損益計算書に計上される。機械の帳簿価額は10,000ポンドとなる。この新しい帳簿価額に基づいて、新たな減価償却スケジュールが作成される。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>例3は、IFRSにおける使用価値への切り下げが、US GAAPにおける公正価値への切り下げよりも小さくなる可能性があることを示している。減損損失の認識の違いは、最終的には自己資本の帳簿価額（book value of equity）の差異として反映される。</p>
+</section>
+<section id="CFA2424-R-s03-01-02">
+<h3 class="dp-heading">有限耐用年数を持つ無形資産の減損（Impairment of Intangible Assets with a Finite Life）</h3>
+<p>有限耐用年数を持つ無形資産は償却（amortized）され（帳簿価額は時間とともに減少する）、減損する可能性がある。有形固定資産と同様に、これらの資産は毎年減損テストを行う必要はない。代わりに、重要な事象が発生した場合にのみ減損テストが行われる。企業は各報告期間の末において、減損テストの必要性を示唆する重要な事象が発生したかどうかを評価する。そのような事象の例としては、市場価格の大幅な下落や、法的または経済的要因の重大な不利な変化が挙げられる。有限耐用年数の無形資産に対する減損会計は本質的に有形資産と同様であり、減損損失の金額は貸借対照表上の資産の帳簿価額を減少させ、損益計算書上の純利益を減少させる。</p>
+</section>
+<section id="CFA2424-R-s03-01-03">
+<h3 class="dp-heading">無期限耐用年数を持つ無形資産の減損（Impairment of Intangibles with Indefinite Lives）</h3>
+<p>無期限耐用年数を持つ無形資産は償却されない。その代わりに、取得原価で貸借対照表に計上され、少なくとも年1回減損テストが行われる。帳簿価額が公正価値を上回る場合に減損が存在する。</p>
+</section>
+<section id="CFA2424-R-s03-01-04">
+<h3 class="dp-heading">売却目的で保有する長期資産の減損（Impairment of Long-Lived Assets Held for Sale）</h3>
+<p>長期資産（非流動資産）は、経営陣が売却の意図を持ち、その売却が高い確度で見込まれる場合、使用目的ではなく売却目的で保有する資産として再分類される（さらに、資産は現状のままで直ちに売却可能でなければならない）。例えば、ある建物が企業にとって不要となり、経営陣が売却する意図を持っている場合を考える。会計基準の要件を満たす場合、その建物は有形固定資産から売却目的で保有する非流動資産へと再分類される。再分類時には、従来使用目的で保有されていた資産について減損テストが行われる。再分類時の帳簿価額が売却コスト控除後の公正価値を上回る場合、減損損失が認識され、資産は売却コスト控除後の公正価値まで切り下げられる。売却目的で保有する長期資産は、その後減価償却または償却を行わない。</p>
+</section>
+<section id="CFA2424-R-s03-01-05">
+<h3 class="dp-heading">長期資産の減損の戻入れ（Reversals of Impairments of Long-Lived Assets）</h3>
+<p>資産が減損と判定され減損損失が計上された後でも、回収可能価額が増加する可能性がある。例えば、特許侵害に関する訴訟の控訴が成功し、以前に切り下げられた特許の回収可能価額が増加する場合がある。IFRSでは、資産が使用目的であれ売却目的であれ、回収可能価額が増加した場合には減損損失の戻入れが認められている。ただし、IFRSでは減損損失の戻入れのみが認められており、回収可能価額が以前の帳簿価額を上回る場合にその水準まで再評価することは認められていない。US GAAPでは、減損の戻入れの会計処理は、資産が使用目的か売却目的かによって異なる。使用目的の資産については、一度認識された減損損失は戻入れできない。すなわち、減損によって価値が引き下げられた資産は、その後増額することはできない。一方、売却目的の資産については、減損損失計上後に公正価値が上昇した場合、損失の戻入れが認められる。</p>
+</section>
+<section id="CFA2424-R-s03-01-06">
+<h3 class="dp-heading">認識中止（Derecognition）</h3>
+<p>企業は、資産が処分された場合、または使用や処分によって将来の便益をもたらさないと見込まれる場合に、その資産の認識を中止する（すなわち財務諸表から除去する）。企業は長期の営業資産を、売却、交換、放棄、または既存株主への分配などによって処分することがある。前述のとおり、売却または既存株主への分配を意図し、会計基準の要件（現状で即時売却可能であり、売却の可能性が高い）を満たす非流動資産は、売却目的保有資産として再分類される。</p>
+<section id="CFA2424-R-s03-01-06-01">
+<h4>長期資産の売却（Sale of Long-Lived Assets）</h4>
+<p>長期資産の売却による損益は、売却収入から売却時点の資産の帳簿価額を差し引いて算定される。資産の帳簿価額は通常、純帳簿価額（net book value）、すなわち取得原価から累計減価償却を差し引いた金額であるが、前述のとおり減損や再評価が行われている場合にはその影響が反映される。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2424-R-s03-EXM4">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i> Example 4<span style="display: block;">Calculation of Gain or Loss on the Sale of Long-Lived Assets</span></h5>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2424-R-s03-Q5"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>架空企業Moussilauke Diners Inc.は、より健康的な食品に焦点を当てるためにメニューを刷新している。同社は中古のピザオーブン450台を310万ドルで売却した。売却時点において、オーブンの帳簿価額は、取得原価510万ドルと累計減価償却320万ドルを反映していた。この場合、売却による損益はいくらとして報告されるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.1百万ドルの損失</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正解。オーブンの帳簿価額は5.1 − 3.2 = 1.9百万ドルであり、Moussilaukeはこれを3.1百万ドルで売却したため、1.2百万ドルの売却益が発生する。税金を考慮しない場合、売却によるキャッシュフローは3.1百万ドルであり、投資活動によるキャッシュインフローとして報告される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 1.2百万ドルの利益</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正解。オーブンの帳簿価額は5.1 − 3.2 = 1.9百万ドルであり、Moussilaukeはこれを3.1百万ドルで売却したため、1.2百万ドルの売却益が発生する。税金を考慮しない場合、売却によるキャッシュフローは3.1百万ドルであり、投資活動によるキャッシュインフローとして報告される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 3.1百万ドルの利益</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正解。オーブンの帳簿価額は5.1 − 3.2 = 1.9百万ドルであり、Moussilaukeはこれを3.1百万ドルで売却したため、1.2百万ドルの売却益が発生する。税金を考慮しない場合、売却によるキャッシュフローは3.1百万ドルであり、投資活動によるキャッシュインフローとして報告される。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+<p>資産売却による損益は損益計算書において開示され、通常はその他の損益の一部として、または重要性が高い場合には別個の項目として表示される。企業は通常、経営者による分析および議論（management discussion and analysis）や財務諸表の注記において売却の詳細を開示する。また、間接法によるキャッシュフロー計算書では、営業キャッシュフローから売却益または損失を除外するために純利益を調整し、売却収入を投資活動によるキャッシュフローに含める。間接法では、純利益から出発して営業キャッシュフローに到達するためのすべての調整（非営業活動による損益の除去を含む）を行うことを想起すべきである。</p>
+</section>
+<section id="CFA2424-R-s03-01-06-02">
+<h4>売却以外による長期資産の処分（Long-Lived Assets Disposed of Other Than by a Sale）</h4>
+<p>売却以外（例えば放棄、他資産との交換、スピンオフによる株主への分配）で処分される長期資産は、処分されるか、または売却目的もしくは分配目的に分類される基準を満たすまで、使用目的で保有される資産として分類される。したがって、これらの長期資産は、帳簿価額がゼロでない限り、他の長期資産と同様に減価償却および減損テストが継続される。</p>
+<p>資産が除却または放棄された場合、会計処理は売却と類似しているが、現金収入は計上されない。資産は除却または放棄時点の帳簿価額だけ減少され、その帳簿価額と同額の損失が認識される。</p>
+<p>資産が交換された場合、通常は引き渡した資産の帳簿価額を除去し、取得した資産の公正価値を計上し、帳簿価額と公正価値との差額を損益として認識する。使用される公正価値は、通常は引き渡した資産の公正価値であるが、取得した資産の公正価値の方がより明確である場合にはそちらを使用する。信頼できる公正価値の測定が存在しない場合、取得資産は引き渡した資産の帳簿価額で測定される。新たに取得した資産の公正価値が引き渡した資産の帳簿価額を上回る場合には利益が認識され、下回る場合には損失が認識される。公正価値が信頼性をもって測定できず帳簿価額で評価される場合には、損益は認識されない。</p>
+<p>スピンオフ（spin-off）が行われる場合、通常は企業の一つのキャッシュ・ジェネレーティング・ユニット（cash generating unit）全体が、そのすべての資産とともに分離される。スピンオフの例として、Fiat Chrysler Automobiles（FCA）は2016年にFerrariの保有持分をスピンオフした。スピンオフ前に、FCAはFerrariの持分の10%をIPOで売却し、株主資本（Shareholders’ equity）を8億7,300万ユーロ増加させた（IPOによる受取額8億6,600万ユーロと売却した持分の帳簿価額700万ユーロとの差額）。これに対し、Ferrariの持分を既存株主に分配したスピンオフでは、損益は発生しなかった。</p>
+<p>FCAのスピンオフは2016年1月3日に完了し、FCAの株主はFCA普通株式10株ごとにFerrari N.V.の普通株式1株を受け取った。前会計年度の財務諸表において、FCAはFerrariの資産および負債を分配目的保有として表示している。具体的には、貸借対照表には流動資産の一部として36億5,000万ユーロの「分配目的保有資産（Assets Held for Distribution）」と、35億8,400万ユーロの「分配目的保有負債（Liabilities Held for Distribution）」が含まれている。図表2には、2015年12月31日付の年次報告書からの抜粋が示されている。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2424-R-s03-EXH2">
+<h5 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i> Exhibit 2<span style="display: block;">Excerpt from Fiat Chrysler Automobiles (FCA) Notes to the Consolidated Financial Statements, 2015 Annual Report </span></h5>
+<section id="CFA2424-R-s03-01-06-02-01">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h1">Ferrari Spin-off and Discontinued Operations</h6>
+<p>「前述の株主承認によりFerrari N.V.のスピンオフが極めて高い確度で実施される見込みとなり、かつ当該時点で即時分配が可能であったため、FerrariセグメントはIFRS第5号『売却目的で保有する非流動資産および非継続事業（Non-current Assets Held for Sale and Discontinued Operations）』に基づき、所有者への分配を目的とした処分グループ（disposal group held for distribution）および非継続事業（discontinued operation）として分類基準を満たした。」</p>
+<p>Ferrariセグメントの以下の資産および負債は、2015年12月31日時点で分配目的保有として分類された：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2424-R-s03-Tc">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2015年12月31日現在（At 31 December 2015）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">分配目的保有資産（Assets classified as held for distribution）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（単位：百万ユーロ）（euro millions）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">のれん（Goodwill）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">786</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の無形資産（Other intangible assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">297</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産（Property, plant, and equipment）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">627</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の非流動資産（Other non-current assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">134</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">財務活動に係る債権（Receivables from financing activities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,176</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金および現金同等物（Cash and cash equivalents）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">182</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の流動資産（Other current assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">448</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">分配目的保有資産合計（Total Assets held for distribution）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>3,650</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">分配目的保有として分類された負債（Liabilities classified as held for distribution）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">引当金（Provisions）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">224</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Debt</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,256</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の流動負債（Other current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">624</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">買掛金（Trade payables）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">480</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">分配目的保有負債合計（Total Liabilities held for distribution）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>3,584</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2424-R-s03-FN1Content">
+<p>IFRS第5号「売却目的で保有する非流動資産および非継続事業（Non-current Assets Held for Sale and Discontinued Operations）」</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2424-R-s03-FN2Content">
+<p>FASB会計基準コディフィケーション（Accounting Standards Codification, ASC）第360-10-35節「有形固定資産—総則—事後測定（Property, Plant, and Equipment–Overall–Subsequent Measurement）」</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2424-R-s03-FN3Content">
+<p>スピンオフ（spin-off）では、親会社の株主は新たに独立した企業の株式を比例的に受け取る。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143630_702_Acquisition_of_Intangible_Assets.html" >← 前へ</a>
+  <span class="title">7.03 | Impairment and Derecognition of Assets</span>
+  <a href="courses_1867_modules_items_143636_704_Presentation_and_Disclosure.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

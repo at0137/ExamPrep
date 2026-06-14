@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.16 | Multifactor Models in Performance Appraisal</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Investment Performance Appraisal › Module 1: Investment Performance Appraisal</nav>
+<h1 class="page-title screenreader-only">1.16 | Multifactor Models in Performance Appraisal</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM1509-R-s16-R-1" title="1.16 | Multifactor Models in Performance Appraisal">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：投資パフォーマンス評価（Investment Performance Appraisal）1.16 | パフォーマンス評価におけるマルチファクターモデル（Multifactor Models in Performance Appraisal）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul id="CIPM1509-R-s16-los-1">
+<li class="cfa-curriculum-los-item">パフォーマンス評価におけるマルチファクターモデル（multifactor models）の用途を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>パフォーマンス評価の目的の一つは、ポートフォリオ・リターンと投資家の要求リターン（required return）との差を説明する要因を特定することである。本モジュールのこれまでのレッスンで扱った指標の多くは、単一のリスクファクターに基づいている。すなわち、ファンドの総リスク（シャープ・レシオ（Sharpe ratio））または市場／ベンチマーク・リスク（トレイナー・インデックス（Treynor index））である。しかし、理論的にも実務的にも、リスクは多次元的に考えるべき理由が存在する。</p>
+<p>資産価格付けにおける一般的なマルチファクター・アプローチは、金融資産の期待リターンが複数のリスクファクターの線形関数としてモデル化できるとするものであり、各ファクターへの感応度はファクター固有の感応度、すなわち「ベータ（beta）」係数によって表される。このような線形ファクターモデルの式は式26で与えられる。式26によれば、合計K個のリスクファクター Fₖ と、それぞれに対するポートフォリオの感応度 bₖ が期待リターンを決定する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM1509-R-s16-E26"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;E&lt;/mi&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;munderover&gt;&lt;mo&gt;&amp;#x2211;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;mi&gt;K&lt;/mi&gt;&lt;/munderover&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-1-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="7.17ex" role="img" style="vertical-align: -2.968ex;" viewbox="0 -1809.3 10185.9 3087" width="23.658ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-45" y="0"></use><g transform="translate(931,0)"><use xlink:href="#MJMAIN-28"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.707)" x="1074" xlink:href="#MJMATHI-70" y="-213"></use></g><use x="1605" xlink:href="#MJMAIN-29" y="0"></use></g><use x="3203" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(4259,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-46" y="-213"></use></g><use x="5563" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(6564,0)"><use x="0" xlink:href="#MJSZ2-2211" y="0"></use><g transform="translate(85,-1110)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-6B" y="0"></use><use transform="scale(0.707)" x="521" xlink:href="#MJMAIN-3D" y="0"></use><use transform="scale(0.707)" x="1300" xlink:href="#MJMAIN-31" y="0"></use></g><use transform="scale(0.707)" x="576" xlink:href="#MJMATHI-4B" y="1627"></use><g transform="translate(1611,0)"><use x="0" xlink:href="#MJMATHI-62" y="0"></use><use transform="scale(0.707)" x="607" xlink:href="#MJMATHI-6B" y="-213"></use><g transform="translate(898,0)"><use x="0" xlink:href="#MJMATHI-46" y="0"></use><use transform="scale(0.707)" x="910" xlink:href="#MJMATHI-6B" y="-213"></use></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi><mrow><mo>(</mo><mrow><msub><mi>R</mi><mi>p</mi></msub></mrow><mo>)</mo></mrow><mo>=</mo><msub><mi>r</mi><mi>F</mi></msub><mo>+</mo><mstyle displaystyle="true"><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><mrow><msub><mi>b</mi><mi>k</mi></msub><msub><mi>F</mi><mi>k</mi></msub></mrow></mstyle></mrow></semantics></math></span></span><script id="MathJax-Element-1" type="math/mml"><math id="m1">
+            <semantics>
+                <mrow>
+                    <mi>E</mi>
+                    <mrow>
+                        <mo>(</mo>
+                        <mrow>
+                            <msub>
+                                <mi>R</mi>
+                                <mi>p</mi>
+                            </msub>
+                        </mrow>
+                        <mo>)</mo>
+                    </mrow>
+                    <mo>=</mo>
+                    <msub>
+                        <mi>r</mi>
+                        <mi>F</mi>
+                    </msub>
+                    <mo>+</mo>
+                    <mstyle displaystyle="true">
+                        <munderover>
+                            <mo>∑</mo>
+                            <mrow>
+                                <mi>k</mi>
+                                <mo>=</mo>
+                                <mn>1</mn>
+                            </mrow>
+                            <mi>K</mi>
+                        </munderover>
+                        <mrow>
+                            <msub>
+                                <mi>b</mi>
+                                <mi>k</mi>
+                            </msub>
+                            <msub>
+                                <mi>F</mi>
+                                <mi>k</mi>
+                            </msub>
+                        </mrow>
+                    </mstyle>
+                </mrow>
+            </semantics>
+        </math></script><span class="cfa-curriculum-display-formula-number">26</span></div>
+<p>マルチファクターモデルは、単純に市場やベンチマーク・ポートフォリオへのエクスポージャーではなく、複数のリスクファクターの集合によってポートフォリオ・リターンを説明することを可能にする。したがって、リスク分析および運用者のパフォーマンス評価について、より詳細な情報を提供することができる。</p>
+<p>実証的には、パフォーマンス・アトリビューションは本質的に一般化されたジェンセンのアルファ（Jensen’s alpha）アプローチに従う。これらのアプローチの定式化は式27で示される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM1509-R-s16-E27"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x3B1;&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;munderover&gt;&lt;mo&gt;&amp;#x2211;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;mi&gt;K&lt;/mi&gt;&lt;/munderover&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;k&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;&amp;#x3B5;&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-2-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="7.17ex" role="img" style="vertical-align: -2.968ex;" viewbox="0 -1809.3 14995.8 3087" width="34.829ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(451,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-70" y="0"></use><use transform="scale(0.707)" x="503" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="782" xlink:href="#MJMATHI-74" y="0"></use></g><use x="1582" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2583,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><g transform="translate(451,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-46" y="0"></use><use transform="scale(0.707)" x="749" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="1028" xlink:href="#MJMATHI-74" y="0"></use></g></g><use x="4394" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(5451,0)"><use x="0" xlink:href="#MJMATHI-3B1" y="0"></use><use transform="scale(0.707)" x="905" xlink:href="#MJMATHI-70" y="-213"></use></g><use x="6769" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(7770,0)"><use x="0" xlink:href="#MJSZ2-2211" y="0"></use><g transform="translate(85,-1110)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-6B" y="0"></use><use transform="scale(0.707)" x="521" xlink:href="#MJMAIN-3D" y="0"></use><use transform="scale(0.707)" x="1300" xlink:href="#MJMAIN-31" y="0"></use></g><use transform="scale(0.707)" x="576" xlink:href="#MJMATHI-4B" y="1627"></use><g transform="translate(1611,0)"><use x="0" xlink:href="#MJMATHI-62" y="0"></use><g transform="translate(429,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-70" y="0"></use><use transform="scale(0.707)" x="503" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="782" xlink:href="#MJMATHI-6B" y="0"></use></g><g transform="translate(1451,0)"><use x="0" xlink:href="#MJMATHI-46" y="0"></use><g transform="translate(643,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-6B" y="0"></use><use transform="scale(0.707)" x="521" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="800" xlink:href="#MJMATHI-74" y="0"></use></g></g><use x="3238" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(4238,0)"><use x="0" xlink:href="#MJMATHI-3B5" y="0"></use><g transform="translate(466,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-70" y="0"></use><use transform="scale(0.707)" x="503" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="782" xlink:href="#MJMATHI-74" y="0"></use></g></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mrow><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>−</mo><msub><mi>r</mi><mrow><mi>F</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>α</mi><mi>p</mi></msub><mo>+</mo><mstyle displaystyle="true"><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>K</mi></munderover><mrow><msub><mi>b</mi><mrow><mi>p</mi><mo>,</mo><mi>k</mi></mrow></msub><msub><mi>F</mi><mrow><mi>k</mi><mo>,</mo><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>ε</mi><mrow><mi>p</mi><mo>,</mo><mi>t</mi></mrow></msub></mrow></mstyle></mrow></semantics></math></span></span><script id="MathJax-Element-2" type="math/mml"><math id="m2">
+            <semantics>
+                <mrow>
+                    <msub>
+                        <mi>r</mi>
+                        <mrow>
+                            <mi>p</mi>
+                            <mo>,</mo>
+                            <mi>t</mi>
+                        </mrow>
+                    </msub>
+                    <mo>−</mo>
+                    <msub>
+                        <mi>r</mi>
+                        <mrow>
+                            <mi>F</mi>
+                            <mo>,</mo>
+                            <mi>t</mi>
+                        </mrow>
+                    </msub>
+                    <mo>=</mo>
+                    <msub>
+                        <mi>α</mi>
+                        <mi>p</mi>
+                    </msub>
+                    <mo>+</mo>
+                    <mstyle displaystyle="true">
+                        <munderover>
+                            <mo>∑</mo>
+                            <mrow>
+                                <mi>k</mi>
+                                <mo>=</mo>
+                                <mn>1</mn>
+                            </mrow>
+                            <mi>K</mi>
+                        </munderover>
+                        <mrow>
+                            <msub>
+                                <mi>b</mi>
+                                <mrow>
+                                    <mi>p</mi>
+                                    <mo>,</mo>
+                                    <mi>k</mi>
+                                </mrow>
+                            </msub>
+                            <msub>
+                                <mi>F</mi>
+                                <mrow>
+                                    <mi>k</mi>
+                                    <mo>,</mo>
+                                    <mi>t</mi>
+                                </mrow>
+                            </msub>
+                            <mo>+</mo>
+                            <msub>
+                                <mi>ε</mi>
+                                <mrow>
+                                    <mi>p</mi>
+                                    <mo>,</mo>
+                                    <mi>t</mi>
+                                </mrow>
+                            </msub>
+                        </mrow>
+                    </mstyle>
+                </mrow>
+            </semantics>
+        </math></script><span class="cfa-curriculum-display-formula-number">27</span></div>
+<p>式27はマルチファクター・アルファ（multifactor alpha, αₚ）と呼ばれるものを定義する。パフォーマンス評価において広く使用されるマルチファクターモデルであるカーハート（Carhart, 1997）の4ファクターモデルは、市場、バリュー、サイズ、モメンタムのリスクファクターに対するポートフォリオの感応度として体系的リスクをモデル化する。したがって、ファンドのパフォーマンスはこれら4つのファクターへの感応度とアルファによって決定される。正のアルファの可能な説明には、(1) モデルに含まれていないリスクファクターへのエクスポージャー、(2) モデルに含まれるファクターに対するエクスポージャーに関する成功したマーケット・タイミング戦略（market timing strategy）、(3) 優れた証券選択能力（security selection skill）がある。</p>
+<p>カーハートの4ファクターモデルは、Eugene FamaおよびKenneth French（1992、1993、1996）の3ファクターモデルを拡張し、Narendra JegadeeshおよびSheridan Titman（1993）によって示されたモメンタム・ファクター（momentum factor）を組み込んだものである。ファマ＝フレンチ・モデルは、CAPM（Capital Asset Pricing Model）による予測を上回るパフォーマンスを示す2種類の株式の観察に基づいている：(1) 簿価対価格比（book-to-price ratio）が高い株式（通常「バリュー株（value stocks）」と呼ばれ、その対極は「グロース株（growth stocks）」である）および (2) 小型株（市場時価総額で測定される）。カーハート・モデルはさらに、株価が上昇している場合は上昇が続き、下落している場合は下落が続く傾向を表すモメンタム・ファクターを含む。</p>
+<p>カーハート・モデルの感応度およびポートフォリオ・アルファを推定するために用いられる回帰モデルは式28で示される。多くの実務家は、リスクフリー・レートおよび4つのリスクファクターに関するデータをKenneth Frenchのウェブサイトから無料で取得している。ダウンロード可能なファイルは、月次、年次、週次、日次の形式で提供されている。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM1509-R-s16-E28"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mtable&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2013;&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mi&gt;K&lt;/mi&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mi&gt;K&lt;/mi&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mi&gt;B&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;S&lt;/mi&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mi&gt;B&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;H&lt;/mi&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mi&gt;L&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;H&lt;/mi&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mi&gt;L&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;mtr&gt;&lt;mtd&gt;&lt;mtext&gt;&amp;#x2004;&lt;/mtext&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;b&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mi&gt;O&lt;/mi&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mi&gt;F&lt;/mi&gt;&lt;mrow&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;mi&gt;O&lt;/mi&gt;&lt;mi&gt;M&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;e&lt;/mi&gt;&lt;mi&gt;p&lt;/mi&gt;&lt;/msub&gt;&lt;msub&gt;&lt;mrow /&gt;&lt;mrow&gt;&lt;mo&gt;,&lt;/mo&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mtd&gt;&lt;/mtr&gt;&lt;/mtable&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-3-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="6.429ex" role="img" style="vertical-align: -2.597ex;" viewbox="0 -1649.8 28427.8 2768.1" width="66.026ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g transform="translate(167,0)"><g transform="translate(-15,0)"><g transform="translate(0,758)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-70" y="-213"></use><g transform="translate(907,0)"><g transform="translate(0,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-74" y="0"></use></g></g><use x="1460" xlink:href="#MJMAIN-2013" y="0"></use><g transform="translate(2127,0)"><use x="0" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="638" xlink:href="#MJMATHI-46" y="-213"></use></g><g transform="translate(3208,0)"><g transform="translate(0,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-74" y="0"></use></g></g><use x="4039" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(5095,0)"><use x="0" xlink:href="#MJMATHI-61" y="0"></use><use transform="scale(0.707)" x="748" xlink:href="#MJMATHI-70" y="-213"></use></g><use x="6303" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(7303,0)"><use x="0" xlink:href="#MJMATHI-62" y="0"></use><use transform="scale(0.707)" x="607" xlink:href="#MJMATHI-70" y="-213"></use></g><g transform="translate(8189,0)"><g transform="translate(0,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-4D" y="0"></use><use transform="scale(0.707)" x="1330" xlink:href="#MJMATHI-4B" y="0"></use><use transform="scale(0.707)" x="2219" xlink:href="#MJMATHI-54" y="0"></use></g></g><g transform="translate(10356,0)"><use x="0" xlink:href="#MJMATHI-46" y="0"></use><g transform="translate(643,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-4D" y="0"></use><use transform="scale(0.707)" x="1051" xlink:href="#MJMATHI-4B" y="0"></use><use transform="scale(0.707)" x="1941" xlink:href="#MJMATHI-54" y="0"></use></g></g><g transform="translate(12971,0)"><g transform="translate(0,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-74" y="0"></use></g></g><use x="13745" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(14746,0)"><use x="0" xlink:href="#MJMATHI-62" y="0"></use><use transform="scale(0.707)" x="607" xlink:href="#MJMATHI-70" y="-213"></use></g><g transform="translate(15632,0)"><g transform="translate(0,-155)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-53" y="0"></use><use transform="scale(0.707)" x="924" xlink:href="#MJMATHI-4D" y="0"></use><use transform="scale(0.707)" x="1975" xlink:href="#MJMATHI-42" y="0"></use></g></g><g transform="translate(17666,0)"><use x="0" xlink:href="#MJMATHI-46" y="0"></use><g transform="translate(643,-155)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-53" y="0"></use><use transform="scale(0.707)" x="645" xlink:href="#MJMATHI-4D" y="0"></use><use transform="scale(0.707)" x="1697" xlink:href="#MJMATHI-42" y="0"></use></g></g><g transform="translate(20146,0)"><g transform="translate(0,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-74" y="0"></use></g></g><use x="20921" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(21922,0)"><use x="0" xlink:href="#MJMATHI-62" y="0"></use><use transform="scale(0.707)" x="607" xlink:href="#MJMATHI-70" y="-213"></use></g><g transform="translate(22807,0)"><g transform="translate(0,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-48" y="0"></use><use transform="scale(0.707)" x="1167" xlink:href="#MJMATHI-4D" y="0"></use><use transform="scale(0.707)" x="2218" xlink:href="#MJMATHI-4C" y="0"></use></g></g><g transform="translate(24958,0)"><use x="0" xlink:href="#MJMATHI-46" y="0"></use><g transform="translate(643,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-48" y="0"></use><use transform="scale(0.707)" x="888" xlink:href="#MJMATHI-4D" y="0"></use><use transform="scale(0.707)" x="1940" xlink:href="#MJMATHI-4C" y="0"></use></g></g><g transform="translate(27555,0)"><g transform="translate(0,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-74" y="0"></use></g></g></g><g transform="translate(8533,-766)"><use x="555" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1555,0)"><use x="0" xlink:href="#MJMATHI-62" y="0"></use><use transform="scale(0.707)" x="607" xlink:href="#MJMATHI-70" y="-213"></use></g><g transform="translate(2441,0)"><g transform="translate(0,-155)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-4D" y="0"></use><use transform="scale(0.707)" x="1330" xlink:href="#MJMATHI-4F" y="0"></use><use transform="scale(0.707)" x="2093" xlink:href="#MJMATHI-4D" y="0"></use></g></g><g transform="translate(4765,0)"><use x="0" xlink:href="#MJMATHI-46" y="0"></use><g transform="translate(643,-155)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-4D" y="0"></use><use transform="scale(0.707)" x="1051" xlink:href="#MJMATHI-4F" y="0"></use><use transform="scale(0.707)" x="1815" xlink:href="#MJMATHI-4D" y="0"></use></g></g><use x="7535" xlink:href="#MJMAIN-2C" y="0"></use><use x="7980" xlink:href="#MJMATHI-74" y="0"></use><use x="8564" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(9565,0)"><use x="0" xlink:href="#MJMATHI-65" y="0"></use><use transform="scale(0.707)" x="659" xlink:href="#MJMATHI-70" y="-213"></use></g><g transform="translate(10487,0)"><g transform="translate(0,-150)"><use transform="scale(0.707)" x="0" xlink:href="#MJMAIN-2C" y="0"></use><use transform="scale(0.707)" x="278" xlink:href="#MJMATHI-74" y="0"></use></g></g></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd><msub><mi>r</mi><mi>p</mi></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>t</mi></mrow></msub><mo>–</mo><msub><mi>r</mi><mi>F</mi></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>a</mi><mi>p</mi></msub><mo>+</mo><msub><mi>b</mi><mi>p</mi></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>M</mi><mi>K</mi><mi>T</mi></mrow></msub><msub><mi>F</mi><mrow><mi>M</mi><mi>K</mi><mi>T</mi></mrow></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>b</mi><mi>p</mi></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>S</mi><mi>M</mi><mi>B</mi></mrow></msub><msub><mi>F</mi><mrow><mi>S</mi><mi>M</mi><mi>B</mi></mrow></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>b</mi><mi>p</mi></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>H</mi><mi>M</mi><mi>L</mi></mrow></msub><msub><mi>F</mi><mrow><mi>H</mi><mi>M</mi><mi>L</mi></mrow></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>t</mi></mrow></msub></mtd></mtr><mtr><mtd><mtext> </mtext><mo>+</mo><msub><mi>b</mi><mi>p</mi></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>M</mi><mi>O</mi><mi>M</mi></mrow></msub><msub><mi>F</mi><mrow><mi>M</mi><mi>O</mi><mi>M</mi></mrow></msub><mo>,</mo><mi>t</mi><mo>+</mo><msub><mi>e</mi><mi>p</mi></msub><msub><mrow></mrow><mrow><mo>,</mo><mi>t</mi></mrow></msub></mtd></mtr></mtable></semantics></math></span></span><script id="MathJax-Element-3" type="math/mml"><math id="m3">
+            <semantics>
+                <mtable>
+                    <mtr>
+                        <mtd>
+                            <msub>
+                                <mi>r</mi>
+                                <mi>p</mi>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>t</mi>
+                                </mrow>
+                            </msub>
+                            <mo>–</mo>
+                            <msub>
+                                <mi>r</mi>
+                                <mi>F</mi>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>t</mi>
+                                </mrow>
+                            </msub>
+                            <mo>=</mo>
+                            <msub>
+                                <mi>a</mi>
+                                <mi>p</mi>
+                            </msub>
+                            <mo>+</mo>
+                            <msub>
+                                <mi>b</mi>
+                                <mi>p</mi>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>M</mi>
+                                    <mi>K</mi>
+                                    <mi>T</mi>
+                                </mrow>
+                            </msub>
+                            <msub>
+                                <mi>F</mi>
+                                <mrow>
+                                    <mi>M</mi>
+                                    <mi>K</mi>
+                                    <mi>T</mi>
+                                </mrow>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>t</mi>
+                                </mrow>
+                            </msub>
+                            <mo>+</mo>
+                            <msub>
+                                <mi>b</mi>
+                                <mi>p</mi>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>S</mi>
+                                    <mi>M</mi>
+                                    <mi>B</mi>
+                                </mrow>
+                            </msub>
+                            <msub>
+                                <mi>F</mi>
+                                <mrow>
+                                    <mi>S</mi>
+                                    <mi>M</mi>
+                                    <mi>B</mi>
+                                </mrow>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>t</mi>
+                                </mrow>
+                            </msub>
+                            <mo>+</mo>
+                            <msub>
+                                <mi>b</mi>
+                                <mi>p</mi>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>H</mi>
+                                    <mi>M</mi>
+                                    <mi>L</mi>
+                                </mrow>
+                            </msub>
+                            <msub>
+                                <mi>F</mi>
+                                <mrow>
+                                    <mi>H</mi>
+                                    <mi>M</mi>
+                                    <mi>L</mi>
+                                </mrow>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>t</mi>
+                                </mrow>
+                            </msub>
+                        </mtd>
+                    </mtr>
+                    <mtr>
+                        <mtd>
+                            <mtext> </mtext>
+                            <mo>+</mo>
+                            <msub>
+                                <mi>b</mi>
+                                <mi>p</mi>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>M</mi>
+                                    <mi>O</mi>
+                                    <mi>M</mi>
+                                </mrow>
+                            </msub>
+                            <msub>
+                                <mi>F</mi>
+                                <mrow>
+                                    <mi>M</mi>
+                                    <mi>O</mi>
+                                    <mi>M</mi>
+                                </mrow>
+                            </msub>
+                            <mo>,</mo>
+                            <mi>t</mi>
+                            <mo>+</mo>
+                            <msub>
+                                <mi>e</mi>
+                                <mi>p</mi>
+                            </msub>
+                            <msub>
+                                <mrow></mrow>
+                                <mrow>
+                                    <mo>,</mo>
+                                    <mi>t</mi>
+                                </mrow>
+                            </msub>
+                        </mtd>
+                    </mtr>
+                </mtable>
+            </semantics>
+        </math></script><span class="cfa-curriculum-display-formula-number">28</span></div>
+<p>各ファクターは次のように定義される：</p>
+<ul class="cfa-curriculum-list-simple" id="CIPM1509-R-s16-L1">
+<li class="cfa-curriculum-list-item">F_MKT（市場リスク・プレミアム（market risk premium））：市場リターンから1か月物米国財務省短期証券（Treasury bills）のリターンを差し引いたもの。米国では、市場リターンは米国に設立され、NYSE、Amex、またはNASDAQに上場しているすべてのCRSP企業の時価加重リターンである。</li>
+<li class="cfa-curriculum-list-item">F_SMB（small minus big）：最も小さい3つの時価総額ポートフォリオの平均リターンから、最も大きい3つの時価総額ポートフォリオの平均リターンを差し引いたもの。</li>
+<li class="cfa-curriculum-list-item">F_HML（high minus low）：簿価対市場価値比（book-to-market ratio）が最も高い2つのポートフォリオ（バリュー）と最も低い2つのポートフォリオ（グロース）の平均リターンの差。</li>
+<li class="cfa-curriculum-list-item">F_MOM（momentum）：過去リターンが最も高い2つのポートフォリオの平均リターンから、最も低い2つのポートフォリオの平均リターンを差し引いたもの。</li>
+</ul>
+<p>ファクター感応度は、通常、ポートフォリオの超過リターンをファクター・リターンに回帰させることによって推定される。</p>
+<p>以下の分析では、2009年1月から2013年12月までの60か月間の月次データを用いて、ポートフォリオの月次超過リターンをファクター・リターンに回帰することでファクター感応度を推定した。</p>
+<p>評価対象のファンドは、アメリカン・ミューチュアル・ファンド（American Mutual Fund, AMRMX）のクラスA株式であり、American Fundsによって発行されている。このファンドはモーニングスター（Morningstar）により大型バリュー・ファンドと分類されている。このファンドは、インカムの獲得（current income）、資本成長（growth of capital）、および元本保全（conservation of principal）の3つの目的をバランスよく達成することを目指している。2013年10月31日時点で、ファンドの90.79%は普通株（common stock）、7.25%は短期債務証券（short-term debt securities）、残りは優先株（preferred stock）、債券（bonds）、手形（notes）、その他の債務証券に投資されていた。目論見書（prospectus）によれば、経費率（expense ratio）は0.61%であり、最大販売手数料（sales charge）は5.75%である。したがって、このファンドを投資対象として評価する際には、販売手数料の影響も考慮する必要がある。</p>
+<p>Data for the regression appears in <a aria-label="View Exhibit 25" class="internal" href="#CIPM1509-R-s16-EXH23" role="button">Exhibit 25</a>. Price data for AMRMX are from Yahoo Finance and are adjusted for dividends and splits. Data for the risk-free return and the risk premiums are from Professor French’s website. Returns are expressed as whole numbers rather than decimals. For example, the January 2009 excess return, <em>r<sub>p</sub></em><sub>,</sub><em><sub>t</sub></em> – <em>r<sub>F</sub></em><sub>,</sub><em><sub>t</sub></em>, for AMRMX is approximately –6.27% and is computed as <span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mn&gt;15.39&lt;/mn&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;16.42&lt;/mn&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mn&gt;16.42&lt;/mn&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#xD7;&lt;/mo&gt;&lt;mn&gt;100&lt;/mn&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;0.00&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;6.27&lt;/mn&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-4-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.935ex" role="img" style="vertical-align: -2.35ex;" viewbox="0 -1543.5 17236.9 2555.4" width="40.034ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJSZ3-28"></use><g transform="translate(736,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="5903" x="0" y="220"></rect><g transform="translate(60,676)"><use xlink:href="#MJMAIN-31"></use><use x="500" xlink:href="#MJMAIN-35" y="0"></use><use x="1001" xlink:href="#MJMAIN-2E" y="0"></use><use x="1279" xlink:href="#MJMAIN-33" y="0"></use><use x="1780" xlink:href="#MJMAIN-39" y="0"></use><use x="2502" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(3503,0)"><use xlink:href="#MJMAIN-31"></use><use x="500" xlink:href="#MJMAIN-36" y="0"></use><use x="1001" xlink:href="#MJMAIN-2E" y="0"></use><use x="1279" xlink:href="#MJMAIN-34" y="0"></use><use x="1780" xlink:href="#MJMAIN-32" y="0"></use></g></g><g transform="translate(1811,-686)"><use xlink:href="#MJMAIN-31"></use><use x="500" xlink:href="#MJMAIN-36" y="0"></use><use x="1001" xlink:href="#MJMAIN-2E" y="0"></use><use x="1279" xlink:href="#MJMAIN-34" y="0"></use><use x="1780" xlink:href="#MJMAIN-32" y="0"></use></g></g></g><use x="6880" xlink:href="#MJSZ3-29" y="-1"></use><use x="7839" xlink:href="#MJMAIN-D7" y="0"></use><g transform="translate(8839,0)"><use xlink:href="#MJMAIN-31"></use><use x="500" xlink:href="#MJMAIN-30" y="0"></use><use x="1001" xlink:href="#MJMAIN-30" y="0"></use></g><use x="10563" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(11564,0)"><use xlink:href="#MJMAIN-30"></use><use x="500" xlink:href="#MJMAIN-2E" y="0"></use><use x="779" xlink:href="#MJMAIN-30" y="0"></use><use x="1279" xlink:href="#MJMAIN-30" y="0"></use></g><use x="13622" xlink:href="#MJMAIN-3D" y="0"></use><use x="14678" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(15456,0)"><use xlink:href="#MJMAIN-36"></use><use x="500" xlink:href="#MJMAIN-2E" y="0"></use><use x="779" xlink:href="#MJMAIN-32" y="0"></use><use x="1279" xlink:href="#MJMAIN-37" y="0"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mrow><mo>(</mo><mrow><mstyle displaystyle="true"><mfrac><mrow><mn>15.39</mn><mo>−</mo><mn>16.42</mn></mrow><mrow><mn>16.42</mn></mrow></mfrac></mstyle></mrow><mo>)</mo></mrow><mo>×</mo><mn>100</mn><mo>−</mo><mn>0.00</mn><mo>=</mo><mo>−</mo><mn>6.27</mn></mrow></math></span></span><script id="MathJax-Element-4" type="math/mml"><math id="m4">
+                <mrow>
+                    <mrow>
+                        <mo>(</mo>
+                        <mrow>
+                            <mstyle displaystyle="true">
+                                <mfrac>
+                                    <mrow>
+                                        <mn>15.39</mn>
+                                        <mo>−</mo>
+                                        <mn>16.42</mn>
+                                    </mrow>
+                                    <mrow>
+                                        <mn>16.42</mn>
+                                    </mrow>
+                                </mfrac>
+                            </mstyle>
+                        </mrow>
+                        <mo>)</mo>
+                    </mrow>
+                    <mo>×</mo>
+                    <mn>100</mn>
+                    <mo>−</mo>
+                    <mn>0.00</mn>
+                    <mo>=</mo>
+                    <mo>−</mo>
+                    <mn>6.27</mn>
+                </mrow>
+            </math></script></span>.</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM1509-R-s16-EXH23">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 25<span style="display: block;">Carhart Four-Factor Model</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s16-EXH23-title" class="table" data-active-table="true">
+<caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s16-EXH23-title">図表25：カーハート4ファクターモデル（Exhibit 25: Carhart Four-Factor Model）</caption>
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">観測値（Observations）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Date</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>AMRMX</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong><em>r<sub>F,t</sub></em></strong></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">rₚ,ₜ − r_f,ₜ</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">F_MKT,ₜ</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">F_SMB,ₜ</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">F_HML,ₜ</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">F_MOM,ₜ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2008年12月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.42</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年1月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.39</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒6.27</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒8.12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.98</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒9.86</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒1.88</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年2月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒9.04</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">−10.10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.35</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒6.90</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.23</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年3月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.03</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.02</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.34</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.95</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.73</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.60</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">−11.35</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年4月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.19</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.42</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">−34.72</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年5月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.91</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.90</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.21</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒2.66</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.56</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">−12.47</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年6月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17.05</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.82</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.43</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.67</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒2.44</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.31</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年7月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.15</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.44</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.72</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.73</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒5.47</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年8月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.69</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.97</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.32</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.51</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.59</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒8.87</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年9月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19.21</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.77</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.08</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.47</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒5.02</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年10月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">‒1.09</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒2.59</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒4.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;white-space: nowrap;">‒4.37</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.67</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">11</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年11月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20.14</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.56</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒2.65</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.37</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2009年12月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20.60</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.01</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.27</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.75</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.79</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.73</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.89</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">⋮</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⋮</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⋮</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⋮</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⋮</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⋮</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⋮</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⋮</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">⋮</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">49</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年1月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.36</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.23</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.58</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.49</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.35</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒1.87</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年2月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.92</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.97</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.38</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.31</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.47</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">51</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年3月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.08</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.03</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.84</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.06</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.08</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">52</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年4月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.89</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.62</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.56</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒2.43</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.36</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.34</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">53</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年5月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.89</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.81</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.93</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.31</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒1.89</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">54</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年6月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.61</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.91</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒1.21</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.23</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.45</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.65</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">55</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年7月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.92</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.66</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.85</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.79</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.69</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">56</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年8月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.16</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒2.38</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒2.69</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒2.46</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.05</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">57</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年9月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.05</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.86</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.76</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.85</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒1.52</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.02</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">58</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年10月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33.40</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.21</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒1.53</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.39</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.16</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">59</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年11月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.09</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.07</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.31</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.38</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.37</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">60</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2013年12月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.81</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.11</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.81</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.44</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.05</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>回帰分析の結果は図表26（Exhibit 26）に示されている。切片（intercept）を含む重回帰（multiple regression）において、R²は重相関係数（multiple correlation coefficient）の二乗を表し、R²が1.0である場合、モデルの予測値がデータに完全に適合していることを意味する。調整済みR²（adjusted R²）は、説明変数（explanatory variables）をモデルに追加するとR²が増加する傾向を調整するものであり、データ数に対する予測変数（predictors）の数を考慮する。調整済みR²は、新しい説明変数が偶然による改善以上にモデルを改善する場合にのみ増加し、偶然よりも小さい改善しかもたらさない場合には減少する。調整済みR²は負になることもあり、常にR²より低い。AMRMXの回帰の調整済みR²は96.57%であり、Carhartのマルチファクター・アルファ回帰モデル（Carhart multifactor alpha regression model）においてR²が90.00%を超えることは珍しくない（Fischer and Wermers 2013）。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM1509-R-s16-EXH24">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 26<span style="display: block;">Regression Results</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s16-EXH24-title" class="table" data-active-table="true">
+<caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s16-EXH24-title">図表26：回帰結果（Regression Results）</caption>
+<thead>
+<tr>
+<th colspan="6" style="text-align: left; vertical-align: bottom; padding: 8px;">要約出力（Summary Output）</th>
+</tr>
+<tr>
+<th colspan="6" style="text-align: left; vertical-align: bottom; padding: 8px;">回帰統計（Regression Statistics）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><em>R</em><sup>2</sup></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9680</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">調整済みR²（Adjusted R²）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9657</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">標準誤差（Standard error）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.6807</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">観測数（Observations）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">60</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s16-EXH24-title" class="table" data-active-table="true">
+<caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s16-EXH24-title">図表26：回帰結果（Regression Results）</caption>
+<thead>
+<tr>
+<th colspan="7" style="text-align: left; vertical-align: bottom; padding: 8px;">分散分析（Analysis of Variance）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>df</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>SS</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>MS</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">F検定（F-test）</th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">有意確率F（Significance F）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">回帰（Regression）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">770.5289</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">192.6322</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">415.7859</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">0.0000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">残差（Residual）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">55</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25.4813</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4633</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">796.0102</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM1509-R-s16-EXH24-title" class="table" data-active-table="true">
+<caption class="cfa-curriculum-table-caption-hidden" id="CIPM1509-R-s16-EXH24-title">図表26：回帰結果（Regression Results）</caption>
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">変数（Variable）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">係数推定値（Coefficient Estimate）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">標準誤差（Standard Error）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">t統計量（t-statistic）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">P値（P-value）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">下限95%（Lower 95%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">上限95%（Upper 95%）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">α<em><sub>p</sub></em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1545</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0951</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.62</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1101</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.0362</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3451</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">bₚ,MKT</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.8116</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0254</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.96</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7607</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.8625</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">bₚ,SMB</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.2047</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0462</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒4.43</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.2973</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.1122</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">bₚ,HML</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0520</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0397</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.31</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1960</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.0276</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1315</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">bₚ,MOM</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0287</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0167</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.72</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0913</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; white-space: nowrap;">‒0.0048</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0622</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>切片（intercept）を含む重回帰（multiple regression）におけるF検定（F-test）は、すべての係数推定値（coefficient estimates）がゼロであるという帰無仮説（null hypothesis）を、少なくとも1つ以上の係数推定値がゼロではないという対立仮説（alternative hypothesis）に対して検定する。非常に高いF検定値と、それに対応する統計的有意性（statistical significance）がゼロに非常に近いこと（図表26では0.0000に丸められている）は、帰無仮説が棄却される強い証拠を提供する。したがって、少なくとも1つ以上の係数推定値（ファクター感応度（factor sensitivities））がゼロと有意に異なると仮定することは合理的である。</p>
+<p>t統計量（t-statistic）は、係数推定値を標準誤差で割った比率であり、個々の回帰係数推定値の統計的有意性（statistical significance）を検証するために用いられる。これは、推定係数がゼロであるという帰無仮説に対して、推定係数がゼロと異なるという対立仮説を検定する。P値（P-value）は、帰無仮説が真であると仮定した場合に、実際に観測されたものと同程度以上に極端なt統計量が得られる確率である。研究者は、P値がある有意水準（significance level）（しばしば0.10、0.05、または0.01（10%、5%、1%））より小さい場合に帰無仮説を棄却する。</p>
+<p>信頼区間（confidence interval）は、推定係数の信頼性の推定を提供する。一般的な慣行に従い、図表26では95%信頼区間が示されている。その解釈は、「真の」係数（ファクター感応度）がその区間内に存在する確率が95%であるということである。例えば、図表26は、bₚ,MKTの真の値に対する95%信頼区間が0.7607から0.8625の範囲であることを示している。</p>
+<p>図表26は、AMRMXの超過リターン（excess returns）が市場リスク・プレミアム（market risk premium）、F₍MKT,t₎の変化に最も敏感であることを示している。31.96という非常に高いt統計量（t-statistic）は、bₚ,MKTの推定値に対して標準誤差（standard error）が非常に小さいことを示しており、その結果として95%信頼区間は比較的狭いものとなる。係数推定値0.8116は市場ポートフォリオ（market portfolio）のベータ（beta）である1よりも小さく、これは資本保全（capital preservation）を前提とした成長（growth）というファンドの目標と整合的である。</p>
+<p>AMRMXの超過リターンは、サイズ・ファクター（size factor）、F₍SMB₎に対しても統計的に有意な感応度を持つ。bₚ,SMBの推定値は負であり、これはMorningstarがAMRMXを大型株ファンド（large-cap fund）に分類していることと整合的である。正のbₚ,SMBは、このファンドが小型株バイアス（small-cap tilt）を持つことを示す。</p>
+<p>bₚ,HMLの推定値は正であり、したがってMorningstarがAMRMXをバリュー・ファンド（value fund）に分類していることと整合的である。しかし、この係数推定値のP値（P-value）は0.1960であり、多くのアナリストが最低限受容可能と考える0.10の有意水準（significance level）を上回っている。95%信頼区間には負の値と正の値の両方が含まれており、真のファクター感応度（factor sensitivity）がゼロと異なるかどうかについて、さらなる疑問を投げかける。bₚ,HMLが有意に負であれば、このファンドがグロース・バイアス（growth tilt）を持つことを示す。</p>
+<p>bₚ,MOMの推定値は正であり、t統計量のP値は0.0913である。これは、この推定値が0.10水準では統計的に有意であるが、0.05や0.01の水準では有意ではないことを示している。この結果は、ファンドが最近良好なパフォーマンスを示した株式へのエクスポージャーを持ち、そのエクスポージャーが超過リターンに正に寄与したことを示唆する。しかし、その寄与の統計的有意性は、95%信頼区間が負と正の両方の値を含むため、議論の余地がある。</p>
+<p>AMRMXに対するCarhartの4ファクターモデル（Carhart four-factor model）によるアルファ（alpha, αₚ）の推定値は、月次データに基づき0.1545（0.15%）、年率では約1.85%である。しかし、t統計量のP値は0.1101であり、この推定値は0.10の信頼水準では統計的に有意ではないことを示している。95%信頼区間には負と正の両方の値が含まれている。また、AMRMXの超過リターンを算出するために使用された価格は、最大販売手数料（maximum sales charge）5.75%の影響を反映していない。この情報は、特に保有期間（holding period）によって影響が異なるため、パフォーマンス評価（performance appraisal）において非常に重要である。</p>
+<p>ファクターモデル（factor model）の主な目的は、リターン生成プロセス（return generation process）を記述することである。AMRMXのパフォーマンスを評価するために使用されたCarhartの4ファクターモデルは、他のファクターを含めるよう拡張することも可能である。研究者がリターンと有意に相関する新たなスタイル・ファクター（style factors）を引き続き発見し、それに伴ってパフォーマンス評価に用いられるファクターモデルが進化していくことが期待される。</p>
+<p>例として、クオリティ（quality）は、サイズ（size）、バリュー（value）、モメンタム（momentum）と同様に、多くのポートフォリオ・マネージャー（portfolio managers）によって用いられている一般的なスタイル・ファクター・バイアス（style factor tilt）として特定されている。最近の研究（例えば、Novy-Marx 2013およびAsness, Frazzini, and Pederson 2014を参照）は、クオリティ投資（quality investing）を売上高（revenue）と売上原価（cost of goods）の差を企業資産（company assets）で割った粗利益（gross profitability）と結び付けている。クオリティ・ファクター（quality factor）を含むモデルを使用することで、AMRMXのパフォーマンス評価に対する代替的かつ場合によってはより優れたアプローチが提供される可能性がある。</p>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist"><i aria-hidden="true" class="dp-icon fas fa-clipboard-list" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Reference List</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel0">参考文献（References）</h3>
+<div aria-labelledby="dpPanel0" class="dp-panel-content" id="dpPanel0Content" role="region" style="display: none;" tabindex="0">
+<ul id="CIPM1509-R-s16-ref1">
+<li id="CIPM1509-R-s16-R1list">Asness, C., Frazzini, A. and Pederson, L.（2014）「Quality Minus Junk」ワーキングペーパー（Working paper）（6月）。</li>
+<li id="CIPM1509-R-s16-R2list">Carhart, M. (1997). “On Persistence in Mutual Fund Performance.” <em>Journal of Finance</em> 52 (1): 57–82. <a class="external" href="https://doi.org/10.1111/j.1540-6261.1997.tb03808.x" rel="noreferrer noopener" target="_blank"><span>doi:10.1111/j.1540-6261.1997.tb03808.x</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></li>
+<li id="CIPM1509-R-s16-R3list">Fama, E. and French, K. (1992). “The Cross-Section of Expected Stock Returns.” <em>Journal of Finance</em> 47 (2): 427–65. <a class="external" href="https://doi.org/10.1111/j.1540-6261.1992.tb04398.x" rel="noreferrer noopener" target="_blank"><span>doi:10.1111/j.1540-6261.1992.tb04398.x</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></li>
+<li id="CIPM1509-R-s16-R4list">Fama, E. and French, K. (1993). “Common Risk Factors in the Returns on Stocks and Bonds.” <em>Journal of Financial Economics</em> 33 (1): 3–56. <a class="external" href="https://doi.org/10.1016/0304-405X(93)90023-5" rel="noreferrer noopener" target="_blank"><span>doi:10.1016/0304-405X(93)90023-5</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></li>
+<li id="CIPM1509-R-s16-R5list">Fama, E. and French, K. (1996). “Multifactor Explanations of Asset Pricing Anomalies.” <em>Journal of Finance</em> 51 (1): 55–84. <a class="external" href="https://doi.org/10.1111/j.1540-6261.1996.tb05202.x" rel="noreferrer noopener" target="_blank"><span>doi:10.1111/j.1540-6261.1996.tb05202.x</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></li>
+<li id="CIPM1509-R-s16-R6list">Fischer, B. and Wermers, R.（2013）『証券ポートフォリオのパフォーマンス評価とアトリビューション（Performance Evaluation and Attribution of Security Portfolios）』英国オックスフォード（Oxford, UK）：Elsevier。</li>
+<li id="CIPM1509-R-s16-R7list">Jegadeesh, N. and Titman, S. (1993). “Returns to Buying Winners and Selling Losers: Implications for Stock Market Efficiency.” <em>Journal of Finance</em> 48 (1): 65–91. <a class="external" href="https://doi.org/10.1111/j.1540-6261.1993.tb04702.x" rel="noreferrer noopener" target="_blank"><span>doi:10.1111/j.1540-6261.1993.tb04702.x</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></li>
+<li id="CIPM1509-R-s16-R8list">Novy–Marx, R. (2013). “The Other Side of Value: The Gross Profitability Premium.” <em>Journal of Financial Economics</em> 108 (1): 1–28. <a class="external" href="https://doi.org/10.1016/j.jfineco.2013.01.003" rel="noreferrer noopener" target="_blank"><span>doi:10.1016/j.jfineco.2013.01.003</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip5Content" role="tooltip" style="display: none;">
+<p>19 http://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library/f-f_factors.html</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip6Content" role="tooltip" style="display: none;">
+<p>20 ファクターの完全な説明については、French教授のウェブサイトを参照のこと。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip0Content" role="tooltip" style="display: none;">Carhart, M. (1997). “On Persistence in Mutual Fund Performance.” <em>Journal of Finance</em> 52 (1): 57–82. <a class="external" href="https://doi.org/10.1111/j.1540-6261.1997.tb03808.x" rel="noreferrer noopener" target="_blank"><span>doi:10.1111/j.1540-6261.1997.tb03808.x</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip1Content" role="tooltip" style="display: none;">Fama, E. and French, K. (1992). “The Cross-Section of Expected Stock Returns.” <em>Journal of Finance</em> 47 (2): 427–65. <a class="external" href="https://doi.org/10.1111/j.1540-6261.1992.tb04398.x" rel="noreferrer noopener" target="_blank"><span>doi:10.1111/j.1540-6261.1992.tb04398.x</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip2Content" role="tooltip" style="display: none;">Fama, E. and French, K. (1993). “Common Risk Factors in the Returns on Stocks and Bonds.” <em>Journal of Financial Economics</em> 33 (1): 3–56. <a class="external" href="https://doi.org/10.1016/0304-405X(93)90023-5" rel="noreferrer noopener" target="_blank"><span>doi:10.1016/0304-405X(93)90023-5</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip3Content" role="tooltip" style="display: none;">Fama, E. and French, K. (1996). “Multifactor Explanations of Asset Pricing Anomalies.” <em>Journal of Finance</em> 51 (1): 55–84. <a class="external" href="https://doi.org/10.1111/j.1540-6261.1996.tb05202.x" rel="noreferrer noopener" target="_blank"><span>doi:10.1111/j.1540-6261.1996.tb05202.x</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip4Content" role="tooltip" style="display: none;">Jegadeesh, N. and Titman, S. (1993). “Returns to Buying Winners and Selling Losers: Implications for Stock Market Efficiency.” <em>Journal of Finance</em> 48 (1): 65–91. <a class="external" href="https://doi.org/10.1111/j.1540-6261.1993.tb04702.x" rel="noreferrer noopener" target="_blank"><span>doi:10.1111/j.1540-6261.1993.tb04702.x</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip8Content" role="tooltip" style="display: none;">Fischer, B. and Wermers, R. (2013). <em>Performance Evaluation and Attribution of Security Portfolios</em>. Oxford, UK: Elsevier.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip13Content" role="tooltip" style="display: none;">Novy–Marx, R. (2013). “The Other Side of Value: The Gross Profitability Premium.” <em>Journal of Financial Economics</em> 108 (1): 1–28. <a class="external" href="https://doi.org/10.1016/j.jfineco.2013.01.003" rel="noreferrer noopener" target="_blank"><span>doi:10.1016/j.jfineco.2013.01.003</span><span class="external_link_icon" role="presentation" style="margin-inline-start: 5px; display: inline-block; text-indent: initial; "><svg style="width:1em; height:1em; vertical-align:middle; fill:currentColor" viewbox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
+<path d="M1226.667 267c88.213 0 160 71.787 160 160v426.667H1280v-160H106.667v800C106.667 1523 130.56 1547 160 1547h1066.667c29.44 0 53.333-24 53.333-53.333v-213.334h106.667v213.334c0 88.213-71.787 160-160 160H160c-88.213 0-160-71.787-160-160V427c0-88.213 71.787-160 160-160Zm357.706 442.293 320 320c20.8 20.8 20.8 54.614 0 75.414l-320 320-75.413-75.414 228.907-228.906H906.613V1013.72h831.254L1508.96 784.707l75.413-75.414Zm-357.706-335.626H160c-29.44 0-53.333 24-53.333 53.333v160H1280V427c0-29.333-23.893-53.333-53.333-53.333Z" fill-rule="evenodd"></path>
+</svg>
+<span class="screenreader-only">Links to an external site.</span></span></a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip14Content" role="tooltip" style="display: none;">Asness, C., Frazzini, A. and Pederson, L. (2014). “<em>Quality Minus Junk.</em>” Working paper (June).</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip7Content" role="tooltip" style="display: none;">
+<p>自由度（degrees of freedom）で調整された回帰の適合度（goodness-of-fit）の指標。したがって、回帰に別の独立変数（independent variable）が追加されても自動的には増加しない。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip9Content" role="tooltip" style="display: none;">
+<p>推定された回帰に関して、すべての係数推定値がゼロであるという帰無仮説を、少なくとも1つ以上の係数推定値がゼロではないという対立仮説に対して検定する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip10Content" role="tooltip" style="display: none;">
+<p>パラメータ（parameter）の推定値が仮定された値からどれだけ乖離しているかを、その推定値の標準誤差で割った比率。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip11Content" role="tooltip" style="display: none;">
+<p>帰無仮説を棄却できる最小の有意水準（significance level）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip12Content" role="tooltip" style="display: none;">
+<p>推定対象のパラメータを含む確率が与えられた範囲。</p>
+</div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1369_modules_items_99622_115_Performance_Appraisal_An_Analysis_of_Three_Funds.html" >← 前へ</a>
+  <span class="title">1.16 | Multifactor Models in Performance Appraisal</span>
+  <a href="courses_1369_modules_items_99626_117_Summary.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

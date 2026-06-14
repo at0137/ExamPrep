@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.03 | Sovereign Debt Issuance and Trading</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2435-R-s03-R-1" title="5.03 | Sovereign Debt Issuance and Trading">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール5：政府発行体のための債券市場（Fixed-Income Markets for Government Issuers）5.03｜ソブリン債の発行および取引（Sovereign Debt Issuance and Trading）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">政府および企業の債券の発行と取引の違いを比較せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>投資銀行（investment bank）の引受業者（underwriters）が発行体の代理として管理する企業債発行の機会主義的な性質とは対照的に、ソブリン債の発行は通常、国家の財務省（Treasury）または財務省（finance ministry）が主導する公開入札（public auction）の形をとる。</p>
+<p>政府債の入札が公表されると、投資家は競争入札（competitive bids）または非競争入札（non-competitive bids）を提出する。競争入札では、投資家は受け入れ可能な価格と購入希望数量を指定する。入札で決定された価格が提示価格を上回る場合、その競争入札者には証券は割り当てられない。一方、非競争入札者は入札で決定された価格を受け入れることに同意し、常に証券を取得する。</p>
+<p>競争入札プロセスは、単一価格入札（single-price auction）または複数価格入札（multiple-price auction）のいずれかである。いずれの場合も、発行体は価格に基づいて入札を順位付けし、高価格から低価格へと採択して発行予定額に達するまで割り当てる。単一価格入札では、すべての落札者が同一価格を支払い、入札価格に関係なく同一クーポンを受け取る。これに対して複数価格入札では、同一銘柄に対して入札者ごとに異なる価格が適用される。単一価格入札は資金調達コストの低下や投資家への広範な分配につながる可能性がある一方、複数価格入札では入札価格での購入が必要となるため、大口入札者に集中しやすい。</p>
+<p>単一価格入札プロセスは4つの段階からなる：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA2435-R-s03-L1">
+<li class="cfa-curriculum-list-item">政府の債務管理機関（debt management office）が入札を公表し、発行額、証券の種類、入札日および発行日、満期日、入札時間などの情報を提示する。</li>
+<li class="cfa-curriculum-list-item">ディーラー（dealers）、機関投資家（institutional investors）、個人投資家が入札を行う。入札は競争入札または非競争入札のいずれかである。</li>
+<li class="cfa-curriculum-list-item">すべての非競争入札は受け入れられ、競争入札は最低利回り（最高価格）から順位付けされる。発行額を満たす最高利回り（下位から積み上げた際の利回り）が「カットオフ（cut off）」である。すべての証券はこのストップ利回り（stop yield）に基づく単一価格で販売される。この利回りより高い利回り（低価格）で入札した競争入札者には証券は割り当てられない。結果は図表2のように公表される。</li>
+<li class="cfa-curriculum-list-item">証券は、非競争入札者および落札した競争入札者に対し、対価の支払いと引き換えに引き渡される。</li>
+</ol>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2435-R-s03-EXH2">
+<h3 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">図表2 シンガポール30年国債入札の公表および結果</h3>
+<p>2021年9月8日、シンガポール通貨庁（Monetary Authority of Singapore）は、26億シンガポールドルの30年国債の入札を公表した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2435-R-s03-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">シンガポール通貨庁（Monetary Authority of Singapore） 2021年9月21日 課税対象ブックエントリー型シンガポール国債の申請</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年限（Tenor）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">約30年</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">発行総額：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2,600,000,000シンガポールドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">発行日／受渡日：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2021年10月1日</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">満期日：</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">2051年10月1日</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン利率：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">落札利回り（cut-off yield）に基づき決定</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利回りおよび価格：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">入札により決定</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン支払日：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">10月1日および4月1日</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">販売方法：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">単一価格入札（uniform-price auction）</td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">入札はプライマリーディーラー（primary dealers）を通じて提出されなければならない。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>結果は2021年9月28日の入札直後に公表された。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2435-R-s03-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">シンガポール通貨庁（Monetary Authority of Singapore） 2021年9月28日 2021年10月1日発行予定の課税対象ブックエントリー型シンガポール国債の入札結果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年限（Tenor）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">約30年</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">割当総額：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2,600,000,000シンガポールドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非競争入札への割当額：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">207,355,000シンガポールドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">総入札額：</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">4,105,487,000シンガポールドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン利率：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率1.875%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">カットオフ利回りおよび価格：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率1.95%、価格98.303</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">中央値利回りおよび価格：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率1.89%、価格99.658</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">平均利回りおよび価格：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年率1.84%、価格100.804</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">総入札額：</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">4,105,487,000シンガポールドル</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>本入札で決定された満期利回り（yield-to-maturity）および価格（「カットオフ利回りおよび価格」）は、それぞれ1.95%および額面の98.303%であった。シンガポール通貨庁（Monetary Authority of Singapore）の入札規則では、債券のクーポン利率はカットオフ利回りを最も近い0.125%単位で切り下げた値、すなわち1.875%と定められている。本入札には合計41億シンガポールドルの入札が集まり、発行額の1.5倍以上であった。</p>
+</div>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="CFA2435-R-s03-Ba">
+<h3 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title">インド政府：複数価格入札から単一価格入札への移行</h3>
+<p>2021年7月、インド中央銀行（Reserve Bank of India）は、2年、3年、5年、10年、14年および変動利付債について、複数価格入札から単一価格入札へと移行した。一方、30年および40年債は引き続き複数価格方式で入札された。インド準備銀行は、いくつかの部分的に失敗した入札を受けて、国債発行の手法を変更した。単一価格入札では、すべての落札者が同一の利率を受け取るため、利回りのボラティリティが低下する。</p>
+<p><span class="cfa-curriculum-boxed-text-attrib"> <em>Sources:</em> BQ Prime, “RBI Tweaks Government Bond Auction Strategy amid Falling Sales” (2 July 2021). <a href="http://www.bloombergquint.com/business/rbi-tweaks-government-bond-auction-strategy-amid-falling-sales" target="_blank">www.bloombergquint.com/business/rbi-tweaks-government-bond-auction-strategy-amid-falling-sales</a>.<br/><br/>Subhadip Sircar, Suvashree Ghosh, and Ronojoy Mazumdar, “RBI Proposes Framework for Acceptable Bids at Auctions to Underwriters,” Bloomberg (2 July 2021). <a href="http://www.bloomberg.com/news/articles/2021-07-02/rbi-said-to-propose-acceptable-bids-at-auctions-to-underwriters" target="_blank">www.bloomberg.com/news/articles/2021-07-02/rbi-said-to-propose-acceptable-bids-at-auctions-to-underwriters</a>.</span></p>
+</div>
+<p>ソブリン発行体も企業債発行体と同様に金融仲介機関（financial intermediaries）と関与するが、その形態は異なる。ソブリン政府は、すべての入札に競争価格で参加する義務を負うプライマリーディーラー（primary dealers）を指定する。これらは中央銀行の公開市場操作の取引相手となることが多く、外国中央銀行やその他の間接入札者による国債の売買を円滑にする役割も担う。投資家はまた、英国の債務管理庁（UK Debt Management Office）や米国のTreasuryDirectなどを通じて、直接入札に参加することもできる。</p>
+<p>発行後、ソブリン債は通常、民間部門の債券と同様に取引され、主に金融仲介業者（broker/dealers）による店頭市場（OTC markets）で売買されるが、オーストラリアなど一部の市場では取引所で取引される。各市場においてソブリン発行体は最大の借り手であり、その証券は債券市場の中で最も流動性が高い。直近発行のソブリン債（on-the-run securities）は、取引頻度の低い既発債（off-the-run securities）よりも流動性が高いため、ベンチマーク利回り分析に用いられる。その流動性の高さから、一部のon-the-run債は民間企業が運営する中央集約型電子市場で取引される。</p>
+<p>ソブリン債と企業債の取引における重要な違いの一つは、「非経済的（non-economic）」な目的を持つ投資家の存在である。例えば、米国債の主要投資家には、金融政策の実施に国債を利用する連邦準備制度（Federal Reserve）、米ドル準備として保有する外国政府、他の証券保有に制約のある州および地方政府、規制要件を満たすために国債保有が求められる、または奨励される銀行や保険会社が含まれる。これらの要因は民間部門に比べてソブリンの借入コストを低下させる効果があり、特に準備通貨（reserve currency）を持つ国で顕著である。準備通貨とは、世界の中央銀行によって大量に保有され、国際貿易や金融取引に広く用いられる通貨である。米ドルに加え、ユーロ、日本円、英ポンド、スイスフラン、オーストラリアドル、中国人民元が準備通貨に含まれる。ただし、米ドルは世界の外貨準備の60%、国際貿易・国際融資・世界の債券の約半分を占め、外国為替市場取引の約90%に関与している。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2435-R-s03-Bb">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2435-R-s03-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>単一価格入札が複数価格入札に対して持つ利点は、単一価格入札が以下をもたらす可能性がある点である：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 資金調達コストの低下と投資家間での広範な分配。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。単一価格入札は資金調達コストの低下と投資家間での広範な分配をもたらす可能性がある。Bは誤りであり、複数価格入札では投資家が自らの入札価格で購入しなければならないため、大口入札に偏る可能性がある。Cも誤りであり、いずれの方式でも発行体は価格に基づいて入札を順位付けし、高価格から低価格へと採択して発行額に達するまで割り当てる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 投資家が自らの入札価格で購入しなければならないため、大口入札が集中する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。単一価格入札は資金調達コストの低下と投資家間での広範な分配をもたらす可能性がある。Bは誤りであり、複数価格入札では投資家が自らの入札価格で購入しなければならないため、大口入札に偏る可能性がある。Cも誤りであり、いずれの方式でも発行体は価格に基づいて入札を順位付けし、高価格から低価格へと採択して発行額に達するまで割り当てる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 価格に基づく入札順位付け（高価格から低価格へ）により、発行額に達するまで採択される。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。単一価格入札は資金調達コストの低下と投資家間での広範な分配をもたらす可能性がある。Bは誤りであり、複数価格入札では投資家が自らの入札価格で購入しなければならないため、大口入札に偏る可能性がある。Cも誤りであり、いずれの方式でも発行体は価格に基づいて入札を順位付けし、高価格から低価格へと採択して発行額に達するまで割り当てる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>入札方式（単一価格または複数価格）が入札の成功や利回りのボラティリティにどのような影響を与えるかを説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>複数価格入札では、同一の債券発行に対して入札者ごとに異なる価格が決定される。一方、単一価格入札では、すべての落札者が同一の利率を受け取るため、利回りのボラティリティが低下する。インド準備銀行（Reserve Bank of India）は、複数の部分的に失敗した入札を受けて、国債発行方式を複数価格から単一価格へと変更した。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2435-R-s03-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>ソブリン債と企業債の取引における重要な違いはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. ソブリン債には「非経済的」な目的を持つ投資家が存在する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。ソブリン債と企業債の取引における重要な違いは、「非経済的」な目的を持つ投資家の存在である。例えば、米国債の主要投資家には、金融政策に利用する連邦準備制度（Federal Reserve）、米ドル準備として保有する外国政府、他の証券保有に制約のある州・地方政府、規制要件を満たすために保有が求められるまたは奨励される銀行・保険会社などが含まれる。Bは誤りであり、企業債は投資銀行の引受による機会主義的発行であるのに対し、ソブリン債は透明な価格発見プロセスの下で標準化された入札手続きにより広範な分配を確保する。Cも誤りであり、発行後の取引は両者とも主に店頭市場で仲介業者を通じて行われる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 投資銀行の引受業者が管理する機会主義的なソブリン債発行。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。ソブリン債と企業債の取引における重要な違いの一つは、「非経済的（non-economic）」な目的を持つ投資家の存在である。例えば、米国債の主要投資家には、金融政策の実施に国債を利用する連邦準備制度（Federal Reserve）、米ドル準備として証券を保有する外国政府、他の証券保有に制約のある州および地方政府、規制要件を満たすために国債保有が義務付けられている、または奨励されている銀行や保険会社が含まれる。Bは誤りであり、企業債が投資銀行の引受業者（underwriters）によって機会主義的に発行されるのに対し、ソブリン債は透明な価格発見プロセスの下で広範な投資家分配を確保するための標準的手続きに基づく入札で発行される。Cも誤りであり、ソブリン債は発行後、民間債券と同様に主にブローカー／ディーラー（broker/dealers）を介した店頭市場（OTC markets）で取引され、一部の市場（例：オーストラリア）では取引所で取引される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. ソブリン債は通常取引所で取引されるのに対し、民間部門の債券は主にブローカー／ディーラー（broker/dealers）を介した店頭市場（OTC markets）で取引される。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。ソブリン債と企業債の取引における重要な違いの一つは、「非経済的（non-economic）」な目的を持つ投資家の存在である。例えば、米国債の主要投資家には、金融政策の実施に国債を利用する連邦準備制度（Federal Reserve）、米ドル準備として証券を保有する外国政府、他の証券保有に制約のある州および地方政府、規制要件を満たすために国債保有が義務付けられている、または奨励されている銀行や保険会社が含まれる。Bは誤りであり、企業債が投資銀行の引受業者（underwriters）によって機会主義的に発行されるのに対し、ソブリン債は透明な価格発見プロセスの下で広範な投資家分配を確保するための標準的手続きに基づく入札で発行される。Cも誤りであり、ソブリン債は発行後、民間債券と同様に主にブローカー／ディーラー（broker/dealers）を介した店頭市場（OTC markets）で取引され、一部の市場（例：オーストラリア）では取引所で取引される。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2435-R-s03-FN1Content">
+<p><sup>1</sup> Congressional Research Service, “The U.S. Dollar as the World’s Dominant Reserve Currency” (15 September 2022). <a href="https://crsreports.congress.gov/product/pdf/IF/IF11707" target="_blank">https://crsreports.congress.gov/product/pdf/IF/IF11707</a>.</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SinglePriceAuctionContent">
+<p>すべての入札者が同一価格を支払う債券入札。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MultiplePriceAuctionContent">
+<p>入札者がそれぞれの入札に基づいて異なる価格を支払う債券入札。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PrimaryDealerContent">
+<p>ソブリン債の新規発行の取り扱いが認められ、主にソブリン債発行機関の取引相手として機能する金融機関。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OnTheRunSecuritiesContent">
+<p>最も最近発行され、流動性の高いソブリン債。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OffTheRunSecuritiesContent">
+<p>オン・ザ・ラン債（on-the-run securities）以外の発行済みソブリン債。オフ・ザ・ラン債（off-the-run securities）はオン・ザ・ラン債より流動性が低い。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ReserveCurrencyContent">
+<p>世界の中央銀行によって大量に保有され、国際貿易および金融取引に広く使用される通貨。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146002_502_Sovereign_Debt.html" >← 前へ</a>
+  <span class="title">5.03 | Sovereign Debt Issuance and Trading</span>
+  <a href="courses_1869_modules_items_146012_504_Non-Sovereign_Quasi-Government_and_Supranational_Agency_Debt.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

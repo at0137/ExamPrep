@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary: Performance Evaluation: Rate-of-Return Measurement</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Performance Evaluation: Rate-of-Return Measurement › Module 2: Performance Evaluation: Rate-of-Return Measurement</nav>
+<h1 class="page-title screenreader-only">Glossary: Performance Evaluation: Rate-of-Return Measurement</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0005-glossary" title="Glossary: Performance Evaluation: Rate-of-Return Measurement"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール2：パフォーマンス評価（Performance Evaluation）：収益率測定（Rate-of-Return Measurement）用語集（Glossary）：パフォーマンス評価（Performance Evaluation）：収益率測定（Rate-of-Return Measurement）</h2></header><h3 class="dp-has-icon"><i aria-hidden="true" class="dp-icon fas fa-book-reader"></i></h3><h4 id="glossary-A-content">A</h4><dl><dt id="CIPM-AccruedInterest"><b>Accrued interest</b></dt><dd><p>債券またはその他の債務証券において、直近の利払い以降に累積した利息。</p></dd><dt id="CIPM-AdjustedBeginningValue"><b>Adjusted beginning value</b></dt><dd><p>期首価値に期首調整（beginning adjustment）を加えたもの。</p></dd><dt id="CIPM-AdjustedEndingValue"><b>Adjusted ending value</b></dt><dd><p>期末価値に期末調整（ending adjustment）を加えたもの。</p></dd><dt id="CIPM-AnnualizedArithmeticMeanRateOfReturn"><b>Annualized arithmetic mean rate of return</b></dt><dd><p>年率換算（annualized basis）で表された算術平均収益率（arithmetic mean rate of return）。</p></dd><dt id="CIPM-AnnualizedGeometricMeanRateOfReturn"><b>Annualized geometric mean rate of return</b></dt><dd><p>年率換算（annualized basis）で表された幾何平均収益率（geometric mean rate of return）。</p></dd><dt id="CIPM-Appraisal"><b>Appraisal</b></dt><dd><p>何かの価値を見積もるプロセス；価値の見積もり。注：多くの場合、専門家によって行われるという含意を持つ。</p></dd><dt id="CIPM-ArithmeticDifference"><b>Arithmetic difference</b></dt><dd><p>2つの数 a と b の差であり、a − b として求められる。</p></dd><dt id="CIPM-ArithmeticMeanRateOfReturn"><b>Arithmetic mean rate of return</b></dt><dd><p>保有期間収益率（holding period rates of return）の集合の算術平均。</p></dd></dl><h4 id="glossary-B-content">B</h4><dl><dt id="CIPM-BAIMethod"><b>BAI method</b></dt><dd><p>リンクIRR法（linked IRR method）を参照。</p></dd><dt id="CIPM-BaseCurrency"><b>Base currency</b></dt><dd><p>自国通貨（domestic currency）を参照。</p></dd><dt id="CIPM-BasisPoints"><b>Basis points</b></dt><dd><p>1％の百分の一（hundredths of 1 percent）。</p></dd><dt id="CIPM-BeginningAdjustment"><b>Beginning adjustment</b></dt><dd><p>サブ期間（sub-period）における投資額をより適切に反映するために、ポートフォリオの期首価値に対して行う調整。</p></dd><dt id="CIPM-BookValue"><b>Book value</b></dt><dd><p>資産が購入された時点で記録される価値。コスト価値（cost value）または取得原価（cost basis）とも呼ばれる。</p></dd><dt id="CIPM-Bps"><b>bps</b></dt><dd><p>ベーシスポイント（basis points）を参照。</p></dd></dl><h4 id="glossary-C-content">C</h4><dl><dt id="CIPM-CapitalGainsReturn"><b>Capital gains return</b></dt><dd><p>価格収益（price return）を参照。</p></dd><dt id="CIPM-CashBasisReturn"><b>Cash basis return</b></dt><dd><p>投資の非レバレッジ収益（unleveraged return）；借入によって調達された資金を含む総投下資本に対する収益。</p></dd><dt id="CIPM-ChainLinking"><b>Chain linking</b></dt><dd><p>収益に関して、リンク式（linking formula）を用いて結合すること。幾何複利（geometric compounding）とも呼ばれる。</p></dd><dt id="CIPM-CleanPrice"><b>Clean price</b></dt><dd><p>債券の価格表示で、クーポン利息の経過分（accrued interest）を含まないもの；未収利息を含まない価格。</p></dd><dt id="CIPM-Composite"><b>Composite</b></dt><dd><p>同様の投資マンデート（investment mandate）、目的、または戦略に従って運用される1つまたは複数のポートフォリオの集約。</p></dd><dt id="CIPM-Compounding"><b>Compounding</b></dt><dd><p>元本および未収利息（accrued interest）に対する利息の計算。</p></dd><dt id="CIPM-ContinuousCompounding"><b>Continuous compounding</b></dt><dd><p>連続複利収益（continuously compounded returns）（無限に小さい時間間隔で測定された収益）の複利化。</p></dd><dt id="CIPM-CostBasis"><b>Cost basis</b></dt><dd><p>簿価（book value）を参照。</p></dd><dt id="CIPM-CostValue"><b>Cost value</b></dt><dd><p>簿価（book value）を参照。</p></dd><dt id="CIPM-CouponInterest"><b>Coupon interest</b></dt><dd><p>利息（interest）を参照。</p></dd><dt id="CIPM-CurrencyReturn"><b>Currency return</b></dt><dd><p>対象期間における為替レートの変化率（すなわち、外国通貨1単位を保有した場合の収益）。</p></dd></dl><h4 id="glossary-D-content">D</h4><dl><dt id="CIPM-DayWeightedDietzFormula"><b>Day-weighted Dietz formula</b></dt><dd><p>修正ディーツ法（modified Dietz formula）を参照。</p></dd><dt id="CIPM-DayWeightingFraction"><b>Day-weighting fraction</b></dt><dd><p>金額加重収益率（money-weighted rate of return）の計算において、特定のキャッシュフローが適用される期間の割合。</p></dd><dt id="CIPM-DirectQuotation"><b>Direct quotation</b></dt><dd><p>外国通貨1単位当たりの自国通貨単位数という形式の為替レート表示。直接相場（direct quote）とも呼ばれる。</p></dd><dt id="CIPM-DirtyPrice"><b>Dirty price</b></dt><dd><p>クーポン利息の価値を含む債券の価格表示；市場において他の資産と交換可能な価値。</p></dd><dt id="CIPM-DiscreteCompounding"><b>Discrete compounding</b></dt><dd><p>離散収益（discrete returns）の複利計算。</p></dd><dt id="CIPM-DiscreteReturns"><b>Discrete returns</b></dt><dd><p>有限の時間間隔で測定された収益。</p></dd><dt id="CIPM-Dividends"><b>Dividends</b></dt><dd><p>普通株（common shares）または優先株（preference shares）の保有から得られる可能性のある投資収益。</p></dd><dt id="CIPM-DomesticAsset"><b>Domestic asset</b></dt><dd><p>投資家の本国通貨（base currency）で取引される資産（例：スイスの投資家にとってのスイスフラン）。</p></dd><dt id="CIPM-DomesticCurrency"><b>Domestic currency</b></dt><dd><p>投資家が消費目的で使用する通貨（例：カナダの投資家にとってのカナダドル）。基準通貨（base currency）または本国通貨（home currency）とも呼ばれる。</p></dd><dt id="CIPM-DomesticCurrencyReturn"><b>Domestic-currency return</b></dt><dd><p>投資家の本国通貨で表された収益率。</p></dd></dl><h4 id="glossary-E-content">E</h4><dl><dt id="CIPM-EffectiveAnnualRate"><b>Effective annual rate</b></dt><dd><p>複利効果（interest on interest）を含めて、通貨1単位が1年間で成長する量。</p></dd><dt id="CIPM-ExCouponDate"><b>Ex-coupon date</b></dt><dd><p>債券がクーポンなしで取引され始める最初の日；この日以降に債券を購入した者はクーポン支払いを受け取る権利を有しない。</p></dd><dt id="CIPM-ExDividendDate"><b>Ex-dividend date</b></dt><dd><p>株式が配当なしで取引され始める最初の日；この日以降に株式を購入した者は配当を受け取る権利を有しない。</p></dd><dt id="CIPM-ExcessReturn"><b>Excess return</b></dt><dd><p>文脈に応じてさまざまな意味で用いられる：1）ポートフォリオ収益とベンチマーク収益（benchmark return）の差であり、正または負のいずれもあり得る；2）無リスク利子率（risk-free rate）を上回る収益であり、リスク負担に対する対価を表す収益。</p></dd><dt id="CIPM-ExternalCashFlows"><b>External cash flows</b></dt><dd><p>ポートフォリオへの預け入れまたは引き出し。</p></dd></dl><h4 id="glossary-F-content">F</h4><dl><dt id="CIPM-ForeignAssets"><b>Foreign assets</b></dt><dd><p>投資家の本国通貨（base currency）以外の通貨で表示された資産。非国内資産（non-domestic asset）とも呼ばれる。</p></dd><dt id="CIPM-ForeignCurrencyReturn"><b>Foreign-currency return</b></dt><dd><p>外国市場で保有される資産の収益；現地通貨収益（local currency return）またはローカル収益（local return）とも呼ばれ、現地通貨ベースで表された資産の収益を意味する。</p></dd></dl><h4 id="glossary-G-content">G</h4><dl><dt id="CIPM-GeometricCompounding"><b>Geometric compounding</b></dt><dd><p>チェーンリンク（chain linking）を参照。</p></dd><dt id="CIPM-GeometricDifference"><b>Geometric difference</b></dt><dd><p>2つの数 a と b の差であり、[(1 + a)/(1 + b)] − 1 として求められる。</p></dd><dt id="CIPM-GeometricMeanRateOfReturn"><b>Geometric mean rate of return</b></dt><dd><p>保有期間収益率（holding period rates of return）の集合に対応する複利成長率（compound growth rate）。</p></dd><dt id="CIPM-GrossOfFeeReturns"><b>Gross-of-fee returns</b></dt><dd><p>期間中に発生した取引費用（trading expenses）を控除したポートフォリオ価値に基づく収益であり、投資運用手数料（investment management fees）は控除されていない収益。</p></dd></dl><h4 id="glossary-H-content">H</h4><dl><dt id="CIPM-HoldingPeriod"><b>Holding period</b></dt><dd><p>資産またはポートフォリオが保有されると仮定される、2時点間の期間。</p></dd><dt id="CIPM-HoldingPeriodRateOfReturn"><b>Holding period rate of return</b></dt><dd><p>指定された保有期間において、ある資産またはポートフォリオを保有することによって生じる資産価値の増減率。レート（rate）またはリターン（return）とも呼ばれる。</p></dd><dt id="CIPM-HomeCurrency"><b>Home currency</b></dt><dd><p>自国通貨（domestic currency）を参照。</p></dd></dl><h4 id="glossary-I-content">I</h4><dl><dt id="CIPM-Income"><b>Income</b></dt><dd><p>投資収益（investment income）と呼ばれることもあり、資産の所有者に支払われる現金支払いを指す。</p></dd><dt id="CIPM-IncomeReturn"><b>Income return</b></dt><dd><p>投資収益（investment income）に由来する収益率の構成要素。</p></dd><dt id="CIPM-IndirectQuotation"><b>Indirect quotation</b></dt><dd><p>自国通貨1単位当たりの外国通貨単位数で表される為替レート。</p></dd><dt id="CIPM-InflationRate"><b>Inflation rate</b></dt><dd><p>時間の経過に伴う通貨単位の購買力の変化率。</p></dd><dt id="CIPM-Interest"><b>Interest</b></dt><dd><p>債務証券の保有から得られる可能性のある投資収益；資金を貸し付けることに対する対価。債券の利息収益はクーポン利息（coupon interest）またはクーポン（coupon）とも呼ばれる。</p></dd><dt id="CIPM-InternalRateOfReturnIRR"><b>Internal rate of return (IRR)</b></dt><dd><p>キャッシュアウトフローの現在価値とキャッシュインフローの現在価値を等しくする、暗黙の割引率（implied discount rate）または実効複利収益率（effective compounded rate of return）。金額加重収益（money-weighted return）を計算する一般的な方法である。</p></dd><dt id="CIPM-InvestmentIncome"><b>Investment income</b></dt><dd><p>インカム（income）を参照。</p></dd></dl><h4 id="glossary-L-content">L</h4><dl><dt id="CIPM-Leverage"><b>Leverage</b></dt><dd><p>借入またはさまざまな金融商品を利用して、投資家の自己資本に対する潜在的な利益および損失を拡大すること。</p></dd><dt id="CIPM-LeveragedReturn"><b>Leveraged return</b></dt><dd><p>レバレッジ・ポートフォリオ（leveraged portfolio）に関して、投下資本に基づいて達成された収益。レバレッジド・リターン（levered return）とも呼ばれる。</p></dd><dt id="CIPM-LeveredReturn"><b>Levered return</b></dt><dd><p>レバレッジド・リターン（leveraged return）を参照。</p></dd><dt id="CIPM-LiabilityReturn"><b>Liability return</b></dt><dd><p>負債のみから構成されるポートフォリオの収益。</p></dd><dt id="CIPM-LinkedIRRMethod"><b>Linked IRR method</b></dt><dd><p>サブ期間の内部収益率（internal rate of return, IRR）の推計値を連結することにより、時間加重収益率（time-weighted rate of return）を近似的に計算する方法。BAI法（BAI method）とも呼ばれる。</p></dd><dt id="CIPM-LinkedModifiedDietzMethod"><b>Linked modified Dietz method</b></dt><dd><p>サブ期間収益の計算に修正ディーツ法（modified Dietz method）を用いるリンクIRR法（linked IRR method）。</p></dd><dt id="CIPM-LinkingFormula"><b>Linking formula</b></dt><dd><p>複数期間にわたるポートフォリオまたは資産の収益を、資産価値への累積的影響を考慮して結合するための式。</p></dd><dt id="CIPM-LiquidityReserve"><b>Liquidity reserve</b></dt><dd><p>準備として保有される現金および現金同等物（cash equivalents）。</p></dd><dt id="CIPM-LocalCurrencyReturn"><b>Local currency return</b></dt><dd><p>外貨収益（foreign-currency return）を参照。</p></dd></dl><h4 id="glossary-M-content">M</h4><dl><dt id="CIPM-Margin"><b>Margin</b></dt><dd><p>取引に関して、購入において借入資金を利用すること；将来の履行義務に備えて預託される担保。</p></dd><dt id="CIPM-MarkedToMarket"><b>Marked to market</b></dt><dd><p>金融資産または負債を現在の市場価値に再評価するための手続き。</p></dd><dt id="CIPM-MarketValue"><b>Market value</b></dt><dd><p>特定時点において投資家が売買できる価格に保有数量を乗じ、さらに未収収益（accrued income）を加えた価値。</p></dd><dt id="CIPM-ModifiedDietzFormula"><b>Modified Dietz formula</b></dt><dd><p>リンクIRR法（linked IRR method）において、サブ期間内キャッシュフローの実際の発生日を用いてサブ期間収益を計算する方法。</p></dd><dt id="CIPM-MoneyWeightedRateOfReturn"><b>Money-weighted rate of return</b></dt><dd><p>内部収益率（internal rate of return）を参照。</p></dd></dl><h4 id="glossary-N-content">N</h4><dl><dt id="CIPM-NetAssetValue"><b>Net asset value</b></dt><dd><p>資産の市場価値から負債の市場価値を差し引いたものを、1株または1口当たりで表した値。</p></dd><dt id="CIPM-NetOfFeeReturn"><b>Net-of-fee return</b></dt><dd><p>取引費用および投資運用手数料を控除したポートフォリオ価値に基づく収益；手数料控除前収益（gross-of-fee returns）から投資運用手数料を差し引いたもの。</p></dd><dt id="CIPM-NominalPrices"><b>Nominal prices</b></dt><dd><p>インフレ調整を行わない実際の取引価格。</p></dd><dt id="CIPM-NominalReturn"><b>Nominal return</b></dt><dd><p>実際の取引価格に基づく収益率。</p></dd><dt id="CIPM-NonDomesticAssets"><b>Non-domestic assets</b></dt><dd><p>外国資産（foreign assets）を参照。</p></dd></dl><h4 id="glossary-O-content">O</h4><dl><dt id="CIPM-OriginalDietzFormula"><b>Original Dietz formula</b></dt><dd><p>リンクIRR法（linked IRR method）において、サブ期間内のキャッシュフローの半分がサブ期間の期首に受け取られ、残り半分が期末に受け取られると仮定してサブ期間収益を計算する方法。</p></dd></dl><h4 id="glossary-P-content">P</h4><dl><dt id="CIPM-PayDate"><b>Pay date</b></dt><dd><p>宣言された配当が実際に支払われる日付。</p></dd><dt id="CIPM-Portfolio"><b>Portfolio</b></dt><dd><p>個別に運用される投資の集合。</p></dd><dt id="CIPM-PriceIndex"><b>Price index</b></dt><dd><p>投資収益を含まず、価格変動のみを反映する証券指数。</p></dd><dt id="CIPM-PriceReturn"><b>Price return</b></dt><dd><p>資産価格の変化から得られる収益；キャピタルゲイン収益（capital gain return）とも呼ばれる。</p></dd></dl><h4 id="glossary-R-content">R</h4><dl><dt id="CIPM-RateOfReturn"><b>Rate of return</b></dt><dd><p>特定の期間にわたり投資を保有することによって生じる資産価値の増減率。</p></dd><dt id="CIPM-RealPrices"><b>Real prices</b></dt><dd><p>インフレ調整後の名目価格（nominal prices）。</p></dd><dt id="CIPM-RealReturn"><b>Real return</b></dt><dd><p>インフレ調整後の名目収益率（nominal rate of return）。</p></dd><dt id="CIPM-RecordDate"><b>Record date</b></dt><dd><p>宣言された配当を受け取る権利を有する保有者を決定するために、証券の発行体（issuer）が設定する日付；基準日（record date）時点の所有者のみが配当を受け取る権利を有する。</p></dd><dt id="CIPM-ReinvestedIncome"><b>Reinvested income</b></dt><dd><p>保有期間中に受け取り、ポートフォリオに再投資される収益（income）。</p></dd><dt id="CIPM-ReturnRelative"><b>Return relative</b></dt><dd><p>ポートフォリオまたは証券の期末価値を期首価値で割った比率。バリュー・レラティブ（value relative）またはウェルス比率（wealth ratio）とも呼ばれる。</p></dd></dl><h4 id="glossary-S-content">S</h4><dl><dt id="CIPM-SettlementDateAccounting"><b>Settlement date accounting</b></dt><dd><p>現金および投資の実際の交換が完了した日において、資産および／または負債の価値を認識すること。</p></dd><dt id="CIPM-SpotExchangeRate"><b>Spot exchange rate</b></dt><dd><p>ある通貨を他の通貨と即時受渡しで交換できるレート。</p></dd><dt id="CIPM-StatedAnnualRate"><b>Stated annual rate</b></dt><dd><p>複利効果を無視した年間の名目利率；期間利率（periodic rate）に年間の複利回数を乗じたもの。</p></dd><dt id="CIPM-SurplusReturn"><b>Surplus return</b></dt><dd><p>資産および負債の両方から構成されるポートフォリオの収益（すなわち、ポートフォリオの自己資本に対する収益）。</p></dd></dl><h4 id="glossary-T-content">T</h4><dl><dt id="CIPM-TotalReturn"><b>Total return</b></dt><dd><p>測定期間における実現損益および未実現損益に加え、収益（income）を含む収益率。</p></dd><dt id="CIPM-TotalReturnIndex"><b>Total return index</b></dt><dd><p>再投資された収益と価格変動の両方を反映する証券指数。</p></dd></dl><h4 id="glossary-U-content">U</h4><dl><dt id="CIPM-UnitValuePricing"><b>Unit value pricing</b></dt><dd><p>プール型投資（pooled investments）における持分の会計処理方法であり、時間加重収益率（time-weighted rates of returns）の計算に適している。</p></dd><dt id="CIPM-UnrealizedGainloss"><b>Unrealized gain (loss)</b></dt><dd><p>資産の市場価値（market value）と取得原価（cost basis）との差。</p></dd></dl><h4 id="glossary-V-content">V</h4><dl><dt id="CIPM-ValueRelative"><b>Value relative</b></dt><dd><p>リターン・レラティブ（return relative）を参照。</p></dd></dl><h4 id="glossary-W-content">W</h4><dl><dt id="CIPM-WealthRatio"><b>Wealth ratio</b></dt><dd><p>リターン・レラティブ（return relative）を参照。</p></dd></dl>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1366_modules_items_99526_222_Conclusions_and_Summary.html" >← 前へ</a>
+  <span class="title">Glossary: Performance Evaluation: Rate-of-Return Measurement</span>
+  <a href="courses_1366_modules_items_99531_Flashcards_Performance_Evaluation_Rate-of-Return_Measurement.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

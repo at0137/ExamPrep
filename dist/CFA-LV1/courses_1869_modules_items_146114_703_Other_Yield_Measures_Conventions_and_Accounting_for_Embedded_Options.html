@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.03 | Other Yield Measures, Conventions, and Accounting for Embedded Options</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2437-R-s03-R-1" title="7.03 | Other Yield Measures, Conventions, and Accounting for Embedded Options"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール7：固定利付債の利回りおよび利回りスプレッド指標（Yield and Yield Spread Measures for Fixed-Rate Bonds）7.03｜その他の利回り指標、慣行、および組み込みオプションの考慮（Other Yield Measures, Conventions, and Accounting for Embedded Options）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">固定利付債に関する利回りおよび利回りスプレッド指標を比較、計算し、解釈する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<section id="CFA2437-R-s03-01-01">
+<h3 class="dp-heading">その他の利回り指標および慣行（Other Yield Measures and Conventions）</h3>
+<p>カレント・イールド（current yield）は、債券の年間クーポンをフラットプライスで割った単純な指標であり、以前のレッスンで紹介された。例えば、以前に紹介したBRWAの年3.2％・半年クーポン・5年債が、時点tにおいて額面100あたり98.7で取引されている場合、そのカレント・イールドは次のようになる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E2"><em>CY<sub>t</sub> </em> = Annual coupon<em><sub>t</sub></em> / Bond price<em><sub>t</sub> </em> <span class="cfa-curriculum-display-formula-number">2</span></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E">= 3.2%/0.987 = 3.242%.</div>
+<p>カレント・イールドは、利息収入のみに焦点を当てており、クーポン支払頻度、利息の再投資（時間価値）、および経過利息を無視しているため、粗い収益指標である。投資家はクーポンの受け取りと再投資に加え、ディスカウントで購入して額面で償還される場合には利益を得る。一方、プレミアムで購入して額面で償還される場合には損失を被る。</p>
+<p>実務においては、キャッシュフローの実際のタイミングが債券の最終利回り（yield-to-maturity）の提示および計算において重要である。以前に取り上げた、2049年4月3日満期のルーマニア（Romania）発行の年4.625％・30年ユーロ債を考える。2026年4月3日受渡しにおいて、この債券が額面100あたり97.3684で価格付けされ、年率4.75％（年次、actual/actualベース）で利回りが提示されているとする。クーポン支払日は毎年4月3日である。利回りの計算は、これらの支払が正確にその日付で行われると暗黙に仮定している。しかし、実際にはこれらの日付のいくつかは営業日ではない。例えば、2027年および2032年の4月3日は土曜日であるため、投資家はそれぞれ翌営業日の2027年および2032年4月5日（月曜日）にクーポンを受け取ることになる。</p>
+<p>支払が予定日に行われると仮定し、週末や祝日を考慮しない利回り指標は、ストリート・コンベンション（street convention）と呼ばれる。この仮定は債券価格および利回りの計算を簡素化し、実務で一般的に用いられる。一方、実際の支払日（例えばルーマニア債の例における2027年および2032年4月5日）を用いて、週末や祝日を考慮した真の利回り（true yield）を計算することも可能である。支払が遅延するため、真の利回りはストリート・コンベンション利回りより高くなることはない。差は通常ごく小さく、せいぜい数ベーシスポイントである。そのため、実務ではあまり使用されない。</p>
+<p>社債の利回りは通常30/360日数計算方式（30/360 day count convention）を用いることを思い出そう。これらの利回りは、actual/actual日数計算に基づく利回りに再表示されることがあり、これを政府等価利回り（government equivalent yield）と呼ぶ。社債の政府等価利回りは、国債利回りとの差（スプレッド）を求めるために用いられる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2437-R-s03-EXM4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例4：BRWA5年債の政府等価利回り（Government Equivalent Yield for BRWA Five-Year Bond）</h4>
+<p>以前の例において、BRWAは年3.2％・半年クーポン・5年債を額面で発行した。社債の標準に従い、この債券の利回りは30/360日数計算に基づいている。同等の5年米国債（US Treasury bond）は2.3％であり、国債であるためactual/actual日数計算に基づいている。利回り差は一見90bps（= 3.2％ − 2.3％）に見えるが、日数計算基準が異なる。</p>
+<p>BRWA債の政府等価利回りを計算し、同一の日数計算基準に基づくBRWA債と国債の利回り差を示せ。</p>
+<p>解答：</p>
+<p>社債利回りを30/360ベースからactual/actualベースへ再表示する簡便な方法は、BRWA債の利回りに365/360を掛けることである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___1"><math> <semantics> <mrow> <mi>Y</mi> <mi>i</mi> <mi>e</mi> <mi>l</mi> <msub> <mi>d</mi> <mrow> <mi>A</mi> <mi>C</mi> <mi>T</mi> <mo>/</mo> <mi>A</mi> <mi>C</mi> <mi>T</mi> </mrow> </msub> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>365</mn> </mrow> <mrow> <mn>360</mn> </mrow> </mfrac> </mstyle> <mo>×</mo> <mi>Y</mi> <mi>i</mi> <mi>e</mi> <mi>l</mi> <msub> <mi>d</mi> <mrow> <mn>30</mn> <mo>/</mo> <mn>360</mn> </mrow> </msub> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___2"><math> <semantics> <mrow> <mi>Y</mi> <mi>i</mi> <mi>e</mi> <mi>l</mi> <msub> <mi>d</mi> <mrow> <mi>A</mi> <mi>C</mi> <mi>T</mi> <mo>/</mo> <mi>A</mi> <mi>C</mi> <mi>T</mi> </mrow> </msub> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>365</mn> </mrow> <mrow> <mn>360</mn> </mrow> </mfrac> </mstyle> <mo>×</mo> <mn>0.032.</mn> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___3"><math> <semantics> <mrow> <mi>Y</mi> <mi>i</mi> <mi>e</mi> <mi>l</mi> <msub> <mi>d</mi> <mrow> <mi>A</mi> <mi>C</mi> <mi>T</mi> <mo>/</mo> <mi>A</mi> <mi>C</mi> <mi>T</mi> </mrow> </msub> <mo>=</mo> <mn>3.244</mn> <mi>%</mi> <mo>.</mo> </mrow> </semantics> </math></div>
+<p>BRWA債の政府等価利回りは3.2444％であり、したがって両債券の最終利回り差は94.4bps（= 3.2444％ − 2.3％）である。</p>
+</div>
+<p>債券の単純利回り（simple yield）が提示されることもある。これは、クーポン支払額と、直線法で配分された損益（gain or loss）の合計をフラットプライスで割ったものである。単純利回りは主に日本国債（Japanese government bonds, JGBs）の利回り表示に用いられる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s03-EXH3">
+<h4 class="cfa-curriculum-exhibit-table-title">図表3：利回り慣行のまとめ（Exhibit 3 Summary of Yield Conventions）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">慣行（Convention）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">意味（Meaning）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Actual/Actual（Act/Act）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">前回のクーポン支払日から受渡日までの実際の日数／クーポン期間の日数（1年の実日数を仮定）。通常、国債に用いられる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">30/360</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">前回のクーポン支払日から受渡日までの日数（1か月30日と仮定）／クーポン期間の日数（1年360日と仮定）。通常、社債に用いられる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ストリート・コンベンション（Street Convention）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">週末や銀行休業日を考慮せず、キャッシュフローが予定日に支払われると仮定する利回り指標。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">トゥルー・イールド（True Yield）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">週末や銀行休業日を考慮し、キャッシュフローが予定日後に支払われると仮定する利回り指標。支払の遅延により、トゥルー・イールドはストリート・コンベンション利回りより高くなることはない。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">政府等価利回り（Government Equivalent Yield）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">30/360日数計算に基づく最終利回りをactual/actualベースに再表示した利回り指標。社債のYTMを国債YTMとの差（スプレッド）を求めるために用いられる。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">単純利回り（Simple Yield）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン支払額と直線法で配分された損益の合計をフラットプライスで割った利回り指標。主に日本国債（JGBs）の利回り表示に用いられる。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2437-R-s03-EXM5">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例5：異なる周期性における利回りの比較（Comparing Yields for Different Periodicities）</h4>
+<p>アナリストは、2つの債券について以下の統計を観察した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s03-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">Antelas AG債</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">BRWA債</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年間クーポン率（Annual Coupon Rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.20%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.50%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン支払頻度（Coupon Payment Frequency）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">四半期（Quarterly）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">半年（Semiannually）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">残存年数（Years to Maturity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5年（5 Years）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5年（5 Years）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">価格（額面100あたり）（Price (per 100 of par value)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">94</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">98.70</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">カレント・イールド（Current Yield）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.53%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">最終利回り（Yield-to-Maturity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.548%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.780%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ol class="cfa-curriculum-list-decimal" id="CFA2437-R-s03-L1">
+<li class="cfa-curriculum-list-item">2つの債券について、カレント・イールドおよび最終利回りの計算を確認せよ。</li>
+<li class="cfa-curriculum-list-item">アナリストは、BRWA債の方がAntelas AG債よりもリスクが低いと考えている。Antelas AG債の購入者は、このリスクを引き受ける代わりに、最終利回りベースで何ベーシスポイント（bps）の追加的な補償を受けているか。</li>
+</ol>
+<p>解答1：</p>
+<p>カレント・イールドは、債券の年間クーポンをフラットプライスで割ったものであることを思い出そう。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___4"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mo>Current yield</mo> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>Annual coupon</mn> </mrow> <mrow> <mn>Flat price</mn> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>Antelas AG債のカレント・イールド：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___5"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mi>C</mi> <mi>Y</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.20</mn> </mrow> <mrow> <mn>94</mn> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <mi>C</mi> <mi>Y</mi> <mo>=</mo> <mn>0.0340</mn> <mo>=</mo> <mn>3.40</mn> <mi>%</mi> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>BRWA債のカレント・イールド：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___6"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mi>C</mi> <mi>Y</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>2.50</mn> </mrow> <mrow> <mn>98.70</mn> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <mi>C</mi> <mi>Y</mi> <mo>=</mo> <mn>0.0253</mn> <mo>=</mo> <mn>2.53</mn> <mi>%</mi> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>最終利回りは内部収益率（internal rate of return）であり、債券価格と将来キャッシュフローの現在価値を等しくする割引率rであることを思い出そう。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___7"><em>PV</em> = <em>PMT</em><sub>1</sub>/(1 + <em>r</em>)<sup>1</sup> + <em>PMT</em><sub>2</sub>/(1 + <em>r</em>)<sup>2</sup> + … + (<em>PMT<sub>N</sub> </em> + <em>FV<sub>N</sub></em>)/(1 + <em>r</em>)<em><sup>N</sup></em>.</div>
+<p>最終利回りは、Microsoft Excel（Microsoft Excel）またはGoogle Sheets（Google Sheets）のYIELD関数およびIRR関数でも計算できる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s03-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">Antelas AG債</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">BRWA債</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">受渡日（Settlement date）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2000年1月1日</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">受渡日（Settlement date）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2000年1月1日</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期日（Maturity date）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2005年1月1日</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期日（Maturity date）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2005年1月1日</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン（Coupon）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">0.032</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン（Coupon）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">0.025</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Price</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">94</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Price</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">98.7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">償還額（Redemption）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">100</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">償還額（Redemption）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン頻度（Coupon frequency）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン頻度（Coupon frequency）</td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>YIELD</strong></td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">4.548%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>YIELD</strong></td>
+<td style="text-align: right; vertical-align: top; padding: 8px;">2.780%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>解答2：</p>
+<p>2つの債券の最終利回りは異なる周期性（periodicity）で表示されている。したがって、利回り差は177bps（0.04548 − 0.02780）ではない。相対価値を評価するには、同一の周期性で利回りを比較する必要がある。</p>
+<p>周期性4で表示されたAntelas AG債の最終利回り4.548％は、周期性2では4.574％に変換される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___8"><math> <semantics> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mi>m</mi> </msub> </mrow> <mi>m</mi> </mfrac> </mstyle> </mrow> </mfenced> </mrow> <mi>m</mi> </msup> <mo>=</mo> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mi>n</mi> </msub> </mrow> <mi>n</mi> </mfrac> </mstyle> </mrow> </mfenced> </mrow> <mi>n</mi> </msup> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___9"><math> <semantics> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.04548</mn> </mrow> <mn>4</mn> </mfrac> </mstyle> </mrow> </mfenced> </mrow> <mn>4</mn> </msup> <mo>=</mo> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> <mn>2</mn> </mfrac> </mstyle> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___10"><math> <semantics> <mrow> <mi>A</mi> <mi>P</mi> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>=</mo> <mn>0.04574</mn> <mo>=</mo> <mn>4.574</mn> <mi>%</mi> <mo>.</mo> </mrow> </semantics> </math></div>
+<p>Antelas AG債とBRWA債の最終利回りを同一の周期性で表すと、Antelas AG債の購入者が高いリスクの対価として受け取る追加利回りは（0.04574 − 0.02780）＝179bpsである。</p>
+</div>
+</section>
+<section id="CFA2437-R-s03-01-02">
+<h3 class="dp-heading">組み込みオプション付き債券（Bonds with Embedded Options）</h3>
+<p>固定利付債に組み込みオプション（embedded option）が含まれる場合、他の利回り指標が用いられる。以前のレッスンで述べたように、これらの債券の条件条項は債券から分離して個別に取引することはできない。例えば、コーラブル債（callable bond）は、発行体に対して投資家から債券を買い戻す権利を与える。この権利は、コールプロテクション期間（call protection period）後のあらかじめ定められた日付において、特定の価格で行使される。</p>
+<p>例えば、以前のコーラブル債（callable bonds）に関するレッスンでは、Vivivyu Inc.（VIVU）の7年満期コーラブル・ノート（callable notes）（図表4（Exhibit 4）参照）が紹介された。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s03-EXH4">
+<h4 class="cfa-curriculum-exhibit-table-title">図表4：6.5％ VIVU 7年コーラブル・ノート 条件表（6.5% VIVU Seven-Year Callable Notes Term Sheet）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true" style="width: 100.042%; height: 802px;">
+<thead>
+<tr style="height: 40.6667px;">
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; width: 99.7034%; height: 40.6667px;">6.5％ Vivivyu Inc.（VIVU）7年コーラブル・ノート（以下「本ノート（Notes）」）</th>
+</tr>
+<tr style="height: 40.6667px;">
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; width: 99.7034%; height: 40.6667px;">目論見書要約（Prospectus Summary）</th>
+</tr>
+</thead>
+<tbody>
+<tr style="height: 40.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 40.6667px;">発行体（Issuer）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 40.6667px;">Vivivyu Incorporated</td>
+</tr>
+<tr style="height: 64.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 64.6667px;">受渡日（Settlement Date）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 64.6667px;">［T＋3営業日（Business Days）］</td>
+</tr>
+<tr style="height: 40.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 40.6667px;">満期日（Maturity Date）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 40.6667px;">［受渡日から7年後］</td>
+</tr>
+<tr style="height: 64.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 64.6667px;">元本額（Principal Amount）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 64.6667px;">4億米ドル（US$ 400 million）</td>
+</tr>
+<tr style="height: 64.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 64.6667px;">価格（額面100あたり）（Price (per 100 of par)）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 64.6667px;">106.50</td>
+</tr>
+<tr style="height: 40.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 40.6667px;">利息（Interest）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 40.6667px;">年率6.5％固定クーポン（6.5% fixed coupon）</td>
+</tr>
+<tr style="height: 64.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 64.6667px;">利息支払（Interest Payment）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 64.6667px;">［受渡日］から6か月後に開始し、その後は半年ごとに支払い、最終支払は［満期日］に行われる</td>
+</tr>
+<tr style="height: 64.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 64.6667px;">優先順位（Seniority）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 64.6667px;">本ノートはVIVUの担保付かつ非劣後債務（secured and unsubordinated obligations）であり、他のすべての担保付かつ非劣後債務と同順位（pari passu）である</td>
+</tr>
+<tr style="height: 88.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 88.6667px;">コール条項（Call Provision）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 88.6667px;">発行体は［満期日］以前の任意の営業日において、［受渡日］から3年経過後より、コール価格スケジュール（Call Price Schedule）に基づき、元本額に対する一定割合および経過利息を加えた価格で、本ノートの一部または全部を償還することができる</td>
+</tr>
+<tr style="height: 64.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 64.6667px;">コール価格スケジュール（Call Price Schedule）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 64.6667px;">103.25％［受渡後3年〜4年］</td>
+</tr>
+<tr style="height: 40.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 40.6667px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 40.6667px;">102.50％［受渡後4年〜5年］</td>
+</tr>
+<tr style="height: 40.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 40.6667px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 40.6667px;">101.75％［受渡後5年〜6年］</td>
+</tr>
+<tr style="height: 40.6667px;">
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 15.3563%; height: 40.6667px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px; width: 84.3471%; height: 40.6667px;">101.00％［受渡後6年〜7年］</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>VIVU債は最初の3年間はコールされないが、その翌年には額面100ドルあたり103.25ドルでコールされる可能性がある。VIVUは残り4年間について、固定された価格スケジュールに基づいて債券をコールする権利を有する。3年目以降にコールリスク（call risk）に直面する投資家は、通常、各コール日（call dates）に対応する利回りを計算し、得られる可能性のある最も低い利回りを推定する。</p>
+<p>従来の最終利回り（yield-to-maturity）は、すべてのキャッシュフローが約束通りに支払われると仮定しているため、コーラブル債には修正が必要である。アナリストは、最初のコール日、2回目のコール日などに対応する利回りなど、コール条項を考慮した代替的な収益指標を用いなければならない。イールド・トゥ・コール（yield-to-call）は、最終利回りの一般式を修正することで計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E3"><math> <semantics> <mrow> <mi>P</mi> <mi>V</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mn>...</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mtext>Call price</mtext> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mi>N</mi> </msup> </mrow> </mfrac> </mstyle> <mo>,</mo> </mrow> </semantics> </math> <span class="cfa-curriculum-display-formula-number">3</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PV ＝ 債券価格（price of the bond）</li>
+<li>PMT ＝ 各期間のクーポン支払額（coupon payment per period）</li>
+<li>コール価格（Call price）＝ 特定の日において債券がコールされる際の価格</li>
+<li>r ＝ 各期間の利回りまたは市場割引率（yield per period or market discount rate）</li>
+<li>N ＝ コール価格で償還される日までの均等間隔の期間数</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2437-R-s03-EXM6">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例6：VIVU債のイールド・トゥ・コール（Yields-to-Call for the VIVU Bond）</h4>
+<p>VIVU債のコール価格スケジュールを前提として、最初、2回目、3回目、4回目、および最悪コール（worst call）に対する利回りと最終利回りの計算は以下の通りである：</p>
+<p>最初のコールに対する利回り（Yield-to-first call）：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___11"><math> <semantics> <mrow> <mn>106.50</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>5</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>103.25</mn> <mo>+</mo> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>6</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___12"><math> <semantics> <mrow> <mi>r</mi> <mo>=</mo> <mn>0.025748</mn> <mo>×</mo> <mn>2</mn> <mo>=</mo> <mn>0.0515.</mn> </mrow> </semantics> </math></div>
+<p>あるいは、Microsoft Excel（Microsoft Excel）またはGoogle Sheets（Google Sheets）のYIELD関数を用いることもできる。</p>
+<p>2回目のコールに対する利回り（Yield-to-second call）：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___13"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mn>106.50</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>5</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>6</mn> </msup> </mrow> </mfrac> </mstyle> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>7</mn> </msup> </mrow> </mfrac> </mstyle> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>102.50</mn> <mo>+</mo> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>8</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___14"><math> <semantics> <mrow> <mi>r</mi> <mo>=</mo> <mn>0.026237</mn> <mo>×</mo> <mn>2</mn> <mo>=</mo> <mn>0.0525.</mn> </mrow> </semantics> </math></div>
+<p>3回目のコールに対する利回り（Yield-to-third call）：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___15"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mn>106.50</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>5</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>6</mn> </msup> </mrow> </mfrac> </mstyle> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>7</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>8</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>9</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>101.75</mn> <mo>+</mo> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mrow> <mn>10</mn> </mrow> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___16"><math> <semantics> <mrow> <mi>r</mi> <mo>=</mo> <mn>0.02653</mn> <mo>×</mo> <mn>2</mn> <mo>=</mo> <mn>0.0531.</mn> </mrow> </semantics> </math></div>
+<p>第4回コールまでの利回り（Yield-to-fourth call）:</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___17"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mn>106.50</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>5</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>6</mn> </msup> </mrow> </mfrac> </mstyle> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>7</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>8</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>9</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mrow> <mn>10</mn> </mrow> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mrow> <mn>11</mn> </mrow> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>101.00</mn> <mo>+</mo> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mrow> <mn>12</mn> </mrow> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___18"><math> <semantics> <mrow> <mi>r</mi> <mo>=</mo> <mn>0.026811</mn> <mo>×</mo> <mn>2</mn> <mo>=</mo> <mn>0.0536.</mn> </mrow> </semantics> </math></div>
+<p>そして最後に、当該債券がコールされないと仮定した場合の満期利回り（yield-to-maturity）:</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___19"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mn>106.50</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>5</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>6</mn> </msup> </mrow> </mfrac> </mstyle> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>7</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>8</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>9</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mrow> <mn>10</mn> </mrow> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mrow> <mn>11</mn> </mrow> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mrow> <mn>12</mn> </mrow> </msup> </mrow> </mfrac> </mstyle> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mrow> <mn>13</mn> </mrow> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>100.00</mn> <mo>+</mo> <mn>3.25</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mrow> <mn>14</mn> </mrow> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___20"><math> <semantics> <mrow> <mi>r</mi> <mo>=</mo> <mn>0.026868</mn> <mo>×</mo> <mn>2</mn> <mo>=</mo> <mn>0.0537.</mn> </mrow> </semantics> </math></div>
+<p>要約すると、VIVU債の利回り指標は以下のとおりである:</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s03-Tc">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">第1回コールまでの利回り（Yield-to-first call）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.149%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">第2回コールまでの利回り（Yield-to-second call）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.247%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">第3回コールまでの利回り（Yield-to-third call）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.313%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">第4回コールまでの利回り（Yield-to-fourth call）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.362%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期利回り（Yield-to-maturity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.374%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>一連のコール利回り（yields-to-call）および満期利回りの中で最も低いものは、最悪利回り（yield-to-worst）と呼ばれる。VIVU債の場合、それは5.15%の第1回コールまでの利回りである。この指標の目的は、投資家にとって最も保守的な収益率の指標を提供することである。</p>
+<p>最悪利回り（yield-to-worst）は、固定利付コーラブル債（fixed-rate callable bonds）において、債券ディーラーや投資家によって一般的に引用される利回り指標である。しかし、より精緻なアプローチは、オプション価格モデル（option pricing model）と将来の金利ボラティリティ（interest rate volatility）に関する仮定を用いて、組み込みコールオプション（embedded call option）を評価することである。組み込みコールオプションの価値は、債券のフラット価格（flat price）に加算され、オプション調整後価格（option-adjusted price）を得る。投資家はコールリスク（call risk）（発行体がコールする権利を持つ）を負担するため、組み込みコールオプションは投資家の観点から債券価値を減少させる。したがって、投資家はオプションなし債（option-free bond）と比較して、コーラブル債に対してより低い価格を支払う。もし債券が非コーラブル（non-callable）であれば、その価格はより高くなる。オプション調整後価格（option-adjusted price）は、オプション調整後利回り（option-adjusted yield）の算出に用いられる。オプション調整後利回りは、組み込みオプションの価値を調整した価格に基づく市場の要求割引率である。コールオプションの価値は、オプションなし債の価格からコーラブル債の価格を差し引いたものである。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2437-R-s03-Ba">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット（Question Set）</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>以下の利回り指標のうち、下記の特性に対応するものを特定せよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s03-Td">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">利回り指標（Yield Measure）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">特性（Characteristic）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">A. 単純利回り（Simple Yield）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1. 年間に1回の複利計算を仮定する利回り指標</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">B. 実効年率（Effective Annual Rate）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2. 30/360日数計算（30/360 day count）に基づく利回りを、実日数/実日数（actual/actual day count）に基づく利回りへ再表示する利回り指標</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">C. ストリート慣行利回り（Street Convention Yield）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3. クーポン支払いと、利得または損失の直線償却分（straight-line amortized share）を合計し、それをフラット価格（flat price）で除した利回り指標</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">D. 政府等価利回り（Government Equivalent Yield）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">4. キャッシュフローが週末や銀行休業日を考慮せず、予定どおりの日付に支払われると仮定する</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s03-Te">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">利回り指標（Yield Measure）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">特性（Characteristic）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">B. 実効年率（Effective Annual Rate）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1. 年間に1回の複利計算を仮定する利回り指標</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">D. 政府等価利回り（Government Equivalent Yield）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2. 30/360日数計算（30/360 day count）に基づく満期利回り（yield-to-maturity）を、実日数/実日数（actual/actual day count）に基づくものへ再表示する利回り指標</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">A. 単純利回り（Simple Yield）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3. クーポン支払いと、利得または損失の直線償却分（straight-line amortized share）を合計し、それをフラット価格（flat price）で除した利回り指標</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">C. ストリート慣行利回り（Street Convention Yield）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">4. キャッシュフローが週末や銀行休業日を考慮せず、予定どおりの日付に支払われると仮定する</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>あるアナリストが、4年満期のコーラブル債について以下の利回りを算出した。最悪利回り（yield-to-worst）を求めよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s03-Tf">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">利回り指標（Yield Measure）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Value</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">第1回コールまでの利回り（Yield-to-first call）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.000%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">第2回コールまでの利回り（Yield-to-second call）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.157%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">第3回コールまでの利回り（Yield-to-third call）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.939%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">満期利回り（Yield-to-maturity）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–0.385%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>–0.3852%。最悪利回り（yield-to-worst）は、一連のコール利回り（yields-to-call）および満期利回り（yield-to-maturity）の中で最も低いものである。最悪利回りの目的は、投資家にとって最も保守的な収益率の仮定を提供することである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section>
+<p>固定利付アナリスト（fixed-income analyst）が両債券の発行日にまとめた以下の情報を用いて、問題3および4に答えよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2437-R-s03-Tg">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">社債（Corporate Bond）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ソブリン債（Sovereign Bond）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年間クーポン率（Annual coupon rate）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.00%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.00%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">クーポン支払頻度（Coupon frequency）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">半年ごと（Semiannual）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">四半期ごと（Quarterly）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">満期までの年数（Years to maturity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3年（3 Years）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3年（3 Years）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">価格（額面100あたり）（Price (per 100 of par)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">91</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">102</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">日数計算基準（Day-count basis）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30/360</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">実日数/実日数（Actual/actual）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">コール価格スケジュール（Call price schedule）:</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">101.25（決済後1～2年）（1–2 Years after settlement）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">-</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2437-R-s03-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>ソブリン債のカレント利回り（current yield）はおおよそどれか:</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 社債のカレント利回りより140ベーシスポイント（bps）低い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。カレント利回り（current yield）は、年間クーポンを債券価格の割合で表したものである。社債のカレント利回りは440bpsであり、ソブリン債のカレント利回りは98bpsで、342bps低い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 社債のカレント利回りより340ベーシスポイント（bps）低い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。カレント利回り（current yield）は、年間クーポンを債券価格の割合で表したものである。社債のカレント利回りは440bpsであり、ソブリン債のカレント利回りは98bpsで、342bps低い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 社債のカレント利回りより140ベーシスポイント（bps）高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。カレント利回り（current yield）は、年間クーポンを債券価格の割合で表したものである。社債のカレント利回りは440bpsであり、ソブリン債のカレント利回りは98bpsで、342bps低い。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2437-R-s03-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>社債の第1回コールまでの利回り（yield-to-first call）に最も近いものはどれか:</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 2.15%。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。第1回コールまでの利回り（yield-to-first call）は、コーラブル債（callable bond）が最初に予定されているコール日にコール価格（call price）で償還されると仮定した場合の内部収益率（internal rate of return, r）である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___21"><math> <semantics> <mrow> <mi>P</mi> <mi>V</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mn>...</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mtext>Call</mtext> <mi></mi> <mtext>price</mtext> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mi>N</mi> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___22"><math> <semantics> <mrow> <mn>91</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mn>2</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>101.5</mn> <mo>+</mo> <mn>2</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___23"><math> <semantics> <mrow> <mi>r</mi> <mo>=</mo> <mn>0.0762</mn> <mo>×</mo> <mn>2</mn> <mo>=</mo> <mn>0.1525.</mn> </mrow> </semantics> </math></div>
+<p>当該債券の第1回コールまでの利回りは15.25%である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 7.80%。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。第1回コールまでの利回り（yield-to-first call）は、コーラブル債（callable bond）が最初に予定されているコール日にコール価格（call price）で償還されると仮定した場合の内部収益率（internal rate of return, r）である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___21"><math> <semantics> <mrow> <mi>P</mi> <mi>V</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mn>...</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mtext>Call</mtext> <mi></mi> <mtext>price</mtext> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mi>N</mi> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___22"><math> <semantics> <mrow> <mn>91</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mn>2</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>101.5</mn> <mo>+</mo> <mn>2</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___23"><math> <semantics> <mrow> <mi>r</mi> <mo>=</mo> <mn>0.0762</mn> <mo>×</mo> <mn>2</mn> <mo>=</mo> <mn>0.1525.</mn> </mrow> </semantics> </math></div>
+<p>当該債券の第1回コールまでの利回りは15.25%である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 15.00%。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。第1回コールまでの利回り（yield-to-first call）は、コーラブル債（callable bond）が最初に予定されているコール日にコール価格（call price）で償還されると仮定した場合の内部収益率（internal rate of return, r）である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___21"><math> <semantics> <mrow> <mi>P</mi> <mi>V</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mn>...</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mtext>Call</mtext> <mi></mi> <mtext>price</mtext> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mi>N</mi> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___22"><math> <semantics> <mrow> <mn>91</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mn>2</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>101.25</mn> <mo>+</mo> <mn>2</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mi>r</mi> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2437-R-s03-E___23"><math> <semantics> <mrow> <mi>r</mi> <mo>=</mo> <mn>0.0762</mn> <mo>×</mo> <mn>2</mn> <mo>=</mo> <mn>0.1525.</mn> </mrow> </semantics> </math></div>
+<p>当該債券の第1回コールまでの利回りは15.25%である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="StreetConventionContent">
+<p>支払いが予定日どおりに行われ、週末や祝日を無視すると仮定する固定利付証券（fixed-income instruments）の利回り指標。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TrueYieldContent">
+<p>固定利付証券（fixed-income instruments）の指標のうち、週末や祝日を考慮した実際の支払日を用いるもの。金融商品の真の利回りは、常にストリート慣行利回り（street convention yield）よりも低くなる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="GovernmentEquivalentYieldContent">
+<p>実日数/実日数（actual/actual）の日数計算で表示される指標。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SimpleYieldContent">
+<p>クーポン支払いの合計と、利得または損失の直線償却分（straight-line amortized share）を合計し、それを債券のフラット価格（flat price）で除したもの。単純利回り（simple yield）は主に日本国債（JGBs）を引用する際に用いられる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="YieldToCallContent">
+<p>固定利付証券のキャッシュフローに対する内部収益率であり、キャッシュフローが予定日どおりに受け取られ、かつ債券が特定のコール価格およびコール日にコールされると仮定するもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="YieldToWorstContent">
+<p>固定利付証券のコール利回り（yields-to-call）および満期利回り（yield-to-maturity）の中で最も低いもの。固定利付コーラブル債（fixed-rate callable bonds）において一般的に引用される利回り指標。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OptionAdjustedPriceContent">
+<p>債券のフラット価格（flat price）と組み込みオプション（embedded option）の価値の合計。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OptionAdjustedYieldContent">
+<p>組み込みオプション（embedded options）を調整した債券の利回り指標。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146108_702_Periodicity_and_Annualized_Yields.html" >← 前へ</a>
+  <span class="title">7.03 | Other Yield Measures, Conventions, and Accounting for Embedded Options</span>
+  <a href="courses_1869_modules_items_146119_704_Yield_Spread_Measures_for_Fixed-Rate_Bonds_and_Matrix_Pricing.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

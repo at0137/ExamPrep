@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.08 | Interactions Between Risks</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1642-R-s08" title="6.08 | Interactions Between Risks">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：リスク管理入門 6.08 | リスク間の相互作用</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">金融および非金融のリスクの発生源を特定し、それらがどのように相互作用し得るかを説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>場合によっては、あるカテゴリに分類されたリスクが別のカテゴリに分類されても不思議ではない。実際、リスク間の相互作用は数多く存在する。市場リスクは信用リスクを生み、信用リスクはオペレーショナル・リスク（operational risk）を生むと言われている。すなわち、予期しない市場の変動があると、一方の当事者が他方に対して支払い義務を負う。債権者・債務者の関係が生じるため、両当事者は取引を処理し、資金の支払いや回収を行う内部業務を必要とする。したがって、信用リスクが存在する場合には、決済リスク（settlement risk）も存在する。もし市場リスクが存在しなければ、この連鎖における他のリスクは比較的小さなものにとどまる可能性が高い。法的リスク（legal risk）はしばしば市場リスクや信用リスクから生じる。大きな市場変動は一方の当事者に損失をもたらす。損失の発生を回避するために、契約の抜け穴を探したり訴訟を起こしたりする長い歴史がある。</p>
+<p>リスクの不利な相互作用の単純な例として、カウンターパーティ・リスク（counterparty risk）がある。デリバティブ契約を取引する際には、カウンターパーティ・リスクのコストを考慮することが重要である。例えば、当事者Aが権利行使価格¥1000のアウト・オブ・ザ・マネーのプットオプションを購入したとする。この契約は理論的には¥100の価値を持ち、原資産の株価指数が下落した場合、カウンターパーティCから最大¥1000を受け取る権利を与える。しかし、Cがデフォルトする確率が2%あるとする。また、デフォルトの可能性は株式市場のパフォーマンスとは独立であると仮定する。この場合、デフォルトの可能性を考慮したペイオフに基づけば、この取引の価格はAにとって例えば¥98程度となるかもしれない。しかし実際には、Cのデフォルトに関する信用リスクは株式市場のリターンに依存している可能性が高い。もしデフォルト確率の分布が市場下落の分布と大きく重なるならば（これは十分あり得る状況である）、リスクは相互作用し、リスクコストはより高くなる。この例では、プットオプションがイン・ザ・マネーとなる場合、Cがデフォルトする確率は10%以上に達する可能性がある。その結果、Aの期待ペイオフは、市場リスクによって増幅された信用リスクに直面することで低下する。実際、極端な事象、すなわち株式市場が大幅に下落しAが本来¥1000を受け取るはずの状況では、Aはほとんど何も受け取れない可能性が高い。このように、2つのリスクの相互作用を考慮しないことで、投資家は当初の想定よりもはるかに大きなリスクを負うことになる。その結果、Aはこの契約に対して過大な支払いを行ったことになる。この種のリスク相互作用は市場で非常に一般的であり、実務家はこれを「逆方向リスク（wrong-way risk）」と呼んでいる。実際、2008年の金融危機では、住宅ローン信用に基づく多くの証券の保有者がリスクは十分に分散されていると考えていたが、実際にはリスクは極めてシステマティックであった。</p>
+<p>リスクの相互作用の別の例として、2008年に多くの銀行、ファンド、プライベート投資パートナーシップが経験したものや、1998年のヘッジファンドであるロングターム・キャピタル・マネジメント（Long-Term Capital Management）の事例がある。レバレッジは市場リスクの増大として現れ、流動性リスクおよび支払能力リスク（solvency risk）と極めて有害な形で相互作用し、多くの投資会社の機能を損ない、あるいは閉鎖に追い込んだ。</p>
+<p>多くの不利な金融リスクの相互作用において、全体のリスクは部分の合計よりもはるかに悪化する。すなわち、結合されたリスクは個別のリスクを非線形に増幅する。この例では、2倍のレバレッジを持つ組織は、ベースラインのリスクが1%の損失を被るとき、2%の損失を生む可能性がある。もしその組織にとって流動性が深刻な問題であれば、ベースラインの損失が10%に達した場合、流動性や資金調達の問題により中程度の困難に直面し、20%ではなく25%の損失を被るかもしれない。レバレッジ・リスクと流動性問題の有害な相互作用により、ベースラインの損失が30%に達すれば、その組織が破綻することも十分にあり得る。このようなリスク要因に対する非線形な反応は、多くの市場における様々なリスク相互作用に存在しており、事前のシナリオ分析の重要性を一層高めている（この点については後ほど再び触れる）。</p>
+<p>先に、個人におけるリスク相互作用の一般的な例を簡単に説明した。ある個人が上場企業で働き、インセンティブ・プログラムを通じてその企業の株式を退職ポートフォリオや個人保有として受け取るとする。会社の方針により、従業員はこれらの株式を一定期間保有することが求められる場合がある。その期間が経過した後も、多くの個人は自分が抱えている極めて集中したリスクを認識できず、そのまま株式を保有し続ける。株式を売却しない理由としては、その企業が長年にわたり堅調な業績を上げてきたため、懸念する理由がないと感じることが多い。さらに、従業員に浸透しているチームスピリットは誇りを生み、「ここ以上に働き、投資するのに良い場所はない」と信じさせる。しかし、企業や業界に問題が発生した場合、その従業員は職と貯蓄の両方を失う可能性がある。これは市場リスクと人的資本リスク（human capital risk）の極めて不利な相互作用である。2003年のエンロン（Enron）の崩壊はこの歴史的な例であり、多くの忠実で誠実な従業員がこのリスクを認識できなかったため、退職貯蓄のほとんどを失った。</p>
+<p>要するに、リスクは通常独立して発生するものではなく、一般に相互作用するものであり、この問題は市場がストレス状態にあるときにより重要となる。結果として生じる結合リスクはほとんど常に非線形であり、全体のリスクは個別のリスクの合計よりも悪化する。ほとんどのリスクモデルやシステムはリスクの相互作用を直接的には考慮しておらず、そのため相互作用による影響はさらに悪化する。ガバナンス機関、企業経営者、金融アナリストは、リスクの組み合わせによる潜在的な影響と損害を十分に認識し、リスクを独立かつ無関係なものとして扱う危険性を理解する必要がある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1642-s008-EXM-1-3">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例3 金融および非金融リスクの発生源</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s008-Q1">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>次のうち、金融リスクではないものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 信用リスク</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。オペレーショナル・リスク（operational risk）は、挙げられている中で唯一の非金融リスクであり、たとえ金融的な影響を持ち得るとしても非金融リスクと見なされる。信用リスクおよび市場リスクはそれぞれデフォルトの可能性および市場変動に由来し、流動性リスクとともに金融リスクとされる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 市場リスク</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。オペレーショナル・リスク（operational risk）は、挙げられている中で唯一の非金融リスクであり、たとえ金融的な影響を持ち得るとしても非金融リスクと見なされる。信用リスクおよび市場リスクはそれぞれデフォルトの可能性および市場変動に由来し、流動性リスクとともに金融リスクとされる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. オペレーショナル・リスク</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。オペレーショナル・リスク（operational risk）は、挙げられている中で唯一の非金融リスクであり、たとえ金融的な影響を持ち得るとしても非金融リスクと見なされる。信用リスクおよび市場リスクはそれぞれデフォルトの可能性および市場変動に由来し、流動性リスクとともに金融リスクとされる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s008-Q2">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>次のうち、リスク間の相互作用の例として最も適切なものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. ロシアの株式が下落すると同時に、日本の株式も下落する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。ほとんどのリスクは何らかの形で相互に関連している可能性があるが、場合によっては、あるエクスポージャーでの損失（または利益）が別のエクスポージャーでの損失に直接つながる形で相互作用することがある（多くのカウンターパーティ契約のように）。AやBの状況はより直接的に関連しており、市場参加者はその結果を十分に予想している。例えばBでは、ある地域での戦争の勃発は広範な不確実性を引き起こし、安全資産への逃避（flight to quality）や信用リスクの高い証券のスプレッド拡大をもたらす可能性がある。一方Cでは、市場下落後の信用力低下は予想され得るが、既存の契約においてより多くの支払い義務が生じる点はリスクの相互作用によるものである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 政治的出来事が経済状況の悪化と信用スプレッドの拡大を引き起こす。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。ほとんどのリスクは何らかの形で相互に関連している可能性があるが、場合によっては、あるエクスポージャーでの損失（または利益）が別のエクスポージャーでの損失に直接つながる形で相互作用することがある（多くのカウンターパーティ契約のように）。AやBの状況はより直接的に関連しており、市場参加者はその結果を十分に予想している。例えばBでは、ある地域での戦争の勃発は広範な不確実性を引き起こし、安全資産への逃避（flight to quality）や信用リスクの高い証券のスプレッド拡大をもたらす可能性がある。一方Cでは、市場下落後の信用力低下は予想され得るが、既存の契約においてより多くの支払い義務が生じる点はリスクの相互作用によるものである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 市場の下落によりデリバティブのカウンターパーティの信用力が低下し、同時にその契約においてより多くの支払い義務が生じる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。ほとんどのリスクは何らかの形で相互に関連している可能性があるが、場合によっては、あるエクスポージャーでの損失（または利益）が別のエクスポージャーでの損失に直接つながる形で相互作用することがある（多くのカウンターパーティ契約のように）。AやBの状況はより直接的に関連しており、市場参加者はその結果を十分に予想している。例えばBでは、ある地域での戦争の勃発は広範な不確実性を引き起こし、安全資産への逃避（flight to quality）や信用リスクの高い証券のスプレッド拡大をもたらす可能性がある。一方Cでは、市場下落後の信用力低下は予想され得るが、既存の契約においてより多くの支払い義務が生じる点はリスクの相互作用によるものである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s008-Q3">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>次のうち、金融リスクの説明として最も適切なものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 金利上昇のリスク。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。このリスクは金融市場から生じるためである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 規制によって取引が違法となるリスク。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。このリスクは金融市場から生じるためである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 個人が制限や管理なしに取引を行うリスク。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。このリスクは金融市場から生じるためである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s008-Q4">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>次のうち、モデルリスク（model risk）の例ではないものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. リターン分布の裾（tails）が実際にはファットテール（fat tails）であるにもかかわらず、薄い裾（thin tails）であると仮定すること。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。無リスク金利（risk-free rate）は一般に政府債の割引に用いるのが適切な利率である。政府債は通常デフォルトがないと考えられるが、そのリターンは確実にリスクを伴う。リターン分布が実際にはそうでないにもかかわらず薄い裾を持つと仮定することや、非対称な分布に対して対称性を仮定することは、いずれもモデルリスク（model risk）の一形態である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. リターン分布が非対称であるにもかかわらず、リスク測定に標準偏差（standard deviation）を用いること。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。無リスク金利（risk-free rate）は一般に政府債の割引に用いるのが適切な利率である。政府債は通常デフォルトがないと考えられるが、そのリターンは確実にリスクを伴う。リターン分布が実際にはそうでないにもかかわらず薄い裾を持つと仮定することや、非対称な分布に対して対称性を仮定することは、いずれもモデルリスク（model risk）の一形態である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 1年物の政府債の額面価値を1年の無リスク金利（risk-free rate）で割り引くこと。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。無リスク金利（risk-free rate）は一般に政府債の割引に用いるのが適切な利率である。政府債は通常デフォルトがないと考えられるが、そのリターンは確実にリスクを伴う。リターン分布が実際にはそうでないにもかかわらず薄い裾を持つと仮定することや、非対称な分布に対して対称性を仮定することは、いずれもモデルリスク（model risk）の一形態である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s008-Q5">
+<span class="cfa-curriculum-question-with-label">5. </span>
+<p>次のうち、市場が大きなストレス状態にある際に証券を売却することが困難になることによって生じるリスクはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 流動性リスク（liquidity risk）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。証券の流動性は大きく異なる。流動性が低い証券とは、投資を行う主体の数が限られているか、あるいはそれらの主体が投資可能な資本量が限られているものである。市場がストレス状態にあると、これら限られた投資家や資本が枯渇し、売り手が合理的と考える価格では売却できなくなる。システミック・リスク（systemic risk）は金融システム全体の崩壊に関するリスクであり、流動性リスクよりもはるかに広範なリスクである。逆方向リスク（wrong-way risk）は、カウンターパーティに対するエクスポージャーがそのカウンターパーティの信用リスクと正の相関を持つ程度を指す。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. システミック・リスク（systemic risk）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。証券の流動性は大きく異なる。流動性が低い証券とは、投資を行う主体の数が限られているか、あるいはそれらの主体が投資可能な資本量が限られているものである。市場がストレス状態にあると、これら限られた投資家や資本が枯渇し、売り手が合理的と考える価格では売却できなくなる。システミック・リスク（systemic risk）は金融システム全体の崩壊に関するリスクであり、流動性リスクよりもはるかに広範なリスクである。逆方向リスク（wrong-way risk）は、カウンターパーティに対するエクスポージャーがそのカウンターパーティの信用リスクと正の相関を持つ程度を指す。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 逆方向リスク（wrong-way risk）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。証券の流動性は大きく異なる。流動性が低い証券とは、投資を行う主体の数が限られているか、あるいはそれらの主体が投資可能な資本量が限られているものである。市場がストレス状態にあると、これら限られた投資家や資本が枯渇し、売り手が合理的と考える価格では売却できなくなる。システミック・リスク（systemic risk）は金融システム全体の崩壊に関するリスクであり、流動性リスクよりもはるかに広範なリスクである。逆方向リスク（wrong-way risk）は、カウンターパーティに対するエクスポージャーがそのカウンターパーティの信用リスクと正の相関を持つ程度を指す。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1642-s008-Q6">
+<span class="cfa-curriculum-question-with-label">6. </span>
+<p>個人が死亡率に基づいて直面するリスクは、次のどの問題を生み出すか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 家族に対する所得喪失のリスク。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。死亡に関する不確実性は、死亡リスク（mortality risk）と長寿リスク（longevity risk）の2つのリスクを生む。死亡リスク（比較的若くして死亡するリスク）は、その人が生み出していた所得の流れが途絶えることで現れる。一方、長寿リスクは、個人が自身の金融資源より長く生きるリスクである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 人的資本（human capital）と投資ポートフォリオに関連する共分散リスク。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。死亡に関する不確実性は、死亡リスク（mortality risk）と長寿リスク（longevity risk）の2つのリスクを生む。死亡リスク（比較的若くして死亡するリスク）は、その人が生み出していた所得の流れが途絶えることで現れる。一方、長寿リスクは、個人が自身の金融資源より長く生きるリスクである。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 支払能力リスク（solvency risk）と不誠実な金融アドバイザーに搾取されるリスクの相互作用。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。死亡に関する不確実性は、死亡リスク（mortality risk）と長寿リスク（longevity risk）の2つのリスクを生む。死亡リスク（比較的若くして死亡するリスク）は、その人が生み出していた所得の流れが途絶えることで現れる。一方、長寿リスクは、個人が自身の金融資源より長く生きるリスクである。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1642-R-s08-FN1Content">
+<p>18 この例は、規制当局や政府にとって重要な懸念事項である別のリスク、すなわちシステミック・リスク（systemic risk）を示している。ある部門におけるストレスや破綻は他の部門へと波及し、最終的には経済全体に影響を及ぼし得る。システミック・リスクは、リスク間の相互作用の究極的な例である。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_146163_607_Identification_of_Risk_-_Financial_Vs_Non-Financial_Risk.html" >← 前へ</a>
+  <span class="title">6.08 | Interactions Between Risks</span>
+  <a href="courses_1872_modules_items_146179_609_Measuring_and_Modifying_Risk_Drivers_and_Metrics.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

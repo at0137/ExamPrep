@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4.06 | Equity and Company Value</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0164-R-s06" title="4.06 | Equity and Company Value">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール4：株式証券の概要（Overview of Equity Securities）4.06 | 株式と企業価値（Equity and Company Value）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">企業の資産の資金調達における株式証券（equity securities）の役割を説明せよ。</li>
+<li class="cfa-curriculum-los-item">株式証券の市場価値（market value）と簿価（book value）を対比せよ。</li>
+<li class="cfa-curriculum-los-item">企業の株主資本コスト（cost of equity）、（会計上の）株主資本利益率（return on equity）、および投資家の要求収益率（required rates of return）を比較せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>企業は、資本を調達し流動性（liquidity）を高めるために、プライマリー市場（primary markets）で株式証券を発行する。この追加的な流動性はまた、企業に追加の「通貨」（自社の株式）を提供し、これを用いて企業買収（acquisitions）を行ったり、従業員に対してストックオプション（stock option）に基づくインセンティブを提供したりすることができる。資本調達の主たる目的は、企業の収益創出活動（revenue-generating activities）に資金を供給し、純利益（net income）を増加させ、株主の富（wealth）を最大化することである。多くの場合、調達された資本は、長期資産（long-lived assets）の購入、設備拡張プロジェクト（capital expansion projects）、研究開発（research and development）、新製品または新地域への進出、他企業の買収に用いられる。あるいは、企業が継続企業（going concern）として存続するために資本調達を余儀なくされる場合もある。このような場合には、規制要件（regulatory requirements）の充足、自己資本比率（capital adequacy ratios）の改善、または債務契約条項（debt covenants）の遵守のために資本が調達される。</p>
+<p>経営陣の最終的な目標は、企業の簿価（貸借対照表上の株主資本（shareholders’ equity））を増加させるとともに、株式の市場価値を最大化することである。経営陣の行動は、純利益の増加や自社株の売買を通じて企業の簿価に直接影響を与えることができるが、株式の市場価値には間接的にしか影響を与えられない。企業の株主資本の簿価は、総資産（total assets）と総負債（total liabilities）の差であり、企業が純利益を留保することで増加する。獲得し留保される純利益が多いほど、株主資本の簿価は大きくなる。経営陣の意思決定は企業の純利益に直接影響を与えるため、結果として株主資本の簿価にも直接影響を与える。</p>
+<p>一方で、企業の株式の市場価値は、将来キャッシュフローの金額（amount）、タイミング（timing）、不確実性（uncertainty）に関する投資家の多様かつ集合的な期待を反映している。簿価と市場価値が一致することはまれである。経営陣が簿価の増加という目標を達成していたとしても、その増加が投資家の将来キャッシュフローに対する期待を変えない場合、株式の市場価値には反映されないことがある。投資家が、企業の簿価を増加させる上での経営の有効性を評価するために用いる主要な指標の一つが、会計上の株主資本利益率（accounting return on equity）である。</p>
+<section id="CFA0164-R-s06-01">
+<h3 class="dp-heading">会計上の株主資本利益率（Accounting Return on Equity）</h3>
+<p>株主資本利益率（return on equity, ROE）は、企業の経営陣が投資家から提供された資本をどれだけ効果的かつ効率的に利益創出に用いているかを判断するために、株式投資家が用いる主要な指標である。これは、企業に投資された総株主資本に対して、普通株主に帰属する純利益（すなわち優先配当（preferred dividends）控除後）がどれだけ生み出されたかを測定する。ROEは、普通株主に帰属する純利益を、株主資本の平均簿価（average total book value of equity, BVE）で除して計算される。すなわち：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E2"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>ROE</mtext>
+</mrow>
+<mi>t</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mrow>
+<mtext>NI</mtext>
+</mrow>
+<mi>t</mi>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mrow>
+<mtext>Average BVE</mtext>
+</mrow>
+<mi>t</mi>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mrow>
+<mtext>NI</mtext>
+</mrow>
+<mi>t</mi>
+</msub>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mrow>
+<mtext>BVE</mtext>
+</mrow>
+<mi>t</mi>
+</msub>
+<mo>+</mo>
+<msub>
+<mrow>
+<mtext>BVE</mtext>
+</mrow>
+<mrow>
+<mi>t</mi>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mo>/</mo>
+<mn>2</mn>
+</mrow>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">2</span></div>
+<p>ここで、NIₜはt年の純利益であり、平均株主資本簿価は、t年の期首と期末の簿価の平均（2で除したもの）として計算される。ROEは、当期に生み出された純利益が、期首時点の株主資本および当期中に新たに投資された株主資本によって生み出されたと仮定している。なお、一部の式では分母としてt年期首（すなわちt−1年期末）の株主資本のみを用いる場合がある。この場合、当期の純利益は期首時点の株主資本のみによって生み出されたと仮定する。すなわち：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E3"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>ROE</mtext>
+</mrow>
+<mi>t</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mrow>
+<mtext>NI</mtext>
+</mrow>
+<mi>t</mi>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mrow>
+<mtext>BVE</mtext>
+</mrow>
+<mrow>
+<mi>t</mi>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">3</span></div>
+<p>両方の式は、一貫して適用される限り適切に使用できる。例えば、簿価が時間を通じて比較的安定している場合や、一定期間にわたり企業のROEを年次で計算する場合には、期首簿価を用いる方法が適切である。一方、期末簿価がより変動的である場合や、業界慣行として平均簿価が用いられている場合には、平均簿価を用いる方が適切である。</p>
+<p>ROEを計算・分析する際の注意点として、純利益および株主資本簿価は、減価償却（depreciation：定額法（straight line）か加速償却法（accelerated methods）か）や棚卸資産（inventories：先入先出法（first in, first out）か加重平均法（weighted average cost）か）など、経営陣の採用する会計手法の選択に直接影響を受ける点が挙げられる。異なる会計手法は、同一業界に属する企業間であってもROEの比較を困難にする可能性がある。また、同一企業であっても、期間中に会計手法が変更されている場合には、時系列でのROE比較が難しくなることがある。</p>
+<p>図表16（Exhibit 16）には、ファイザー（Pfizer）、ノバルティス（Novartis AG）、グラクソ・スミスクライン（GlaxoSmithKline）という3つのブルーチップ企業（blue chip：広く保有される大規模時価総額企業で、財務的に健全であり、各業界または地域市場におけるリーダーとみなされる企業）の純利益および株主資本簿価に関する情報が示されている。データは2015年12月期から2017年12月期までの財務年度に対応している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0164-R-EXH16">
+<h4 class="cfa-curriculum-exhibit-table-title">図表16 ファイザー（Pfizer）、ノバルティス（Novartis AG）、グラクソ・スミスクライン（GlaxoSmithKline）の純利益および株主資本簿価（単位：米ドル千）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"> </th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">財務年度末</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2015年12月31日</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2016年12月31日</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2017年12月31日</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">ファイザー（Pfizer）</td>
+<td colspan="3" style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">純利益</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6,960,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7,215,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">21,308,000ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">株主資本合計</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">64,998,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">59,840,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">71,287,000ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">ノバルティス（Novartis AG）</td>
+<td colspan="3" style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">純利益</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">17,783,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6,712,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7,703,000ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">株主資本合計</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">77,122,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">74,891,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">74,227,000ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">グラクソ・スミスクライン（GlaxoSmithKline）</td>
+<td colspan="3" style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">純利益</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">12,420,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,126,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2,070,700ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">株主資本合計</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11,309,250ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6,127,800ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4,715,800ドル</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>株主資本の平均簿価（average book value of equity）を用いると、2016年および2017年12月期におけるファイザー（Pfizer）の株主資本利益率（return on equity）は次のように計算される：</p>
+<p> </p>
+<p>2016年12月期の株主資本利益率</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>ROE</mtext>
+</mrow>
+<mrow>
+<mn>2016</mn>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mrow>
+<mtext>NI</mtext>
+</mrow>
+<mrow>
+<mn>2016</mn>
+</mrow>
+</msub>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mrow>
+<mtext>BVE</mtext>
+</mrow>
+<mrow>
+<mn>2015</mn>
+</mrow>
+</msub>
+<mo>+</mo>
+<msub>
+<mrow>
+<mtext>BVE</mtext>
+</mrow>
+<mrow>
+<mn>2016</mn>
+</mrow>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mo>/</mo>
+<mn>2</mn>
+</mrow>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>7,215,000</mtext>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>64</mn>
+<mo>,</mo>
+<mn>998</mn>
+<mo>,</mo>
+<mn>000</mn>
+<mo>+</mo>
+<mn>59</mn>
+<mo>,</mo>
+<mn>840</mn>
+<mo>,</mo>
+<mn>000</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mo>/</mo>
+<mn>2</mn>
+</mrow>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>11.6</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math></div>
+<p>2017年12月期の株主資本利益率</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E___1"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>ROE</mtext>
+</mrow>
+<mrow>
+<mn>2017</mn>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mrow>
+<mtext>NI</mtext>
+</mrow>
+<mrow>
+<mn>2017</mn>
+</mrow>
+</msub>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<msub>
+<mrow>
+<mtext>BVE</mtext>
+</mrow>
+<mrow>
+<mn>2016</mn>
+</mrow>
+</msub>
+<mo>+</mo>
+<msub>
+<mrow>
+<mtext>BVE</mtext>
+</mrow>
+<mrow>
+<mn>2017</mn>
+</mrow>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mo>/</mo>
+<mn>2</mn>
+</mrow>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>21,308,000</mtext>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>59</mn>
+<mo>,</mo>
+<mn>840</mn>
+<mo>,</mo>
+<mn>000</mn>
+<mo>+</mo>
+<mn>71</mn>
+<mo>,</mo>
+<mn>287</mn>
+<mo>,</mo>
+<mn>000</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mo>/</mo>
+<mn>2</mn>
+</mrow>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mn>32.5</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math></div>
+<p>図表17（Exhibit 17）は、2016年および2017年におけるファイザー（Pfizer）に加えて、ノバルティス（Novartis AG）およびグラクソ・スミスクライン（GlaxoSmithKline）の株主資本利益率を要約している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0164-R-EXH17">
+<h4 class="cfa-curriculum-exhibit-table-title">図表17 ファイザー（Pfizer）、ノバルティス（Novartis AG）、グラクソ・スミスクライン（GlaxoSmithKline）の株主資本利益率</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2016年12月31日（%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2017年12月31日（%）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">ファイザー（Pfizer）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">32.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">ノバルティス（Novartis AG）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">8.8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">グラクソ・スミスクライン（GlaxoSmithKline）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">12.9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">38.2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ファイザー（Pfizer）の場合、2017年のROEが32.5%であることは、株主が投資した1.00ドルの資本に対して0.325ドルのリターン（利益）を生み出したことを示している。グラクソ・スミスクライン（GlaxoSmithKline）は、この期間にROEをほぼ3倍にし、12.9%から38.2%へと上昇させた。一方、ノバルティス（Novartis AG）のROEは比較的変化がなかった。</p>
+<p>ROEは、純利益（net income）が株主資本（shareholders’ equity）よりも速いペースで増加する場合、または純利益の減少が株主資本の減少よりも緩やかな場合に上昇する可能性がある。グラクソ・スミスクライン（GlaxoSmithKline）の場合、2016年から2017年にかけて純利益がほぼ倍増し、さらに平均株主資本が約45%減少したことにより、ROEはほぼ3倍となった。言い換えれば、2017年は2016年と比較して、同社は株主資本を用いた利益創出において著しく効率性が向上したことになる。ファイザー（Pfizer）の場合も、期間中に純利益がほぼ3倍となったことにより、平均株主資本が約5%増加したにもかかわらず、ROEは2016年の11.6%から2017年の32.5%へと大幅に上昇した。</p>
+<p>重要な問いとして、ROEの上昇が常に良いことかどうかがある。短い答えは「場合による」である。ROEが上昇する理由の一つは、純利益の減少が株主資本の減少よりも緩やかな場合であり、これは必ずしも良い兆候ではない。また、企業が負債（debt）を発行し、その資金を用いて発行済株式（outstanding shares）の一部を自社株買いする場合にもROEは上昇する。この行動は企業のレバレッジ（leverage）を高め、株式のリスクを増大させる。したがって、時間の経過に伴う企業の純利益および株主資本の変化の要因を精査することが重要である。別のリーディングで説明されるデュポン式（DuPont formula）は、企業のROEの変化要因を分析するために用いることができる。</p>
+<p>企業の株主資本の簿価（book value）は、経営陣の過去の営業および財務に関する意思決定を反映している。一方、株式の市場価値（market value）は、これらの意思決定に加えて、正の正味現在価値（net present value）を持つ投資機会から将来生み出されるキャッシュフローに関する投資家の集合的評価および期待を反映している。投資家がこのような将来のキャッシュフロー創出機会が多数存在すると考える場合、企業の株式の市場価値はその簿価を上回る。図表18（Exhibit 18）は、2017年12月末時点におけるファイザー（Pfizer）、ノバルティス（Novartis AG）、グラクソ・スミスクライン（GlaxoSmithKline）の1株当たり市場価格（market price per share）、発行済株式数（total shares outstanding）、および株主資本簿価を示している。また、この図表では、発行済株式数に1株当たり市場価格を乗じて算出される株式の総市場価値（total market value of equity、または時価総額（market capitalization））も示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0164-R-EXH18">
+<h4 class="cfa-curriculum-exhibit-table-title">図表18 ファイザー（Pfizer）、ノバルティス（Novartis AG）、グラクソ・スミスクライン（GlaxoSmithKline）の市場情報（市場価格を除き単位：米ドル千）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファイザー（Pfizer）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ノバルティス（Novartis AG）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">グラクソ・スミスクライン（GlaxoSmithKline）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">市場価格</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">35.74ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90.99ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">18.39ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">発行済株式総数</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5,952,900</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2,317,500</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4,892,200</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">株主資本合計</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">71,287,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">74,227,000ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4,715,800ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">株式の総市場価値</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">212,756,646ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">210,869,325ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">89,967,558ドル</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>図表18において、ファイザー（Pfizer）の株式の総市場価値は次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E___2">Market value of equity = Market price per share × Shares outstanding</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E___3">Market value of equity = US$35.74 × 5,952,900 = US$212,756,646.</div>
+<p>ファイザー（Pfizer）の1株当たり株主資本簿価（book value of equity per share）は次のように計算できる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E___4">Book value of equity per share = Total shareholders’ equity/Shares outstanding</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E___5">Book value of equity per share = US$71,287,000/5,952,900 = US$11.98.</div>
+<p>有用な指標の一つに、企業の株価純資産倍率（price-to-book ratio）があり、これは市場価値対簿価比率（market-to-book ratio）とも呼ばれる。この比率は、企業の将来の投資機会およびキャッシュフロー創出機会に対する投資家の期待を示す指標である。株価純資産倍率が大きいほど（すなわち、1株当たり市場価値と1株当たり簿価の乖離が大きいほど）、投資家は企業の将来の投資機会をより好意的に評価していることを意味する。ファイザー（Pfizer）の株価純資産倍率は次のとおりである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E___6">Price-to-book ratio = Market price per share/Book value of equity per share</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0164-R-E___7">Price-to-book ratio = US$35.74/US$11.98= 2.98</div>
+<p>図表19（Exhibit 19）には、ファイザー（Pfizer）に加えて、ノバルティス（Novartis AG）およびグラクソ・スミスクライン（GlaxoSmithKline）の1株当たり市場価格、1株当たり株主資本簿価、および株価純資産倍率が示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0164-R-EXH19">
+<h4 class="cfa-curriculum-exhibit-table-title">図表19 ファイザー（Pfizer）、ノバルティス（Novartis AG）、グラクソ・スミスクライン（GlaxoSmithKline）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファイザー（Pfizer）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ノバルティス（Novartis AG）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">グラクソ・スミスクライン（GlaxoSmithKline）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">1株当たり市場価格</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">35.74ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90.99ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">18.39ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">1株当たり株主資本簿価</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11.98ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">32.03ドル</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">$0.96</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">株価純資産倍率</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.98</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.84</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">19.16</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>3社すべてにおいて、1株当たり市場価格はそれぞれの簿価を上回っているため、株価純資産倍率はいずれも1.00を超えている。しかし、その水準には大きな差がある。グラクソ・スミスクライン（GlaxoSmithKline）は最も高い株価純資産倍率を有しており、ファイザー（Pfizer）とノバルティス（Novartis AG）は互いに類似した水準である。これは、投資家がグラクソ・スミスクラインの将来の成長機会が、ファイザーやノバルティスよりも大幅に高いと考えていることを示唆している。</p>
+<p>異なる業界に属する企業間で株価純資産倍率を比較することは適切ではない。なぜなら、この比率はその業界に対する投資家の見通しも反映しているためである。テクノロジー（technology）のような高成長産業の企業は、重機（heavy equipment）のような低成長（すなわち成熟した（mature））産業の企業と比較して、一般的により高い株価純資産倍率を持つ傾向がある。したがって、同一業界内の企業同士で比較する方が適切である。業界平均と比較して成長機会が相対的に高い企業は、業界平均よりも高い株価純資産倍率を持つ可能性が高い。</p>
+<p>簿価（book value）および株主資本利益率（return on equity）は、アナリストが企業価値を評価する上で有用であるが、企業の真の価値または本源的価値（intrinsic value）を推定する主要な手段としては限界がある。本源的価値とは、将来予測されるキャッシュフローの現在価値（present value）である。図表20（Exhibit 20）では、世界で最も成功した投資家の一人であり、バークシャー・ハサウェイ（Berkshire Hathaway）のCEOであるウォーレン・バフェット（Warren Buffett）が、株主への手紙の中で企業の簿価と本源的価値の違いを説明している。前述のとおり、市場価値は企業の将来キャッシュフローの金額、タイミング、不確実性に関する投資家の集合的かつ多様な期待を反映する。一方で、本源的価値は将来キャッシュフローの金額とタイミングを正確に予測することが不可能であるため、推定することしかできない。しかし、バフェットのような洞察力のある投資家（astute investors）は、本源的価値の推定値と市場価値との乖離から利益を得てきた。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA0164-R-EXH20">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">図表20 簿価（book value）と本源的価値（intrinsic value）</h4>
+<p>私たちは定期的に、1株当たり簿価（per-share book value）を報告している。これは容易に計算できる数値であるが、その有用性は限定的である。同様に定期的に、重要なのは本源的価値であり、これは正確に特定することは不可能であるが、推定することが不可欠であるとお伝えしている。</p>
+<p>例えば、1964年には、バークシャー（Berkshire）の1株当たり簿価が19.46ドルであると確信をもって述べることができた。しかし、この数値は株式の本源的価値を大きく過大評価していた。なぜなら、企業の資源のすべてが低収益な繊維事業（textile business）に投入されていたためである。当社の繊維資産は、継続企業価値（going-concern value）でも清算価値（liquidation value）でも、その帳簿価額（carrying value）に見合うものではなかった。したがって1964年において、バークシャーの貸借対照表の健全性について問う者がいたならば、評判の疑わしいハリウッドの大物（Hollywood mogul）がかつて述べたように「心配するな、負債はしっかりしている（Don’t worry, the liabilities are solid）」という答えがふさわしかったかもしれない。</p>
+<p>今日では、バークシャーの状況は逆転している。当社が支配している多くの事業は、その帳簿価額を大きく上回る価値を持っている。（当社が支配していない企業、例えばコカ・コーラ（Coca-Cola）やジレット（Gillette）などは、現在の市場価値で計上されている。）それでもなお、私たちは簿価を報告し続けている。なぜなら、それはバークシャーの本源的価値を控えめに示す、おおまかな追跡指標（tracking measure）として機能するからである。</p>
+<p>私たちは本源的価値を、企業の残存期間にわたって取り出すことができるキャッシュの割引価値（discounted value）として定義している。本源的価値を計算する者は誰でも、将来キャッシュフローの見積もりの変更や金利の変動に応じて変わる、非常に主観的な数値に到達せざるを得ない。しかしながら、その曖昧さにもかかわらず、本源的価値は極めて重要であり、投資や事業の相対的な魅力度を評価するための唯一論理的な方法である。</p>
+<p>過去の入力（簿価（book value））と将来の成果（本源的価値（intrinsic value））がどのように乖離し得るかを理解するために、別の投資形態である大学教育（college education）を考えてみよう。教育のコストをその「簿価」と考える。このコストには、学生が就職ではなく大学進学を選択したことによって失った収入も含めるべきである。</p>
+<p>この例では、教育の重要な非経済的便益は無視し、その経済的価値のみに焦点を当てる。まず、卒業生が生涯にわたって得ると予想される収入を見積もり、そこから教育を受けなかった場合に得られたであろう収入の推定値を差し引く。これにより超過収益（excess earnings）が得られる。この金額を適切な割引率（interest rate）で卒業時点まで割り引くと、その結果が教育の本源的な経済価値となる。</p>
+</div>
+</section>
+<section id="CFA0164-R-s06-02">
+<h3 class="dp-heading">株主資本コスト（Cost of Equity）と投資家の要求収益率（Investors’ Required Rates of Return）</h3>
+<p>企業が負債を発行する（または銀行から借入を行う）場合や株式証券を発行する場合、調達した資本にはコストが伴う。企業は収益性と株主の富を最大化するために、これらのコストを最小化するよう効率的に資本調達を行おうとする。</p>
+<p>企業が負債を発行する場合、その資金の使用に対して負担するコストは負債コスト（cost of debt）と呼ばれる。負債コストは、企業が債券保有者（bondholders）に対して契約上支払う義務のある定期的な利息（またはクーポン（coupon））率を反映するため、比較的容易に推定できる。一方、企業が株式を発行して資本を調達する場合、そのコストは株主資本コスト（cost of equity）と呼ばれる。しかし負債とは異なり、企業は株主に対して資金の使用に対する支払いを契約上義務付けられているわけではない。そのため、株主資本コストの推定はより困難である。</p>
+<p>投資家は企業に提供した資金に対してリターンを要求する。このリターンは投資家の最低要求収益率（minimum required rate of return）と呼ばれる。投資家が企業の負債証券を購入する場合、その最低要求収益率は、企業に対して資金の使用の対価として課す定期的な利子率である。すべての債券保有者は同一の利子率を受け取るため、要求収益率も同一である。したがって、企業の負債コストと投資家の負債に対する最低要求収益率は一致する。</p>
+<p>投資家が企業の株式証券を購入する場合、その最低要求収益率は将来受け取ると期待されるキャッシュフローに基づく。これらの将来キャッシュフローは不確実であり未知であるため、最低要求収益率は推定する必要がある。また、将来キャッシュフローに対する期待は投資家ごとに異なるため、最低要求収益率も投資家間で異なる可能性がある。その結果、企業の株主資本コストは、投資家の株式に対する最低要求収益率と異なる場合がある。企業は可能な限り低コストで資本を調達しようとするため、株主資本コストはしばしば投資家の最低要求収益率の代理指標（proxy）として用いられる。</p>
+<p>言い換えれば、株主資本コストは、企業がプライマリー市場で投資家に自社株を購入してもらい、またセカンダリー市場で株価を維持するために提示しなければならない最低期待収益率と考えることができる。この期待収益率がセカンダリー市場で満たされない場合、株価は投資家の要求する最低収益率に一致するように調整される。例えば、投資家が企業の株主資本コストよりも高い収益率を要求する場合、投資家は株式を売却し、資金を他に投資するため、株価は下落する。株価が下落すると、株主資本コストは投資家の要求するより高い収益率に達するまで上昇する。</p>
+<p>企業の株主資本コスト（または投資家の最低要求収益率）を推定するために一般的に用いられるモデルには、配当割引モデル（dividend discount model, DDM）と資本資産価格モデル（capital asset pricing model, CAPM）がある。これらのモデルは、他のカリキュラムで詳細に説明される。</p>
+<p>負債コスト（税引後）および株主資本コスト（すなわち負債と株式に対する最低要求収益率）は、資本予算（capital budgeting）プロセスの重要な構成要素である。これは、企業の加重平均資本コスト（weighted average cost of capital, WACC）を推定するために用いられるためである。資本予算とは、企業が長期投資案件を評価するために用いる意思決定プロセスである。WACCは、すべての資本提供者を満足させるために、企業が長期投資から得なければならない最低要求収益率を表す。企業は、そのWACCを上回る期待収益率を持つ長期投資を選択する。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0164-R-FN26Content">
+<p>26 ファイザー（Pfizer）は財務諸表の作成に米国会計基準（US GAAP）を使用している一方、ノバルティス（Novartis AG）およびグラクソ・スミスクライン（GlaxoSmithKline）は国際財務報告基準（International Financial Reporting Standards）を使用している。したがって、ファイザーのROEをノバルティスやグラクソ・スミスクラインのROEと比較することは適切ではない。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0164-R-FN27Content">
+<p><sup>27</sup> Extracts from Berkshire Hathaway’s <em>2008 Annual Report</em> (<a href="http://www.berkshirehathaway.com" target="_blank">www.berkshirehathaway.com</a>).</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0164-R-FN28Content">
+<p>28 企業の株主資本コストが投資家の株式に対する要求収益率と異なる原因となるもう一つの重要な要因は、株式発行に伴うフローテーションコスト（flotation cost）である。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ReturnOnEquityROEContent">
+<p>純利益を平均株主資本で除して計算される収益性指標。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BlueChipContent">
+<p>広く保有される大規模時価総額企業であり、財務的に健全で、各業界または地域株式市場におけるリーダーとみなされる企業。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142288_405_Risk_and_Return_Characteristics.html" >← 前へ</a>
+  <span class="title">4.06 | Equity and Company Value</span>
+  <a href="courses_1868_modules_items_142291_407_Summary.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

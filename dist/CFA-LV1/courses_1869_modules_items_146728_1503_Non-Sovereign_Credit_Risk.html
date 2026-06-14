@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>15.03 | Non-Sovereign Credit Risk</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2445-R-s03-R-1" title="15.03 | Non-Sovereign Credit Risk">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール15：政府発行体の信用分析（Credit Analysis for Government Issuers）15.03｜非ソブリン信用リスク（Non-Sovereign Credit Risk）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">ソブリンおよび非ソブリンの政府債務発行体および発行債の信用を評価する際の特有の考慮事項を説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<section id="CFA2445-R-s03-01-01">
+<h3 class="dp-heading">非ソブリン政府債務（Non-Sovereign Government Debt）</h3>
+<p>ソブリン発行体が政府債務の最大の発行体である一方で、政府機関（government agencies）や地域政府（regional governments）などの非ソブリン政府発行体も、その活動資金を調達するために債務を発行する。政府機関の場合、投資家は通常、ソブリンと非常に類似した信用リスクに直面する。これは、当該機関を設立し債務発行権限を付与する法律に基づく暗黙の政府支援、または保証という形での明示的支援によるものである。一方、独自の課税権や収益創出能力を持つサブソブリン発行体（sub-sovereign issuers）（例：地域政府）は、ソブリンの経済・政治ガバナンスおよび金融・財政政策の恩恵を受けるが、その信用力はソブリンとは大きく異なる場合がある。</p>
+<p>主な非ソブリン政府発行体の種類には、政府機関（agencies）、公的銀行（public banks）、超国家機関（supranationals）、地域政府（regional governments）が含まれる。</p>
+</section>
+<section id="CFA2445-R-s03-01-02">
+<h3 class="dp-heading">政府機関（Agencies）</h3>
+<p>政府機関とは、公共サービスの提供という政府主導の目的を達成するために設立された準政府機関（quasi-government entities）であり、通常は特定の法律（law）または法令（statute）に基づいて設立される。多くの場合、設立法により債務による資金調達が認められている。準政府機関であるため、投資家はソブリン政府による高い支援可能性を前提とし、格付機関も通常はソブリンと同等の格付を付与する。</p>
+<p>政府機関による永久債（perpetual bond）の例は以下のとおりである。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2445-R-s03-EXM-1-9">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例9 香港空港管理局（Airport Authority Hong Kong SAR：AAHK）の永久債</h4>
+<p>AAHKは香港特別行政区政府が所有する法定機関（statutory body）であり、香港国際空港（HKIA）の運営および開発を担っている。2020年後半、COVID-19による旅客数の急減を受け、AAHKは第3滑走路建設および一般目的資金のため、総額15億米ドルの永久債発行を発表した。発行は2つに分かれ、2.10％の固定クーポン債（5.5年後に買戻し可能）と2.40％の固定クーポン債（7.5年後に買戻し可能）で構成された。これらの債券はAAと格付され、AAHKの長期発行体格付AA+より1ノッチ低い水準であった（買戻しオプションのため）。AAHKの格付は香港政府のソブリン格付AA+との同格化（equalization）に基づいており、財務困難時に政府からの暗黙の支援が期待されることが前提となっている。</p>
+</div>
+</section>
+<section id="CFA2445-R-s03-01-03">
+<h3 class="dp-heading">政府系銀行および開発金融機関（Government Sector Banks and Development Financing Institutions）</h3>
+<p>ソブリン政府は、特定市場での活動や政策目標達成のために、専門的な金融仲介機関を設立・支援することが多い。これらの機関は通常、政府により設立または支援され、同様の格付を享受する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2445-R-s03-EXM-1-10">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例10 ドイツ復興金融公庫（Kreditanstalt für Wiederaufbau：KfW）</h4>
+<p>1948年に設立されたKfWはドイツ最大の開発銀行であり、連邦政府が80％、州政府が20％を所有する。ドイツ連邦共和国による明示的保証（statutory guarantee）と制度的責任を有し、「KfW法」に基づき規制され、法人税が免除されている。連邦財務省および金融監督庁（BaFin）の監督下にあり、KfW債は銀行規制上ゼロリスクウェイトが適用される。格付はAAAであり、ESG評価も「Prime」である。2020年には新規事業の33％を環境・気候関連、48％を中小企業向けとし、グリーンボンド（Green Bonds）発行の主要な発行体でもある。</p>
+</div>
+</section>
+<section id="CFA2445-R-s03-01-04">
+<h3 class="dp-heading">超国家機関（Supranational Issuers）</h3>
+<p>超国家機関とは、共通目的のために複数のソブリン政府が加盟して設立した組織である。例えば、世界銀行（World Bank）や国際復興開発銀行（IBRD）は、途上国支援のために債務を発行する。地域的な例としてはアジア開発銀行（ADB）やラテンアメリカ開発銀行（CAF）がある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2445-R-s03-EXM-1-11">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例11 インドネシア・インフラ金融（Indonesia Infrastructure Finance：IIF）</h4>
+<p>IIFはインドネシア政府（30％）および世界銀行（20％）、ADB（20％）、KfW（15％）、三井住友銀行（15％）によって設立された。2010年設立で、インフラ開発への民間参加促進を目的とする。長期融資や保証を提供し、環境・社会基準を適用する。格付はBBBであり、インドネシア政府のソブリン格付と同等である。</p>
+</div>
+</section>
+<section id="CFA2445-R-s03-01-05">
+<h3 class="dp-heading">地域政府発行体（Regional Government Issuers）</h3>
+<p>これには州・地方政府が含まれ、米国では地方債（municipal bonds）と呼ばれる。制度は国ごとに異なり、中央政府の支援制度や税収配分制度が存在する場合もある。米国では個別に格付され、一般財源債（general obligation bonds）またはレベニュー債（revenue bonds）として発行される。</p>
+<section id="CFA2445-R-s03-01-05-01">
+<h4>一般財源債（General Obligation Bonds）</h4>
+<p>一般財源債は無担保債であり、発行体の一般歳入により支えられる。発行体の課税権に裏付けられている。一方、レベニュー債は特定プロジェクト（下水道、道路、橋、病院など）の資金調達のために発行される。</p>
+<p>GO債の信用分析はソブリン債と類似点を持つが、地域経済や産業構造、財政運営など独自の要因も重要である。一方で、非ソブリンは主権国家のような政策手段を持たず、技術変化や人口動態の影響を受けやすい。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2445-R-s03-EXM-1-12">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i>
+               Example 12<span style="display: block;">City of Detroit Bankruptcy Filing</span>
+</h5>
+<p>デトロイト市は2013年、産業衰退と人口減少により米国最大の地方自治体破産を申請した。約180億ドルの債務に対する支払いが困難となり、チャプター9（Chapter 9）に基づく破産手続きを行った。</p>
+</div>
+</section>
+<section id="CFA2445-R-s03-01-05-02">
+<h4>レベニュー債（Revenue Bonds）</h4>
+<p>レベニュー債は特定収益に依存するためGO債よりリスクが高い。分析はプロジェクトの需要やキャッシュフローに基づく。重要な指標として債務返済カバレッジ比率（debt service coverage ratio）がある。</p>
+<p>これらの債券分析では、収益源の安定性や多様性が重要であり、インフラ債では政府の間接支援も考慮される。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2445-R-s03-EXM-1-13">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i>
+               Example 13<span style="display: block;">Lima Metro Line 2 Finance Limited</span>
+</h5>
+<p>リマ地下鉄2号線ファイナンス（Lima Metro Line 2 Finance Limited）は、ラテンアメリカ最大級のインフラ債案件である。</p>
+<p>RPI-CAOは、工事進捗に応じた政府支払い制度であり、ペルー政府による保証付きである。</p>
+<p>この債券はリマの地下鉄建設資金調達のために発行された。</p>
+<p>2015年6月、同社は11.5億ドルのシニア担保債（5.875％）を発行し、格付はBaa1（Moody’s）、BBB（S&amp;P）、BBB（Fitch）であった。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2445-R-s03-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; ">5.875％ リマ地下鉄2号線ファイナンスの概要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">発行体（Issuer）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">Lima Metro Line 2 Finance Limited</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">発行日（Issuance Date）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">2015年6月</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">満期日（Maturity Date）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">2034年7月</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">発行額（Issuance Amount）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">11億5,000万米ドル</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">資金使途（Use of Proceeds）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">リマ市における地下鉄路線プロジェクトの建設資金</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">信用格付（Credit Ratings）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">Baa1（Moody’s）；BBB（S&amp;P）；BBB（Fitch）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">国（Country）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">Peru</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">プロジェクトタイプ（Project Type）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">輸送、鉄道（Transportation, Rail）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">プロジェクトスポンサー（Project Sponsor）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">ACS Iridium、Vialia（FCC）、Salini Impregilo、AnsaldoBreda、Ansaldo STS、COSAPIから構成されるコンソーシアム（consortium）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">支払原資（Source of Payment）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px; ">RPI-CAO支払制度（RPI-CAO payment regime）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2445-R-s03-B-1-a">
+<h5 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"> </i>
+               Question Set</h5>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2445-R-s03-Q1">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>次のうち、地方政府とソブリンの信用力の関係を最も適切に説明しているものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 地方政府は限定的な管轄権しか持たず、経済および金融制度を統制できない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。地方政府は管轄権が限定されており、国家の財政政策および金融政策を統制できない。Bは誤りであり、すべてのソブリン政府が税収分配制度を採用しているわけではない。Cは誤りであり、地方政府はソブリンの経済・金融政策の影響を受けるため、その格付は通常ソブリンと同等またはそれ以下となる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. すべてのソブリン政府は、地方政府が義務を履行できるように、税収分配制度を採用している。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。地方政府は管轄権が限定されており、国家の財政政策および金融政策を統制できない。Bは誤りであり、すべてのソブリン政府が税収分配制度を採用しているわけではない。Cは誤りであり、地方政府はソブリンの経済・金融政策の影響を受けるため、その格付は通常ソブリンと同等またはそれ以下となる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 主要産業や雇用主を誘致・維持する能力を持つ地方政府は、しばしばソブリン政府よりも信用力が高い。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。地方政府は管轄権が限定されており、国家の財政政策および金融政策を統制できない。Bは誤りであり、すべてのソブリン政府が税収分配制度を採用しているわけではない。Cは誤りであり、地方政府はソブリンの経済・金融政策の影響を受けるため、その格付は通常ソブリンと同等またはそれ以下となる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2445-R-s03-Q2">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>パリ地域の地方政府であるイル＝ド＝フランス（Ile-de-France）はグリーンボンドを発行し、その資金は環境配慮型建築、公共交通、再生可能エネルギーなどに使用される。この債券はイル＝ド＝フランスの税収およびその他収入によって裏付けられている。この債券は次のどれに該当するか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 一般財源債（general obligation：GO bond）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。資金使途は特定プロジェクトであるが、元利払いは特定プロジェクト収益ではなく地方政府の税収および一般収入により支えられている。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. レベニュー債（revenue bond）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。資金使途は特定プロジェクトであるが、元利払いは特定プロジェクト収益ではなく地方政府の税収および一般収入により支えられている。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 政府機関債（agency bond）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。資金使途は特定プロジェクトであるが、元利払いは特定プロジェクト収益ではなく地方政府の税収および一般収入により支えられている。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2445-R-s03-Q3">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>マレーシア政府の特別目的会社であるDanainfra Nasional Berhadは、クアラルンプールの大量高速輸送インフラの資金調達のために個人向け債券を発行した。元利払いは輸送システムのキャッシュフローおよび政府保証により支えられている。この債券は次のどれに該当するか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 一般財源債（general obligation：GO bond）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。この資金は特定の輸送プロジェクトのために使用され、返済は主に当該プロジェクトの収益によって支えられている。政府保証は信用補完（credit enhancement）であり、主たる返済原資は運賃収入である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. レベニュー債（revenue bond）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。この資金は特定の輸送プロジェクトのために使用され、返済は主に当該プロジェクトの収益によって支えられている。政府保証は信用補完（credit enhancement）であり、主たる返済原資は運賃収入である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 政府機関債（agency bond）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Bが正しい。この資金は特定の輸送プロジェクトのために使用され、返済は主に当該プロジェクトの収益によって支えられている。政府保証は信用補完（credit enhancement）であり、主たる返済原資は運賃収入である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2445-R-s03-Q4">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>レベニュー裏付けの非ソブリン政府債における主要な信用指標はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 債務返済カバレッジ比率（debt service coverage ratio）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。債務返済カバレッジ比率は、営業費用控除後の収益が元利払いをどの程度カバーできるかを測定する指標である。レベニュー債は特定プロジェクトの収益に依存するため、この指標が重要となる。多くのレベニュー債には最低カバレッジ比率のコベナンツ（covenant）が設定される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 地域の失業率（level of unemployment）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。債務返済カバレッジ比率は、営業費用控除後の収益が元利払いをどの程度カバーできるかを測定する指標である。レベニュー債は特定プロジェクトの収益に依存するため、この指標が重要となる。多くのレベニュー債には最低カバレッジ比率のコベナンツ（covenant）が設定される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 税基盤（tax base）（規模・幅・多様性・安定性）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Aが正しい。債務返済カバレッジ比率は、営業費用控除後の収益が元利払いをどの程度カバーできるかを測定する指標である。レベニュー債は特定プロジェクトの収益に依存するため、この指標が重要となる。多くのレベニュー債には最低カバレッジ比率のコベナンツ（covenant）が設定される。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="GeneralObligationGOBondsContent">
+<p>発行体の課税権により裏付けられた、非ソブリン政府が発行する無担保債（unsecured bonds）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RevenueBondsContent">
+<p>将来キャッシュフローを生み出すことが期待される政府支援プロジェクトに関連して、非ソブリン政府が発行する債券であり、そのキャッシュフローが主たる返済原資となるもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DebtServiceCoverageRatioContent">
+<p>信用パフォーマンスの主要指標であり、純営業収益（net operating income）を債務返済額（debt service）で除した比率。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146721_1502_Sovereign_Credit_Analysis.html" >← 前へ</a>
+  <span class="title">15.03 | Non-Sovereign Credit Risk</span>
+  <a href="courses_1869_modules_items_146741_Glossary_Credit_Analysis_for_Government_Issuers.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

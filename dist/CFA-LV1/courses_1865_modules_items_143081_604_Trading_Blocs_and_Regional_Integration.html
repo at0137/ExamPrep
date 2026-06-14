@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.04 | Trading Blocs and Regional Integration</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2414-R-s04-R-1" title="6.04 | Trading Blocs and Regional Integration">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：国際貿易 6.04 | 貿易ブロックと地域統合</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">貿易ブロック（trading blocs）、共通市場（common markets）、経済同盟（economic unions）の動機および利点を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>近年、貿易ブロックまたは地域貿易協定（regional trading agreements, RTA）は急増している。地域統合の重要な例としては、米国・メキシコ・カナダ協定（United States-Mexico-Canada Agreement, USMCA）や欧州連合（European Union, EU）がある。地域貿易ブロックとは、加盟国間の貿易および生産要素の移動に対する障壁を削減し、段階的に撤廃することに合意した国々の集まりである。非加盟国に対して共通の貿易障壁を持つ場合もあれば、持たない場合もある。</p>
+<section id="CFA2414-R-s04-01-01">
+<h3 class="dp-heading">貿易ブロックの種類（Types Of Trading Blocs）</h3>
+<p>地域統合の程度に応じて、さまざまな種類の地域貿易ブロックが存在する。自由貿易地域（free trade areas, FTA）は最も一般的な形態の一つであり、加盟国間の財およびサービスの流れに対するすべての障壁が撤廃される。しかし、各国は非加盟国に対して独自の政策を維持する。米国、カナダ、メキシコ間のUSMCAはFTAの例である。関税同盟（customs union）はFTAを拡張したもので、加盟国間の財・サービスの自由な移動に加えて、非加盟国に対する共通の貿易政策を導入する。1947年にはベルギー（Belgium）、オランダ（Netherlands）、ルクセンブルク（Luxembourg）（ベネルクス, Benelux）が関税同盟を形成し、1958年に欧州共同体（European Community）の一部となった。</p>
+<p>共通市場（common market）は、関税同盟のすべての要素に加えて、生産要素の自由な移動を認めることで統合をさらに進めたものである。アルゼンチン（Argentina）、ブラジル（Brazil）、パラグアイ（Paraguay）、ウルグアイ（Uruguay）からなる南部共同市場（Southern Cone Common Market, MERCOSUR）は共通市場の例である。経済同盟（economic union）はさらに高度な統合を必要とし、共通市場のすべての要素に加えて、共通の経済制度および政策調整を伴う。欧州共同体は1993年に欧州連合へと発展した。さらに、経済同盟の加盟国が共通通貨を採用する場合、それは通貨同盟（monetary union）でもある。例えばユーロ（euro）の導入により、EU加盟国のうち19か国は通貨同盟も形成した。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2414-R-s04-EXM-1-3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例3 貿易ブロック（Example 3 Trading Blocs）</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2414-R-s04-Q1">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>チリ（Chile）とオーストラリア（Australia）は互いに自由貿易を行っているが、他国からの輸入に対してはそれぞれ独自の貿易障壁を維持している。この場合、チリとオーストラリアは次のどれに該当するか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 自由貿易地域（FTA）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正解。チリとオーストラリアは他の貿易相手国に対する共通の貿易政策を持たないため関税同盟ではない（Cは誤り）。共通市場や経済同盟はさらに高度な統合を伴う（BおよびDは誤り）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 経済同盟（economic union）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正解。チリとオーストラリアは他の貿易相手国に対する共通の貿易政策を持たないため関税同盟ではない（Cは誤り）。共通市場や経済同盟はさらに高度な統合を伴う（BおよびDは誤り）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 関税同盟（customs union）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正解。チリとオーストラリアは他の貿易相手国に対する共通の貿易政策を持たないため関税同盟ではない（Cは誤り）。共通市場や経済同盟はさらに高度な統合を伴う（BおよびDは誤り）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>D. 共通市場（common market）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正解。チリとオーストラリアは他の貿易相手国に対する共通の貿易政策を持たないため関税同盟ではない（Cは誤り）。共通市場や経済同盟はさらに高度な統合を伴う（BおよびDは誤り）。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2414-R-s04-Q2">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>加盟国からの輸入に対するすべての関税を撤廃し、非加盟国に対して共通の対外関税を持つが、それ以上の経済統合は行わないRTAは何と呼ばれるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 自由貿易地域（FTA）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解。基本的なFTAは共通の対外関税を伴わない（Aは誤り）。一方、共通市場や経済同盟は対外関税以上の統合を含む（BおよびDは誤り）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 経済同盟（economic union）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解。基本的なFTAは共通の対外関税を伴わない（Aは誤り）。一方、共通市場や経済同盟は対外関税以上の統合を含む（BおよびDは誤り）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 関税同盟（customs union）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解。基本的なFTAは共通の対外関税を伴わない（Aは誤り）。一方、共通市場や経済同盟は対外関税以上の統合を含む（BおよびDは誤り）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>D. 共通市場（common market）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正解。基本的なFTAは共通の対外関税を伴わない（Aは誤り）。一方、共通市場や経済同盟は対外関税以上の統合を含む（BおよびDは誤り）。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA2414-R-s04-01-02">
+<h3 class="dp-heading">地域統合（Regional Integration）</h3>
+<p>地域統合が普及している理由は、少数の国の間で貿易および投資障壁を撤廃する方が、世界貿易機関（World Trade Organization, WTO）における多国間交渉よりも政治的対立が少なく、迅速に進めやすいためである。WTOは国家間のグローバル貿易ルールを扱う交渉の場であり、加盟国は貿易紛争を解決することができる。WTOによる貿易交渉では、発展途上国にとって重要な問題（貿易政策改革の実施コスト、先進国市場への農産品アクセス、安価な医薬品へのアクセスなど）を巡る対立が含まれてきた。数十年にわたる交渉にもかかわらず、これらの問題については限定的な進展しか見られていない。そのため、より小規模な枠組みでの二国間および多国間の貿易自由化への関心が再び高まっている。政策調整や調和も、少数の国の間の方が容易である。地域統合は、より自由な貿易への動きと捉えることができる。</p>
+<p>地域統合は、非加盟国に対してよりも加盟国に優遇措置を与え、貿易パターンの変化をもたらす可能性がある。加盟国は互いに貿易障壁を削減または撤廃することでより自由な貿易へと移行し、資源配分の効率性が向上する。一方で、地域統合は、依然として貿易障壁に直面する低コストの非加盟国から、高コストであるが障壁のない加盟国へと貿易および生産が移転する可能性もある。この移転は資源配分の非効率を引き起こし、厚生を低下させる可能性がある。したがって、関税同盟の形成によって生じる2つの静学的効果は、貿易創出（trade creation）と貿易転換（trade diversion）である。</p>
+<section id="CFA2414-R-s04-01-02-01">
+<h4>貿易創出と貿易転換（Trade Creation and Diversion）</h4>
+<p>貿易創出は、地域統合によって高コストの国内生産が他の加盟国からの低コスト輸入に置き換えられる場合に生じる。例えば、架空の2国QualorとVulcanを考える。Qualorは年間1,000万枚のシャツを生産し、低コストのVulcanから200万枚を輸入している。QualorはVulcanからの輸入に10％の関税を課している。その後、QualorとVulcanは関税同盟を形成する。Qualorの生産は700万枚に減少し、Vulcanからの輸入は1,100万枚に増加する。Qualorの国内生産の減少（1,000万枚から700万枚）は、低コスト生産者であるVulcanからの追加輸入300万枚で置き換えられる。この部分が貿易創出である。残りの追加輸入600万枚は、関税同盟の形成により価格が低下したことで消費が増加したことを示す。</p>
+<p>貿易転換は、非加盟国からの低コスト輸入が、加盟国からのより高コスト輸入に置き換えられる場合に生じる。前述の例で、Qualorが当初VulcanとAureliaの両方からの輸入に10％の関税を課しているとする。Aureliaは最も低コストの生産者であるため、Qualorは当初VulcanではなくAureliaから200万枚を輸入する。その後、QualorとVulcanが関税同盟を形成し、Vulcanからの輸入関税は撤廃されるが、Aureliaには10％の関税が維持される。この場合、Vulcanからの自由貿易価格がAureliaからの価格よりも低くなれば、貿易転換が生じる可能性がある。Aureliaは依然として最も低コストの生産者であるが、関税のために価格が高くなり、Qualorは非加盟国Aureliaからの輸入を停止し、加盟国Vulcanから輸入するようになる。RTAでは貿易創出と貿易転換の両方が生じ得る。貿易創出が貿易転換を上回る場合、純厚生効果は正となるが、常にそうであるとは限らないとの懸念がある。</p>
+</section>
+<section id="CFA2414-R-s04-01-02-02">
+<h4>地域貿易ブロックのコストと便益（Costs and Benefits of Regional Trading Blocs）</h4>
+<p>自由貿易に帰される便益―比較優位（comparative advantage）に基づくより高度な専門化、外国企業との競争による独占力の低下、より大きな市場規模による規模の経済（economies of scale）、経験による学習（learning by doing）、技術移転（technology transfer）、知識の波及（knowledge spillovers）、より多くの対外投資（foreign investment）、および世界価格でのより高品質な中間投入財―は、地域貿易ブロックにも当てはまる。さらに、地域貿易ブロック加盟国間の相互依存を高めることは、紛争の可能性を低下させる。また、加盟国は単独ではなく共同で行動することで、世界経済においてより大きな交渉力および政治的影響力を持つ。</p>
+<p>経済協力開発機構（Organisation for Economic Co-operation and Development, OECD）の加盟国の間では、国境を越えた成長の波及が顕著に見られる。これらの国々は、グループとしても地理的地域内でも高度に統合されているためである。統合された国々の長期的成長は、加盟国が互いの市場によりアクセスしやすくなるため、相互に関連している。あるRTA加盟国の強い成長は、他の加盟国の成長にも好影響を与える可能性がある。RTAはまた、良好な政策の恩恵を高め、生活水準の収束をもたらす。例えば、サハラ以南アフリカ（Sub-Saharan Africa）諸国では、RTAの不備や輸送・通信インフラの不足により統合が進んでいないため、成長の波及効果ははるかに小さいと考えられる。ある研究では、内陸国であり近隣諸国および世界経済と完全に統合されているスイス（Switzerland）が、中央アフリカ共和国（Central African Republic）と同程度の波及効果しか享受できなかった場合、1970年から2000年の実質GDPの累積損失がどの程度になるかを推計した。その結果、2000年のスイスの一人当たりGDPは9.3％低下していたとされる。累積GDP損失は3,340億米ドル（2000年の実質米ドル）であり、2000年のスイスの実質GDPの162％に相当する。</p>
+<p>地域統合には多くの利点がある一方で、一部の集団にはコストを課す可能性がある。例えば、米国（United States）では、貿易制限の緩和、特にメキシコ（Mexico）からの低技能労働集約型輸入が低技能労働者に悪影響を与えるとの懸念があった。輸入競争により非効率な企業が市場から退出し、それらの企業の労働者は新たな職を探す間、少なくとも一時的に失業するという調整コストが発生した。しかし、生き残った企業は生産性を向上させ、米国の消費者はメキシコから輸入される製品の多様性の増加によって恩恵を受けた。ある研究では、メキシコから米国への輸出製品の種類は、すべての産業において年平均2.2％増加したと推計されている。1994年から2002年にかけて、USMCAは米国内で年間約54億ドルの民間コストをもたらしたが、メキシコからの輸入品の多様性の増加による年間平均55億ドルの厚生増加によって相殺された。製品の多様性の増加による消費者利益は輸入が続く限り持続し、一方で雇用喪失に伴う調整コストは時間とともに減少した。2003年には、メキシコからの製品多様性の増加による利益は110億ドルに達し、54億ドルの調整コストを大きく上回った。</p>
+<p>しかし、地域統合によって職を失った労働者は、同等の賃金の職を見つけられない場合や長期間失業した場合、長期的な損失を被る可能性がある点に留意することが重要である。例えば、米国の自動車産業の大幅な縮小は輸入競争だけが原因ではないが、この産業における雇用への影響は恒久的である可能性が高く、特に高齢の元自動車労働者の多くは同等の職を見つけられない可能性がある。</p>
+<p>国家主権（national sovereignty）に関する懸念も、特に大国と小国が同一ブロックに属する場合、FTAの形成を阻害する要因となっている。南アジア地域ブロックの提案は、この地域で最大級の経済規模を持つインド（India）の役割を巡る問題に直面している。</p>
+</section>
+<section id="CFA2414-R-s04-01-02-03">
+<h4>より深い統合への課題（Challenges to Deeper Integration）</h4>
+<p>RTAの形成およびFTAから関税同盟（customs union）、共通市場（common market）、経済同盟（economic union）への発展には、少なくとも二つの課題がある。第一に、文化的差異や歴史的要因（戦争や紛争など）が統合の社会的・政治的プロセスを複雑にする可能性がある。第二に、高度な経済統合を維持することは、加盟国が独自の経済・社会政策を実施する自由度を制限する。自由貿易や労働・資本の移動は、国内の相対価格や数量を統制する政策を妨げる傾向があり、また国際収支や財政の信認に関する制約は、各国が異なるマクロ経済政策を採用する余地を制限する。この問題は、金融政策が各国の管理下にない通貨同盟（monetary union）の場合に特に顕著であり、為替レートの切り下げや切り上げによる調整も利用できない。持続的な不均衡が生じると、同様の問題を抱える他国へ波及する危機につながる可能性がある。2010年のギリシャ（Greece）の財政危機はその一例である。2010年5月、スタンダード・アンド・プアーズ（Standard &amp; Poor’s）はギリシャ国債の信用格付けを投資適格からジャンク級へ引き下げ、スペイン（Spain）およびポルトガル（Portugal）の国債も格下げした。これらの国々は高い財政赤字と低いGDP成長の組み合わせに苦しんでいた。格下げにより、特にギリシャの債務不履行への懸念が高まり、EUのみならず米国（United States）やアジアにも経済的混乱が波及するとの懸念が生じた。EUと国際通貨基金（International Monetary Fund, IMF）は2010年5月にギリシャに対して1,450億ドル（1,100億ユーロ）の救済措置で合意し、同年11月にはアイルランド（Ireland）にも約1,130億ドル（850億ユーロ）の支援を提供した。</p>
+</section>
+<section id="CFA2414-R-s04-01-02-04">
+<h4>投資への含意（Investment Implications）</h4>
+<p>地域統合は、貿易および投資の新たな機会を提供するため、投資の観点から重要である。大規模な単一地域市場では事業コストが低下し、企業は規模の経済の恩恵を受けることができる。ただし、嗜好、文化、競争条件の違いは依然として存在し、これがブロック内投資の潜在的利益を制限する可能性がある。また、統合の程度や制度設計によっては、加盟国の一国が直面する問題が他国へ迅速に波及する可能性がある。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2414-R-s04-B-1-a">
+<h5 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"> </i>
+               Question Set</h5>
+<section>
+<p>Bagopia、Cropland、TechnopiaはRTAへの参加を決定した。第一段階としてFTAを締結し、数年後、共通市場の形成を決定した。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>FTAは加盟国の輸出企業にとって、投資対象としての魅力を高めるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>第一段階では、RTA加盟国間で財およびサービスの自由な移動が可能となるため、これはFTAと呼ばれる。貿易障壁による追加コストなしに加盟国市場にアクセスできるため、輸出企業にとって投資魅力が高まる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>共通市場はFTAと比べて、これらの国で事業を行う企業にどのような影響を与えるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>FTAとは異なり、共通市場は労働や資本などの生産要素の自由な移動を認める。FTAと同様に、大規模市場へのアクセスと財・サービスの自由な移動を提供するが、比較優位に基づいて生産拠点の配置や部品調達を最適化できるため、より高い収益機会を企業にもたらす可能性がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FreeTradeAreasContent">
+<p>加盟国間の財およびサービスの流れに対するすべての障壁が撤廃された、最も一般的な地域統合の形態の一つ。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CustomsUnionContent">
+<p>自由貿易地域（FTA）を拡張し、加盟国間の財・サービスの自由な移動に加えて、非加盟国に対する共通の貿易政策を導入するもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CommonMarketContent">
+<p>関税同盟のすべての要素を含み、さらに生産要素の自由な移動を認める経済統合の段階。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="EconomicUnionContent">
+<p>共通市場のすべての要素を含み、さらに共通の経済制度および政策調整を必要とするもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MonetaryUnionContent">
+<p>加盟国が共通通貨を採用する経済同盟。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TradeCreationContent">
+<p>地域統合により、高コストの国内生産が他の加盟国からの低コスト輸入に置き換えられる場合。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TradeDiversionContent">
+<p>地域統合により、非加盟国からの低コスト輸入が、加盟国からのより高コスト輸入に置き換えられる場合。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1865_modules_items_143071_603_Trade_Restrictions_and_AgreementsTariffs_Quotas_and_Export_Subsidies.html" >← 前へ</a>
+  <span class="title">6.04 | Trading Blocs and Regional Integration</span>
+  <a href="courses_1865_modules_items_143095_Glossary_International_Trade.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

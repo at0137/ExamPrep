@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.13 | Validity Instructions and Clearing Instructions</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s13" title="1.13 | Validity Instructions and Clearing Instructions">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.13｜有効期限指示（Validity Instructions）と決済指示（Clearing Instructions）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">執行指示（execution）、有効期限指示（validity）、および決済指示（clearing instructions）を比較せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>有効期限指示（validity instructions）は、注文がいつ約定可能かを示す。最も一般的なのはデイ注文（day order）であり、これは発注された当日のみ有効である。営業終了までに約定しなければ未約定のまま失効する。</p>
+<p>有効期限無期限注文（good-till-cancelled orders, GTC）は、その名の通り取消されるまで有効である。ただし実務では、顧客が忘れた注文を約定させないよう、ブローカーが数カ月などの期限を設けることが多い。</p>
+<p>即時または取消注文（immediate or cancel orders, IOC）は、ブローカーまたは取引所に受領された時点でのみ有効である。全部または一部が即時に約定できない場合、直ちに取消される。市場によってはフィル・オア・キル（fill or kill）とも呼ばれる。アルゴリズム取引では、隠れた流動性（hidden liquidity）を探索するために多数のIOC注文が発行される。</p>
+<p>引け成り注文（good-on-close orders）は取引終了時にのみ約定可能である。多くは成行注文であり、マーケット・オン・クローズ注文（market-on-close orders）とも呼ばれる。ミューチュアルファンド（mutual funds）は基準価額を終値で評価するため、この価格で取引することを好む。寄付き注文（good-on-open orders）も同様に利用される。</p>
+<section id="CFA0161-R-s13-01">
+<h3 class="dp-heading">ストップ注文（Stop Orders）</h3>
+<p>ストップ注文（stop order）は、トレーダーがストップ価格（stop price）条件を指定した注文である。この条件が満たされるまで注文は約定されない。売り注文の場合、価格がストップ価格以下で取引されるまで執行は保留される。その後、条件が満たされると、他の執行指示に従って有効となる。買い注文の場合は、価格がストップ価格以上になったときに有効となる。</p>
+<p>ストップ注文はしばしばストップロス注文（stop-loss orders）と呼ばれる。例えば40で購入した株を30で損切りしたい場合、「GTC、ストップ30、成行売り」を発注する。価格が30以下になると成行注文が発動するが、急落時には30より低い価格で約定する可能性がある。これを避けたい場合は「GTC、ストップ30、指値25売り」のように指値を組み合わせる。</p>
+<p>30で確実に売却したい場合は、行使価格30のプットオプション（put option）を購入する。オプションは、行使価格での約定を保証する指値注文とみなせる。同様に、ショートポジションの損失制限にはストップ買い注文やコールオプション（call option）を用いる。</p>
+<p>ポートフォリオ・マネージャーは、割安と判断しつつも市場の確認を求める場合、ストップ買い注文を使う。例えば株価50人民元（RMB）で100人民元の価値があると考え、65人民元を超えたら他の投資家も評価していると判断する場合、「GTC、ストップ65人民元、指値100人民元買い」を出す。ただし市場依存が過度だとCFA行動基準（Standard of Professional Conduct V.A.2）に抵触する可能性がある。</p>
+<p>ストップ売りは下落時に、ストップ買いは上昇時に発動するため、市場のモメンタム（momentum）を増幅する傾向がある。そのため約定価格は不利になりやすい。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM23">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例23 指値とストップ指示</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>指値とストップ指示の違いは何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s13-01-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>両者とも価格を指定するが役割は異なる。指値価格（limit price）は許容される取引価格の上限・下限を定める。買いは指値以下、売りは指値以上でのみ約定する。</p>
+<p>一方、ストップ価格（stop price）は注文がいつ有効になるかを定める。買いは価格がストップ以上になったとき、売りはストップ以下になったときに執行可能となる。</p>
+<p>両者とも注文の遅延や未約定を引き起こす可能性がある。指値注文は条件価格に到達しなければ約定せず、ストップ注文はストップ価格に到達しなければ発動しない。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA0161-R-s13-02">
+<h3 class="dp-heading">決済指示（Clearing Instructions）</h3>
+<p>決済指示は、取引の最終決済をどのように行うかをブローカーや取引所に指示するものである。通常は個別注文ではなく常設指示（standing instructions）として設定される。小口取引ではブローカーが、機関投資家ではカストディアン（custodian）や別のブローカーが決済を担う。取引執行と決済を別ブローカーで行う場合、最初のブローカーが取引を引き渡す（give up the trade）と言い、後者はプライムブローカー（prime broker）と呼ばれる。</p>
+<p>証券売却注文ではロング売りかショート売りかの指定が必要である。ロング売りでは証券の引渡し可能性を確認し、ショート売りでは証券の借入または借入可能性の確認が必要である。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DayOrderContent">
+<p>発注当日のみ有効で、営業終了までに約定しなければ失効する注文。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="GoodTillCancelledOrderContent">
+<p>発注者が取消すまで（または一定期間経過まで）有効な注文。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ImmediateOrCancelOrderContent">
+<p>受領時のみ有効で、即時に全部または一部が約定しなければ取消される注文。フィル・オア・キル（fill or kill）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FillOrKillContent">
+<p>即時または取消注文（immediate or cancel order）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="GoodOnCloseContent">
+<p>取引終了時にのみ約定可能とする執行指示。マーケット・オン・クローズ（market-on-close）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MarketOnCloseContent">
+<p>取引終了時にのみ約定可能とする執行指示。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="GoodOnOpenContent">
+<p>取引開始時にのみ約定可能とする執行指示。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="StopOrderContent">
+<p>ストップ価格条件が指定された注文。ストップロス注文（stop-loss order）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="StopLossOrderContent">
+<p>ストップ注文（stop order）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ClearingInstructionsContent">
+<p>取引の最終決済（clearing）をどのように行うかを示す指示。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142177_112_Orders_and_Execution_Instructions.html" >← 前へ</a>
+  <span class="title">1.13 | Validity Instructions and Clearing Instructions</span>
+  <a href="courses_1868_modules_items_142182_114_Primary_Security_Markets.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

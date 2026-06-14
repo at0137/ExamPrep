@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0.07 | Derivatives Overview</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="dp-wrapper"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール0: 学習開始 0.07 | デリバティブ(Derivatives)の概要</h2>
+</header>
+<div class="dp-content-block content-block">
+<p>デリバティブ(Derivatives)は、原資産(underlying asset)または指数(index)の価値に基づく金融契約に関するものであり、その特徴と金融商品(instruments)、利点(benefits)、リスク(risks)と利用方法(uses)、裁定取引(arbitrage)とキャリーコスト(cost of carry)、フォワード(forwards)、先物(futures)、スワップ(swaps)、オプション(options)の価格設定(pricing)と評価(valuation)、プット・コール・パリティ(put-call parity)を用いた複製(replication)、および二項モデル(binomial model)を用いた評価を扱います。</p>
+<h2>学習モジュール(Learning Modules)とレッスン(Lessons)</h2>
+<div class="dp-panels-wrapper dp-expander-default dp-no-expander-controls">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">デリバティブ金融商品(Derivative Instruments)とデリバティブ市場(Derivative Market)の特徴</h3>
+<div class="dp-panel-content">
+<p>レッスン1: デリバティブの特徴(Derivative Features)</p>
+<p>レッスン2: デリバティブの原資産(Derivative Underlyings)</p>
+<p>レッスン3: デリバティブ市場(Derivative Markets)</p>
+</div>
+</div>
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">フォワードコミットメント(Forward Commitment)と条件付き請求権(Contingent Claim)の特徴と金融商品</h3>
+<div class="dp-panel-content">
+<p>レッスン1: フォワード(Forwards)、先物(Futures)、スワップ(Swaps)</p>
+<p>レッスン2: 先物(Futures)</p>
+<p>レッスン3: スワップ(Swaps)</p>
+<p>レッスン4: オプション(Options)</p>
+<p>レッスン5: クレジットデリバティブ(Credit Derivatives)</p>
+<p>レッスン6: フォワードコミットメント(Forward Commitments) vs. 条件付き請求権(Contingent Claims)</p>
+</div>
+</div>
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">デリバティブの利点、リスク、および発行者(Issuer)と投資家(Investor)の利用</h3>
+<div class="dp-panel-content">
+<p>レッスン1: デリバティブの利点(Derivative Benefits)</p>
+<p>レッスン2: デリバティブのリスク(Derivative Risks)</p>
+<p>レッスン3: 発行者によるデリバティブの利用(Issuer Use of Derivatives)</p>
+<p>レッスン4: 投資家によるデリバティブの利用(Investor Use of Derivatives)</p>
+</div>
+</div>
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">デリバティブ価格設定における裁定取引、複製、およびキャリーコスト</h3>
+<div class="dp-panel-content">
+<p>レッスン1: 裁定取引(Arbitrage)</p>
+<p>レッスン2: 複製(Replication)</p>
+<p>レッスン3: 原資産保有に関連するコストと利点(Costs and Benefits Associated with Owning the Underlying)</p>
+</div>
+</div>
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">フォワード契約(Forward Contracts)および異なる満期を持つ原資産の価格設定と評価</h3>
+<div class="dp-panel-content">
+<p>レッスン1: フォワード契約の価格設定と評価(Pricing and Valuation of Forward Contracts)</p>
+<p>レッスン2: 金利フォワード契約(Interest Rate Forward Contracts)の価格設定と評価</p>
+</div>
+</div>
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">先物契約(Futures Contracts)の価格設定と評価</h3>
+<div class="dp-panel-content">
+<p>レッスン1: 先物契約の初期価格(Pricing of Futures Contracts at Inception)</p>
+<p>レッスン2: MTM評価(Mark-to-Market Valuation): フォワード(Forwards) vs. 先物(Futures)</p>
+<p>レッスン3: 金利先物(Interest Rate Futures) vs. フォワード契約(Forward Contracts)</p>
+<p>レッスン4: フォワード価格と先物価格の差異(Forward and Futures Price Differences)</p>
+<p>レッスン5: 金利フォワード価格と金利先物価格の差異(Interest Rate Forward and Futures Price Differences)</p>
+<p>レッスン6: OTCデリバティブの中央清算(Central Clearing)の影響</p>
+</div>
+</div>
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">スワップ(Swaps)の価格設定と評価</h3>
+<div class="dp-panel-content">
+<p>レッスン1: スワップ(Swaps) vs. フォワード(Forwards)</p>
+<p>レッスン2: スワップの価値と価格(Swap Values and Prices)</p>
+</div>
+</div>
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">オプション(Options)の価格設定と評価</h3>
+<div class="dp-panel-content">
+<p>レッスン1: 原資産スポット価格(Underlying Spot Price)に対するオプション価値(Option Value)</p>
+<p>レッスン2: オプション行使価値(Option Exercise Value)</p>
+<p>レッスン3: オプションのインザマネー度(Option Moneyness)</p>
+<p>レッスン4: オプション時間価値(Option Time Value)</p>
+<p>レッスン5: 裁定取引(Arbitrage)</p>
+<p>レッスン6: 複製(Replication)</p>
+<p>レッスン7: オプション価値に影響する要因(Factors Affecting Option Value)</p>
+</div>
+</div>
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">プット・コール・パリティ(Put-Call Parity)を用いたオプション複製(Option Replication)</h3>
+<div class="dp-panel-content">
+<p>レッスン1: プット・コール・パリティ(Put-Call Parity)</p>
+<p>レッスン2: プット・コール・パリティに基づくオプション戦略(Option Strategies Based on Put-Call Parity)</p>
+<p>レッスン3: プット・コール・フォワード・パリティ(Put-Call Forward Parity)とオプションの応用(Option Applications)</p>
+<p>レッスン4: プット・コール・フォワード・パリティ(Put-Call Forward Parity)</p>
+<p>レッスン5: オプション・プット・コール・パリティの応用: 企業価値(Firm Value)</p>
+</div>
+</div>
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading">ワンピリオド二項モデル(One-Period Binomial Model)を用いたデリバティブ評価(Derivative Valuing)</h3>
+<div class="dp-panel-content">
+<p>レッスン1: 二項評価(Binomial Valuation)</p>
+<p>レッスン2: 二項モデル(The Binomial Model)</p>
+<p>レッスン3: ヨーロピアンコールオプション(European Call Option)の価格設定(Pricing)</p>
+<p>レッスン4: リスク中立性(Risk Neutrality)</p>
+</div>
+</div>
+</div>
+<p> </p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1870_modules_items_145199_006_Traits_of_Successful_Candidates.html" >← 前へ</a>
+  <span class="title">0.07 | Derivatives Overview</span>
+  <a href="courses_1870_modules_items_145204_008_Derivatives_Glossary.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

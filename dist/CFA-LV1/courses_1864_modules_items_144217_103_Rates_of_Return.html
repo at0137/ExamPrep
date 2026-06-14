@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.03 | Rates of Return</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2401-R-s03-R-1" title="1.03 | Rates of Return"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：利率とリターン（Rates and Returns）1.03｜リターン率（Rates of Return）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">時間を通じたリターン測定のさまざまな方法を計算および解釈し、それぞれの適切な用途を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>金融資産（financial assets）は通常、リターンとリスクの特性によって定義される。これら2つの側面に基づく比較は、利用可能なすべての資産の中からポートフォリオを構築するプロセスを簡素化する。本レッスンでは、さまざまなリターン指標を計算し、評価し、比較する。</p>
+<p>金融資産は通常、投資家に対して2種類のリターンをもたらす。第一に、現金配当（cash dividends）や利息支払い（interest payments）による定期的なインカムである。第二に、金融資産の価格が上昇または下落することで生じるキャピタルゲインまたはロスである。</p>
+<p>一部の金融資産は、これらのうち1つのメカニズムによってのみリターンを提供する。例えば、無配当株（non-dividend-paying stocks）の投資家は、価格変動からのみリターンを得る。また、他の資産は定期的なインカムのみを生み出す。例えば、確定給付型年金（defined benefit pension plans）や年金（retirement annuities）は、受給者の生存期間にわたりインカム支払いを行う。</p>
+<section id="CFA2401-R-s03-01-01">
+<h3 class="dp-heading">保有期間収益率（Holding Period Return）</h3>
+<p>リターンは単一期間または複数期間で測定することができる。単一期間のリターンは計算方法が1つしかないため単純であるが、複数期間のリターンはさまざまな方法で計算できるため、その違いを理解して混乱を避けることが重要である。</p>
+<p>保有期間収益率（holding period return, R）は、特定の1期間に資産を保有することで得られるリターンである。その期間は1日、1週間、1か月、5年、または任意の期間である。例えば、資産（債券や株式など）を現在（t＝0）に100で購入し、後に（t＝1）に105で売却し、配当やその他のインカムがない場合、保有期間収益率は5％［(105−100)/100］である。もし当該資産がt＝1に2単位のインカムを支払う場合、トータルリターンは7％となる。このリターンは、価格をP、インカムをIとすると、以下の数式で一般化できる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-2"><math> <semantics> <mrow> <mi>R</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mfenced> <mrow> <msub> <mi>P</mi> <mn>1</mn> </msub> <mo>−</mo> <msub> <mi>P</mi> <mn>0</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msub> <mi>I</mi> <mn>1</mn> </msub> </mrow> <mrow> <msub> <mi>P</mi> <mn>0</mn> </msub> </mrow> </mfrac> </mstyle> </mrow> </semantics> </math> ,<span class="cfa-curriculum-display-formula-number">1</span></div>
+<p>ここで下付き文字は価格またはインカムの時点を示し、t＝0は期間の開始、t＝1は期間の終了を表す。以下の2点が重要である。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2401-R-s03-L1">
+<li class="cfa-curriculum-list-item">本例では、キャピタルゲインは5％、インカム利回り（income yield）は2％であった。説明を簡単にするため、インカムはt＝1に支払われると仮定した。もしインカムがt＝1以前に受け取られていた場合、その期間の残りで再投資することにより、保有期間収益率はより高くなった可能性がある。</li>
+<li class="cfa-curriculum-list-item">リターンは小数（0.07）、分数（7/100）、または百分率（7％）で表すことができ、いずれも同じ意味である。</li>
+</ul>
+<p>保有期間収益率は1年を超える期間についても計算できる。例えば、アナリストは3つの年次リターンから3年間の保有期間収益率を計算する必要がある場合がある。この場合、3年間の保有期間収益率は3つの年次リターンを複利計算することで求められる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-">R = [(1 + R<sub>1</sub>) × (1 + R<sub>2</sub>) × (1 + R<sub>3</sub>)] − 1,</div>
+<p>ここで R₁、R₂、R₃ は3つの年次リターンである。</p>
+</section>
+<section id="CFA2401-R-s03-01-02">
+<h3 class="dp-heading">算術平均リターン（Arithmetic or Mean Return）</h3>
+<p>多くの保有期間収益率は日次、月次、または年次で報告される。資産が複数期間のリターンを持つ場合、比較や理解を容易にするためにリターンを共通の期間に正規化する必要がある。複数期間にわたるリターンを集約する方法はいくつか存在する。本節の残りでは、平均リターンのさまざまな計算方法を示し、それぞれの適用可能性について説明する。</p>
+<p>The simplest way to compute a summary measure for returns across multiple periods is to take a simple arithmetic average of the holding period returns. Thus, three annual returns of −50 percent, 35 percent, and 27 percent will give us an average of 4 percent per year = <span class="cfa-curriculum-display-inline-formula"> <math id="m2"> <mrow> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mo>−</mo> <mn>50</mn> <mi>%</mi> <mo>+</mo> <mn>35</mn> <mi>%</mi> <mo>+</mo> <mn>27</mn> <mi>%</mi> </mrow> <mn>3</mn> </mfrac> </mstyle> </mrow> </mfenced> </mrow> </math> </span>. The arithmetic average return is easy to compute and has known statistical properties.</p>
+<p>In general, the arithmetic or mean return is denoted by <span class="cfa-curriculum-display-inline-formula"> <math id="m3"> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>i</mi> </msub> </mrow> </math> </span> and given by the following equation for asset <em>i</em>, where <em>R<sub>it</sub> </em> is the return in period <em>t</em> and <em>T</em> is the total number of periods:</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-3"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>i</mi> </msub> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mn>1</mn> </mrow> </msub> <mo>+</mo> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mn>2</mn> </mrow> </msub> <mo>+</mo> <mo>…</mo> <mo>+</mo> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mo>,</mo> <mi>T</mi> <mo>−</mo> <mn>1</mn> </mrow> </msub> <mo>+</mo> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mi>T</mi> </mrow> </msub> </mrow> <mi>T</mi> </mfrac> </mstyle> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mi>T</mi> </mfrac> </mstyle> <munderover> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mi>t</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>T</mi> </munderover> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mi>t</mi> </mrow> </msub> </mrow> </semantics> </math>.<span class="cfa-curriculum-display-formula-number">2</span></div>
+</section>
+<section id="CFA2401-R-s03-01-03">
+<h3 class="dp-heading">幾何平均リターン（Geometric Mean Return）</h3>
+<p>算術平均リターンは、各期間の期首投資額が同じであると仮定する。しかし、投資ポートフォリオでは、キャッシュフローの出入りがなくても基準となる金額は毎年変化する。前期の収益は次期の期首価値に加えられ、その収益は次期のリターンによって複利的に増加する。このような複利効果を考慮するために、幾何平均リターンを用いることができる。</p>
+<p>A geometric mean return provides a more accurate representation of the growth in portfolio value over a given time period than the arithmetic mean return. In general, the geometric mean return is denoted by <span class="cfa-curriculum-display-inline-formula"> <math id="m5"> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mrow> <mi>G</mi> <mi>i</mi> </mrow> </msub> </mrow> </math> </span> and given by the following equation for asset <em>i</em>:</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___1"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mrow> <mi>G</mi> <mi>i</mi> </mrow> </msub> <mo>=</mo> <mroot> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mn>1</mn> </mrow> </msub> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mn>2</mn> </mrow> </msub> </mrow> </mfenced> <mo>×</mo> <mo>…</mo> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mo>,</mo> <mi>T</mi> <mo>−</mo> <mn>1</mn> </mrow> </msub> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mi>T</mi> </mrow> </msub> </mrow> </mfenced> </mrow> <mi>T</mi> </mroot> <mo>−</mo> <mn>1</mn> </mrow> </semantics> </math> <span class="cfa-curriculum-display-formula-number">3</span></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-4"><math> <semantics> <mrow> <mo>=</mo> <msup> <mrow> <mroot> <mrow> <munderover> <mstyle displaystyle="true" mathsize="140%"> <mo>∏</mo> </mstyle> <mrow> <mi>t</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>T</mi> </munderover> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>R</mi> <mi>t</mi> </msub> </mrow> </mfenced> </mrow> <mi>T</mi> </mroot> </mrow> <mrow></mrow> </msup> <mo>−</mo> <mn>1</mn> <mo> </mo> </mrow> </semantics> </math>,</div>
+<p>ここで R_t は期間 t のリターン、T は期間数である。</p>
+<p>前節の例では、算術平均は4.00％であった。同じ3つの年次リターンを用いて、式4により幾何平均リターンを計算することができる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___2"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mrow> <mi>G</mi> <mi>i</mi> </mrow> </msub> <mo>=</mo> <mroot> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>−</mo> <mn>0.50</mn> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.35</mn> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.27</mn> </mrow> </mfenced> </mrow> <mn>3</mn> </mroot> <mo>−</mo> <mn>1</mn> <mo>=</mo> <mtext> </mtext> <mo>−</mo> <mn>0.0500</mn> </mrow> </semantics> </math>.</div>
+<p>図表2（Exhibit 2）は、各年の実際のリターンおよび各年末の残高を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s03-EXH-1-2">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 2<span style="display: block;">Portfolio Value and Performance</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">各年の実際のリターン（％）（Actual Return for the Year (%)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年末残高（Year-End Amount）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">算術平均4％を用いた年末残高（Year-End Amount Using Arithmetic Return of 4%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">幾何平均−5％を用いた年末残高（Year-End Amount Using Geometric Return of −5%）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年0（Year 0）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.0000ユーロ（EUR1.0000）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.0000ユーロ</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.0000ユーロ</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年1（Year 1）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−50</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.5000</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.0400</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.9500</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年2（Year 2）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">35</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.6750</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.0816</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.9025</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年3（Year 3）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">27</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.8573</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.1249</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.8574</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>初期投資額1.0000ユーロ（EUR1.0000）から開始すると、図表2（Exhibit 2）の第4列に示されているように、3年間の期末残高は0.8574ユーロとなる。特に断りがない限り、前年末の残高に対してリターンを得るため、リターンは複利計算される点に注意する。すなわち、2年目には初期投資額1.0000ユーロではなく、1年目末の残高である0.5000ユーロに対して35％のリターンを得ることになる。ここで、幾何平均リターン（geometric return）を用いて計算した3年後の残高と、先の例で用いた年率4％の算術平均リターン（arithmetic mean return）を用いて計算した残高を比較する。算術平均リターンを用いた場合の期末価値は1.1249ユーロ（＝1.0000 × 1.04³）となり、これは実際の3年目末の残高である0.8573ユーロよりも大幅に大きい。</p>
+<p>一般に、各保有期間収益率（holding period return）がすべて等しい場合を除き、算術平均リターンは上方にバイアスを持つ。このバイアスは、本例のように正と負のリターンが混在する場合に特に大きくなる。</p>
+<p>次に、異なる時間軸における保有期間収益率を計算する3つの例を見る。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s03-EXM-1-2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 2<span style="display: block;">Holding Period Return</span></h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s03-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>ある投資家が四半期初めに1株あたり34.50ドルで株式を100株購入した。四半期末に51.55ドルの配当（dividend）を受け取り、その後すべての株式を1株あたり30.50ドルで売却した場合、この投資家の保有期間収益率に最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. −13.0％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。式1を適用すると、保有期間収益率は−10.1％であり、以下のように計算される。</p>
+<p>R ＝（3,050 − 3,450 ＋ 51.55）/ 3,450 ＝ −10.1％</p>
+<p>この保有期間収益率は、配当利回り（dividend yield）1.49％（＝51.55/3,450）と、キャピタルロス（capital loss）−11.59％（＝−400/3,450）から構成される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. −11.6％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。式1を適用すると、保有期間収益率は−10.1％であり、以下のように計算される。</p>
+<p>R ＝（3,050 − 3,450 ＋ 51.55）/ 3,450 ＝ −10.1％</p>
+<p>この保有期間収益率は、配当利回り1.49％とキャピタルロス−11.59％から構成される。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. −10.1％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。式1を適用すると、保有期間収益率は−10.1％であり、以下のように計算される。</p>
+<p>R ＝（3,050 − 3,450 ＋ 51.55）/ 3,450 ＝ −10.1％</p>
+<p>この保有期間収益率は、配当利回り1.49％とキャピタルロス−11.59％から構成される。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s03-EXM-1-3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 3<span style="display: block;">Holding Period Return</span></h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s03-Q2"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>あるアナリストは、図表3（Exhibit 3）に示された投資信託（mutual fund）の年次リターンを得た。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s03-EXH-1-3">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 3<span style="display: block;">Mutual Fund Performance, 20X8–20Y0</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Year</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（％）（Return (%)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">20X8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">14</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">20X9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−10</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">20Y0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>このファンドの3年間の保有期間収益率に最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.18％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。このファンドの3年間の保有期間収益率は0.55％であり、以下のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___3"><em>R = [(1 + R<sub>1</sub>) × (1 + R<sub>2</sub>) × (1 + R<sub>3</sub>)] − 1</em>,</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___4"><em>R</em> = [(1 + 0.14)(1 − 0.10)(1 − 0.02)] − 1 = 0.0055 = 0.55%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 0.55％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。このファンドの3年間の保有期間収益率は0.55％であり、以下のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___3"><em>R = [(1 + R<sub>1</sub>) × (1 + R<sub>2</sub>) × (1 + R<sub>3</sub>)] − 1</em>,</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___4"><em>R</em> = [(1 + 0.14)(1 − 0.10)(1 − 0.02)] − 1 = 0.0055 = 0.55%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 0.67％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。このファンドの3年間の保有期間収益率は0.55％であり、以下のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___3"><em>R = [(1 + R<sub>1</sub>) × (1 + R<sub>2</sub>) × (1 + R<sub>3</sub>)] − 1</em>,</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___4"><em>R</em> = [(1 + 0.14)(1 − 0.10)(1 − 0.02)] − 1 = 0.0055 = 0.55%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s03-EXM-1-4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 4<span style="display: block;">Geometric Mean Return</span></h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s03-Q3"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>あるアナリストは、図表4（Exhibit 4）に示されたヘッジファンド（hedge fund）の年次リターンを観察した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s03-EXH-1-4">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 4<span style="display: block;">Hedge Fund Performance, 20X8–20X0</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Year</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（％）（Return (%)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">20X8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">22</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">20X9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−25</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">20X0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>このファンドの3年間の幾何平均リターン（geometric mean return）に最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.52％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。式3を適用すると、このファンドの3年間の幾何平均リターンは0.52％であり、以下のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___5"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>G</mi> </msub> </mrow> </semantics> </math> = [(1 + 0.22)(1 − 0.25)(1 + 0.11)]<sup>(1/3)</sup> − 1 = 1.0157<sup>(1/3)</sup> − 1 = 0.0052 = 0.52%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 1.02％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。式3を適用すると、このファンドの3年間の幾何平均リターン（geometric mean return）は0.52％であり、以下のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___5"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>G</mi> </msub> </mrow> </semantics> </math> = [(1 + 0.22)(1 − 0.25)(1 + 0.11)]<sup>(1/3)</sup> − 1 = 1.0157<sup>(1/3)</sup> − 1 = 0.0052 = 0.52%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 2.67％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。式3を適用すると、このファンドの3年間の幾何平均リターンは0.52％であり、以下のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___5"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>G</mi> </msub> </mrow> </semantics> </math> = [(1 + 0.22)(1 − 0.25)(1 + 0.11)]<sup>(1/3)</sup> − 1 = 1.0157<sup>(1/3)</sup> − 1 = 0.0052 = 0.52%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s03-EXM-1-5">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 5<span style="display: block;">Geometric and Arithmetic Mean Returns</span></h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>図表5（Exhibit 5）に示された各国グループの年次リターンデータを考える。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s03-EXH-1-5">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 5<span style="display: block;">Annual Returns for Years 1 to 3 for Selected Countries’ Stock Indexes</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Index</strong></th>
+<th colspan="3" style="text-align: center; vertical-align: middle; padding: 8px;">52週リターン（％）（52-Week Return (%)）</th>
+<th rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th colspan="2" style="text-align: center; vertical-align: middle; padding: 8px;">平均3年リターン（Average 3-Year Return）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">年1（Year 1）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">年2（Year 2）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">年3（Year 3）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">算術平均（Arithmetic）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">幾何平均（Geometric）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国A（Country A）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−15.6</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−5.4</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">6.1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−4.97</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−5.38</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国B（Country B）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">7.8</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">6.3</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−1.5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">4.20</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">4.12</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国C（Country C）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">5.3</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.2</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.33</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.32</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国D（Country D）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−2.4</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−3.1</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">6.2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.23</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.15</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国E（Country E）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−4.0</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−3.0</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.0</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−1.33</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−1.38</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国F（Country F）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">5.4</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">5.2</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−1.0</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.20</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.16</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国G（Country G）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">12.7</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">6.7</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−1.2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">6.07</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">5.91</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国H（Country H）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.5</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">4.3</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.4</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.73</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.73</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国I（Country I）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">7.8</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">5.73</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">5.72</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国J（Country J）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">8.1</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">4.1</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−0.9</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.77</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.70</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">国K（Country K）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">11.5</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.4</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">5.37</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">5.28</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>次の3つの株価指数について、3年間の算術平均リターンおよび幾何平均リターンを計算せよ：国D、国E、および国F。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>算術平均リターンは以下のとおりである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s03-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"> </th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">年次リターン（％）（Annual Return (%)）</th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m10"> <mtable> <mtr> <mtd> <mtext>Sum</mtext> </mtd> </mtr> <mtr> <mtd> <mstyle displaystyle="true"> <munderover> <mo>∑</mo> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mn>3</mn> </munderover> <mrow> <msub> <mi>R</mi> <mi>i</mi> </msub> </mrow> </mstyle> </mtd> </mtr> </mtable> </math> </span></th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">算術平均リターン（％）（Arithmetic Mean Return (%)）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;">年1（Year 1）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">年2（Year 2）</th>
+<th style="text-align: center; vertical-align: top; padding: 8px;">年3（Year 3）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">国D（Country D）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2.4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3.1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.233</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">国E（Country E）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−4.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−3.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−4.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1.333</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">国F（Country F）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5.4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−1.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.200</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>幾何平均リターンは以下のとおりである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s03-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">小数表示の1＋リターン（1 + Return in Decimal Form (1 + R_t)）</th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m11"> <mtable> <mtr> <mtd> <mtext>Product</mtext> </mtd> </mtr> <mtr> <mtd> <mstyle displaystyle="true"> <munderover> <mo>∏</mo> <mi>t</mi> <mi>T</mi> </munderover> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>R</mi> <mi>t</mi> </msub> </mrow> </mfenced> </mrow> </mstyle> </mtd> </mtr> </mtable> </math> </span></th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m12"> <mtable> <mtr> <mtd> <mtext>3rd Root</mtext> </mtd> </mtr> <mtr> <mtd> <msup> <mrow> <mfenced close="]" open="["> <mrow> <mstyle displaystyle="true"> <munderover> <mo>∏</mo> <mi>t</mi> <mi>T</mi> </munderover> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>R</mi> <mi>t</mi> </msub> </mrow> </mfenced> </mrow> </mstyle> </mrow> </mfenced> </mrow> <mrow> <mstyle displaystyle="true"> <mfrac bevelled="true"> <mn>1</mn> <mn>3</mn> </mfrac> </mstyle> </mrow> </msup> </mtd> </mtr> </mtable> </math> </span></th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">幾何平均リターン（％）（Geometric mean return (%)）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年1（Year 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年2（Year 2）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年3（Year 3）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">国D（Country D）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.976</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.969</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.062</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.00438</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.00146</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.146</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">国E（Country E）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.960</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.970</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.030</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.95914</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.98619</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">−1.381</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">国F（Country F）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.054</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.052</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.990</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.09772</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.03157</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.157</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>例5（Example 5）では、各国の指数リターンについて、幾何平均リターン（geometric mean return）は算術平均リターン（arithmetic mean return）よりも小さい。実際、幾何平均は常に算術平均以下であり、ただし唯一の例外として、観測値にばらつきがない場合、すなわちすべての観測値が同じ場合には両者は等しくなる。</p>
+<p>一般に、算術平均と幾何平均の差はサンプル内のばらつきが大きいほど拡大する。すなわち、観測値の分散（dispersion）が大きいほど、両者の差も大きくなる。図表5（Exhibit 5）のリターンおよび図表6（Exhibit 6）の平均のグラフを概観すると、国Aの指数は他の指数と比較してばらつきが大きいことが示唆される。これは、幾何平均リターン（−5.38％）と算術平均リターン（−4.97％）の乖離が大きいことによって確認される。アナリストはこれらの結果をどのように解釈すべきか。</p>
+<div class="cfa-curriculum-exhibit-figure" id="CFA2401-R-s03-EXH-1-6">
+<h4 class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 6<span style="display: block;">Arithmetic and Geometric Mean Returns for Country Stock Indexes, Years 1 to 3</span></h4>
+<div class="cfa-curriculum-graphic" style="text-align: center;"><img alt="A relationship between different countries and their mean return percentage. It displays both geometric mean and arithmetic averages. Y-axis is marked from A to K and X-axis has values from negative 6 to 8." data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1864/files/459645" data-api-returntype="File" id="CFA2401-R-s03-EXH-1-6" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto;"/></div>
+</div>
+<p>幾何平均リターンは、投資の成長率または複利収益率（compound rate of return）を表す。例えば、年1の初めに国B指数に連動するファンドに1単位の通貨を投資した場合、その資金は（1.078）（1.063）（0.985）＝1.128725単位に増加する。これは、国Bの幾何平均リターン4.1189％を3期間にわたり複利運用した結果［(1＋0.041189)³＝1.128725］と等しい。この計算は、幾何平均が複利収益率であることを確認するものである。複数期間にわたる実際の投資リターンに焦点を当てる幾何平均は、投資家にとって特に重要である。一方、単一期間の平均的なパフォーマンスに焦点を当てる算術平均リターンも重要である。算術平均と幾何平均はいずれも投資運用において役割を持ち、リターン系列では両方が報告されることが多い。</p>
+<p>過去のリターンを報告する際、幾何平均は実際の累積投資パフォーマンスと一致するために必要な年間成長率を示す点で有用である。例えば、100ユーロで株式を購入し、途中で200ユーロとなる年を経て2年後に再び100ユーロとなった場合、幾何平均0％はこの2年間の複利成長率である。これは、リターンを複利計算することで確認できる：[(1＋1.00)(1−0.50)]^(1/2) − 1 ＝ 0％。具体的には、期末価値は期首価値に（1＋R_G）²を掛けたものである。</p>
+<p>しかし、算術平均は（前例では［100％＋−50％］/2＝25％）となり、過去のパフォーマンスの評価を歪める可能性がある。前述のとおり、算術平均は常に幾何平均以上となる。1期間の平均リターンを推定したい場合には、算術平均を用いるべきである。一方、複数期間にわたる平均リターンを推定する場合には、リターンの時間的な連鎖を反映する幾何平均を用いるべきである。</p>
+</section>
+<section id="CFA2401-R-s03-01-04">
+<h3 class="dp-heading">調和平均（Harmonic Mean）</h3>
+<p>The <a aria-describedby="HarmonicMeanContent" class="dp-popover-trigger cfa-curriculum-cite-glossary" href="#HarmonicMeanContent">harmonic mean</a>, <span class="cfa-curriculum-display-inline-formula"> <math id="m13"> <mrow> <msub> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mi>H</mi> </msub> </mrow> </math> </span>, is another measure of central tendency. The harmonic mean is appropriate in cases in which the variable is a rate or a ratio. The terminology “harmonic” arises from its use of a type of series involving reciprocals known as a harmonic series.</p>
+<p>調和平均の公式（Harmonic Mean Formula）：観測値 X₁, X₂, …, Xₙ の調和平均は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-5"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mi>H</mi> </msub> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mi>n</mi> <mrow> <mstyle displaystyle="true"> <munderover> <mo>∑</mo> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </munderover> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>/</mo> <msub> <mi>X</mi> <mi>i</mi> </msub> </mrow> </mfenced> </mrow> </mstyle> </mrow> </mfrac> </mstyle> </mrow> </semantics> </math>,<span class="cfa-curriculum-display-formula-number">4</span></div>
+<p>ただし、i＝1,2,…,n に対して X_i &gt; 0 とする。</p>
+<p>調和平均は、各観測値の逆数</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___6"><math> <semantics> <mrow> <munderover> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </munderover> <mfenced> <mrow> <mn>1</mn> <mo>/</mo> <msub> <mi>X</mi> <mi>i</mi> </msub> </mrow> </mfenced> </mrow> </semantics> </math>,</div>
+<p>すなわち 1/X_i の形の項を合計し、それを観測数 n で割って平均を取り、</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___7"><math> <semantics> <mrow> <mstyle displaystyle="true"> <mfrac> <mi>n</mi> <mrow> <mstyle displaystyle="true"> <munderover> <mo>∑</mo> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </munderover> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>/</mo> <msub> <mi>X</mi> <mi>i</mi> </msub> </mrow> </mfenced> </mrow> </mstyle> </mrow> </mfrac> </mstyle> </mrow> </semantics> </math>.</div>
+<p>その平均の逆数をとることで得られる値である。調和平均は、観測値の重みがその大きさに反比例する特殊な加重平均とみなすことができる。例えば、1, 2, 3, 4, 5, 6, 1,000 というサンプルがある場合、調和平均は2.8560である。算術平均145.8571と比較すると、外れ値（1,000）の影響が大幅に小さいことが分かる。したがって、外れ値が存在する場合の中心傾向の指標として調和平均は有用である。</p>
+<p>調和平均は、P/E（株価収益率）などの比率データに対して最もよく用いられる。例えば、3つの同業企業のP/Eが45、15、15である場合、算術平均は25であるが、45に対する重みが小さい調和平均は19.3となる。</p>
+<p>調和平均は比較的特殊な平均の概念であり、「単位当たりの量」（amount per unit）として表される比率を平均する場合に適している。特に、一定の量に対して繰り返し適用されることで変動する単位数を生み出すような場合に用いられる。この概念は例を通じて理解するのが最もよい。よく知られた応用として、一定額を定期的に投資するコスト平均法（cost averaging）がある。この場合、平均する比率は異なる購入時点の株価（price per share）であり、一定額の資金に対して適用されることで購入株数が変動する。コスト平均法における調和平均の例は例6に示されている。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s03-EXM-1-6">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 6<span style="display: block;">Cost Averaging and the Harmonic Mean</span></h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>ある投資家が2か月間（n＝2）、毎月1,000ユーロを特定の株式に投資したとする。各購入時点の株価はそれぞれ10ユーロと15ユーロであった。この場合、平均購入価格はいくらか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___8">Purchase in the first month = EUR1,000/EUR10 = 100 shares.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___9">Purchase in the second month = EUR1,000/EUR15 = 66.67 shares.</div>
+<p>投資家は合計2,000ユーロで166.67株を購入したため、1株当たりの平均購入価格は2,000／166.67＝12ユーロである。</p>
+<p>この平均購入価格は、購入時点における資産価格の調和平均である。式4を用いると、調和平均価格は 2／[(1/10)＋(1/15)]＝12ユーロとなる。この値は算術平均購入価格（（10＋15）/2＝12.5ユーロ）よりも小さい。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>データセットのすべての観測値が同じでない限り、調和平均は常に幾何平均より小さく、幾何平均は常に算術平均より小さい。</p>
+<p>調和平均は非負の数に対してのみ適用可能であるため、正負のリターンを扱う場合には、まず（1＋R）の形に変換して複利形式にし、その後（1＋調和平均）を計算し、最後に1を引いて調和平均リターンを求める。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s03-EXM-1-7">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 7<span style="display: block;">Calculating the Arithmetic, Geometric, and Harmonic Means for P/Es</span></h4>
+<section>
+<p>毎年12月に、ある証券アナリストは翌年のためにお気に入りの株式10銘柄を選定する。図表7（Exhibit 7）は、彼女が選んだ上位10銘柄のP/E（株価収益率：price to projected earnings per share, EPS）を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s03-EXH-1-7">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 7<span style="display: block;">Analyst’s 10 Favorite Stocks for Next Year</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Stock</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>P/E</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式1（Stock 1）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">22.29</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式2（Stock 2）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">15.54</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式3（Stock 3）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9.38</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式4（Stock 4）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">15.12</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式5（Stock 5）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10.72</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式6（Stock 6）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">14.57</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式7（Stock 7）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7.20</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式8（Stock 8）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7.97</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式9（Stock 9）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10.34</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">株式10（Stock 10）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">8.35</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>これら10銘柄のP/E（株価収益率）の算術平均を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>算術平均は次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___11">121.48/10 = 12.1480.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>これら10銘柄のP/Eの調和平均を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>調和平均は次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___16"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mi>H</mi> </msub> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mi>n</mi> <mrow> <msubsup> <mstyle displaystyle="true" mathsize="140%"> <mo>∑</mo> </mstyle> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </msubsup> <mfenced> <mrow> <mn>1</mn> <mo>/</mo> <msub> <mi>X</mi> <mi>i</mi> </msub> </mrow> </mfenced> </mrow> </mfrac> </mstyle> </mrow> </semantics> </math>,</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___17"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mi>H</mi> </msub> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>10</mn> </mrow> <mrow> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <mn>22.29</mn> </mrow> </mfrac> </mstyle> </mrow> </mfenced> <mo>+</mo> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <mn>15.54</mn> </mrow> </mfrac> </mstyle> </mrow> </mfenced> <mo>+</mo> <mo>…</mo> <mo>+</mo> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <mn>10.34</mn> </mrow> </mfrac> </mstyle> </mrow> </mfenced> <mo>+</mo> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <mn>8.35</mn> </mrow> </mfrac> </mstyle> </mrow> </mfenced> </mrow> </mfrac> </mstyle> </mrow> </semantics> </math>,</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___18"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mi>H</mi> </msub> <mo>=</mo> <mn>10</mn> <mo>/</mo> <mn>0.9247</mn> <mo>=</mo> <mn>10.8142</mn> </mrow> </semantics> </math>.</div>
+<p>金融においては、P/E比のようなレートや倍率を平均する際に加重調和平均（weighted harmonic mean）が用いられる。これは、調和平均が各データ点に等しい重みを与え、外れ値（outliers）の影響を低減するためである。</p>
+<p>これらの計算はExcelを用いて実行できる。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2401-R-s03-L2">
+<li class="cfa-curriculum-list-item">算術平均または平均リターンを計算するには、=AVERAGE(return1, return2, …) 関数を使用する。</li>
+<li class="cfa-curriculum-list-item">幾何平均リターン（geometric mean return）を計算するには、=GEOMEAN(return1, return2, …) 関数を使用する。</li>
+<li class="cfa-curriculum-list-item">調和平均リターン（harmonic mean return）を計算するには、=HARMEAN(return1, return2, …) 関数を使用する。</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>算術平均、幾何平均、調和平均に加えて、さらに2種類の平均が用いられる。トリム平均（trimmed mean）とウィンザー化平均（winsorized mean）は、いずれもデータセットにおける外れ値の影響を最小化することを目的としている。具体的には、トリム平均は観測値から最大値と最小値の一定割合を除外した後、残りの観測値の平均を計算する。</p>
+<p>ウィンザー化平均は、データセットの両端にある極端な観測値を、その近傍の値に置き換えた後、残りの観測値の平均を計算することで求められる。</p>
+<p>しかし、重要な問題は「どのような状況でどの平均を用いるべきか」である。どの平均を用いるかの選択は、多くの要因に依存する（図表8（Exhibit 8）参照）。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2401-R-s03-L3">
+<li class="cfa-curriculum-list-item">含めたい外れ値は存在するか。</li>
+<li class="cfa-curriculum-list-item">分布は対称的か。</li>
+<li class="cfa-curriculum-list-item">複利効果（compounding）は存在するか。</li>
+<li class="cfa-curriculum-list-item">
+<p>極端な外れ値は存在するか。</p>
+<div class="cfa-curriculum-exhibit-figure" id="CFA2401-R-s03-EXH-1-8">
+<h4 class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 8<span style="display: block;">Deciding Which Measure to Use</span></h4>
+<div class="cfa-curriculum-graphic"><img alt="A data analysis process flow chart for calculating different types of means based on the nature of the collected samples.     " aria-describedby="CFA2401-R-s03-EXH-1-8-extended-desc" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1864/files/459647" data-api-returntype="File" id="CFA2401-R-s03-EXH-1-8" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/><details class="dp-panels-wrapper" id="CFA2401-R-s03-EXH-1-8-extended-desc" style="font-size: 10pt;">
+<summary class="dp-panel-outside-panel">Expand / Collapse Extended Description</summary>
+<p class="dp-panel-outside-panel">このプロセスはサンプルの収集から始まる。次に外れ値を含めるかどうかを判断する。含める場合は算術平均を計算する。含めない場合は複利の有無を確認する。複利がある場合は幾何平均を計算し、その後、極端な外れ値を含めるかどうかを判断する。含める場合は調和平均、トリム平均、またはウィンザー化平均を計算する。</p>
+</details></div>
+</div>
+</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2401-R-s03-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Question Set</h4>
+<section>
+<p>あるファンドの過去10年間のリターンは以下のとおりである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s03-EXH-1-11">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 9<span style="display: block;">10-Year Returns</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Year</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（Return）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s03-Q9"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>この10年間の算術平均リターンに最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 2.97％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。算術平均リターンは次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___19"><math> <semantics> <mrow> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mo>=</mo> <mo> </mo> </mrow> </semantics> </math>30.0%/10 = 3.0%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 3.00％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。算術平均リターンは次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___19"><math> <semantics> <mrow> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mo>=</mo> <mo> </mo> </mrow> </semantics> </math>30.0%/10 = 3.0%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 3.33％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。算術平均リターンは次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___19"><math> <semantics> <mrow> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mo>=</mo> <mo> </mo> </mrow> </semantics> </math>30.0%/10 = 3.0%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s03-Q10"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>この10年間の幾何平均リターン（geometric mean return）に最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 2.94％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。幾何平均リターンは次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___20"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>G</mi> </msub> <mo>=</mo> <mroot> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.045</mn> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.06</mn> </mrow> </mfenced> <mo>×</mo> <mo>…</mo> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.055</mn> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.04</mn> </mrow> </mfenced> </mrow> <mrow> <mn>10</mn> </mrow> </mroot> <mo>−</mo> <mn>1</mn> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___21"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>G</mi> </msub> <mo>=</mo> <mroot> <mrow> <mn>1.3402338</mn> </mrow> <mrow> <mn>10</mn> </mrow> </mroot> <mo>−</mo> <mn>1</mn> </mrow> </semantics> </math> = 2.9717%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 2.97％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。幾何平均リターンは次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___20"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>G</mi> </msub> <mo>=</mo> <mroot> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.045</mn> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.06</mn> </mrow> </mfenced> <mo>×</mo> <mo>…</mo> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.055</mn> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.04</mn> </mrow> </mfenced> </mrow> <mrow> <mn>10</mn> </mrow> </mroot> <mo>−</mo> <mn>1</mn> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___21"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>G</mi> </msub> <mo>=</mo> <mroot> <mrow> <mn>1.3402338</mn> </mrow> <mrow> <mn>10</mn> </mrow> </mroot> <mo>−</mo> <mn>1</mn> </mrow> </semantics> </math> = 2.9717%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 3.00％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。幾何平均リターンは次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___20"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>G</mi> </msub> <mo>=</mo> <mroot> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.045</mn> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.06</mn> </mrow> </mfenced> <mo>×</mo> <mo>…</mo> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.055</mn> </mrow> </mfenced> <mo>×</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.04</mn> </mrow> </mfenced> </mrow> <mrow> <mn>10</mn> </mrow> </mroot> <mo>−</mo> <mn>1</mn> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s03-E-1-___21"><math> <semantics> <mrow> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>G</mi> </msub> <mo>=</mo> <mroot> <mrow> <mn>1.3402338</mn> </mrow> <mrow> <mn>10</mn> </mrow> </mroot> <mo>−</mo> <mn>1</mn> </mrow> </semantics> </math> = 2.9717%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="HoldingPeriodReturnContent">
+<p>不動産（real estate）において、期間中の不動産収益（property income）と不動産価値の変化を含む単一期間の内部収益率（internal rate of return）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="HarmonicMeanContent">
+<p>各観測値の逆数の算術平均の逆数として計算される加重平均の一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CostAveragingContent">
+<p>一定額の資金を定期的に投資すること。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TrimmedMeanContent">
+<p>最小値および最大値の一定割合の観測値を除外した後に計算される平均。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="WinsorizedMeanContent">
+<p>最小値の一定割合を特定の低い値に、最大値の一定割合を特定の高い値に置き換えた後に計算される平均。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144215_102_Interest_Rates_and_Time_Value_of_Money.html" >← 前へ</a>
+  <span class="title">1.03 | Rates of Return</span>
+  <a href="courses_1864_modules_items_144219_104_Money-Weighted_and_Time-Weighted_Return.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

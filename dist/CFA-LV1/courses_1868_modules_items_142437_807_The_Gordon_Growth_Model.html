@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.07 | The Gordon Growth Model</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0166-R-s07" title="8.07 | The Gordon Growth Model">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール8：株式評価（Equity Valuation）：概念および基本ツール（Concepts and Basic Tools）8.07｜ゴードン成長モデル（Gordon Growth Model）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">ゴードン（定常）成長配当割引モデル（Gordon (constant) growth dividend discount model）または二段階配当割引モデル（two-stage dividend discount model）に基づき、株式証券（equity security）の本源的価値（intrinsic value）を計算し、解釈する。</li>
+<li class="cfa-curriculum-los-item">定常成長モデル（constant growth）または多段階配当割引モデル（multistage dividend discount model）が適用される企業の特性を識別する。</li>
+<li class="cfa-curriculum-los-item">各評価モデル分類の利点と欠点を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>普通株式に対して式1を適用しようとする際の明らかな問題は、アナリストが無限に続く期待配当の系列を推定しなければならないことである。このプロセスを簡略化するため、アナリストはしばしば配当が時間とともにどのように成長または変化するかについて仮定を置く。ゴードン（定常）成長モデル（Gordon (constant) growth model）（Gordon, 1962）は、単純で広く認識されている配当割引モデル（DDM）である。このモデルは、配当が一定の成長率で無限に成長すると仮定する。</p>
+<p>一定の成長率を仮定することから、ゴードン成長モデルは、景気循環（business cycle）の影響を比較的受けにくく、成熟段階（mature growth phase）にある配当支払企業の株式評価に特に適している。例としては、緩やかに成長する地域に電力を供給する電力会社や、必需食品（例えばパン）を生産する企業が挙げられる。安定した成長率で配当を増加させてきた実績も、将来においてその傾向が続くとアナリストが考える場合には実務上の判断基準となる。</p>
+<p>一定成長を仮定すると、式1は式8のように表すことができる。ここでgは一定の成長率である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E8"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>t</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>∞</mi>
+</munderover>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mn>0</mn>
+</msub>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>g</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>t</mi>
+</msup>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>t</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<msub>
+<mi>D</mi>
+<mn>0</mn>
+</msub>
+<mrow>
+<mo>[</mo>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>g</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>g</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mn>...</mn>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>g</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>∞</mi>
+</msup>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>∞</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mo>]</mo>
+</mrow>
+</mrow>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">8</span></div>
+<p>要求収益率rが成長率gより厳密に大きいと仮定すると、式8の角括弧内の項は無限等比級数となり、その和は[(1＋g)/(r－g)]となる。これを式8に代入すると、式9に示されるゴードン成長モデルが得られる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E9"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mn>0</mn>
+</msub>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>g</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mrow>
+<mi>r</mi>
+<mo>−</mo>
+<mi>g</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mn>1</mn>
+</msub>
+</mrow>
+<mrow>
+<mi>r</mi>
+<mo>−</mo>
+<mi>g</mi>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">9</span></div>
+<p>この式の例として、現在（直近）の年間配当が5.00ユーロであり、配当が毎年4％で成長すると予想されるとする。株式の要求収益率が8％の場合、ゴードン成長モデルによる本源的価値は、5.00×(1.04)/(0.08－0.04)＝5.20/0.04＝1株当たり130ユーロとなる。分子はD₀ではなくD₁である点に注意する（分子を誤るのはよくある誤りである）。</p>
+<p>ゴードン成長モデルは、本源的価値を成長する永久年金（growing perpetuity）の現在価値として推定する。成長率gがゼロと仮定される場合、式8は前述の永久年金の現在価値の式（式6）に簡略化される。</p>
+<p>長期成長率を推定する際、アナリストはさまざまな方法を用いる。これには、配当や利益の成長の評価、業界の中央値成長率の利用、および式10に示される関係を用いた持続可能成長率（sustainable growth rate）の推定が含まれる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E10"><em>g</em> = <em>b</em> × ROE  <span class="cfa-curriculum-display-formula-number">10</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>g ＝ 配当成長率（dividend growth rate）</li>
+<li>b ＝ 利益留保率（earnings retention rate）＝（1－配当性向（dividend payout ratio））</li>
+<li>ROE ＝ 自己資本利益率（return on equity）</li>
+</ul>
+<p>例7は、大規模な産業機械メーカーの株式に対するゴードン成長モデルの適用を示す。このアナリストは、同社が過去3年間に達成した成長率を今後も維持し、将来も安定すると考えている。この例では、配当成長の仮定が本源的価値の推定にどの程度寄与しているかを問うている。この問いは評価において重要であり、もしその割合が大きい場合、株式価値の大部分が成長仮定の実現に依存することになる。この問いには、式9による本源的価値から、配当成長を仮定しない式6による価値を差し引くことで答えることができる。³</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0166-R-EXM7">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例7 ゴードン成長モデルの適用（Applying the Gordon Growth Model）</h3>
+<section>
+<p>シーメンス（Siemens AG）は資本財およびテクノロジー分野で事業を展開している。同社はエンジニアリング、製造、自動化、電力、輸送分野に関与しており、グローバルに事業を展開している。これらの分野において最大級の企業の一つであり、ドイツ国内および世界各国で多数の従業員を抱える主要雇用者である。シーメンスの選択された財務情報は図表3に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0166-R-EXH3">
+<h4 class="cfa-curriculum-exhibit-table-title">図表3 シーメンス（Siemens AG）の主要財務情報</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Year</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2014</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2013</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">EPS</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€7.45</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€6.74</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€8.85</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€6.37</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€5.08</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">DPS</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€3.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€3.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€3.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€3.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€3.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">配当性向（Payout ratio）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">52%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ROE</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株価（Share price）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">（XETRA－フランクフルト）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">119.2ユーロ</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">104.2ユーロ</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">79.94ユーロ</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">94.37ユーロ</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">89.06ユーロ</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：DPSは「1株当たり配当（dividends per share）」を意味する。</p>
+<p><span class="cfa-curriculum-table-wrap-foot"> <em>Source</em>: Morningstar, <a href="http://www.siemens.com" target="_blank">www.siemens.com</a>.</span></p>
+</div>
+<p>アナリストは、2013年から2017年までの配当成長率に基づき、成長率を約5.4％と推定している［3×(1＋g)⁴＝3.7より、g＝5.4％］。この5.4％の成長率が将来も実現可能であることを確認するため、アナリストは過去5年間のシーメンスの平均利益留保率とROEを用いて持続可能成長率を推定している（g ≈ 0.49 × 17.3％ ≈ 8.5％）。</p>
+<p>長期ドイツ国債にリスクプレミアムを加える方法やCAPMを用いるなど複数のアプローチにより、アナリストは要求収益率を7.5％と推定している。直近の配当3.70ユーロがD₀として用いられる。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>ゴードン成長モデルを用いて、シーメンスの本源的価値を推定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0166-R-s07-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___10"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>€3</mtext>
+<mtext>.70</mtext>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.054</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mrow>
+<mn>0.075</mn>
+<mo>−</mo>
+<mn>0.054</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mtext>€185</mtext>
+<mtext>.70</mtext>
+</mrow>
+</semantics>
+</math></div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>配当成長の仮定は、本源的価値の推定にどの程度寄与しているか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0166-R-s07-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___11"><math>
+<semantics>
+<mrow>
+<mtext>€185</mtext>
+<mtext>.70</mtext>
+<mo>−</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>€3</mtext>
+<mtext>.70</mtext>
+</mrow>
+<mrow>
+<mtext>0</mtext>
+<mtext>.075</mtext>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mtext>€136</mtext>
+<mtext>.37</mtext>
+</mrow>
+</semantics>
+</math></div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>推定された本源的価値に基づき、シーメンスの株式は過小評価（undervalued）、過大評価（overvalued）、それとも適正評価（fairly valued）されているか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0166-R-s07-01-03">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>シーメンスの株式は過小評価されているように見える。アナリストは推奨を行う前に、推定に用いた入力値が現実的であるか、また入力値の変化に対する推定価値の感応度を検討することが望ましい。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>成長率の推定を4.4％に引き下げた場合の本源的価値はいくらか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0166-R-s07-01-04">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___12"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>€3</mtext>
+<mtext>.70</mtext>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.044</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mrow>
+<mn>0.075</mn>
+<mo>−</mo>
+<mn>0.044</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mtext>€124</mtext>
+<mtext>.61</mtext>
+</mrow>
+</semantics>
+</math></div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>成長率の推定を4.4％に引き下げ、かつ要求収益率（required rate of return）の推定を8.5％に引き上げた場合の本源的価値はいくらか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0166-R-s07-01-05">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___13"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mtext>€3</mtext>
+<mtext>.70</mtext>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.044</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mrow>
+<mn>0.085</mn>
+<mo>−</mo>
+<mn>0.044</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mtext>€94</mtext>
+<mtext>.21</mtext>
+</mrow>
+</semantics>
+</math></div>
+<p>ゴードン成長モデル（Gordon growth model）による本源的価値の推定は、要求収益率rおよび成長率gの選択に対して非常に敏感である。当初用いた成長率および要求収益率の仮定が高すぎた可能性もある。世界全体の経済成長は通常1桁台前半であるため、シーメンス（Siemens）のような大企業が配当を永続的に5.4％で成長させることは難しい可能性がある。図表4は、要求収益率および成長率の推定に対するシーメンスの本源的価値の感応度分析を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0166-R-EXH4">
+<h6 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 4<span style="display: block;">Sensitivity Analysis of the Intrinsic-Value Estimate for Siemens AG</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">g ＝ 2.5％</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">g ＝ 3.5％</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">g ＝ 4.5％</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">g ＝ 5.5％</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">g ＝ 6.5％</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">r ＝ 6％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">108.4ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">153.2ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">257.8ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">780.7ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">r ＝ 7％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€84.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">109.4ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">154.7ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">260.2ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">788.1ユーロ</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">r ＝ 8％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€69.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€85.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">110.5ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">156.1ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">262.7ユーロ</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">r ＝ 9％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€58.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€69.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€85.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">111.5ユーロ</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">157.6ユーロ</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">r ＝ 10％</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€50.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€58.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€70.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">€86.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">112.6ユーロ</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>成長率が要求収益率を上回る場合には値が表示されていないことに注意すること。ゴードン成長モデルは、成長率が要求収益率を上回ることはないと仮定している。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>ゴードンモデルの仮定は以下の通りである：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0166-R-L23">
+<li class="cfa-curriculum-list-item">配当（dividends）が評価に用いる適切な指標である。</li>
+<li class="cfa-curriculum-list-item">配当成長率（dividend growth rate）は永続的であり、変化しない。</li>
+<li class="cfa-curriculum-list-item">要求収益率（required rate of return）も時間を通じて一定である。</li>
+<li class="cfa-curriculum-list-item">配当成長率は要求収益率よりも厳密に小さい。</li>
+</ul>
+<p>アナリストはこれらの仮定に対してさまざまな理由から不満を持つ可能性がある。分析対象の株式が現在配当を支払っていない場合もあるし、ゴードンモデルの仮定が評価対象企業の特性を十分に反映するには単純すぎる場合もある。ゴードンモデルの代替としては以下がある：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0166-R-L24">
+<li class="cfa-curriculum-list-item">成長パターンの変化を許容する、より高度な配当割引モデル（DDM）を用いる。</li>
+<li class="cfa-curriculum-list-item">評価のために配当以外のキャッシュフロー指標を用いる。</li>
+<li class="cfa-curriculum-list-item">別のアプローチ（例えば倍率法（multiplier method））を用いる。</li>
+</ul>
+<p>分析対象企業が現在配当を支払っていない場合、DDMの適用は困難である。企業が配当を支払っていない理由としては、(1) 投資機会が非常に魅力的であり、資金を内部留保して再投資する方が株主に配当を支払うよりも高いリターンが期待できる場合、または (2) 財務状態が不安定で配当を支払う余裕がない場合、が考えられる。このような企業であっても、将来のある時点から配当が開始されると仮定することで、アナリストはDDMを用いて評価することができる。さらに、その時点以降は一定成長が続くと仮定し、ゴードン成長モデル（Gordon growth model）を用いることもある。しかし、現在配当がない状態からの外挿は一般に不確実性の高い予測をもたらす。そのため、アナリストは通常、ゴードン成長モデルの代わりに、または補完として、これらの代替手法を用いる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0166-R-EXM8">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例8 現在配当がない場合のゴードン成長モデル（Gordon Growth Model in the Case of No Current Dividend）</h3>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>ある企業は現在配当を支払っていないが、5年後（t＝5）に配当を開始すると予想されている。最初の配当は4.00ドルであり、現在から5年後に受け取ると予想される。その配当はその後、永久に6％で成長すると予想されている。要求収益率は10％である。この株式の現在の本源的価値はいくらと推定されるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0166-R-s07-02-01">
+<h3 class="cfa-curriculum-solution">解答（Solution）</h3>
+<p>アナリストは株式の価値を2つの部分に分けて評価することができる：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA0166-R-L25">
+<li class="cfa-curriculum-list-item">アナリストは、ゴードン成長モデルを用いてt＝5時点の価値を推定する。このモデルでは、1年後の配当は4×(1.06)である。その後、この価値をt＝0時点の現在価値に割り引く。</li>
+<li class="cfa-curriculum-list-item">アナリストは、部分1の推定に含まれていない4ドルの配当（t＝6以降の配当を評価している）について、その現在価値を求める。問題文から、D₀、D₁、D₂、D₃、D₄はすべてゼロであることに注意する。</li>
+</ol>
+<p>部分1：この部分の価値は65.818ドルである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___14"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<msub>
+<mi>V</mi>
+<mi>n</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mi>n</mi>
+</msub>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>g</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mrow>
+<mi>r</mi>
+<mo>−</mo>
+<mi>g</mi>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mrow>
+<mi>n</mi>
+<mo>+</mo>
+<mn>1</mn>
+</mrow>
+</msub>
+</mrow>
+<mrow>
+<mi>r</mi>
+<mo>−</mo>
+<mi>g</mi>
+</mrow>
+</mfrac>
+</mstyle>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<msub>
+<mi>V</mi>
+<mn>5</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>$</mi>
+<mn>4</mn>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.06</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mrow>
+<mn>0.10</mn>
+<mo>−</mo>
+<mn>0.06</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>$</mi>
+<mn>4.24</mn>
+</mrow>
+<mrow>
+<mn>0.04</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mi>$</mi>
+<mn>106</mn>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>$</mi>
+<mn>106</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.10</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mi>$</mi>
+<mn>65.818</mn>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+<p>部分2：この部分の価値は2.484ドルである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___15"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>$</mi>
+<mn>4</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.10</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mi>$</mi>
+<mn>2.484</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>2つの部分の合計は65.818ドル＋2.484ドル＝68.30ドルである。</p>
+<p>別の方法として、アナリストはt＝4時点、すなわち翌年から配当が支払われ、その後一定成長が始まる時点で株式を評価することもできる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E___16"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<msub>
+<mi>V</mi>
+<mn>4</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>$</mi>
+<mn>4.00</mn>
+</mrow>
+<mrow>
+<mn>0.10</mn>
+<mo>−</mo>
+<mn>0.06</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>$</mi>
+<mn>4.00</mn>
+</mrow>
+<mrow>
+<mn>0.04</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mi>$</mi>
+<mn>100</mn>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>$</mi>
+<mn>100</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.10</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>4</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>=</mo>
+<mi>$</mi>
+<mn>68.30</mn>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>次節では、配当成長率に関してより柔軟な仮定を用いたDDMの適用について扱う。</p>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA0166-R-FN3Content">
+<p>³関連する概念として、成長機会の現在価値（present value of growth opportunities, PVGO）があり、より上級の教材で扱われる。</p>
+</div>
+<div class="dp-modal-content dp-modal-content cfa-curriculum-popup-disp-formula" id="CFA0166-R-E1_Content">
+<h4 class="dp-modal-title" style="margin-top: 0; border-bottom: 1px solid #A9A9A9;">式1（Equation 1）の内容。</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E1"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>t</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>∞</mi>
+</munderover>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mi>t</mi>
+</msub>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>t</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">1</span></div>
+</div>
+<div class="dp-modal-content dp-modal-content cfa-curriculum-popup-disp-formula" id="CFA0166-R-E1_Content">
+<h4 class="dp-modal-title" style="margin-top: 0; border-bottom: 1px solid #A9A9A9;">式1（Equation 1）の内容。</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E1"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>t</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>∞</mi>
+</munderover>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mi>t</mi>
+</msub>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>t</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">1</span></div>
+</div>
+<div class="dp-modal-content dp-modal-content cfa-curriculum-popup-disp-formula" id="CFA0166-R-E6_Content">
+<h4 class="dp-modal-title" style="margin-top: 0; border-bottom: 1px solid #A9A9A9;">式6（Equation 6）の内容。</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E6"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mn>0</mn>
+</msub>
+</mrow>
+<mi>r</mi>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">6</span></div>
+</div>
+<div class="dp-modal-content dp-modal-content cfa-curriculum-popup-disp-formula" id="CFA0166-R-E6_Content">
+<h4 class="dp-modal-title" style="margin-top: 0; border-bottom: 1px solid #A9A9A9;">式6（Equation 6）の内容。</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA0166-R-E6"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mn>0</mn>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>D</mi>
+<mn>0</mn>
+</msub>
+</mrow>
+<mi>r</mi>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">6</span></div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142434_806_Preferred_Stock_Valuation.html" >← 前へ</a>
+  <span class="title">8.07 | The Gordon Growth Model</span>
+  <a href="courses_1868_modules_items_142440_808_Multistage_Dividend_Discount_Models.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

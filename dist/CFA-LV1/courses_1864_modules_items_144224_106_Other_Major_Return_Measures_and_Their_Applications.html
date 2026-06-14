@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.06 | Other Major Return Measures and Their Applications</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2401-R-s06-R-1" title="1.06 | Other Major Return Measures and Their Applications"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：レートとリターン 1.06｜その他の主要なリターン指標とその応用</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">主要なリターン指標を計算および解釈し、それらの適切な用途を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>前節で説明したリターンの統計的指標は、一般的に幅広い資産および期間に適用可能である。しかし、投資信託（mutual funds）のような特定の資産や、税金やインフレといった要因については、より特定のリターン指標が必要となる場合がある。</p>
+<p>すべての特別な指標を扱うことはできないが、本節では手数料（gross returnとnet return）、税金（pre-tax returnとafter-tax return）、インフレ（nominal returnとreal return）、およびレバレッジ（leverage）の影響について説明する。多くの投資家は、投資信託やその他の外部主体（すなわち投資ビークル, investment vehicles）を利用して投資を行う。その場合、ファンドは投資家に対して運用手数料や諸費用を課す。その結果、gross returnおよびファンド費用控除後リターン（net-of-fund-expense return）も考慮する必要がある。もちろん、投資家が関心を持つのは、費用控除後・税引後・実質リターンであり、これは実際に投資家が受け取るものである。以下の節ではこれらの追加的なリターン指標について検討する。</p>
+<section id="CFA2401-R-s06-01-01">
+<h3 class="dp-heading">総リターン（Gross Return）と純リターン（Net Return）</h3>
+<p>総リターン（gross return）とは、運用資産に対するリターンから売買費用や手数料を差し引いたものである。gross returnは運用者の投資スキルを反映することを目的としている。運用手数料、カストディ費用（custody fees）、税金などの費用は、投資家ごとに異なる可能性があるため、gross returnには含まれない。例えば、多くの資産運用会社は、大口顧客に対してより低い手数料率を提供する。これらの費用を除外することで、運用スキルの評価および比較の基準が提供される。</p>
+<p>純リターン（net return）は、投資ビークル（例えば投資信託）が投資家のために実際に生み出したリターンを測る指標である。net returnは、投資家のリターンを減少させるすべての運用および管理費用を控除する。個々の投資家は通常、実際に受け取るリターン（net return）に最も関心を持つため、運用資産残高が小さい投資信託は、固定的な管理費用をより大きな資産ベースに分散できる大型ファンドに比べて不利となる。その結果、多くの小規模ファンドは競争力を維持するために費用の一部を免除する。</p>
+</section>
+<section id="CFA2401-R-s06-01-02">
+<h3 class="dp-heading">税引前・税引後の名目リターン（Pre-Tax and After-Tax Nominal Return）</h3>
+<p>これまでに説明したすべてのリターン指標は、税金やインフレの調整を行っていない税引前名目リターン（pre-tax nominal return）である。一般に、特に指定がない限り、すべてのリターンは税引前名目リターンである。</p>
+<p>多くの投資家は、リターンに関連する税負担の可能性を懸念している。なぜなら税金は投資家が受け取る純リターンを減少させるからである。キャピタルゲイン（capital gains）と所得（income）は、管轄によって異なる課税がなされる。キャピタルゲインには短期キャピタルゲイン（short-term capital gains）と長期キャピタルゲイン（long-term capital gains）の2種類がある。多くの国では長期キャピタルゲインは優遇税制の対象となる。利息所得（interest income）は多くの国で通常所得として課税される。配当所得（dividend income）は、国や投資家の種類に応じて、通常所得として課税される場合もあれば、低い税率が適用される場合や非課税となる場合もある。税引後名目リターン（after-tax nominal return）は、配当、利息、および実現益（realized gains）に対する税金を控除した総リターンとして計算される。額面価格（par value）よりディスカウントで発行された債券は、実現益ではなく未実現の累積益（accrued gains）に基づいて課税される場合がある。</p>
+<p>税金は実現されたキャピタルゲインおよび所得に対して課されるため、投資マネージャーは適切な証券の選択（例えば、他の条件が同じであればより有利な課税対象の証券）および売買回転率（turnover）の抑制によって税負担を最小化できる。したがって、課税対象の投資家は、税引後名目リターンに基づいて運用マネージャーを評価する。</p>
+</section>
+<section id="CFA2401-R-s06-01-03">
+<h3 class="dp-heading">実質リターン（Real Returns）</h3>
+<p>以前、学習モデルでは名目利率と実質利率の関係を次の関係式で近似的に定義した。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-"><math> <semantics> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mi>nominal risk-free rate</mi> </mrow> </mfenced> <mo>=</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mi>real risk-free rate</mi> </mrow> </mfenced> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mi>inflation premium</mi> </mrow> </mfenced> <mo>.</mo> <mo> </mo> </mrow> </semantics> </math></div>
+<p>この関係は、名目リターンと実質リターンの関係にも拡張できる。具体的には、名目リターンは、消費の先送りに対する補償としての実質無リスク利子率（real risk-free rate）、購買力の低下としてのインフレ、およびリスクを負担することに対するリスクプレミアム（risk premium）から構成される。しばしば、実質無リスク利子率とリスクプレミアムは結合され、実質「リスク付き」利率（real risky rate）とされ、単に実質リターンと呼ばれる。すなわち、</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-15"><math> <semantics> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mi>nominal</mi> <mi>return</mi> </mrow> </mfenced> <mo>=</mo> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mi>real</mi> <mi>return</mi> </mrow> </mfenced> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mi>risk</mi> <mi>premium</mi> </mrow> </mfenced> </mrow> </semantics> </math>.<span class="cfa-curriculum-display-formula-number">14</span></div>
+<p>実質リターンは、インフレ率が時間とともに変動する可能性があるため、異なる期間のリターンを比較する際に特に有用である。また、各国でインフレ率が異なる（通常そうである）場合、現地通貨ベースのリターンを比較する際にも有用である。</p>
+<p>最後に、税引後実質リターン（after-tax real return）は、投資収益に対する税金を支払った後に、消費の先送りとリスク負担に対する補償として投資家が受け取るものである。その結果、税引後実質リターンは投資意思決定のための信頼できるベンチマークとなる。ただし、これは投資家のベンチマーク・リターンの指標ではあるが、すべての投資家に共通する税要素を推定することが困難であるため、資産運用会社によって一般的に計算されることは少ない。例えば、税要素は投資家ごとの税率（限界税率, marginal tax rate）、保有期間（長期か短期か）、および資産が保有される口座の種類（非課税口座, tax-exempt、課税繰延口座, tax-deferred、通常口座）に依存する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s06-EXM-1-14">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例14 特殊なリターンの計算</h4>
+<section>
+<p>例8に戻ろう。本節を読んだ後、Lohrmann氏は、ファンドの規模が小さいことにより競争上不利になるため、資産運用手数料やその他の費用を含めて評価するのは公平ではないと判断した。また、このファンドは運用者のパフォーマンスとは無関係に、毎年固定で50万ユーロの費用を支出していることを知った。</p>
+<p>Lohrmann氏は、税金とインフレの両方が自身のリターンを減少させる可能性について懸念を抱くようになった。現行の税制に基づき、投資収益に対して20%の税金を支払うと予想している。歴史的にインフレ率は約2%であり、今後も同程度が維持されると予想している。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>固定費用を加え戻すことで、1年目の年率gross returnを推定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>1年目のgross returnは、ファンドが報告した投資家リターン15%よりも1.67%（= EUR500,000/EUR30,000,000）高い。したがって、1年目のgross returnは16.67%（= 15% + 1.67%）である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>Rhein Valley Superior Fundの投資家が5年間で得たnet returnはいくらか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>投資信託が報告する投資家リターンは、すべての直接・間接費用を控除した後のファンドのnet returnである。また、このnet returnは税金やインフレの調整を行っていないため、税引前名目リターンでもある。例8より、5年間の保有期間におけるnet returnは42.35%である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>Rhein Valley Superior Fundから投資家が1年目に得た税引後net returnはいくらか。すべての利益は年末に実現され、その時点で即座に税金が支払われると仮定する。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>投資家が1年目に得たnet returnは15%である。20%の税率を適用すると、投資家に帰属する税引後リターンは12%［= 15% − (0.20 × 15%)］となる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>投資家が5年目に得た税引後実質リターンはいくらか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>投資家が5年目に得た税引後リターンは2.4%［= 3% − (0.20 × 3%)］である。インフレによりリターンは2%減少するため、税引後実質リターンは0.39%となる（以下に示す通り）。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___1"><math> <semantics> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>2.40</mn> <mi>%</mi> </mrow> </mfenced> </mrow> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>2.00</mn> <mi>%</mi> </mrow> </mfenced> </mrow> </mfrac> </mstyle> <mo>−</mo> <mn>1</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.0240</mn> </mrow> </mfenced> </mrow> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.0200</mn> </mrow> </mfenced> </mrow> </mfrac> </mstyle> <mo>−</mo> <mn>1</mn> <mo>=</mo> <mn>1.0039</mn> <mo>−</mo> <mn>1</mn> <mo>=</mo> <mn>0.0039</mn> <mo>=</mo> <mn>0.39</mn> <mi>%</mi> </mrow> </semantics> </math>.</div>
+<p>税金はインフレ調整の前に支払われる点に注意する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA2401-R-s06-01-04">
+<h3 class="dp-heading">レバレッジド・リターン（Leveraged Return）</h3>
+<p>これまでの計算では、投資家のポジションは自己資金による投資額と等しいと仮定していた。本節では、投資家がレバレッジポジションを構築する場合を扱う。</p>
+<p>自己資金以上の資産リターンに対する請求権を生み出す方法は2つある。第一に、投資家は先物契約（futures contracts）を取引することができ、この場合、ポジションを取るために必要な資金は資産の想定元本（notional value）の10%程度で済むことがある。この場合、レバレッジド・リターン（自己資金に対するリターン）は基礎資産の実際のリターンの10倍となる。利益も損失も10倍に増幅される。</p>
+<p>投資家はまた、借入によって自己資金以上の投資を行うこともできる。この方法は株式や債券で容易に実行でき、不動産投資では非常に一般的である。投資額の半分（50%）を借入で賄った場合、投資家のgross returnは2倍になるが、借入金に対する利息を差し引いてnet returnを計算する必要がある。</p>
+<p>借入資本（debt）を用いると、レバレッジ・ポジションの規模は追加の借入資本によって拡大する。レバレッジ・ポートフォリオの総投資リターンR_Pが借入コストr_Dを上回る場合、レバレッジを取ることでポートフォリオのリターンは増加する。レバレッジ・ポートフォリオのリターンをR_Lとすると、そのリターンは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-16"><math> <semantics> <mrow> <msub> <mi>R</mi> <mi>L</mi> </msub> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>Portfolio return</mi> </mrow> <mrow> <mi>Portfolio equity</mi> </mrow> </mfrac> </mstyle> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mfenced close="]" open="["> <mrow> <msub> <mi>R</mi> <mi>P</mi> </msub> <mo>×</mo> <mfenced> <mrow> <msub> <mi>V</mi> <mi>E</mi> </msub> <mo>+</mo> <msub> <mi>V</mi> <mi>B</mi> </msub> </mrow> </mfenced> <mo>−</mo> <mfenced> <mrow> <msub> <mi>V</mi> <mi>B</mi> </msub> <mo> </mo> <mo>×</mo> <mo> </mo> <msub> <mi>r</mi> <mi>D</mi> </msub> </mrow> </mfenced> </mrow> </mfenced> </mrow> <mrow> <msub> <mi>V</mi> <mi>E</mi> </msub> </mrow> </mfrac> </mstyle> <mo>=</mo> <msub> <mi>R</mi> <mi>p</mi> </msub> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msub> <mi>V</mi> <mi>B</mi> </msub> </mrow> <mrow> <msub> <mi>V</mi> <mi>E</mi> </msub> </mrow> </mfrac> </mstyle> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> <mo>−</mo> <msub> <mi>r</mi> <mi>D</mi> </msub> </mrow> </mfenced> </mrow> </semantics> </math>,<span class="cfa-curriculum-display-formula-number">15</span></div>
+<p>ここで、V_Eはポートフォリオの自己資本（equity）、V_Bは負債または借入資金である。もしR_P &lt; r_Dであれば、レバレッジはR_Lを低下させる。</p>
+<p>例えば、1,000万ユーロのレバレッジ付き株式ポートフォリオが1年間で8%の総投資リターンR_Pを生み出し、そのうち30%が5%の金利で借入により賄われている場合、レバレッジ・リターンR_Lは次の通りである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___2"><math> <semantics> <mrow> <msub> <mi>R</mi> <mi>L</mi> </msub> <mo>=</mo> <msub> <mi>R</mi> <mi>p</mi> </msub> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msub> <mi>V</mi> <mi>B</mi> </msub> </mrow> <mrow> <msub> <mi>V</mi> <mi>E</mi> </msub> </mrow> </mfrac> </mstyle> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> <mo>−</mo> <msub> <mi>r</mi> <mi>D</mi> </msub> </mrow> </mfenced> <mo>=</mo> <mn>8</mn> <mi>%</mi> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>E</mi> <mi>U</mi> <mi>R</mi> <mn>3</mn> <mo> </mo> <mi>million</mi> <mo> </mo> </mrow> <mrow> <mi>E</mi> <mi>U</mi> <mi>R</mi> <mn>7</mn> <mo> </mo> <mi>million</mi> </mrow> </mfrac> </mstyle> <mfenced> <mrow> <mn>8</mn> <mi>%</mi> <mo>−</mo> <mn>5</mn> <mi>%</mi> </mrow> </mfenced> <mo>=</mo> <mn>8</mn> <mi>%</mi> <mo>+</mo> <mn>0.43</mn> <mo>×</mo> <mn>3</mn> <mi>%</mi> <mo>=</mo> <mn>9.29</mn> <mi>%</mi> </mrow> </semantics> </math>.</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s06-EXM-1-15">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例15 リターンの計算</h4>
+<section>
+<p>あるアナリストは、以下の資産クラスの過去の幾何平均リターン（geometric returns）を観測している：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s06-EXH-1-21">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 17<span style="display: block;">Asset Class Geometric Return</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">資産クラス（Asset Class）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">幾何平均リターン（%）（Geometric Return (%)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株式（Equities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">社債（Corporate Bonds）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">短期国債（Treasury bills）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">インフレ（Inflation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s06-Q5"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>株式の実質リターン（real rate of return）として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 5.4%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。株式の実質リターンは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___3">(1 + 0.080)/(1 + 0.0210) − 1 = 5.8%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 5.8%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。株式の実質リターンは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___3">(1 + 0.080)/(1 + 0.0210) − 1 = 5.8%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 5.9%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。株式の実質リターンは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___3">(1 + 0.080)/(1 + 0.0210) − 1 = 5.8%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s06-Q6"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>社債の実質リターンとして最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 4.3%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。社債の実質リターンは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___4">(1 + 0.065)/(1 + 0.0210) − 1 = 4.3%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 4.4%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。社債の実質リターンは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___4">(1 + 0.065)/(1 + 0.0210) − 1 = 4.3%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 4.5%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。社債の実質リターンは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___4">(1 + 0.065)/(1 + 0.0210) − 1 = 4.3%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s06-Q7"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>株式のリスクプレミアム（risk premium）として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 5.4%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。株式のリスクプレミアムは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___5">(1 + 0.080)/(1 + 0.0250) − 1 = 5.4%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 5.5%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。株式のリスクプレミアムは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___5">(1 + 0.080)/(1 + 0.0250) − 1 = 5.4%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 5.6%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。株式のリスクプレミアム（risk premium）は次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___5">(1 + 0.080)/(1 + 0.0250) − 1 = 5.4%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s06-Q8"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>社債のリスクプレミアムとして最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 3.5%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。社債のリスクプレミアムは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___6">(1 + 0.0650)/(1 + 0.0250) − 1 = 3.9%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 3.9%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。社債のリスクプレミアムは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___6">(1 + 0.0650)/(1 + 0.0250) − 1 = 3.9%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 4.0%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。社債のリスクプレミアムは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s06-E-1-___6">(1 + 0.0650)/(1 + 0.0250) − 1 = 3.9%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LeverageContent">
+<p>潜在的に影響力の大きい高レバレッジ点（high-leverage point）を特定するための指標。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144221_105_Annualized_Return.html" >← 前へ</a>
+  <span class="title">1.06 | Other Major Return Measures and Their Applications</span>
+  <a href="courses_1864_modules_items_144231_Glossary_Rates_and_Returns.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.03 | Tests of Return and Risk in Finance</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2406-R-s03-R-1" title="8.03 | Tests of Return and Risk in Finance"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール8：仮説検定（Hypothesis Testing） 8.03 | ファイナンスにおけるリターンとリスクの検定（Tests of Return and Risk in Finance）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">仮説検定を構築し、有意水準（significance level）が与えられたときに、その統計的有意性、関連するType I error（第I種の誤り）およびType II error（第II種の誤り）、ならびに検定の検出力（power of the test）を判定せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>リターンおよびリスクに関する仮説検定は、金融において最も一般的なものの一つである。母標準偏差が未知の場合、平均の標本分布は t分布（t-distributed）に従い、母標準偏差が既知の場合は正規分布（z分布）に従う。ほとんどの場合で母標準偏差は未知であるため、本節では t分布に基づく検定統計量の使用に焦点を当てる。</p>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="CFA2406-R-s03-B-1-a">
+<h3 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title">単一平均の検定：株式投資信託のリスク・リターン特性（Test of a Single Mean: Risk and Return Characteristics of an Equity Mutual Fund）</h3>
+<p>センダー株式ファンド（Sendar Equity Fund）を分析しているとする。過去24か月間において、平均月次リターンは1.50%、月次リターンの標本標準偏差は3.60%であった。市場リスク水準および価格モデル（pricing model）に基づくと、この投資信託の期待平均月次リターンは1.10%であった。</p>
+<p>リターンが正規分布に従うと仮定した場合、実際の結果は母平均月次リターン1.10%と整合的であるか。</p>
+<p>ファンドのパフォーマンスが価格モデルから推定される平均リターン1.1%と異なるかどうかを検定する仮説を設定し、検定せよ。有意水準5%を用いる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-EXH-1-5">
+<h4 class="cfa-curriculum-exhibit-table-title">図表5（Exhibit 5） 単一平均の検定</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仮説を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">H₀：μ = 1.1% に対し Hₐ：μ ≠ 1.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">適切な検定統計量を特定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m1"> <mrow> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mo>−</mo> <msub> <mi>μ</mi> <mn>0</mn> </msub> </mrow> <mrow> <mstyle displaystyle="true"> <mfrac bevelled="true"> <mi>s</mi> <mrow> <msqrt> <mi>n</mi> </msqrt> </mrow> </mfrac> </mstyle> </mrow> </mfrac> </mstyle> </mrow> </math> </span> <br/><br/>with 24 − 1 = 23 degrees of freedom.</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有意水準を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">α = 5%（両側検定）。</td>
+</tr>
+<tr>
+<td rowspan="9" style="text-align: left; vertical-align: top; padding: 8px;">ステップ4</td>
+<td rowspan="9" style="text-align: left; vertical-align: top; padding: 8px;">意思決定ルールを定める。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">臨界値 t = ±2.069</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された t統計量が −2.069 未満または +2.069 を超える場合、帰無仮説を棄却する。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>Excel</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">下限：T.INV(0.025, 23)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">上限：T.INV(0.975, 23)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">R：qt(c(.025, .975), 23)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Python：from scipy.stats import t</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">下限：t.ppf(.025, 23)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">上限：t.ppf(.975, 23)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">検定統計量を計算する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m2"> <mrow> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>1.5</mn> <mo>−</mo> <mn>1.1</mn> </mrow> <mrow> <mstyle displaystyle="true"> <mfrac bevelled="true"> <mrow> <mn>3.6</mn> </mrow> <mrow> <msqrt> <mrow> <mn>24</mn> </mrow> </msqrt> </mrow> </mfrac> </mstyle> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>0.54433</mn> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">意思決定を行う。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された t統計量が2つの臨界値の間にあるため、帰無仮説を棄却しない。母平均月次リターンが1.10%と異なることを示す十分な証拠はない。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>95%信頼区間を用いて仮説を検定する。</p>
+<p>The 95 percent confidence interval is <span class="cfa-curriculum-display-inline-formula"> <math id="m3"> <mrow> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mo>±</mo> <mtext>Critical value</mtext> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac> <mi>s</mi> <mrow> <msqrt> <mi>n</mi> </msqrt> </mrow> </mfrac> </mstyle> </mrow> </mfenced> <mo>,</mo> </mrow> </math> </span>so</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mfenced close="}" open="{"> <mrow> <mn>1.5</mn> <mo>−</mo> <mn>2.069</mn> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac bevelled="true"> <mrow> <mn>3.6</mn> </mrow> <mrow> <msqrt> <mrow> <mn>24</mn> </mrow> </msqrt> </mrow> </mfrac> </mstyle> </mrow> </mfenced> <mo>,</mo> <mtext> </mtext> <mn>1.5</mn> <mo>+</mo> <mn>2.069</mn> <mfenced> <mrow> <mstyle displaystyle="true"> <mfrac bevelled="true"> <mrow> <mn>3.6</mn> </mrow> <mrow> <msqrt> <mrow> <mn>24</mn> </mrow> </msqrt> </mrow> </mfrac> </mstyle> </mrow> </mfenced> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mfenced close="}" open="{"> <mrow> <mn>1.5</mn> <mo>−</mo> <mn>1.5204</mn> <mtext>, </mtext> <mn>1.5</mn> <mo>+</mo> <mn>1.5204</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mfenced close="}" open="{"> <mrow> <mo>−</mo> <mn>0.0204</mn> <mtext>, 3</mtext> <mtext>.0204</mtext> </mrow> </mfenced> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>仮定された値1.1%は95%信頼区間の範囲内にあるため、帰無仮説を棄却しない。</p>
+</div>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="CFA2406-R-s03-B-1-b">
+<h3 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title">単一分散の検定：株式投資信託のリスク特性（Test of a Single Variance: Risk Characteristics of an Equity Mutual Fund）</h3>
+<p>観測された標本分散を用いて、ファンドの真の分散がある基準値（例えば4%）未満であるかどうかを検定したいとする。母分散の検定では、仮定する分散の値を設定する必要がある。分散が特定の値に等しいか、あるいはその値より大きいか小さいかについて仮説を設定することができる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___1">One-sided alternative (left tail): <math> <semantics> <mrow> <msub> <mi>H</mi> <mn>0</mn> </msub> <mo>:</mo> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mo>≥</mo> <msubsup> <mi>σ</mi> <mn>0</mn> <mn>2</mn> </msubsup> <mtext> versus </mtext> <msub> <mi>H</mi> <mi>a</mi> </msub> <mo>:</mo> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mo>&lt;</mo> <msubsup> <mi>σ</mi> <mn>0</mn> <mn>2</mn> </msubsup> </mrow> </semantics> </math>.</div>
+<p>Note that the fund’s variance is less than the trigger level <span class="cfa-curriculum-display-inline-formula"> <math id="m6"> <mrow> <msubsup> <mi>σ</mi> <mn>0</mn> <mn>2</mn> </msubsup> <mo>=</mo> <mn>4</mn> <mi>%</mi> </mrow> </math> </span> if the null hypothesis is rejected in favor of the alternative hypothesis. In tests concerning the variance of a single normally distributed population, we make use of a chi-square test statistic, denoted <span class="cfa-curriculum-display-inline-formula"> <math id="m7"> <mrow> <msup> <mi>χ</mi> <mn>2</mn> </msup> </mrow> </math> </span>.</p>
+<p>センダー株式ファンドの分析を続ける。この中型成長ファンドは24か月の運用実績を持つ。この期間において、平均月次リターンは1.50%、標準偏差は3.60%であった。有意水準5%を用いて、リターンの標準偏差が4%未満であるかどうかを検定せよ。標準偏差は分散の平方根であるため、標準偏差4%（0.04）は分散0.0016に対応する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-EXH-1-6">
+<h4 class="cfa-curriculum-exhibit-table-title">図表6（Exhibit 6） 単一分散の検定</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仮説を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">H₀：σ² ≥ 16 に対し Hₐ：σ² &lt; 16</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">適切な検定統計量を特定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math display="inline" id="m8"> <mrow> <msup> <mi>χ</mi> <mn>2</mn> </msup> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <mi>n</mi> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <msup> <mi>s</mi> <mn>2</mn> </msup> </mrow> <mrow> <msubsup> <mi>σ</mi> <mn>0</mn> <mn>2</mn> </msubsup> </mrow> </mfrac> </mstyle> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有意水準を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5%</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;">ステップ4</td>
+<td rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;">意思決定ルールを定める。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">自由度 24 − 1 = 23 のもとで、臨界値は 13.09051 である。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された χ²統計量（chi-square statistic）が 13.09051 未満であれば、帰無仮説を棄却する。</td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td rowspan="3" style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Excel：CHISQ.INV(0.05, 23)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">R：qchisq(.05, 23)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Python：from scipy.stats import chi2　chi2.ppf(.05, 23)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">検定統計量を計算する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m9"> <mrow> <msup> <mi>χ</mi> <mn>2</mn> </msup> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <mn>24</mn> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <mn>12.96</mn> </mrow> <mrow> <mn>16</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>18.63000</mn> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">意思決定を行う。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Fail to reject the null hypothesis because the calculated <span class="cfa-curriculum-display-inline-formula"> <math id="m10"> <mrow> <msup> <mi>χ</mi> <mn>2</mn> </msup> </mrow> </math> </span> statistic is greater than the critical value. There is sufficient evidence to indicate that the variance is less than 16% (or, equivalently, that the standard deviation is less than 4%).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="CFA2406-R-s03-B-1-c">
+<h3 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title">独立標本に基づく平均差の検定（Test Concerning Differences between Means with Independent Samples）</h3>
+<p>我々はしばしば、平均値（例えば平均リターン）が2つのグループ間で異なるかどうかを知りたい。観測された差は偶然によるものなのか、それとも基礎となる平均値が異なるためなのか。この検定は、各グループから標本を抽出することで行う。標本が近似的に正規分布に従う母集団から得られており、かつ標本同士が独立であると考えられる場合、平均の差の検定を用いる。母分散が等しい場合と等しくない場合のいずれも考えられるが、本節では母分散が等しいと仮定する場合に焦点を当てる。検定統計量の計算では、両標本の観測値を統合し、共通の母分散の推定値（pooled estimate）を求める。</p>
+<p>μ₁ と μ₂ をそれぞれ第1母集団と第2母集団の平均とする。通常、我々は母平均が等しいか、あるいは一方が他方より大きいかを検定したい。したがって、次の仮説を設定する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___2"><em>H</em><sub>0</sub>: μ<sub>1</sub> − μ<sub>2</sub> = 0 versus <em>H<sub>a</sub> </em>: μ<sub>1</sub> − μ<sub>2</sub> ≠ 0.</div>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2406-R-s03-EXM-1-1">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例1：2期間におけるACEハイイールド・トータルリターン指数（ACE High Yield Total Return Index）のリターン比較</h3>
+<section>
+<p>図表7（Exhibit 7）に示されたACEハイイールド・トータルリターン指数のリターンについて、期間1と期間2の2つの異なる期間で差があるかどうかを検定したいとする。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-EXH-1-7">
+<h4 class="cfa-curriculum-exhibit-table-title">図表7（Exhibit 7） 期間1および期間2におけるACEハイイールド・トータルリターン指数の記述統計</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間1</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>Mean</strong></td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.01775%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.01134%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">標準偏差（Standard deviation）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.31580%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.38760%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">標本サイズ（Sample size）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">445日</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">859日</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>これらの期間は長さが異なり、標本は独立であることに注意する。すなわち、2つの期間において日次データの対応関係はない。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>有意水準5%を用いて、期間1と期間2の平均日次リターンに差があるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仮説を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">H₀：μ（期間1）＝ μ（期間2） に対し Hₐ：μ（期間1）≠ μ（期間2）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">適切な検定統計量を特定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m11"> <mrow> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <msub> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mrow> <mi>P</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>1</mn> </mrow> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mrow> <mi>P</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>2</mn> </mrow> </msub> <mo stretchy="false">)</mo> <mo>−</mo> <mo stretchy="false">(</mo> <msub> <mi>μ</mi> <mrow> <mi>P</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>1</mn> </mrow> </msub> <mo>−</mo> <msub> <mi>μ</mi> <mrow> <mi>P</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>2</mn> </mrow> </msub> <mo stretchy="false">)</mo> </mrow> <mrow> <msqrt> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mi>s</mi> <mi>p</mi> <mn>2</mn> </msubsup> </mrow> <mrow> <msub> <mi>n</mi> <mrow> <mi>p</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>1</mn> </mrow> </msub> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mi>s</mi> <mi>p</mi> <mn>2</mn> </msubsup> </mrow> <mrow> <msub> <mi>n</mi> <mrow> <mi>p</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>2</mn> </mrow> </msub> </mrow> </mfrac> </mstyle> </mrow> </msqrt> </mrow> </mfrac> </mstyle> <mo>,</mo> </mrow> </math> </span> <br/><br/>where <span class="cfa-curriculum-display-inline-formula"> <math id="m12"> <mrow> <msubsup> <mi>s</mi> <mi>p</mi> <mn>2</mn> </msubsup> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <msub> <mi>n</mi> <mrow> <mi>p</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>1</mn> </mrow> </msub> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <msubsup> <mi>s</mi> <mrow> <mi>P</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>1</mn> </mrow> <mn>2</mn> </msubsup> <mo>+</mo> <mo stretchy="false">(</mo> <msub> <mi>n</mi> <mrow> <mi>p</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>2</mn> </mrow> </msub> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <msubsup> <mi>s</mi> <mrow> <mi>P</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>2</mn> </mrow> <mn>2</mn> </msubsup> </mrow> <mrow> <msub> <mi>n</mi> <mrow> <mi>p</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>1</mn> </mrow> </msub> <mo>+</mo> <msub> <mi>n</mi> <mrow> <mi>p</mi> <mi>e</mi> <mi>r</mi> <mi>i</mi> <mi>o</mi> <mi>d</mi> <mn>2</mn> </mrow> </msub> <mo>−</mo> <mn>2</mn> </mrow> </mfrac> </mstyle> </mrow> </math> </span> <br/><br/>with 445 + 859 − 2 = 1,302 degrees of freedom.</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有意水準を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">α = 5%</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;">ステップ4</td>
+<td rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;">意思決定ルールを定める。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">臨界値 t = ±1.962</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された t統計量（t-statistic）が −1.962 未満、または +1.962 を超える場合、帰無仮説を棄却する。</td>
+</tr>
+<tr>
+<td rowspan="7" style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td rowspan="7" style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>Excel</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">下限：T.INV(0.025, 1302)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">上限：T.INV(0.975, 1302)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">R：qt(c(.025, .975), 1302)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Python：from scipy.stats import t</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">下限：t.ppf(.025, 1302)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">上限：t.ppf(.975, 1302)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">検定統計量を計算する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m13"> <mtable columnalign="left"> <mtr> <mtd> <msubsup> <mi>s</mi> <mi>p</mi> <mn>2</mn> </msubsup> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <mn>445</mn> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <mn>0.09973</mn> <mo>+</mo> <mo stretchy="false">(</mo> <mn>859</mn> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <mn>0.15023</mn> </mrow> <mrow> <mn>445</mn> <mo>+</mo> <mn>859</mn> <mo>−</mo> <mn>2</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>0.1330</mn> </mtd> </mtr> <mtr> <mtd> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <mn>0.01775</mn> <mo>−</mo> <mn>0.01134</mn> <mo stretchy="false">)</mo> <mo>−</mo> <mn>0</mn> </mrow> <mrow> <msqrt> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.1330</mn> </mrow> <mrow> <mn>445</mn> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.1330</mn> </mrow> <mrow> <mn>859</mn> </mrow> </mfrac> </mstyle> </mrow> </msqrt> </mrow> </mfrac> </mstyle> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.0064</mn> </mrow> <mrow> <mn>0.0213</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>0.3009.</mn> </mtd> </mtr> </mtable> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">意思決定を行う。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された t統計量が2つの臨界値の範囲内にあるため、帰無仮説を棄却しない。2つの期間においてリターンが異なることを示す十分な証拠はないと結論づける。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<section id="CFA2406-R-s03-01-01">
+<h3 class="dp-heading">従属標本に基づく平均差の検定（Test Concerning Differences between Means with Dependent Samples）</h3>
+<p>独立標本を比較する場合には、平均の差とプールされた分散（pooled variance）を用いる t分布に基づく検定統計量を使用する。これらの検定が有効であるための前提は、標本が独立であることである。すなわち、互いに無関係である必要がある。標本が従属していると考えられる場合には、差の平均の検定（対応のある比較検定（paired comparisons test））を用いる。</p>
+<p>この対応のある差の検定は、独立標本における平均差の検定とどのように異なるのか。対応のある比較検定は、同一の要素（例えば同じ期間や同じ企業）を用いることによって、検定対象とは無関係な要因による標本間の変動を除去するため、平均差の検定よりも検出力が高い。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2406-R-s03-EXM-1-2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2：2つの指数のリターン比較（A Comparison of the Returns of Two Indexes）</h4>
+<section>
+<p>ACEハイイールド指数（ACE High Yield Index）とACE BBB指数（ACE BBB Index）のリターンを比較したいとする。両指数について同じ1,304日間のデータを収集し、図表8（Exhibit 8）に示すように平均と標準偏差を計算する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-EXH-1-8">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 8<span style="display: block;">Mean and Standard Deviations for the ACE High Yield Index and the ACE BBB Index</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ACEハイイールド指数（%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ACE BBB指数（%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">差（%）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">平均リターン（Mean return）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0157</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0135</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−0.0021</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">標準偏差（Standard deviation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3157</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3645</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3622</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>有意水準5%を用いて、差の平均がゼロと異なるかどうかを検定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仮説を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">H₀：μ_d = 0 に対し Hₐ：μ_d ≠ 0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">適切な検定統計量を特定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math display="inline" id="m14"> <mrow> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mover accent="true"> <mi>d</mi> <mo>¯</mo> </mover> <mo>−</mo> <msub> <mi>μ</mi> <mrow> <mi>d</mi> <mn>0</mn> </mrow> </msub> </mrow> <mrow> <msub> <mi>s</mi> <mover accent="true"> <mi>d</mi> <mo>¯</mo> </mover> </msub> </mrow> </mfrac> </mstyle> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有意水準を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5%</td>
+</tr>
+<tr>
+<td rowspan="9" style="text-align: left; vertical-align: top; padding: 8px;">ステップ4</td>
+<td rowspan="9" style="text-align: left; vertical-align: top; padding: 8px;">意思決定ルールを定める。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">自由度 1,304 − 1 = 1,303 のもとで、臨界値は ±1.962 である。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された t統計量（t-statistic）が −1.962 未満または +1.962 を超える場合、帰無仮説を棄却する。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>Excel</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">下限：T.INV(0.025, 1303)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">上限：T.INV(0.975, 1303)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">R：qt(c(.025, .975), 1303)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Python：from scipy.stats import t</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">下限：t.ppf(.025, 1303)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">上限：t.ppf(.975, 1303)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">検定統計量を計算する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math display="inline" id="m15"> <mtable columnalign="left"> <mtr> <mtd> <mover accent="true"> <mi>d</mi> <mo>¯</mo> </mover> <mo>=</mo> <mo>−</mo> <mn>0.0021</mn> <mi>%</mi> </mtd> </mtr> <mtr> <mtd> <msub> <mi>s</mi> <mover accent="true"> <mi>d</mi> <mo>¯</mo> </mover> </msub> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msub> <mi>s</mi> <mi>d</mi> </msub> </mrow> <mrow> <msqrt> <mi>n</mi> </msqrt> </mrow> </mfrac> </mstyle> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.3622</mn> </mrow> <mrow> <msqrt> <mrow> <mn>1</mn> <mo>,</mo> <mn>304</mn> </mrow> </msqrt> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>0.01003</mn> <mi>%</mi> </mtd> </mtr> <mtr> <mtd> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo>−</mo> <mn>0.00210</mn> <mo>−</mo> <mn>0</mn> </mrow> <mrow> <mn>0.01003</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mo>−</mo> <mn>0.20937</mn> </mtd> </mtr> </mtable> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">意思決定を行う。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された t統計量が2つの臨界値の範囲内にあるため、帰無仮説を棄却しない。リターンの差の平均がゼロと異なることを示す十分な証拠はない。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA2406-R-s03-01-02">
+<h3 class="dp-heading">2つの分散の等しさに関する検定（Test Concerning the Equality of Two Variances）</h3>
+<p>2つの標本のボラティリティを比較したい場合が多く、その場合には2つの分散の等しさを検定することができる。例としては、証券のバスケットと指数やベンチマークとの比較、あるいは異なる期間におけるボラティリティの比較などが挙げられる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2406-R-s03-EXM-1-3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例3：ボラティリティと規制（Volatility and Regulation）</h4>
+<section>
+<p>市場規制の変更後に、株価指数のリターンの母分散が変化したかどうかを調査しているとする。最初の418週間は規制変更前、次の418週間は規制変更後である。規制変更の前後それぞれについて418週間分のリターンデータを図表9（Exhibit 9）にまとめた。有意水準は5%とする。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-EXH-1-9">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 9<span style="display: block;">Index Returns and Variances before and after the Market Regulation Change</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>N</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">平均週次リターン（Mean Weekly Return）（%）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターンの分散（Variance of Returns）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">規制変更前（Before regulation change）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">418</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.250</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">4.644</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">規制変更後（After regulation change）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">418</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.110</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">3.919</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>規制変更前と変更後でリターンの分散は異なるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-T-1-c">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仮説を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m16"> <mrow> <msub> <mi>H</mi> <mn>0</mn> </msub> <mo>:</mo> <msubsup> <mi>σ</mi> <mrow> <mi>B</mi> <mi>e</mi> <mi>f</mi> <mi>o</mi> <mi>r</mi> <mi>e</mi> </mrow> <mn>2</mn> </msubsup> <mo>=</mo> <msubsup> <mi>σ</mi> <mrow> <mi>A</mi> <mi>f</mi> <mi>t</mi> <mi>e</mi> <mi>r</mi> </mrow> <mn>2</mn> </msubsup> <mtext> versus </mtext> <msub> <mi>H</mi> <mi>a</mi> </msub> <mo>:</mo> <msubsup> <mi>σ</mi> <mrow> <mi>B</mi> <mi>e</mi> <mi>f</mi> <mi>o</mi> <mi>r</mi> <mi>e</mi> </mrow> <mn>2</mn> </msubsup> <mo>≠</mo> <msubsup> <mi>σ</mi> <mrow> <mi>A</mi> <mi>f</mi> <mi>t</mi> <mi>e</mi> <mi>r</mi> </mrow> <mn>2</mn> </msubsup> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">適切な検定統計量を特定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m17"> <mrow> <mi>F</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mi>s</mi> <mrow> <mi>B</mi> <mi>e</mi> <mi>f</mi> <mi>o</mi> <mi>r</mi> <mi>e</mi> </mrow> <mn>2</mn> </msubsup> </mrow> <mrow> <msubsup> <mi>s</mi> <mrow> <mi>A</mi> <mi>f</mi> <mi>t</mi> <mi>e</mi> <mi>r</mi> </mrow> <mn>2</mn> </msubsup> </mrow> </mfrac> </mstyle> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有意水準を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5%</td>
+</tr>
+<tr>
+<td rowspan="9" style="text-align: left; vertical-align: top; padding: 8px;">ステップ4</td>
+<td rowspan="9" style="text-align: left; vertical-align: top; padding: 8px;">意思決定ルールを定める。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">自由度 418 − 1 = 417 および 418 − 1 = 417 のもとで、臨界値は 0.82512 および 1.21194 である。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された F統計量（F-statistic）が 0.82512 未満または 1.21194 を超える場合、帰無仮説を棄却する。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>Excel</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">左側：F.INV(0.025, 417, 417)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">右側：F.INV(0.975, 417, 417)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">R：qf(c(.025, .975), 417, 417)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Python：from scipy.stats import f</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">左側：f.ppf(.025, 417, 417)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">右側：f.ppf(.975, 417, 417)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">検定統計量を計算する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m18"> <mrow> <mi>F</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>4.644</mn> </mrow> <mrow> <mn>3.919</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>1.18500</mn> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">意思決定を行う。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された F統計量（F-statistic）が2つの臨界値の範囲内にあるため、帰無仮説を棄却しない。規制変更前後で週次リターンの分散が異なることを示す十分な証拠はない。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>規制変更前のリターンの分散は、規制変更後よりも大きいか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-T-1-d">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仮説を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m19"> <mrow> <msub> <mi>H</mi> <mn>0</mn> </msub> <mo>:</mo> <msubsup> <mi>σ</mi> <mrow> <mi>B</mi> <mi>e</mi> <mi>f</mi> <mi>o</mi> <mi>r</mi> <mi>e</mi> </mrow> <mn>2</mn> </msubsup> <mo>≤</mo> <msubsup> <mi>σ</mi> <mrow> <mi>A</mi> <mi>f</mi> <mi>t</mi> <mi>e</mi> <mi>r</mi> </mrow> <mn>2</mn> </msubsup> <mtext> versus </mtext> <msub> <mi>H</mi> <mi>a</mi> </msub> <mo>:</mo> <msubsup> <mi>σ</mi> <mrow> <mi>B</mi> <mi>e</mi> <mi>f</mi> <mi>o</mi> <mi>r</mi> <mi>e</mi> </mrow> <mn>2</mn> </msubsup> <mo>&gt;</mo> <msubsup> <mi>σ</mi> <mrow> <mi>A</mi> <mi>f</mi> <mi>t</mi> <mi>e</mi> <mi>r</mi> </mrow> <mn>2</mn> </msubsup> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ2</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">適切な検定統計量を特定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m20"> <mrow> <mi>F</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mi>s</mi> <mrow> <mi>B</mi> <mi>e</mi> <mi>f</mi> <mi>o</mi> <mi>r</mi> <mi>e</mi> </mrow> <mn>2</mn> </msubsup> </mrow> <mrow> <msubsup> <mi>s</mi> <mrow> <mi>A</mi> <mi>f</mi> <mi>t</mi> <mi>e</mi> <mi>r</mi> </mrow> <mn>2</mn> </msubsup> </mrow> </mfrac> </mstyle> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ3</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有意水準を設定する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5%</td>
+</tr>
+<tr>
+<td rowspan="5" style="text-align: left; vertical-align: top; padding: 8px;">ステップ4</td>
+<td rowspan="5" style="text-align: left; vertical-align: top; padding: 8px;">意思決定ルールを定める。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">自由度 418 − 1 = 417 および 418 − 1 = 417 のもとで、臨界値は 1.17502 である。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された F統計量（F-statistic）が 1.17502 を上回る場合、帰無仮説を棄却する。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Excel：F.INV(0.95, 417, 417)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">R：qf(.95, 417, 417)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Python：from scipy.stats import f　f.ppf(.95, 417, 417)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ5</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">検定統計量を計算する。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m21"> <mrow> <mi>F</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>4.644</mn> </mrow> <mrow> <mn>3.919</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>1.18500</mn> </mrow> </math> </span></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ステップ6</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">意思決定を行う。</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">計算された F統計量が 1.17502 を上回っているため、帰無仮説を棄却する。規制変更前の週次リターンの分散が、規制変更後よりも大きいことを示す十分な証拠がある。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2406-R-s03-B-1-d">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット（Question Set）</h4>
+<section>
+<p>投資アナリストはしばしば1株当たり利益（EPS: earnings per share）の予測を行う。予測の質を評価する一つの検定がゼロ平均検定（zero-mean test）であり、最適な予測では予測誤差の平均がゼロであるべきとされる。予測誤差とは、変数の予測値と実際の値との差である。</p>
+<p>2人のアナリストについてデータ（図表10（Exhibit 10））を収集した。アナリストAは通信業界（telecom industry）を担当し、アナリストBは自動車部品およびサプライヤー（automotive parts and suppliers）を担当している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-EXH-1-10">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 10<span style="display: block;">Test of Return and Risk</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: center; vertical-align: bottom; padding: 8px;">四半期EPS予測のパフォーマンス（Performance in Forecasting Quarterly Earnings per Share）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">予測数（Number of Forecasts）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">平均予測誤差（予測値 − 実績値）（Mean Forecast Error (Predicted − Actual)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">予測誤差の標準偏差（Standard Deviation of Forecast Errors）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">アナリストA（Analyst A）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.05</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.10</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">アナリストB（Analyst B）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">15</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.02</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.09</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>臨界t値（critical t-values）:</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-T-1-e">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;">自由度（Degrees of Freedom）</th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">右側棄却域（Area in the Right-Side Rejection Area）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">p = 0.05</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">p = 0.025</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.860</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.306</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.833</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.262</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.812</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.228</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.796</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.201</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">12</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.782</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.179</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">13</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.771</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.160</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">14</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.761</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.145</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">15</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.753</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.131</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">16</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.746</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.120</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">17</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.740</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.110</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">18</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.734</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.101</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">19</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.729</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.093</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">20</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.725</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.086</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">21</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.721</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.080</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">22</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.717</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.074</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">23</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.714</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.069</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">24</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.711</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.064</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">25</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.708</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.060</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">26</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.706</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.056</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">27</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.703</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2.052</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>母平均の予測誤差をμとすると、予測の質に関する平均ゼロ検定の帰無仮説と対立仮説を定式化せよ。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2406-R-s03-L1">
+<li class="cfa-curriculum-list-item">アナリストA（Analyst A）について、有意水準0.05で帰無仮説を棄却するか判断せよ。</li>
+<li class="cfa-curriculum-list-item">アナリストB（Analyst B）について、有意水準0.05で帰無仮説を棄却するか判断せよ。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>H₀: μ = 0 に対して Hₐ: μ ≠ 0。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2406-R-s03-L2">
+<li class="cfa-curriculum-list-item">
+<p>The t-test is based on <span class="cfa-curriculum-display-inline-formula"> <math display="inline" id="m22"> <mrow> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mo>−</mo> <msub> <mi>μ</mi> <mtext>0</mtext> </msub> </mrow> <mrow> <mrow> <mi>s</mi> <mo>/</mo> <mrow> <msqrt> <mi>n</mi> </msqrt> </mrow> </mrow> </mrow> </mfrac> </mstyle> </mrow> </math> </span> with n − 1 = 10 − 1 = 9 degrees of freedom. At the 0.05 significance level, we reject the null if the calculated t-statistic is outside the bounds of ±2.262 (from the table for 9 degrees of freedom and 0.025 in the right side of the distribution). For Analyst A, we have a calculated test statistic of</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___3"><math> <semantics> <mrow> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.05</mn> <mo>−</mo> <mn>0</mn> </mrow> <mrow> <mstyle displaystyle="true"> <mfrac bevelled="true"> <mrow> <mn>0.10</mn> </mrow> <mrow> <msqrt> <mrow> <mn>10</mn> </mrow> </msqrt> </mrow> </mfrac> </mstyle> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>1.58114</mn> </mrow> </semantics> </math>.</div>
+<p>したがって、有意水準0.05では帰無仮説を棄却できない。</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>アナリストB（Analyst B）について、t検定は自由度15 − 1 = 14のt分布に基づく。有意水準0.05では、計算されたt統計量が±2.145の範囲外であれば帰無仮説を棄却する（自由度14の表より）。計算された検定統計量は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___4"><math> <semantics> <mrow> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.02</mn> <mo>−</mo> <mn>0</mn> </mrow> <mrow> <mstyle displaystyle="true"> <mfrac bevelled="true"> <mrow> <mn>0.09</mn> </mrow> <mrow> <msqrt> <mrow> <mn>15</mn> </mrow> </msqrt> </mrow> </mfrac> </mstyle> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>0.86066</mn> </mrow> </semantics> </math>.</div>
+<p>0.86066は±2.145の範囲内にあるため、有意水準0.05では帰無仮説を棄却できない。</p>
+</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>アナリストA（Analyst A）およびアナリストB（Analyst B）のEPS予測パフォーマンスデータを検討し、アナリストAの平均予測誤差がアナリストBに比べて大きいのが偶然によるものか、それともアナリストAの基礎的な平均値がより高いためかを調べたいとする。両アナリストの予測誤差は正規分布に従い、サンプルは独立であると仮定する。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2406-R-s03-L3">
+<li class="cfa-curriculum-list-item">アナリストAの予測誤差の母平均（μ₁）がアナリストBの母平均（μ₂）より大きいかどうかを判定するための帰無仮説と対立仮説を定式化せよ。</li>
+<li class="cfa-curriculum-list-item">パートAで定式化した帰無仮説を検定するための検定統計量を特定せよ。</li>
+<li class="cfa-curriculum-list-item">有意水準0.05におけるパートAの仮説の棄却点を特定せよ。</li>
+<li class="cfa-curriculum-list-item">有意水準0.05において帰無仮説を棄却するか判断せよ。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2406-R-s03-L4">
+<li class="cfa-curriculum-list-item">
+<p>想定される状態を対立仮説として表すと、次のようになる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___5"><em>H</em><sub>0</sub>: μ<em><sub>A</sub> </em> − μ<em><sub>B</sub> </em> ≤ 0 versus <em>H<sub>a</sub> </em>: μ<em><sub>A</sub> </em> − μ<em><sub>B</sub> </em> &gt; 0,</div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>μA = アナリストAの予測誤差の母平均値</li>
+<li>μB = アナリストBの予測誤差の母平均値</li>
+</ul>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>分散が未知の2つの正規分布母集団を考える。サンプルに基づくと、母分散は等しいと仮定するのが妥当である。サンプルは独立であると仮定される。この仮定は、アナリストが異なる業界を担当しているため妥当である。適切な検定統計量は、共通分散のプール推定値（pooled estimate of the common variance）を用いたtである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___6"><math> <semantics> <mrow> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <msub> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mn>1</mn> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>X</mi> <mo>¯</mo> </mover> <mn>2</mn> </msub> <mo stretchy="false">)</mo> <mo>−</mo> <mo stretchy="false">(</mo> <msub> <mi>μ</mi> <mn>1</mn> </msub> <mo>−</mo> <msub> <mi>μ</mi> <mn>2</mn> </msub> <mo stretchy="false">)</mo> </mrow> <mrow> <msqrt> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mi>s</mi> <mi>p</mi> <mn>2</mn> </msubsup> </mrow> <mrow> <msub> <mi>n</mi> <mn>1</mn> </msub> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mi>s</mi> <mi>p</mi> <mn>2</mn> </msubsup> </mrow> <mrow> <msub> <mi>n</mi> <mn>2</mn> </msub> </mrow> </mfrac> </mstyle> </mrow> </msqrt> </mrow> </mfrac> </mstyle> <mo>,</mo> </mrow> </semantics> </math> where <math> <semantics> <mrow> <msubsup> <mi>s</mi> <mi>p</mi> <mn>2</mn> </msubsup> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <msub> <mi>n</mi> <mn>1</mn> </msub> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <msubsup> <mi>s</mi> <mn>1</mn> <mn>2</mn> </msubsup> <mo>+</mo> <mo stretchy="false">(</mo> <msub> <mi>n</mi> <mn>2</mn> </msub> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <msubsup> <mi>s</mi> <mn>2</mn> <mn>2</mn> </msubsup> </mrow> <mrow> <msub> <mi>n</mi> <mn>1</mn> </msub> <mo>+</mo> <msub> <mi>n</mi> <mn>2</mn> </msub> <mo>−</mo> <mn>2</mn> </mrow> </mfrac> </mstyle> </mrow> </semantics> </math>.</div>
+<p>自由度は nA + nB − 2 = 10 + 15 − 2 = 23 である。</p>
+</li>
+<li class="cfa-curriculum-list-item">自由度23の場合、表によると有意水準0.05の片側検定（右側）における棄却点は1.714である。</li>
+<li class="cfa-curriculum-list-item">
+<p>まず、分散のプール推定値を計算する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___7"><math> <semantics> <mrow> <msubsup> <mi>s</mi> <mi>p</mi> <mn>2</mn> </msubsup> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <mn>10</mn> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <mn>0.01</mn> <mo>+</mo> <mo stretchy="false">(</mo> <mn>15</mn> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> <mn>0.0081</mn> </mrow> <mrow> <mn>10</mn> <mo>+</mo> <mn>15</mn> <mo>−</mo> <mn>2</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>0.0088435</mn> </mrow> </semantics> </math>.</div>
+<p>次に、t分布に従う検定統計量を計算する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___8"><math> <semantics> <mrow> <mi>t</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mo stretchy="false">(</mo> <mn>0.05</mn> <mo>−</mo> <mn>0.02</mn> <mo stretchy="false">)</mo> <mo>−</mo> <mn>0</mn> </mrow> <mrow> <msqrt> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.0088435</mn> </mrow> <mrow> <mn>10</mn> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.0088435</mn> </mrow> <mrow> <mn>15</mn> </mrow> </mfrac> </mstyle> </mrow> </msqrt> </mrow> </mfrac> </mstyle> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.03</mn> </mrow> <mrow> <mn>0.0383916</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>0.78142.</mn> </mrow> </semantics> </math></div>
+<p>0.78142 &lt; 1.714であるため、帰無仮説を棄却できない。アナリストAの平均がアナリストBを上回ることを示す十分な証拠はない。</p>
+</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section>
+<p>ある投資コンサルタント（investment consultant）が、米国および欧州の絶対リターン型ヘッジファンド（absolute return hedge funds）の5年間パフォーマンスデータについて、それぞれ独立した無作為標本を収集した。米国のマネージャーが50bpsのリターン優位性を持つことに着目し、2つの平均が互いに異なるかどうかを有意水準0.05で検定することにした。2つの母集団は分散が未知だが等しい正規分布に従うと仮定する。仮説検定の結果は図表11（Exhibit 11）に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-EXH-1-11">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 11<span style="display: block;">Hypothesis Test Results</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">標本サイズ（Sample Size）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">平均リターン（Mean Return (%))</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">標準偏差（Standard Deviation）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">米国のマネージャー（US managers）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">欧州のマネージャー（European managers）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.8</td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">帰無仮説と対立仮説（Null and alternative hypotheses）</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">H₀: μUS − μE = 0；Hₐ: μUS − μE ≠ 0</td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">計算された検定統計量（Calculated test statistic）</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">0.4893</td>
+</tr>
+<tr>
+<td colspan="2" style="text-align: left; vertical-align: top; padding: 8px;">臨界値（棄却点）（Critical value rejection points）</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">±1.984</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：米国ファンドの平均リターンはμUS、欧州ファンドの平均リターンはμEである。</p>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2406-R-s03-Q7"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>コンサルタントは次のように結論づけるべきである：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 帰無仮説は棄却されない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。計算されたt統計量0.4893は、臨界t値±1.984の範囲内にある。したがって、H₀は棄却できず、この結果は有意水準0.05では統計的に有意ではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 対立仮説は統計的に確認される。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。計算されたt統計量0.4893は、臨界t値±1.984の範囲内にある。したがって、H₀は棄却できず、この結果は有意水準0.05では統計的に有意ではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 平均リターンの差はゼロと統計的に異なる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。計算されたt統計量0.4893は、臨界t値±1.984の範囲内にある。したがって、H₀は棄却できず、この結果は有意水準0.05では統計的に有意ではない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>ある10年間の期間において、あなたが分析しているポートフォリオの年次リターンの標準偏差は年率15%であった。この実績が、当該ポートフォリオの基礎となるリターン分散が400（ベンチマークのリターン分散）未満であるという結論を支持する十分な証拠となるかを確認したい。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2406-R-s03-L5">
+<li class="cfa-curriculum-list-item">あなたの目的に整合的な帰無仮説と対立仮説を定式化せよ。</li>
+<li class="cfa-curriculum-list-item">パートAの仮説検定を実施するための検定統計量を特定し、自由度を計算せよ。</li>
+<li class="cfa-curriculum-list-item">臨界値3.325を用いて、有意水準0.05で帰無仮説を棄却するか否かを判断せよ。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2406-R-s03-L6">
+<li class="cfa-curriculum-list-item">「未満」の対立仮説を持つため、σ²をポートフォリオのリターン分散とすると、仮説は H₀: σ² ≥ 400 に対して Hₐ: σ² &lt; 400 となる。ここで400は仮定された分散の値である。これは棄却域が分布の左側にあることを意味する。</li>
+<li class="cfa-curriculum-list-item">検定統計量は自由度10 − 1 = 9のカイ二乗分布（chi-square distributed）に従う。</li>
+<li class="cfa-curriculum-list-item">
+<p>検定統計量は次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___9"><math> <semantics> <mrow> <msup> <mi>χ</mi> <mn>2</mn> </msup> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mfenced> <mrow> <mi>n</mi> <mo>−</mo> <mn>1</mn> </mrow> </mfenced> <msup> <mi>s</mi> <mn>2</mn> </msup> </mrow> <mrow> <msubsup> <mi>σ</mi> <mn>0</mn> <mn>2</mn> </msubsup> </mrow> </mfrac> </mstyle> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>9</mn> <mo>×</mo> <msup> <mrow> <mn>15</mn> </mrow> <mn>2</mn> </msup> </mrow> <mrow> <mn>400</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>2</mn> <mo>,</mo> <mn>025</mn> </mrow> <mrow> <mn>400</mn> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>5.0625</mn> <mtext> </mtext> <mo>,</mo> <mtext> or</mtext> <mtext> </mtext> <mtext> 5</mtext> <mtext>.06</mtext> <mtext>.</mtext> </mrow> </semantics> </math></div>
+</li>
+</ol>
+<p>5.06は3.325未満ではないため、帰無仮説は棄却されない；計算された検定統計量は臨界値の右側に位置し、この臨界値は左側の棄却域と帰無仮説を棄却しない領域を分けている。</p>
+<p>この検定の臨界値はソフトウェアを用いて求めることができる：</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2406-R-s03-L7">
+<li class="cfa-curriculum-list-item">Excel［CHISQ.INV(0.05,9)］</li>
+<li class="cfa-curriculum-list-item">［qchisq(.05,9)］</li>
+<li class="cfa-curriculum-list-item">Python［from scipy.stats import chi2 and chi2.ppf(.05,9)］</li>
+</ul>
+<p>計算された検定統計量17.0953のp値（p-value）は、ソフトウェアを用いて求めることができる：</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2406-R-s03-L8">
+<li class="cfa-curriculum-list-item">Excel［CHISQ.DIST(5.06,9,TRUE)］</li>
+<li class="cfa-curriculum-list-item">［pchisq(5.06,9,lower.tail=TRUE)］</li>
+<li class="cfa-curriculum-list-item">Python［from scipy.stats import chi2 and chi2.cdf(5.06,9)］</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>市場の混乱後に、ある指数のリターンの母分散が変化したかどうかを調査している。混乱前の120カ月間と混乱後の120カ月間のリターンについて、以下のデータを収集した。有意水準は0.05とする。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2406-R-s03-EXH-1-12">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 12<span style="display: block;">Data for 120 Months of Returns</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">期間（Time Period）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> <em>N</em> </strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">月次平均リターン（%）（Mean Monthly Return (%))</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">リターンの分散（Variance of Returns）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">混乱前（Before disruption）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">120</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.416</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">22.367</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">混乱後（After disruption）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">120</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.436</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">15.795</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2406-R-s03-L9">
+<li class="cfa-curriculum-list-item">研究目的に整合的な帰無仮説と対立仮説を定式化せよ。</li>
+<li class="cfa-curriculum-list-item">パートAの仮説検定を実施するための検定統計量を特定し、自由度を計算せよ。</li>
+<li class="cfa-curriculum-list-item">臨界値が0.6969および1.4349であるとき、有意水準0.05で帰無仮説を棄却するかどうかを判断せよ。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2406-R-s03-L10">
+<li class="cfa-curriculum-list-item">
+<p>対立仮説は「等しくない（not equal to）」である：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___10"><math> <semantics> <mrow> <msub> <mi>H</mi> <mn>0</mn> </msub> <mtext> </mtext> <mo>:</mo> <msubsup> <mi>σ</mi> <mrow> <mi>B</mi> <mi>e</mi> <mi>f</mi> <mi>o</mi> <mi>r</mi> <mi>e</mi> </mrow> <mn>2</mn> </msubsup> <mo>=</mo> <msubsup> <mi>σ</mi> <mrow> <mi>A</mi> <mi>f</mi> <mi>t</mi> <mi>e</mi> <mi>r</mi> </mrow> <mn>2</mn> </msubsup> <mtext> versus </mtext> <msub> <mi>H</mi> <mi>a</mi> </msub> <mtext> </mtext> <mo>:</mo> <msubsup> <mi>σ</mi> <mrow> <mi>B</mi> <mi>e</mi> <mi>f</mi> <mi>o</mi> <mi>r</mi> <mi>e</mi> </mrow> <mn>2</mn> </msubsup> <mo>≠</mo> <msubsup> <mi>σ</mi> <mrow> <mi>A</mi> <mi>f</mi> <mi>t</mi> <mi>e</mi> <mi>r</mi> </mrow> <mn>2</mn> </msubsup> </mrow> </semantics> </math>.</div>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>2つの分散の等しさに関する帰無仮説を検定するには、F検定（F-test）を用いる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2406-R-s03-E-1-___11"><math> <semantics> <mrow> <mi>F</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <msubsup> <mi>s</mi> <mn>1</mn> <mn>2</mn> </msubsup> </mrow> <mrow> <msubsup> <mi>s</mi> <mn>2</mn> <mn>2</mn> </msubsup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<p>F = 22.367 / 15.795 = 1.416、分子の自由度は120 − 1 = 119、分母の自由度も120 − 1 = 119である。</p>
+</li>
+<li class="cfa-curriculum-list-item">これは両側検定であるため、有意水準0.05/2 = 0.025に対応する臨界値を用いる。計算された検定統計量は臨界値の範囲内（すなわち0.6969と1.4349の間）にあるため、帰無仮説は棄却されない；混乱の前後で分散が異なることを示す十分な証拠はない。なお、F統計量を15.796 / 22.367 = 0.706としても同じ結論に至る。さらに、臨界値はソフトウェアを用いて計算することもできる：Excel［F.INV(0.025,119,119)およびF.INV(0.975,119,119)］［qf(c(.025,.975),119,119)］Python［from scipy.stats import f and f.ppf［(.025,119,119)およびf.ppf(.975,119,119)］］。加えて、計算された検定統計量のp値（5.896%）をソフトウェアで求め、有意水準と比較することもできる：Excel［(1-F.DIST(22.367/15.796,119,119,TRUE))*2 または F.DIST(15.796/22.367,119,119,TRUE)*2］R［(1-pf(22.367/15.796,119,119))*2 または pf(15.796/22.367,119,119)*2］Python［from scipy.stats import f and f.cdf［(15.796/22.367,119,119)*2 または (1-f.cdf(22.367/15.796,119,119))*2］］</li>
+</ol>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TestOfTheMeanOfTheDifferencesContent">
+<p>相互に依存する標本から得られた対応のある観測値（paired observations）に基づく差の検定を行う統計的検定。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144562_802_Hypothesis_Tests_for_Finance.html" >← 前へ</a>
+  <span class="title">8.03 | Tests of Return and Risk in Finance</span>
+  <a href="courses_1864_modules_items_144573_804_Parametric_versus_Nonparametric_Tests.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

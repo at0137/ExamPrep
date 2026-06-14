@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.03 | Categories of Equity Valuation Models</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0166-R-s03" title="8.03 | Categories of Equity Valuation Models">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール8：株式評価（Equity Valuation）：概念および基本ツール（Concepts and Basic Tools）8.03｜株式評価モデルの分類（Categories of Equity Valuation Models）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">株式評価モデル（equity valuation models）の主要な分類を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>株式評価モデルの主要な3つの分類は以下の通りである：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0166-R-L7">
+<li class="cfa-curriculum-list-item">現在価値モデル（present value models）（同義語：割引キャッシュフローモデル（discounted cash flow models））。これらのモデルは、証券から将来受け取ると期待される便益の現在価値として、本源的価値（intrinsic value）を推定する。現在価値モデルでは、便益は多くの場合、株主に分配されると期待される現金（配当割引モデル（dividend discount models））として、または資本的支出（capital expenditure）や運転資本（working capital）の必要額を満たした後に株主へ分配可能なキャッシュフロー（株主へのフリー・キャッシュフロー・モデル（free-cash-flow-to-equity models））として定義される。この分類には、比較的単純なものから非常に複雑なものまで多くのモデルが含まれる。第4節では、比較的単純なモデルであるゴードン（定常）成長モデル（Gordon (constant) growth model）および二段階配当割引モデル（two-stage dividend discount models）を詳しく扱う。</li>
+<li class="cfa-curriculum-list-item">倍率モデル（multiplier models）（同義語：マーケット倍率モデル（market multiple models））。これらのモデルは主に株価倍率（share price multiples）またはエンタープライズ・バリュー倍率（enterprise value multiples）に基づく。前者は、売上高（revenues）、利益（earnings）、キャッシュフロー（cash flows）、簿価（book value）などのファンダメンタル変数に対する価格倍率を用いて普通株式（common share）の本源的価値を推定する。倍率の例としては、株価収益率（price to earnings, P/E：株価を1株当たり利益で割ったもの）や株価売上高倍率（price to sales, P/S：株価を1株当たり売上高で割ったもの）がある。ファンダメンタル変数はフォワードベース（forward basis）（例：翌年の予想EPS）またはトレーリングベース（trailing basis）（例：過去1年のEPS）で表されることがあるが、比較対象企業間で一貫していればよい。株価倍率は相対的価値（relative value）の比較にも用いられる。株価とEPSの比率、すなわちP/E倍率を用いて相対的価値を判断することは、このアプローチの一例である。エンタープライズ・バリュー（enterprise value, EV）倍率は、（エンタープライズ・バリュー）／（ファンダメンタル変数の値）の形をとる。分母としては、利払い前・税引前・減価償却前利益（earnings before interest, taxes, depreciation, and amortization, EBITDA）や総売上高（total revenue）などが用いられる。分子であるエンタープライズ・バリューは、企業の総市場価値から現金および短期投資を差し引いた指標である（買収者はそれらの資産を買収資金に充てることができるため）。普通株式価値は、EV倍率から間接的に算出することができ、負債および優先株式の価値をEVから差し引くことで普通株主資本（common equity）の価値が得られる。</li>
+<li class="cfa-curriculum-list-item">資産ベース評価モデル（asset-based valuation models）。これらのモデルは、企業の資産の推定価値から負債および優先株式の推定価値を差し引くことで、普通株式の本源的価値を推定する。資産の推定市場価値は、資産および負債の簿価（book value）（同義語：帳簿価額（carrying value））に調整を加えることによって求められることが多い。資産ベース・アプローチの基礎となる理論は、企業の価値はその資産価値の総和に等しいというものである。</li>
+</ul>
+<p>既に述べたように、多くのアナリストは価値を推定するために複数の種類のモデルを用いる。アナリストは、各モデルが現実世界の単純化であり、モデルの適切性や入力値に関する不確実性が存在することを認識している。モデルの選択は、モデルに入力する情報の入手可能性、およびその情報やモデルの適切性に対するアナリストの信頼度に依存する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0166-R-EXM2">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2 株式評価モデルの分類（Categories of Equity Valuation Models）</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>あるアナリストは、新規企業の本源的価値を推定している。この企業については1年分の財務諸表しか利用できず、アナリストはその企業が属する業界における各種価格倍率の平均値を算出している。アナリストは、3つの評価モデル分類それぞれから少なくとも1つのモデルを用いる予定である。アナリストが最も依存しにくいのはどの推定値か。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 倍率モデル（multiplier model）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0166-R-s03-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。この企業は1年分のデータしか利用できないため、現在価値モデル（present value model）の入力値に対する信頼性が最も低くなる可能性が高い。貸借対照表（balance sheet）の値は、調整前であっても資産が比較的新しいため市場価値に近いと考えられる。また、倍率モデルは業界平均の倍率に基づいている。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 現在価値モデル（present value model）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0166-R-s03-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。この企業は1年分のデータしか利用できないため、現在価値モデルの入力値に対する信頼性が最も低くなる可能性が高い。貸借対照表の値は、調整前であっても資産が比較的新しいため市場価値に近いと考えられる。また、倍率モデルは業界平均の倍率に基づいている。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 資産ベース評価モデル（asset-based valuation model）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0166-R-s03-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Bが正しい。この企業は1年分のデータしか利用できないため、現在価値モデルの入力値に対する信頼性が最も低くなる可能性が高い。貸借対照表の値は、調整前であっても資産が比較的新しいため市場価値に近いと考えられる。また、倍率モデルは業界平均の倍率に基づいている。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>ある企業のEPSが1.35ユーロであることに基づき、アナリストはある証券の本源的価値を16.60ユーロと推定した。この場合、アナリストが用いている可能性が最も高いモデルはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 倍率モデル（multiplier model）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section id="CFA0166-R-s03-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。アナリストはP/E倍率に基づく倍率モデルを使用している。用いられたP/E倍率は16.60÷1.35＝12.3である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 現在価値モデル（present value model）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0166-R-s03-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。アナリストはP/E倍率に基づく倍率モデルを使用している。用いられたP/E倍率は16.60÷1.35＝12.3である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 資産ベース評価モデル（asset-based valuation model）。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section id="CFA0166-R-s03-01-02">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。アナリストはP/E倍率に基づく倍率モデルを使用している。用いられたP/E倍率は16.60÷1.35＝12.3である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+<p>次節で具体的な株式評価モデルの学習を始めるにあたり、価値モデルはいずれも必然的に現実世界の単純化であることを念頭に置かなければならない。この単純な事実を決して忘れてはならない。本章で扱うものよりはるかに複雑なモデルに出会うこともあるが、それらであっても現実の単純化に過ぎない。</p>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PresentValueModelsContent">
+<p>証券から将来受け取ると期待される便益の現在価値として本源的価値を推定する評価モデル。割引キャッシュフローモデル（discounted cash flow models）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DiscountedCashFlowModelsContent">
+<p>証券から将来受け取ると期待される便益の現在価値として本源的価値を推定する評価モデル。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DividendDiscountModelDDMContent">
+<p>将来のすべての配当の現在価値を、株主資本コスト（required return on equity）で割り引いたものとして株式価値を求めるモデル。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FreeCashFlowToEquityModelsContent">
+<p>将来の株主へのフリー・キャッシュフロー（free cash flow to equity）を割り引くことに基づく評価モデル。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MultiplierModelsContent">
+<p>株価倍率またはエンタープライズ・バリュー倍率に基づく評価モデル。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MarketMultipleModelsContent">
+<p>株価倍率またはエンタープライズ・バリュー倍率に基づく評価モデル。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="EnterpriseValueContent">
+<p>企業の総市場価値から現金および短期投資の価値を差し引いた指標。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AssetBasedValuationModelsContent">
+<p>企業の資産の市場価値の推定に基づく評価（valuation）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BookValueContent">
+<p>株主資本（shareholders’ equity）（総資産（total assets）から総負債（total liabilities）を差し引いたもの）から優先株式（preferred stock）の価値を差し引いたもの；普通株主資本（common shareholders’ equity）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CarryingValueContent">
+<p>固定利付証券（fixed-income instrument）においては、取得価格（purchase price）に割引（discount）またはプレミアム（premium）の償却額（amortized amount）を加減したもの（債券が額面価額（par value）を下回る（上回る）価格で購入された場合）。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142422_802_Estimated_Value_and_Market_Price.html" >← 前へ</a>
+  <span class="title">8.03 | Categories of Equity Valuation Models</span>
+  <a href="courses_1868_modules_items_142430_804_Background_for_the_Dividend_Discount_Model.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

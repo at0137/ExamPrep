@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.05 | Annualized Return</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2401-R-s05-R-1" title="1.05 | Annualized Return">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：利率とリターン（Rates and Returns）1.05｜年率換算リターン（Annualized Return）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">年率換算リターンおよび連続複利リターン（continuously compounded returns）を計算・解釈し、それらの適切な用途を説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>リターンが得られる、または計算される期間はさまざまであり、しばしば1年未満（または1年超）の期間で計算されたリターンを年率換算する必要がある。例えば、満期が3か月の短期国債（treasury bill）を購入する場合や、次の四半期末に満期を迎える先物契約（futures contract）にポジションを取る場合などである。これらのリターンをどのように比較すればよいか。</p>
+<p>多くの場合、比較を容易にするために、利用可能なすべてのリターンを年率換算するのが最も便利である。したがって、日次、週次、月次、四半期リターンは年率リターンに変換される。また、特定の値や価格を計算する多くの数式では、すべてのリターンと期間を年率で表す必要がある。例えば、最も一般的なブラック–ショールズ・オプション価格モデル（Black–Scholes option-pricing model）では、リターンと期間を年単位で年率換算することが求められる。</p>
+<section id="CFA2401-R-s05-01-01">
+<h3 class="dp-heading">年1回以外の複利（Non-annual Compounding）</h3>
+<p>利息は半年ごと、四半期ごと、月ごと、あるいは日ごとに支払われる場合がある。年に複数回利息が支払われる場合には、現在価値（present value）の式を次のように修正することができる。ここで R_s は表示利率（quoted interest rate）であり、各年の複利回数に周期利率（periodic interest rate）を掛けたものである。一般に、1年に複数回の複利がある場合、現在価値の式は次のように表される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-8"><math>
+<semantics>
+<mrow>
+<mtext>PV</mtext>
+<mo>=</mo>
+<msub>
+<mrow>
+<mtext>FV</mtext>
+</mrow>
+<mi>N</mi>
+</msub>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>s</mi>
+</msub>
+</mrow>
+<mi>m</mi>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mi>m</mi>
+<mi>N</mi>
+</mrow>
+</msup>
+</mrow>
+</semantics>
+</math>,<span class="cfa-curriculum-display-formula-number">7</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>m ＝ 年間の複利回数（number of compounding periods per year）</li>
+<li>R_s ＝ 表示年利率（quoted annual interest rate）</li>
+<li>N ＝ 年数（number of years）</li>
+</ul>
+<p>式7の形は単純な現在価値の式と非常に似ている。すでに述べたように、現在価値係数と将来価値係数は互いに逆数である。複利頻度を変更してもこの関係は変わらない。唯一の違いは、周期利率と対応する複利回数を用いる点である。</p>
+<p>次の例は月次複利の応用を示す。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s05-EXM-1-11">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 11<span style="display: block;">The Present Value of a Lump Sum with Monthly Compounding</span></h4>
+<section>
+<p>あるカナダの年金基金（pension fund）の運用担当者は、10年後に500万カナダドル（CAD5 million）の一括支払いを行う必要があることを知っている。彼女は、保証投資契約（guaranteed investment contract, GIC）に現在いくら投資すれば、その必要額に成長するかを求めたいと考えている。現在のGICの利率は年6％であり、月次複利である。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>彼女はいくらを現在GICに投資すべきか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>式7を適用すると、必要な現在価値は次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-"><math>
+<semantics>
+<mrow>
+<mtable equalcolumns="true" equalrows="true">
+<mtr>
+<mtd>
+<mrow>
+<msub>
+<mrow>
+<mtext>FV</mtext>
+</mrow>
+<mi>N</mi>
+</msub>
+<mo>=</mo>
+<mtext>CAD</mtext>
+<mo> </mo>
+<mtext>5,000,000</mtext>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>s</mi>
+</msub>
+<mo>=</mo>
+<mn>6</mn>
+<mi>%</mi>
+<mo>=</mo>
+<mn>0.06</mn>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<mi>m</mi>
+<mo>=</mo>
+<mn>12</mn>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>s</mi>
+</msub>
+<mo>/</mo>
+<mi>m</mi>
+<mo>=</mo>
+<mn>0.06</mn>
+<mo>/</mo>
+<mn>12</mn>
+<mo>=</mo>
+<mn>0.005</mn>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<mi>N</mi>
+<mo>=</mo>
+<mn>10</mn>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<mi>m</mi>
+<mi>N</mi>
+<mo>=</mo>
+<mn>12</mn>
+<mfenced>
+<mrow>
+<mn>10</mn>
+</mrow>
+</mfenced>
+<mo>=</mo>
+<mn>120</mn>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<mtext>PV</mtext>
+<mo>=</mo>
+<msub>
+<mrow>
+<mtext>FV</mtext>
+</mrow>
+<mi>N</mi>
+</msub>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>R</mi>
+<mi>s</mi>
+</msub>
+</mrow>
+<mi>m</mi>
+</mfrac>
+</mstyle>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mi>m</mi>
+<mi>N</mi>
+</mrow>
+</msup>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<mo>=</mo>
+<mtext>C</mtext>
+<mi>A</mi>
+<mi>D</mi>
+<mo> </mo>
+<mtext>5,000,000</mtext>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mtext>1</mtext>
+<mtext>.005</mtext>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mo>−</mo>
+<mtext>120</mtext>
+</mrow>
+</msup>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<mo>=</mo>
+<mtext>C</mtext>
+<mi>A</mi>
+<mi>D</mi>
+<mo> </mo>
+<mtext>5,000,000</mtext>
+<mfenced>
+<mrow>
+<mtext>0</mtext>
+<mtext>.549633</mtext>
+</mrow>
+</mfenced>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<mo>=</mo>
+<mtext>C</mtext>
+<mi>A</mi>
+<mi>D</mi>
+<mo> </mo>
+<mtext>2,748,163</mtext>
+<mtext>.67</mtext>
+</mrow>
+</mtd>
+</mtr>
+</mtable>
+</mrow>
+</semantics>
+</math>.</div>
+<p>式7を適用する際には、周期利率（この場合は月利）と対応する期間数（この場合は10年分の月次複利、すなわち120か月）を用いる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA2401-R-s05-01-02">
+<h3 class="dp-heading">リターンの年率換算（Annualizing Returns）</h3>
+<p>1年未満の期間のリターンを年率換算するには、その期間のリターンを年間の期間数で複利計算する必要がある。月次リターンは12回、週次リターンは52回、四半期リターンは4回複利計算する。日次リターンは通常365回複利計算する。特殊な日数の場合には、365を日数で割った比率を用いる。</p>
+<p>週次リターンが0.2％である場合、年率複利リターンは10.95％となる（1年は52週である）。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___1"><math>
+<semantics>
+<mrow>
+<mtable equalcolumns="true" equalrows="true">
+<mtr>
+<mtd>
+<mrow>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>a</mi>
+<mi>n</mi>
+<mi>n</mi>
+<mi>u</mi>
+<mi>a</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>w</mi>
+<mi>e</mi>
+<mi>e</mi>
+<mi>k</mi>
+<mi>l</mi>
+<mi>y</mi>
+</mrow>
+</msub>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>52</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.2</mn>
+<mi>%</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>52</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1.002</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>52</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mn>0.1095</mn>
+<mo>=</mo>
+<mn>10.95</mn>
+<mi>%</mi>
+</mrow>
+</mtd>
+</mtr>
+</mtable>
+</mrow>
+</semantics>
+</math>.</div>
+<p>15日間のリターンが0.4％である場合、1年を365日と仮定すると、年率換算リターンは10.20％となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___2"><math>
+<semantics>
+<mrow>
+<mtable equalcolumns="true" equalrows="true">
+<mtr>
+<mtd>
+<mrow>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>a</mi>
+<mi>n</mi>
+<mi>n</mi>
+<mi>u</mi>
+<mi>a</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<msub>
+<mi>R</mi>
+<mrow>
+<mn>15</mn>
+</mrow>
+</msub>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>365</mn>
+<mo>/</mo>
+<mn>15</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.4</mn>
+<mi>%</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>365</mn>
+<mo>/</mo>
+<mn>15</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1.004</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>365</mn>
+<mo>/</mo>
+<mn>15</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mn>0.1020</mn>
+<mo>=</mo>
+<mn>10.20</mn>
+<mi>%</mi>
+</mrow>
+</mtd>
+</mtr>
+</mtable>
+</mrow>
+</semantics>
+</math>.</div>
+<p>リターンを年率換算する一般式は次のとおりであり、c は1年あたりの期間数である。四半期の場合は c＝4、月次の場合は c＝12である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-9"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>a</mi>
+<mi>n</mi>
+<mi>n</mi>
+<mi>u</mi>
+<mi>a</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mtext> </mtext>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mtext>1 </mtext>
+<mo>+</mo>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>p</mi>
+<mi>e</mi>
+<mi>r</mi>
+<mi>i</mi>
+<mi>o</mi>
+<mi>d</mi>
+</mrow>
+</msub>
+</mrow>
+</mfenced>
+</mrow>
+<mi>c</mi>
+</msup>
+<mo>−</mo>
+<mtext>1</mtext>
+</mrow>
+</semantics>
+</math>.<span class="cfa-curriculum-display-formula-number">8</span></div>
+<p>保有期間収益率（holding period return）が1年を超える場合、どのように年率換算するか。例えば18か月のリターンを年率換算するにはどうすればよいか。1年は18か月の3分の2であるため、上記の式では c＝2/3 となる。例えば18か月で20％のリターンは、次のように年率換算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___3"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>a</mi>
+<mi>n</mi>
+<mi>n</mi>
+<mi>u</mi>
+<mi>a</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<msub>
+<mi>R</mi>
+<mrow>
+<mn>18</mn>
+<mi>m</mi>
+<mi>o</mi>
+<mi>n</mi>
+<mi>t</mi>
+<mi>h</mi>
+</mrow>
+</msub>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>2</mn>
+<mo>/</mo>
+<mn>3</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.20</mn>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>2</mn>
+<mo>/</mo>
+<mn>3</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mo>=</mo>
+<mn>0.1292</mn>
+<mo>=</mo>
+<mn>12.92</mn>
+<mi>%</mi>
+</mrow>
+</semantics>
+</math>.</div>
+<p>年率ではなく四半期や週次リターンで比較したい場合にも同様の式が構築できる。その場合、c は四半期または週における保有期間数となる。例えば、日次リターンを週次リターンに変換する場合、c＝5（1週間に5取引日と仮定）とする。一方、日次リターンの年率換算には別の方法もあり、年間約250取引日を想定する場合は5、暦日ベースでは7を用いることもある。使用する方法は業務慣行や市場慣行、基準に従う。年率リターンを週次リターンに変換する場合は c＝1/52 とする。これにより、年率リターンの式は週次リターンの式として書き換えられる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-10"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>w</mi>
+<mi>e</mi>
+<mi>e</mi>
+<mi>k</mi>
+<mi>l</mi>
+<mi>y</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>d</mi>
+<mi>a</mi>
+<mi>i</mi>
+<mi>l</mi>
+<mi>y</mi>
+</mrow>
+</msub>
+</mrow>
+</mfenced>
+</mrow>
+<mn>5</mn>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+<mtext>; </mtext>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>w</mi>
+<mi>e</mi>
+<mi>e</mi>
+<mi>k</mi>
+<mi>l</mi>
+<mi>y</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<msub>
+<mi>R</mi>
+<mrow>
+<mi>a</mi>
+<mi>n</mi>
+<mi>n</mi>
+<mi>u</mi>
+<mi>a</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mn>1</mn>
+<mo>/</mo>
+<mn>52</mn>
+</mrow>
+</msup>
+<mo>−</mo>
+<mn>1</mn>
+</mrow>
+</semantics>
+</math>.<span class="cfa-curriculum-display-formula-number">9</span></div>
+<p>年率換算の大きな制約の1つは、リターンが正確に繰り返される、すなわち同様のリターンで資金を繰り返し再投資できるという暗黙の仮定である。このようなリターンは常に実現可能とは限らない。例えば、ある週に市場が急騰して5％のリターンを得たとしても、その後51週間すべてで同様に5％のリターンを得る可能性は極めて低い。その場合、年率換算リターンは1,164.3％（＝1.05^52 − 1）となる。したがって、短期リターンを年率換算する際にはこの制約を考慮することが重要である。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s05-EXM-1-12">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 12<span style="display: block;">Annualized Returns</span></h4>
+<section>
+<p>あるアナリストは、異なる期間保有した3つの証券を評価しようとしている。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2401-R-s05-L1">
+<li class="cfa-curriculum-list-item">過去100日間で、証券Aは6.2％のリターンを得た。</li>
+<li class="cfa-curriculum-list-item">証券Bは過去4週間で2％のリターンを得た。</li>
+<li class="cfa-curriculum-list-item">証券Cは過去3か月で5％のリターンを得た。</li>
+</ul>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>これら3つの証券の相対的パフォーマンスを比較せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>比較を容易にするため、3つの証券のリターンを年率換算する必要がある。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2401-R-s05-L2">
+<li class="cfa-curriculum-list-item">証券Aの年率換算リターン：R_SA ＝ (1 + 0.062)^(365/100) − 1 ＝ 0.2455 ＝ 24.55％</li>
+<li class="cfa-curriculum-list-item">証券Bの年率換算リターン：R_SB ＝ (1 + 0.02)^(52/4) − 1 ＝ 0.2936 ＝ 29.36％</li>
+<li class="cfa-curriculum-list-item">証券Cの年率換算リターン：R_SC = (1 + 0.05)^4 − 1 = 0.2155 = 21.55%</li>
+</ul>
+<p>証券Bが最も高い年率換算リターンを生み出した。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s05-EXM-1-13">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 13<span style="display: block;">Exchange-Traded Fund Performance</span></h4>
+<section>
+<p>ある投資家が、最近設定された3つの上場投資信託（exchange-traded funds, ETFs）のリターンを評価している。これらのETFに関する選択されたリターン情報が図表16に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s05-EXH-1-19">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 16<span style="display: block;">ETF Performance Information</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>ETF</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">設定以来の経過時間（Time Since Inception）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">設定以来のリターン（%）（Return Since Inception (%)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">146日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.61</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5週間</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.10</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15ヶ月</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.35</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2401-R-s05-Q3"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>どのETFが最も高い年率換算リターンを持つか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. ETF 1</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。3つのETFの年率換算リターンは以下の通りである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___4">ETF 1 annualized return = (1.0461<sup>365/146</sup>) – 1 = 11.93%</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___5">ETF 2 annualized return = (1.0110<sup>52/5</sup>) – 1 = 12.05%</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___6">ETF 3 annualized return = (1.1435<sup>12/15</sup>) – 1 = 11.32%</div>
+<p>期間リターン（periodic rate）の値が最も低いにもかかわらず、再投資率の仮定と期間リターンの複利効果により、ETF 2が最も高い年率換算リターンを持つ。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. ETF 2</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。3つのETFの年率換算リターンは以下の通りである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___4">ETF 1 annualized return = (1.0461<sup>365/146</sup>) – 1 = 11.93%</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___5">ETF 2 annualized return = (1.0110<sup>52/5</sup>) – 1 = 12.05%</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___6">ETF 3 annualized return = (1.1435<sup>12/15</sup>) – 1 = 11.32%</div>
+<p>期間リターンの値が最も低いにもかかわらず、再投資率の仮定と期間リターンの複利効果により、ETF 2が最も高い年率換算リターンを持つ。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. ETF 3</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Bが正しい。3つのETFの年率換算リターンは以下の通りである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___4">ETF 1 annualized return = (1.0461<sup>365/146</sup>) – 1 = 11.93%</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___5">ETF 2 annualized return = (1.0110<sup>52/5</sup>) – 1 = 12.05%</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___6">ETF 3 annualized return = (1.1435<sup>12/15</sup>) – 1 = 11.32%</div>
+<p>期間リターンの値が最も低いにもかかわらず、再投資率の仮定と期間リターンの複利効果により、ETF 2が最も高い年率換算リターンを持つ。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA2401-R-s05-01-03">
+<h3 class="dp-heading">連続複利リターン（Continuously Compounded Returns）</h3>
+<p>重要な概念として、保有期間リターン（holding period return）、例えばR₁に対応する連続複利リターンがある。保有期間リターンに対応する連続複利リターンは、1にその保有期間リターンを加えたものの自然対数、あるいは同値的に、期末価格を期首価格で割った値（価格比率, price relative）の自然対数である。ここでは、連続複利リターンを特にrで表しているが、他の教科書や資料では異なる記法が用いられる場合がある点に注意する。</p>
+<p>1週間の保有期間リターンが0.04であると観測された場合、対応する連続複利リターン（1週間の連続複利リターン）は ln(1.04) = 0.039221 である。1.00ユーロを0.039221の連続複利で1週間投資すると1.04ユーロとなり、これは1週間の4%の保有期間リターンと等価である。</p>
+<p>時点tからt+1までの連続複利リターンは次のように表される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-11"><em>r<sub>t,t+1</sub> </em> = ln(<em>P<sub>t+1</sub> </em>/<em>P<sub>t</sub></em>) = ln(1 + <em>R<sub>t,t+1</sub></em>).<span class="cfa-curriculum-display-formula-number">10</span></div>
+<p>例として、時点tでUSD30で購入した資産が、1期間後のt+1にUSD34.50となった場合、連続複利リターンは r₀,₁ = ln(P₁ / P₀) = ln(1 + R₀,₁) = ln(USD34.50/USD30) = ln(1.15) = 0.139762 で与えられる。</p>
+<p>したがって、t = 0からt = 1までの連続複利リターンは13.98%である。連続複利リターンは対応する保有期間リターンよりも小さい。投資期間がt = 0からt = Tまでの場合、Tまでの連続複利リターンは次のように表される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-12"><em>r</em><sub>0,T</sub> = ln(<em>P<sub>T</sub> </em>/<em>P</em><sub>0</sub>).<span class="cfa-curriculum-display-formula-number">11</span></div>
+<p>両辺に指数関数を適用すると、exp(r₀,T) = exp[ln(P_T / P₀)] = P_T / P₀ となる。したがって、</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-___7"><em>P<sub>T</sub> </em> = <em>P</em><sub>0</sub>exp(<em>r</em><sub>0,T</sub>).</div>
+<p>また、P_T / P₀ は価格比率の積として表すことができる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-13"><em>P<sub>T</sub> </em>/<em>P</em><sub>0</sub> = (<em>P<sub>T</sub> </em>/<em>P<sub>T−1</sub></em>)(<em>P<sub>T−1</sub> </em>/<em>P<sub>T−2</sub></em>) . . . (<em>P</em><sub>1</sub>/<em>P</em><sub>0</sub>).<span class="cfa-curriculum-display-formula-number">12</span></div>
+<p>この式の両辺の対数をとると、時点Tまでの連続複利リターンは、1期間ごとの連続複利リターンの和であることが分かる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2401-R-s05-E-1-14"><em>r</em><sub>0,T</sub> = <em>r<sub>T−1,T</sub> </em> + <em>r<sub>T−2,T−1</sub> </em> + . . . + <em>r</em><sub>0,1</sub>.<span class="cfa-curriculum-display-formula-number">13</span></div>
+<p>保有期間リターンを用いてUSD1の投資の最終価値を求める場合、(1 + 保有期間リターン)の積を計算する必要がある。一方、連続複利リターンを用いる場合は加算で表現でき（上記の式13参照）、これは連続複利リターンの望ましい性質であり、本カリキュラム全体で利用される。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ContinuouslyCompoundedReturnContent">
+<p>1に保有期間リターンを加えたものの自然対数、あるいは同値的に、期末価格を期首価格で割った値の自然対数。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144219_104_Money-Weighted_and_Time-Weighted_Return.html" >← 前へ</a>
+  <span class="title">1.05 | Annualized Return</span>
+  <a href="courses_1864_modules_items_144224_106_Other_Major_Return_Measures_and_Their_Applications.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

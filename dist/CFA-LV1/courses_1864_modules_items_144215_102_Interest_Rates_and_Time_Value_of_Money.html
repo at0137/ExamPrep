@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.02 | Interest Rates and Time Value of Money</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2401-R-s02-R-1" title="1.02 | Interest Rates and Time Value of Money"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：利率とリターン（Rates and Returns）1.02｜利子率と貨幣の時間価値（Interest Rates and Time Value of Money）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">利子率（interest rates）を要求収益率（required rates of return）、割引率（discount rates）、または機会費用（opportunity costs）として解釈し、利子率が実質無リスク利子率（real risk-free rate）と、投資家が異なる種類のリスクを負担することに対する補償としてのプレミアムの合計として表されることを説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>貨幣の時間価値（time value of money）は、異なる時点に発生するキャッシュフローの等価性を確立する。今日受け取る現金は将来約束された現金よりも好まれるため、異なる時点で支払いや受け取りが行われる金融商品を比較するには、このトレードオフに対して一貫した基準を設定する必要がある。利子率（または利回り）（interest rate or yield）r は、異なる時点に発生するキャッシュフロー間の関係を反映する収益率である。例えば、今日の9,500ドルと1年後の10,000ドルが同等の価値である場合、10,000ドル−9,500ドル＝500ドルは、今ではなく1年後に10,000ドルを受け取ることに対する必要な補償である。利子率（すなわち収益率として表された補償）は、500ドル／9,500ドル＝0.0526、すなわち5.26％である。</p>
+<p>利子率は次の3つの方法で考えることができる。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2401-R-s02-L1">
+<li class="cfa-curriculum-list-item">第1に、要求収益率（required rates of return）として考えることができる。すなわち、投資を受け入れるために投資家が最低限必要とする収益率である。</li>
+<li class="cfa-curriculum-list-item">第2に、利子率は割引率（discount rates）として考えることができる。前述の例では、5.26％は1年後の10,000ドルを現在の9,500ドルと等価にする割引率である。このように、「利子率」と「割引率」はほぼ同義的に用いられる。</li>
+<li class="cfa-curriculum-list-item">第3に、利子率は機会費用（opportunity costs）として考えることができる。機会費用とは、ある行動を選択することで放棄される価値である。この例では、9,500ドルを提供した主体がそれを今日消費していた場合、貯蓄ではなく消費を選ぶことで5.26％の収益を得る機会を放棄することになる。したがって、5.26％は現在消費の機会費用とみなすことができる。</li>
+</ul>
+<section id="CFA2401-R-s02-01-01">
+<h3 class="dp-heading">利子率の決定要因（Determinants of Interest Rates）</h3>
+<p>経済学によれば、利子率は資金を供給する投資家と資金を需要する借り手との需給によって決定される。市場で決定される利子率を投資家の視点から考えると、利子率 r は実質無リスク利子率と、異なる種類のリスクを負担することに対する補償として必要とされるプレミアムの合計として表すことができる。</p>
+<ul class="cfa-curriculum-definition-list">
+<li>r ＝ 実質無リスク利子率 ＋ インフレプレミアム（inflation premium）＋ デフォルトリスクプレミアム（default risk premium）＋ 流動性プレミアム（liquidity premium）＋ 満期プレミアム（maturity premium）。（1）</li>
+</ul>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2401-R-s02-L2">
+<li class="cfa-curriculum-list-item">実質無リスク利子率（real risk-free interest rate）は、インフレが予想されない場合における完全に無リスクな証券の単一期間の利子率である。経済理論では、実質無リスク利子率は現在の実質消費と将来の実質消費に対する個人の時間選好を反映する。</li>
+<li class="cfa-curriculum-list-item">インフレプレミアムは、予想インフレに対して投資家を補償するものであり、債務の満期にわたって期待される平均インフレ率を反映する。インフレは通貨の購買力、すなわち購入できる財やサービスの量を低下させる。</li>
+<li class="cfa-curriculum-list-item">デフォルトリスクプレミアムは、借り手が契約された時点および金額で支払いを履行できない可能性に対して投資家を補償する。</li>
+<li class="cfa-curriculum-list-item">流動性プレミアムは、投資を迅速に現金化する必要がある場合に、その公正価値（fair value）に対して損失が生じるリスクに対して投資家を補償する。例えば、米国財務省短期証券（US Treasury bills, T-bills）は、大量に売買しても市場価格に影響を与えないため、流動性プレミアムを含まない。一方で、小規模発行体の多くの債券は発行後の取引が不活発であり、その利子率にはポジション売却時の比較的高いコスト（価格への影響を含む）を反映した流動性プレミアムが含まれる。</li>
+<li class="cfa-curriculum-list-item">満期プレミアムは、一般に（他の条件が一定であれば）満期が長くなるほど、市場利子率の変化に対する債券の市場価値の感応度が高まることに対して投資家を補償する。長期の流動性の高い国債の利子率と短期国債の利子率の差は、通常、長期債に対する正の満期プレミアム（および場合によっては異なるインフレプレミアム）を反映している。</li>
+</ul>
+<p>実質無リスク利子率とインフレプレミアムの合計が名目無リスク利子率（nominal risk-free interest rate）である。</p>
+<p>名目無リスク利子率は、実質無リスク利子率とインフレプレミアムの組み合わせを反映する。</p>
+<ul class="cfa-curriculum-definition-list">
+<li>（1＋名目無リスク利子率）＝（1＋実質無リスク利子率）（1＋インフレプレミアム）。</li>
+</ul>
+<p>しかし実務上は、名目利子率はしばしば実質無リスク利子率とインフレプレミアムの和として近似される。</p>
+<ul class="cfa-curriculum-definition-list">
+<li>名目無リスク利子率 ≈ 実質無リスク利子率 ＋ インフレプレミアム。</li>
+</ul>
+<p>多くの国では、短期の政府債務の利子率が、その国における当該期間の名目無リスク利子率を表すと考えられる。フランス政府は、満期1年以内の固定利付割引国債（BTF：Bons du Trésor à taux fixe et à intérêts précomptés）を発行している。日本政府は満期6か月および12か月の短期国債を発行している。例えば、米国の90日物T-billの利子率は、今後3か月間の米国の名目無リスク利子率を表す。通常、利子率は年率で表示されるため、3％と表示される90日物政府債の利子率は年率換算であり、90日間で実際に得られる利子率ではない。</p>
+<p>利子率が要求収益率、割引率、または機会費用のいずれとして用いられる場合でも、その中には実質無リスク利子率と、キャッシュフローの特性に依存する各種リスクプレミアムが含まれる。基本的なプレミアムには、インフレ、デフォルトリスク、流動性リスク、満期リスクがある。これらすべてのプレミアムは時間とともに変動し、実質無リスク利子率も同様に変動する。その結果、すべての利子率は変動するが、その変動の程度はさまざまな経済的基礎要因およびそれらの将来の変化に関する期待に依存する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2401-R-s02-EXM-1-1">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 1<span style="display: block;">Determining Interest Rates</span></h4>
+<section>
+<p>図表1（Exhibit 1）は、5つの債券（debt securities）に関する選択された情報を示している。これら5つの投資はいずれも満期時に単一の支払いのみを約束している。インフレ、流動性、およびデフォルトリスクに関連するプレミアムは、すべての期間において一定であると仮定する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2401-R-s02-EXH-1-1">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 1<span style="display: block;">Investments Alternatives and Their Characteristics</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">投資（Investment）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">満期（年）（Maturity (in years)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">流動性（Liquidity）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">デフォルトリスク（Default Risk）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">利子率（％）（Interest Rate (%)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">High</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Low</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">2.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Low</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Low</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">2.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">3</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">7</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Low</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Low</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">r<sub>3</sub></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">High</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Low</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">4.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">5</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">8</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Low</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">High</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">6.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>図表1の情報に基づき、次の問いに答えよ。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>投資1と投資2の利子率の違いを説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>投資2は、流動性が低い点を除いて投資1と同一である。投資2と投資1の利子率の差は0.5％である。この利子率の差は流動性プレミアム（liquidity premium）を表しており、投資2の低い流動性（迅速に現金化する必要がある場合に投資の公正価値（fair value）に対して損失が生じるリスク）に対する補償である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>すべての証券に影響するデフォルトリスクプレミアム（default risk premium）を推定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>デフォルトリスクプレミアムを推定するには、満期が同じでデフォルトリスクの水準が異なる2つの投資を特定する。投資4と投資5はいずれも満期が8年であるが、デフォルトリスクの水準が異なる。ただし、投資5は流動性が低いため、投資4に対して流動性プレミアムを有する。パートAより、流動性プレミアムは0.5％であることが分かっている。投資5と投資4の利子率の差は2.5％（6.5％ − 4.0％）であり、そのうち0.5％は流動性プレミアムである。したがって、残りの2.0％（2.5％ − 0.5％）が、投資5の比較的高いデフォルトリスクを反映したデフォルトリスクプレミアムであると考えられる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>投資3の未知の利子率 r₃ の上限と下限を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>投資3は流動性リスクおよびデフォルトリスクが投資2と同程度であるが、満期がより長いため、満期プレミアム（maturity premium）がより大きくなり、投資2よりも高い利子率を提供するはずである。したがって、投資3の利子率 r₃ は2.5％（投資2の利子率）より上であるべきである。</p>
+<p>もし投資3の流動性が高ければ、投資3は満期が短い点を除いて投資4と一致することになる。その場合、投資3の利子率は投資4の利子率（4％）より低いと結論づけられる。しかし、実際には投資3は流動性が低い。したがって、流動性プレミアムと満期プレミアムの相対的な大きさによっては、満期が短いにもかかわらず投資3の利子率が投資4を上回る可能性もある。ただし、投資4が低い流動性であった場合の想定利子率である4.5％（4％＋0.5％の流動性プレミアム）よりは低いと考えられる。したがって、投資3の利子率は2.5％から4.5％の間にあると予想される。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="InterestRateContent">
+<p>異なる時点に発生するキャッシュフロー間の関係を反映する収益率；割引率（discount rate）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OpportunityCostContent">
+<p>別の資産に投資する機会を放棄することを反映するものであり、通常は無リスク利子率（risk-free rate of interest）r で表される。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="RealRiskFreeInterestRateContent">
+<p>インフレが予想されない場合における完全に無リスクな証券の単一期間の利子率。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="InflationPremiumContent">
+<p>予想インフレに対して投資家を補償する追加的なリターン。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DefaultRiskPremiumContent">
+<p>借り手が契約された時点および金額で支払いを履行できない可能性に対して投資家を補償する追加的なリターン。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LiquidityPremiumContent">
+<p>投資の非流動性（illiquidity）が高まるにつれて増加する流動性リスクに対する補償。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MaturityPremiumContent">
+<p>満期が延びるにつれて、市場利子率の変化に対する債務の市場価値の感応度が高まることに対して投資家を補償する追加的なリターン。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144213_101_Introduction.html" >← 前へ</a>
+  <span class="title">1.02 | Interest Rates and Time Value of Money</span>
+  <a href="courses_1864_modules_items_144217_103_Rates_of_Return.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

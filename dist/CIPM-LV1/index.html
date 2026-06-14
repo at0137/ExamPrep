@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPM LV1 Curriculum</title>
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="index-header">
+  <h1>CIPM Level 1 Curriculum</h1>
+  <p>231 lessons &nbsp;·&nbsp; 80 pages with Knowledge Check</p>
+</div>
+<div class="page-wrapper" style="box-shadow:none; padding-top:0;">
+<div class="course-section"><h2>Performance Evaluation: Rate-of-Return Measurement</h2>
+<div class="module-section"><h3>Module 0: Getting Started</h3><ul class="lesson-list">
+<li><a href="courses_1366_modules_items_99450_001_CIPM_Program_Overview_and_Information.html" class="">0.01 | CIPM Program Overview and Information</a></li>
+<li><a href="courses_1366_modules_items_99452_002_Course_Policies.html" class="">0.02 | Course Policies</a></li>
+<li><a href="courses_1366_modules_items_99454_003_Taking_Your_Exam.html" class="">0.03 | Taking Your Exam</a></li>
+<li><a href="courses_1366_modules_items_99456_004_Getting_Help.html" class="">0.04 | Getting Help</a></li>
+<li><a href="courses_1366_modules_items_99458_005_Errata_and_Feedback.html" class="">0.05 | Errata and Feedback</a></li>
+<li><a href="courses_1366_modules_items_99459_006_Traits_of_Successful_Candidates.html" class="">0.06 | Traits of Successful Candidates</a></li>
+<li><a href="courses_1366_modules_items_99460_007_Overview_and_Return_Measurement_Overview.html" class="">0.07 | Overview and Return Measurement Overview</a></li>
+<li><a href="courses_1366_modules_items_99461_009_Overview_and_Return_Measurement_Glossary.html" class="">0.09 | Overview and Return Measurement Glossary</a></li>
+<li><a href="courses_1366_modules_items_99463_010_Overview_and_Return_Measurement_Flashcards.html" class="">0.10 | Overview and Return Measurement Flashcards</a></li>
+<li><a href="courses_1366_modules_items_104341_008_CIPM_Abbreviations_List.html" class="">0.08 | CIPM Abbreviations List</a></li>
+<li><a href="courses_1366_modules_items_104852_011_Using_Your_Program_Dashboard.html" class="">0.11 | Using Your Program Dashboard</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 1: Performance Evaluation: an Introduction</h3><ul class="lesson-list">
+<li><a href="courses_1366_modules_items_99468_Learning_Outcomes_Performance_Evaluation_An_Introduction.html" class="">Learning Outcomes: Performance Evaluation: An Introduction</a></li>
+<li><a href="courses_1366_modules_items_99470_101_Introduction.html" class="">1.01 | Introduction</a></li>
+<li><a href="courses_1366_modules_items_99472_102_Overview_of_Performance_Evaluation.html" class="">1.02 | Overview of Performance Evaluation</a></li>
+<li><a href="courses_1366_modules_items_99474_103_Why_Performance_Evaluation_is_Important.html" class="">1.03 | Why Performance Evaluation is Important</a></li>
+<li><a href="courses_1366_modules_items_99475_104_Performance_Evaluation_Component_Activities.html" class="">1.04 | Performance Evaluation: Component Activities</a></li>
+<li><a href="courses_1366_modules_items_99476_105_Factors_Defining_the_Output_of_Performance_Evaluation_Activities.html" class="">1.05 | Factors Defining the Output of Performance Evaluation Activities</a></li>
+<li><a href="courses_1366_modules_items_99478_106_The_Scope_of_the_Performance_Evaluation_Process.html" class="">1.06 | The Scope of the Performance Evaluation Process</a></li>
+<li><a href="courses_1366_modules_items_99480_107_Scope_of_Manager_Selection.html" class="">1.07 | Scope of Manager Selection</a></li>
+<li><a href="courses_1366_modules_items_99482_108_Summary.html" class="">1.08 | Summary</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 2: Performance Evaluation: Rate-of-Return Measurement</h3><ul class="lesson-list">
+<li><a href="courses_1366_modules_items_99487_Learning_Outcomes_Performance_Evaluation_Rate-of-Return_Measurement.html" class="">Learning Outcomes: Performance Evaluation: Rate-of-Return Measurement</a></li>
+<li><a href="courses_1366_modules_items_99489_201_Introduction.html" class="">2.01 | Introduction</a></li>
+<li><a href="courses_1366_modules_items_99491_202_Single-Period_Rates_of_Return.html" class="">2.02 | Single-Period Rates of Return</a></li>
+<li><a href="courses_1366_modules_items_99493_203_Holding_Period_Rates_of_Return.html" class="has-quiz">2.03 | Holding Period Rates of Return</a></li>
+<li><a href="courses_1366_modules_items_99494_204_Common_Shares.html" class="has-quiz">2.04 | Common Shares</a></li>
+<li><a href="courses_1366_modules_items_99496_205_Bonds.html" class="has-quiz">2.05 | Bonds</a></li>
+<li><a href="courses_1366_modules_items_99498_206_Cash_in_Portfolio_Performance.html" class="has-quiz">2.06 | Cash in Portfolio Performance</a></li>
+<li><a href="courses_1366_modules_items_99499_207_Returns_on_Foreign_Assets.html" class="has-quiz">2.07 | Returns on Foreign Assets</a></li>
+<li><a href="courses_1366_modules_items_99501_208_Short_and_Leveraged_Positions.html" class="has-quiz">2.08 | Short and Leveraged Positions</a></li>
+<li><a href="courses_1366_modules_items_99503_209_Accounting_and_Trade_Considerations.html" class="">2.09 | Accounting and Trade Considerations</a></li>
+<li><a href="courses_1366_modules_items_99505_210_Factors_Affecting_Returns_and_Related_Adjustments.html" class="has-quiz">2.10 | Factors Affecting Returns and Related Adjustments</a></li>
+<li><a href="courses_1366_modules_items_99507_211_Compounding_Rates_of_Return.html" class="has-quiz">2.11 | Compounding Rates of Return</a></li>
+<li><a href="courses_1366_modules_items_99508_212_Averaging_Rates_of_Return.html" class="has-quiz">2.12 | Averaging Rates of Return</a></li>
+<li><a href="courses_1366_modules_items_99510_213_Observations_about_Arithmetic_and_Geometric_Means.html" class="has-quiz">2.13 | Observations about Arithmetic and Geometric Means</a></li>
+<li><a href="courses_1366_modules_items_99512_214_Arithmetic_and_Geometric_Excess_Returns.html" class="has-quiz">2.14 | Arithmetic and Geometric Excess Returns</a></li>
+<li><a href="courses_1366_modules_items_99514_215_Rates_of_Return_with_External_Cash_Flows.html" class="">2.15 | Rates of Return with External Cash Flows</a></li>
+<li><a href="courses_1366_modules_items_99515_216_Money-Weighted_Rate_of_Return.html" class="has-quiz">2.16 | Money-Weighted Rate of Return</a></li>
+<li><a href="courses_1366_modules_items_99517_217_Time-Weighted_Rate_of_Return.html" class="has-quiz">2.17 | Time-Weighted Rate of Return</a></li>
+<li><a href="courses_1366_modules_items_99519_218_When_Is_Time-Weighted_Return_Appropriate.html" class="">2.18 | When Is Time-Weighted Return Appropriate?</a></li>
+<li><a href="courses_1366_modules_items_99521_219_Approximate_Time-Weighted_Return_Methods.html" class="has-quiz">2.19 | Approximate Time-Weighted Return Methods</a></li>
+<li><a href="courses_1366_modules_items_99522_220_Consistency_of_Portfolio_Segment_Returns_with_the_Overall_Portfolio_Return.html" class="has-quiz">2.20 | Consistency of Portfolio Segment Returns with the Overall Portfolio Return</a></li>
+<li><a href="courses_1366_modules_items_99524_221_Composite_Returns.html" class="has-quiz">2.21 | Composite Returns</a></li>
+<li><a href="courses_1366_modules_items_99526_222_Conclusions_and_Summary.html" class="">2.22 | Conclusions and Summary</a></li>
+<li><a href="courses_1366_modules_items_99529_Glossary_Performance_Evaluation_Rate-of-Return_Measurement.html" class="">Glossary: Performance Evaluation: Rate-of-Return Measurement</a></li>
+<li><a href="courses_1366_modules_items_99531_Flashcards_Performance_Evaluation_Rate-of-Return_Measurement.html" class="">Flashcards: Performance Evaluation: Rate-of-Return Measurement</a></li>
+<li><a href="courses_1366_modules_items_111715_223_Appendix.html" class="has-quiz">2.23 | Appendix</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 3: Data Integrity</h3><ul class="lesson-list">
+<li><a href="courses_1366_modules_items_99534_Learning_Outcomes_Data_Integrity.html" class="">Learning Outcomes: Data Integrity</a></li>
+<li><a href="courses_1366_modules_items_99536_301_Introduction.html" class="">3.01 | Introduction</a></li>
+<li><a href="courses_1366_modules_items_99537_302_Dimensions_of_Data_Quality.html" class="has-quiz">3.02 | Dimensions of Data Quality</a></li>
+<li><a href="courses_1366_modules_items_99538_303_Data_Governance.html" class="has-quiz">3.03 | Data Governance</a></li>
+<li><a href="courses_1366_modules_items_99539_304_Data_Errors_in_the_Performance_and_Risk_Measurement_Process.html" class="has-quiz">3.04 | Data Errors in the Performance and Risk Measurement Process</a></li>
+<li><a href="courses_1366_modules_items_99540_305_Data_Errors_Arising_from_Corporate_Actions.html" class="has-quiz">3.05 | Data Errors Arising from Corporate Actions</a></li>
+<li><a href="courses_1366_modules_items_99541_306_Currency_Exposure_and_Return_Discrepancies.html" class="has-quiz">3.06 | Currency Exposure and Return Discrepancies</a></li>
+<li><a href="courses_1366_modules_items_99543_307_Data_Revisions_and_Prior-Period_Returns.html" class="has-quiz">3.07 | Data Revisions and Prior-Period Returns</a></li>
+<li><a href="courses_1366_modules_items_99545_308_Summary.html" class="">3.08 | Summary</a></li>
+<li><a href="courses_1366_modules_items_99548_Glossary_Data_Integrity.html" class="">Glossary: Data Integrity</a></li>
+<li><a href="courses_1366_modules_items_99550_Flashcards_Data_Integrity.html" class="">Flashcards: Data Integrity</a></li>
+</ul></div>
+</div>
+<div class="course-section"><h2>Return Attribution and Benchmarks</h2>
+<div class="module-section"><h3>Module 0: Getting Started</h3><ul class="lesson-list">
+<li><a href="courses_1367_modules_items_99556_001_CIPM_Program_Overview_and_Information.html" class="">0.01 | CIPM Program Overview and Information</a></li>
+<li><a href="courses_1367_modules_items_99557_002_Course_Policies.html" class="">0.02 | Course Policies</a></li>
+<li><a href="courses_1367_modules_items_99558_003_Taking_Your_Exam.html" class="">0.03 | Taking Your Exam</a></li>
+<li><a href="courses_1367_modules_items_99559_004_Getting_Help.html" class="">0.04 | Getting Help</a></li>
+<li><a href="courses_1367_modules_items_99560_005_Errata_and_Feedback.html" class="">0.05 | Errata and Feedback</a></li>
+<li><a href="courses_1367_modules_items_99561_006_Traits_of_Successful_Candidates.html" class="">0.06 | Traits of Successful Candidates</a></li>
+<li><a href="courses_1367_modules_items_99562_007_Return_Attribution_and_Benchmark_Analysis_Overview.html" class="">0.07 | Return Attribution and Benchmark Analysis Overview</a></li>
+<li><a href="courses_1367_modules_items_99563_009_Return_Attribution_and_Benchmark_Analysis_Glossary.html" class="">0.09 | Return Attribution and Benchmark Analysis Glossary</a></li>
+<li><a href="courses_1367_modules_items_99564_010_Return_Attribution_and_Benchmark_Analysis_Flashcards.html" class="">0.10 | Return Attribution and Benchmark Analysis Flashcards</a></li>
+<li><a href="courses_1367_modules_items_104342_008_CIPM_Abbreviations_List.html" class="">0.08 | CIPM Abbreviations List</a></li>
+<li><a href="courses_1367_modules_items_104854_011_Using_Your_Program_Dashboard.html" class="">0.11 | Using Your Program Dashboard</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 1: Return Attribution</h3><ul class="lesson-list">
+<li><a href="courses_1367_modules_items_99566_Learning_Outcomes_Return_Attribution.html" class="">Learning Outcomes: Return Attribution</a></li>
+<li><a href="courses_1367_modules_items_99567_101_Introduction.html" class="">1.01 | Introduction</a></li>
+<li><a href="courses_1367_modules_items_99568_102_Purposes_of_Return_Attribution.html" class="">1.02 | Purposes of Return Attribution</a></li>
+<li><a href="courses_1367_modules_items_99569_103_Return_Attribution_vs_Return_Contribution.html" class="has-quiz">1.03 | Return Attribution vs. Return Contribution</a></li>
+<li><a href="courses_1367_modules_items_99570_104_Return_Attribution_vs_Risk_Attribution.html" class="has-quiz">1.04 | Return Attribution vs. Risk Attribution</a></li>
+<li><a href="courses_1367_modules_items_99571_105_Effective_Return_Attribution.html" class="has-quiz">1.05 | Effective Return Attribution</a></li>
+<li><a href="courses_1367_modules_items_99573_106_Arithmetic_Equity_Return_Attribution_The_BHB_Model.html" class="has-quiz">1.06 | Arithmetic Equity Return Attribution: The BHB Model</a></li>
+<li><a href="courses_1367_modules_items_99575_107_Arithmetic_Equity_Return_Attribution_The_BrinsonFachler_Model.html" class="has-quiz">1.07 | Arithmetic Equity Return Attribution: The Brinson–Fachler Model</a></li>
+<li><a href="courses_1367_modules_items_99577_108_Interaction_Effect.html" class="">1.08 | Interaction Effect</a></li>
+<li><a href="courses_1367_modules_items_99579_109_Geometric_Equity_Return_Attribution.html" class="has-quiz">1.09 | Geometric Equity Return Attribution</a></li>
+<li><a href="courses_1367_modules_items_99581_110_Holdings-_and_Transaction-Based_Return_Attribution.html" class="has-quiz">1.10 | Holdings- and Transaction-Based Return Attribution</a></li>
+<li><a href="courses_1367_modules_items_99583_111_Return_Attribution_Analysis_at_Multiple_Levels.html" class="has-quiz">1.11 | Return Attribution Analysis at Multiple Levels</a></li>
+<li><a href="courses_1367_modules_items_99585_112_Factor_Models_in_Return_Attribution.html" class="has-quiz">1.12 | Factor Models in Return Attribution</a></li>
+<li><a href="courses_1367_modules_items_99587_113_Fixed-Income_Attribution_An_Overview.html" class="has-quiz">1.13 | Fixed-Income Attribution: An Overview</a></li>
+<li><a href="courses_1367_modules_items_99589_114_Problems_in_Return_Attribution_Analysis_Data_Input.html" class="">1.14 | Problems in Return Attribution Analysis: Data Input</a></li>
+<li><a href="courses_1367_modules_items_99591_115_Problems_in_Return_Attribution_Analysis_Residuals.html" class="has-quiz">1.15 | Problems in Return Attribution Analysis: Residuals</a></li>
+<li><a href="courses_1367_modules_items_99592_116_Problems_in_Return_Attribution_Analysis_Off-Benchmark_Decisions.html" class="has-quiz">1.16 | Problems in Return Attribution Analysis: Off-Benchmark Decisions</a></li>
+<li><a href="courses_1367_modules_items_99593_117_Conclusion_and_Summary.html" class="">1.17 | Conclusion and Summary</a></li>
+<li><a href="courses_1367_modules_items_99597_Glossary_Return_Attribution.html" class="">Glossary: Return Attribution</a></li>
+<li><a href="courses_1367_modules_items_99599_Flashcards_Return_Attribution.html" class="">Flashcards: Return Attribution</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 2: Introduction to Benchmarks</h3><ul class="lesson-list">
+<li><a href="courses_1367_modules_items_99603_Learning_Outcomes_Introduction_to_Benchmarks.html" class="">Learning Outcomes: Introduction to Benchmarks</a></li>
+<li><a href="courses_1367_modules_items_99605_201_Introduction.html" class="">2.01 | Introduction</a></li>
+<li><a href="courses_1367_modules_items_99607_202_Distinguishing_between_Benchmark_and_Market_Indexes.html" class="has-quiz">2.02 | Distinguishing between Benchmark and Market Indexes</a></li>
+<li><a href="courses_1367_modules_items_99609_203_Benchmarks_in_Performance_Attribution_and_Appraisal_Overview.html" class="has-quiz">2.03 | Benchmarks in Performance Attribution and Appraisal: Overview</a></li>
+<li><a href="courses_1367_modules_items_99611_204_Types_of_Benchmarks.html" class="has-quiz">2.04 | Types of Benchmarks</a></li>
+<li><a href="courses_1367_modules_items_99613_205_Properties_of_a_Valid_Benchmark.html" class="">2.05 | Properties of a Valid Benchmark</a></li>
+<li><a href="courses_1367_modules_items_99615_206_Benchmark_Quality_Analysis_Based_on_Decomposition_of_Portfolio_Holdings_and_.html" class="has-quiz">2.06 | Benchmark Quality Analysis Based on Decomposition of Portfolio Holdings and Returns</a></li>
+<li><a href="courses_1367_modules_items_99617_207_Tests_of_Benchmark_Quality.html" class="has-quiz">2.07 | Tests of Benchmark Quality</a></li>
+<li><a href="courses_1367_modules_items_99619_208_Peer_Group_Benchmarks.html" class="has-quiz">2.08 | Peer Group Benchmarks</a></li>
+<li><a href="courses_1367_modules_items_99621_209_Market_Indexes_and_Style_Indexes.html" class="">2.09 | Market Indexes and Style Indexes</a></li>
+<li><a href="courses_1367_modules_items_99623_210_Asset_Class_Index_Construction.html" class="has-quiz">2.10 | Asset Class Index Construction</a></li>
+<li><a href="courses_1367_modules_items_99625_211_Index_Construction_Tradeoffs.html" class="has-quiz">2.11 | Index Construction Tradeoffs</a></li>
+<li><a href="courses_1367_modules_items_99627_212_Equity_Style_Indexes.html" class="has-quiz">2.12 | Equity Style Indexes</a></li>
+<li><a href="courses_1367_modules_items_99629_213_Bond_Indexes.html" class="has-quiz">2.13 | Bond Indexes</a></li>
+<li><a href="courses_1367_modules_items_99631_214_Custom_Benchmarks.html" class="has-quiz">2.14 | Custom Benchmarks</a></li>
+<li><a href="courses_1367_modules_items_99633_215_Other_Benchmarks.html" class="has-quiz">2.15 | Other Benchmarks</a></li>
+<li><a href="courses_1367_modules_items_99634_216_Problems_in_Benchmark_Selection.html" class="">2.16 | Problems in Benchmark Selection</a></li>
+<li><a href="courses_1367_modules_items_99635_217_Benchmark_Selection_An_Example.html" class="">2.17 | Benchmark Selection: An Example</a></li>
+<li><a href="courses_1367_modules_items_99636_218_Summary.html" class="">2.18 | Summary</a></li>
+<li><a href="courses_1367_modules_items_99638_Glossary_Introduction_to_Benchmarks.html" class="">Glossary: Introduction to Benchmarks</a></li>
+<li><a href="courses_1367_modules_items_99639_Flashcards_Introduction_to_Benchmarks.html" class="">Flashcards: Introduction to Benchmarks</a></li>
+</ul></div>
+</div>
+<div class="course-section"><h2>Risk Measurement and Attribution</h2>
+<div class="module-section"><h3>Module 0: Getting Started</h3><ul class="lesson-list">
+<li><a href="courses_1368_modules_items_99328_001_CIPM_Program_Overview_and_Information.html" class="">0.01 | CIPM Program Overview and Information</a></li>
+<li><a href="courses_1368_modules_items_99329_002_Course_Policies.html" class="">0.02 | Course Policies</a></li>
+<li><a href="courses_1368_modules_items_99330_003_Taking_Your_Exam.html" class="">0.03 | Taking Your Exam</a></li>
+<li><a href="courses_1368_modules_items_99331_004_Getting_Help.html" class="">0.04 | Getting Help</a></li>
+<li><a href="courses_1368_modules_items_99332_005_Errata_and_Feedback.html" class="">0.05 | Errata and Feedback</a></li>
+<li><a href="courses_1368_modules_items_99333_006_Traits_of_Successful_Candidates.html" class="">0.06 | Traits of Successful Candidates</a></li>
+<li><a href="courses_1368_modules_items_99334_007_Risk_Measurement_Risk_Attribution_and_Security_Characteristics_Overview.html" class="">0.07 | Risk Measurement, Risk Attribution, and Security Characteristics Overview</a></li>
+<li><a href="courses_1368_modules_items_99335_009_Risk_Measurement_Risk_Attribution_and_Security_Characteristics_Glossary.html" class="">0.09 | Risk Measurement, Risk Attribution, and Security Characteristics Glossary</a></li>
+<li><a href="courses_1368_modules_items_99336_010_Risk_Measurement_Risk_Attribution_and_Security_Characteristics_Flashcards.html" class="">0.10 | Risk Measurement, Risk Attribution, and Security Characteristics Flashcards</a></li>
+<li><a href="courses_1368_modules_items_104345_008_CIPM_Abbreviations_List.html" class="">0.08 | CIPM Abbreviations List</a></li>
+<li><a href="courses_1368_modules_items_104857_011_Using_Your_Program_Dashboard.html" class="">0.11 | Using Your Program Dashboard</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 1: Risk Measurement and Risk Attribution</h3><ul class="lesson-list">
+<li><a href="courses_1368_modules_items_99338_Learning_Outcomes_Risk_Measurement_and_Risk_Attribution.html" class="">Learning Outcomes: Risk Measurement and Risk Attribution</a></li>
+<li><a href="courses_1368_modules_items_99339_101_Introduction.html" class="">1.01 | Introduction</a></li>
+<li><a href="courses_1368_modules_items_99340_102_Risk_and_Risk_Measurement.html" class="has-quiz">1.02 | Risk and Risk Measurement</a></li>
+<li><a href="courses_1368_modules_items_99341_103_Objectives_of_Risk_Measurement_and_Risk_Attribution.html" class="has-quiz">1.03 | Objectives of Risk Measurement and Risk Attribution</a></li>
+<li><a href="courses_1368_modules_items_99342_104_Contrasting_Perspectives_on_Risk.html" class="has-quiz">1.04 | Contrasting Perspectives on Risk</a></li>
+<li><a href="courses_1368_modules_items_99343_105_Interpreting_Data_Sets.html" class="has-quiz">1.05 | Interpreting Data Sets</a></li>
+<li><a href="courses_1368_modules_items_99344_106_Measures_of_Dispersion.html" class="">1.06 | Measures of Dispersion</a></li>
+<li><a href="courses_1368_modules_items_99345_107_Beta.html" class="has-quiz">1.07 | Beta</a></li>
+<li><a href="courses_1368_modules_items_99346_108_Measures_of_Downside_Risk.html" class="has-quiz">1.08 | Measures of Downside Risk</a></li>
+<li><a href="courses_1368_modules_items_99347_109_Drawdown_Measures.html" class="has-quiz">1.09 | Drawdown Measures</a></li>
+<li><a href="courses_1368_modules_items_99348_110_Value_at_Risk_and_Stress_Tests.html" class="has-quiz">1.10 | Value at Risk and Stress Tests</a></li>
+<li><a href="courses_1368_modules_items_99349_111_Analysis_of_Investment_Characteristics.html" class="has-quiz">1.11 | Analysis of Investment Characteristics</a></li>
+<li><a href="courses_1368_modules_items_99350_112_Risk_Measure_Selection.html" class="has-quiz">1.12 | Risk Measure Selection</a></li>
+<li><a href="courses_1368_modules_items_99351_113_Risk_Attribution.html" class="">1.13 | Risk Attribution</a></li>
+<li><a href="courses_1368_modules_items_99352_114_Risk_Attribution_Analysis.html" class="has-quiz">1.14 | Risk Attribution Analysis</a></li>
+<li><a href="courses_1368_modules_items_99353_115_Conclusions_and_Summary.html" class="">1.15 | Conclusions and Summary</a></li>
+<li><a href="courses_1368_modules_items_99355_Glossary_Risk_Measurement_and_Risk_Attribution.html" class="">Glossary: Risk Measurement and Risk Attribution</a></li>
+<li><a href="courses_1368_modules_items_99356_Flashcards_Risk_Measurement_and_Risk_Attribution.html" class="">Flashcards: Risk Measurement and Risk Attribution</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 2: Equity Portfolio Characteristics in Performance Analysis</h3><ul class="lesson-list">
+<li><a href="courses_1368_modules_items_99357_Learning_Outcomes_Equity_Portfolio_Characteristics_in_Performance_Analysis.html" class="">Learning Outcomes: Equity Portfolio Characteristics in Performance Analysis</a></li>
+<li><a href="courses_1368_modules_items_99358_201_Introduction.html" class="">2.01 | Introduction</a></li>
+<li><a href="courses_1368_modules_items_99359_202_Uses_of_Portfolio_Characteristics.html" class="">2.02 | Uses of Portfolio Characteristics</a></li>
+<li><a href="courses_1368_modules_items_99360_203_Data_and_Calculation_Issues.html" class="">2.03 | Data and Calculation Issues</a></li>
+<li><a href="courses_1368_modules_items_99361_204_Types_of_Characteristics.html" class="">2.04 | Types of Characteristics</a></li>
+<li><a href="courses_1368_modules_items_99362_205_Manager_Monitoring_and_Style_Analysis.html" class="">2.05 | Manager Monitoring and Style Analysis</a></li>
+<li><a href="courses_1368_modules_items_99363_206_Attribution_Analysis.html" class="">2.06 | Attribution Analysis</a></li>
+<li><a href="courses_1368_modules_items_99364_207_Limitations_of_Portfolio_Characteristics_Analysis.html" class="">2.07 | Limitations of Portfolio Characteristics Analysis</a></li>
+</ul></div>
+</div>
+<div class="course-section"><h2>Investment Performance Appraisal</h2>
+<div class="module-section"><h3>Module 0: Getting Started</h3><ul class="lesson-list">
+<li><a href="courses_1369_modules_items_99572_001_CIPM_Program_Overview_and_Information.html" class="">0.01 | CIPM Program Overview and Information</a></li>
+<li><a href="courses_1369_modules_items_99574_002_Course_Policies.html" class="">0.02 | Course Policies</a></li>
+<li><a href="courses_1369_modules_items_99576_003_Taking_Your_Exam.html" class="">0.03 | Taking Your Exam</a></li>
+<li><a href="courses_1369_modules_items_99578_004_Getting_Help.html" class="">0.04 | Getting Help</a></li>
+<li><a href="courses_1369_modules_items_99580_005_Errata_and_Feedback.html" class="">0.05 | Errata and Feedback</a></li>
+<li><a href="courses_1369_modules_items_99582_006_Traits_of_Successful_Candidates.html" class="">0.06 | Traits of Successful Candidates</a></li>
+<li><a href="courses_1369_modules_items_99584_007_Performance_Appraisal_Overview.html" class="">0.07 | Performance Appraisal Overview</a></li>
+<li><a href="courses_1369_modules_items_99586_009_Performance_Appraisal_Glossary.html" class="">0.09 | Performance Appraisal Glossary</a></li>
+<li><a href="courses_1369_modules_items_99588_010_Performance_Appraisal_Flashcards.html" class="">0.10 | Performance Appraisal Flashcards</a></li>
+<li><a href="courses_1369_modules_items_104344_008_CIPM_Abbreviations_List.html" class="">0.08 | CIPM Abbreviations List</a></li>
+<li><a href="courses_1369_modules_items_104856_011_Using_Your_Program_Dashboard.html" class="">0.11 | Using Your Program Dashboard</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 1: Investment Performance Appraisal</h3><ul class="lesson-list">
+<li><a href="courses_1369_modules_items_99594_Learning_Outcomes_Investment_Performance_Appraisal.html" class="">Learning Outcomes: Investment Performance Appraisal</a></li>
+<li><a href="courses_1369_modules_items_99596_101_Introduction.html" class="">1.01 | Introduction</a></li>
+<li><a href="courses_1369_modules_items_99598_102_Investment_Skill.html" class="">1.02 | Investment Skill</a></li>
+<li><a href="courses_1369_modules_items_99600_103_Expenses_in_Investment_Performance_Appraisal.html" class="has-quiz">1.03 | Expenses in Investment Performance Appraisal</a></li>
+<li><a href="courses_1369_modules_items_99601_104_Distinguishing_Investment_Skill_from_Luck.html" class="">1.04 | Distinguishing Investment Skill from Luck</a></li>
+<li><a href="courses_1369_modules_items_99602_105_The_Need_to_Take_Risk_into_Account_in_Performance_Appraisal.html" class="">1.05 | The Need to Take Risk into Account in Performance Appraisal</a></li>
+<li><a href="courses_1369_modules_items_99604_106_Performance_Appraisal_Measures.html" class="">1.06 | Performance Appraisal Measures</a></li>
+<li><a href="courses_1369_modules_items_99606_107_The_Sharpe_Ratio.html" class="has-quiz">1.07 | The Sharpe Ratio</a></li>
+<li><a href="courses_1369_modules_items_99608_108_M2_Risk-Adjusted_Performance_RAP.html" class="has-quiz">1.08 | M2: Risk-Adjusted Performance (RAP)</a></li>
+<li><a href="courses_1369_modules_items_99610_109_The_Treynor_Ratio.html" class="has-quiz">1.09 | The Treynor Ratio</a></li>
+<li><a href="courses_1369_modules_items_99612_110_Jensens_Alpha.html" class="has-quiz">1.10 | Jensen's Alpha</a></li>
+<li><a href="courses_1369_modules_items_99614_111_Alpha.html" class="has-quiz">1.11 | Alpha</a></li>
+<li><a href="courses_1369_modules_items_99616_112_Information_Ratio.html" class="has-quiz">1.12 | Information Ratio</a></li>
+<li><a href="courses_1369_modules_items_99618_113_Appraisal_Ratio.html" class="has-quiz">1.13 | Appraisal Ratio</a></li>
+<li><a href="courses_1369_modules_items_99620_114_Appraisal_Measures_Based_on_Downside_Risk.html" class="has-quiz">1.14 | Appraisal Measures Based on Downside Risk</a></li>
+<li><a href="courses_1369_modules_items_99622_115_Performance_Appraisal_An_Analysis_of_Three_Funds.html" class="">1.15 | Performance Appraisal: An Analysis of Three Funds</a></li>
+<li><a href="courses_1369_modules_items_99624_116_Multifactor_Models_in_Performance_Appraisal.html" class="">1.16 | Multifactor Models in Performance Appraisal</a></li>
+<li><a href="courses_1369_modules_items_99626_117_Summary.html" class="">1.17 | Summary</a></li>
+<li><a href="courses_1369_modules_items_99630_Glossary_Investment_Performance_Appraisal.html" class="">Glossary: Investment Performance Appraisal</a></li>
+<li><a href="courses_1369_modules_items_99632_Flashcards_Investment_Performance_Appraisal.html" class="">Flashcards: Investment Performance Appraisal</a></li>
+</ul></div>
+</div>
+<div class="course-section"><h2>Investment Performance Presentation and GIPS</h2>
+<div class="module-section"><h3>Module 0: Getting Started</h3><ul class="lesson-list">
+<li><a href="courses_1370_modules_items_99444_001_CIPM_Program_Overview_and_Information.html" class="">0.01 | CIPM Program Overview and Information</a></li>
+<li><a href="courses_1370_modules_items_99445_002_Course_Policies.html" class="">0.02 | Course Policies</a></li>
+<li><a href="courses_1370_modules_items_99446_003_Taking_Your_Exam.html" class="">0.03 | Taking Your Exam</a></li>
+<li><a href="courses_1370_modules_items_99447_004_Getting_Help.html" class="">0.04 | Getting Help</a></li>
+<li><a href="courses_1370_modules_items_99448_005_Errata_and_Feedback.html" class="">0.05 | Errata and Feedback</a></li>
+<li><a href="courses_1370_modules_items_99449_006_Traits_of_Successful_Candidates.html" class="">0.06 | Traits of Successful Candidates</a></li>
+<li><a href="courses_1370_modules_items_99451_007_Investment_Performance_Presentation_Overview.html" class="">0.07 | Investment Performance Presentation Overview</a></li>
+<li><a href="courses_1370_modules_items_99453_009_Investment_Performance_Presentation_Glossary.html" class="">0.09 | Investment Performance Presentation Glossary</a></li>
+<li><a href="courses_1370_modules_items_99455_010_Investment_Performance_Presentation_Flashcards.html" class="">0.10 | Investment Performance Presentation Flashcards</a></li>
+<li><a href="courses_1370_modules_items_104343_008_CIPM_Abbreviations_List.html" class="">0.08 | CIPM Abbreviations List</a></li>
+<li><a href="courses_1370_modules_items_104855_011_Using_Your_Program_Dashboard.html" class="">0.11 | Using Your Program Dashboard</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 1: Investment Performance Presentation: an Introduction</h3><ul class="lesson-list">
+<li><a href="courses_1370_modules_items_99462_Learning_Outcomes_Investment_Performance_Presentation_An_Introduction.html" class="">Learning Outcomes: Investment Performance Presentation: An Introduction</a></li>
+<li><a href="courses_1370_modules_items_99464_101_Introduction.html" class="">1.01 | Introduction</a></li>
+<li><a href="courses_1370_modules_items_99466_102_Overview_of_Investment_Performance_Presentation.html" class="has-quiz">1.02 | Overview of Investment Performance Presentation</a></li>
+<li><a href="courses_1370_modules_items_99467_103_Process-Related_Investment_Performance_Presentations.html" class="has-quiz">1.03 | Process-Related Investment Performance Presentations</a></li>
+<li><a href="courses_1370_modules_items_99469_104_Analytics-Related_Investment_Performance_Presentations.html" class="">1.04 | Analytics-Related Investment Performance Presentations</a></li>
+<li><a href="courses_1370_modules_items_99471_105_Internal_and_External_Investment_Performance_Presentations.html" class="">1.05 | Internal and External Investment Performance Presentations</a></li>
+<li><a href="courses_1370_modules_items_99473_106_Conclusions_and_Summary.html" class="">1.06 | Conclusions and Summary</a></li>
+</ul></div>
+<div class="module-section"><h3>Module 2: An Introduction to the Global Investment Performance Standards (GIPS®)</h3><ul class="lesson-list">
+<li><a href="courses_1370_modules_items_99477_Learning_Outcomes_An_Introduction_to_the_Global_Investment_Performance_Standards.html" class="">Learning Outcomes: An Introduction to the Global Investment Performance Standards (GIPS®)</a></li>
+<li><a href="courses_1370_modules_items_99479_201_Introduction.html" class="">2.01 | Introduction</a></li>
+<li><a href="courses_1370_modules_items_99481_202_The_Why_What_and_Who_of_the_GIPS_Standards.html" class="has-quiz">2.02 | The Why, What, and Who of the GIPS Standards</a></li>
+<li><a href="courses_1370_modules_items_99483_203_Fundamentals_of_Firm_Compliance.html" class="">2.03 | Fundamentals of Firm Compliance</a></li>
+<li><a href="courses_1370_modules_items_99484_204_Definition_of_the_Firm.html" class="has-quiz">2.04 | Definition of the Firm</a></li>
+<li><a href="courses_1370_modules_items_99486_205_Firm-Wide_Compliance.html" class="">2.05 | Firm-Wide Compliance</a></li>
+<li><a href="courses_1370_modules_items_99488_206_Policies_and_Procedures.html" class="">2.06 | Policies and Procedures</a></li>
+<li><a href="courses_1370_modules_items_99490_207_Adherence_to_Laws_and_Regulations.html" class="">2.07 | Adherence to Laws and Regulations</a></li>
+<li><a href="courses_1370_modules_items_99492_208_False_or_Misleading_Information.html" class="">2.08 | False or Misleading Information</a></li>
+<li><a href="courses_1370_modules_items_99495_209_Composites.html" class="">2.09 | Composites</a></li>
+<li><a href="courses_1370_modules_items_99497_210_Return_Measures.html" class="">2.10 | Return Measures</a></li>
+<li><a href="courses_1370_modules_items_99500_211_Benchmarks.html" class="">2.11 | Benchmarks</a></li>
+<li><a href="courses_1370_modules_items_99502_212_GIPS_Reports.html" class="">2.12 | GIPS Reports</a></li>
+<li><a href="courses_1370_modules_items_99504_213_Lists_of_Composites_and_Pooled_Funds.html" class="">2.13 | Lists of Composites and Pooled Funds</a></li>
+<li><a href="courses_1370_modules_items_99506_214_Supporting_Records.html" class="">2.14 | Supporting Records</a></li>
+<li><a href="courses_1370_modules_items_99509_215_Performance_Track_Record_Portability.html" class="">2.15 | Performance Track Record Portability</a></li>
+<li><a href="courses_1370_modules_items_99511_216_Alterations_to_Historical_Performance.html" class="">2.16 | Alterations to Historical Performance</a></li>
+<li><a href="courses_1370_modules_items_99513_217_CFA_Institute_Notification.html" class="has-quiz">2.17 | CFA Institute Notification</a></li>
+<li><a href="courses_1370_modules_items_99516_218_Firm_Input_Data.html" class="">2.18 | Firm Input Data</a></li>
+<li><a href="courses_1370_modules_items_99518_219_Total_Firm_Assets.html" class="">2.19 | Total Firm Assets</a></li>
+<li><a href="courses_1370_modules_items_99520_220_Accounting_and_Other_General_Principles.html" class="">2.20 | Accounting and Other General Principles</a></li>
+<li><a href="courses_1370_modules_items_99523_221_Valuation.html" class="">2.21 | Valuation</a></li>
+<li><a href="courses_1370_modules_items_99525_222_Valuation_Frequency.html" class="has-quiz">2.22 | Valuation Frequency</a></li>
+<li><a href="courses_1370_modules_items_99528_223_Calculation_Methodologies.html" class="has-quiz">2.23 | Calculation Methodologies</a></li>
+<li><a href="courses_1370_modules_items_99530_224_Composite_Construction_and_Reporting.html" class="">2.24 | Composite Construction and Reporting</a></li>
+<li><a href="courses_1370_modules_items_99532_225_Defining_Composites.html" class="has-quiz">2.25 | Defining Composites</a></li>
+<li><a href="courses_1370_modules_items_99533_226_Discretion.html" class="has-quiz">2.26 | Discretion</a></li>
+<li><a href="courses_1370_modules_items_99535_227_Minimum_Asset_Level.html" class="">2.27 | Minimum Asset Level</a></li>
+<li><a href="courses_1370_modules_items_99542_228_Composite_Construction.html" class="has-quiz">2.28 | Composite Construction</a></li>
+<li><a href="courses_1370_modules_items_99544_229_Composite_Return_Calculation_Composite_Time-Weighted_Returns.html" class="">2.29 | Composite Return Calculation: Composite Time-Weighted Returns</a></li>
+<li><a href="courses_1370_modules_items_99546_230_Composite_Return_Calculation_Composite_Money-Weighted_Returns.html" class="has-quiz">2.30 | Composite Return Calculation: Composite Money-Weighted Returns</a></li>
+<li><a href="courses_1370_modules_items_99549_231_Composite_Reporting.html" class="has-quiz">2.31 | Composite Reporting</a></li>
+<li><a href="courses_1370_modules_items_99551_232_Key_Differences_between_the_GIPS_Standards_for_Firms_and_the_GIPS_Standards_.html" class="has-quiz">2.32 | Key Differences between the GIPS Standards for Firms and the GIPS Standards for Asset Owners</a></li>
+<li><a href="courses_1370_modules_items_99552_233_Summary.html" class="">2.33 | Summary</a></li>
+<li><a href="courses_1370_modules_items_99554_Glossary_An_Introduction_to_the_Global_Investment_Performance_Standards_GIPS.html" class="">Glossary: An Introduction to the Global Investment Performance Standards (GIPS®)</a></li>
+<li><a href="courses_1370_modules_items_99555_Flashcards_An_Introduction_to_the_Global_Investment_Performance_Standards_GIPS.html" class="">Flashcards: An Introduction to the Global Investment Performance Standards (GIPS®)</a></li>
+</ul></div>
+</div>
+</div></body></html>

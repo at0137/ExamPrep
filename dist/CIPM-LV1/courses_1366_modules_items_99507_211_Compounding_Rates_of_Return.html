@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.11 | Compounding Rates of Return</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Performance Evaluation: Rate-of-Return Measurement › Module 2: Performance Evaluation: Rate-of-Return Measurement</nav>
+<h1 class="page-title screenreader-only">2.11 | Compounding Rates of Return</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0005-R-s11-R-1" title="2.11 | Compounding Rates of Return"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：パフォーマンス評価（Performance Evaluation）：収益率測定（Rate-of-Return Measurement）2.11｜収益率の複利化（Compounding Rates of Return）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul id="CIPM0005-R-s11-los-1">
+<li class="cfa-curriculum-los-item">離散複利（discrete compounding）および連続複利（continuous compounding）を説明し、実演せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>原則として、長い保有期間（例えば1年）のリターンは、その期間内に外部キャッシュフローがない場合、期首および期末の市場価値を用いて、短い保有期間（例えば1か月）と同様の方法で計算することができる。しかしながら、一般には短い保有期間ごとにリターンを計算し、その後複数期間にわたるリターンを結合または連結することが多い。このような手続きは、外部キャッシュフローが存在する場合に必要となる（セクション4で説明する）。リターン（またはリターン相対値）データを保存しておくことで、任意の保有期間に対して柔軟にリターンを計算することが可能となる。</p>
+<section id="CIPM0005-R-s11-01-01">
+<h3 class="dp-heading">収益率の複利化（Compounding Rates of Return）</h3>
+<p>もしリターンが時間に対して一定の率で生成される場合、ポートフォリオの価値は、時間に比例してリターンが生成される場合よりも速く成長する。このような成長は線形成長（linear growth）に対して幾何成長（geometric growth）と呼ばれる。この事実は複利（compounding）の結果である。2期間にわたる複利リターンは次のように計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s11-E">(1 + <em>R</em><sub>1</sub>)(1 + <em>R</em><sub>2</sub>) – 1 = <em>R</em><sub>1</sub> + <em>R</em><sub>2</sub> + <em>R</em><sub>1</sub><em>R</em><sub>2</sub></div>
+<p>ここで、添字は時間期間を示す。項 R₁ + R₂ は時間に対する価値の線形成長を表し、相互作用項 R₁R₂ は「利子に対する利子（interest on interest）」を表しており、これは幾何成長（すなわち複利成長（compound growth））の本質である。</p>
+<section id="CIPM0005-R-s11-01-01-01">
+<h4>リターンのチェーンリンク（Chain Linking Returns）</h4>
+<p>あるポートフォリオが1年間にわたって毎月末に評価されるとする。Vₜ を月 t の末時点のポートフォリオ価値、V₀ を年初のポートフォリオ価値とする。もしその年の間にポートフォリオへの外部キャッシュフローの流入や流出がなかった場合、年間のリターン相対値は月次リターン相対値の積として表される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s11-E12"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mrow&gt;&lt;mn&gt;12&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;mo&gt;&amp;#xD7;&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;mo&gt;&amp;#xD7;&lt;/mo&gt;&lt;mo&gt;&amp;#x22EF;&lt;/mo&gt;&lt;mo&gt;&amp;#xD7;&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mrow&gt;&lt;mn&gt;12&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mrow&gt;&lt;mn&gt;11&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-1-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.565ex" role="img" style="vertical-align: -2.227ex;" viewbox="0 -1437.2 12472.8 2396" width="28.969ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="1511" x="0" y="220"></rect><g transform="translate(60,676)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><g transform="translate(583,-150)"><use transform="scale(0.707)" xlink:href="#MJMAIN-31"></use><use transform="scale(0.707)" x="500" xlink:href="#MJMAIN-32" y="0"></use></g></g><g transform="translate(236,-686)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMAIN-30" y="-213"></use></g></g><use x="2029" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(3085,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="1157" x="0" y="220"></rect><g transform="translate(60,676)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMAIN-31" y="-213"></use></g><g transform="translate(60,-686)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMAIN-30" y="-213"></use></g></g></g><use x="4704" xlink:href="#MJMAIN-D7" y="0"></use><g transform="translate(5705,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="1157" x="0" y="220"></rect><g transform="translate(60,676)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMAIN-32" y="-213"></use></g><g transform="translate(60,-686)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMAIN-31" y="-213"></use></g></g></g><use x="7325" xlink:href="#MJMAIN-D7" y="0"></use><use x="8326" xlink:href="#MJMAIN-22EF" y="0"></use><use x="9720" xlink:href="#MJMAIN-D7" y="0"></use><g transform="translate(10721,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="1511" x="0" y="220"></rect><g transform="translate(60,676)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><g transform="translate(583,-150)"><use transform="scale(0.707)" xlink:href="#MJMAIN-31"></use><use transform="scale(0.707)" x="500" xlink:href="#MJMAIN-32" y="0"></use></g></g><g transform="translate(60,-686)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><g transform="translate(583,-150)"><use transform="scale(0.707)" xlink:href="#MJMAIN-31"></use><use transform="scale(0.707)" x="500" xlink:href="#MJMAIN-31" y="0"></use></g></g></g></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mrow><mn>12</mn></mrow></msub></mrow><mrow><msub><mi>V</mi><mn>0</mn></msub></mrow></mfrac></mstyle><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mn>1</mn></msub></mrow><mrow><msub><mi>V</mi><mn>0</mn></msub></mrow></mfrac></mstyle><mo>×</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mn>2</mn></msub></mrow><mrow><msub><mi>V</mi><mn>1</mn></msub></mrow></mfrac></mstyle><mo>×</mo><mo>⋯</mo><mo>×</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mrow><mn>12</mn></mrow></msub></mrow><mrow><msub><mi>V</mi><mrow><mn>11</mn></mrow></msub></mrow></mfrac></mstyle></mrow></semantics></math></span></span><script id="MathJax-Element-1" type="math/mml"><math id="m1"><semantics><mrow><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mrow><mn>12</mn></mrow></msub></mrow><mrow><msub><mi>V</mi><mn>0</mn></msub></mrow></mfrac></mstyle><mo>=</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mn>1</mn></msub></mrow><mrow><msub><mi>V</mi><mn>0</mn></msub></mrow></mfrac></mstyle><mo>×</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mn>2</mn></msub></mrow><mrow><msub><mi>V</mi><mn>1</mn></msub></mrow></mfrac></mstyle><mo>×</mo><mo>⋯</mo><mo>×</mo><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mrow><mn>12</mn></mrow></msub></mrow><mrow><msub><mi>V</mi><mrow><mn>11</mn></mrow></msub></mrow></mfrac></mstyle></mrow></semantics></math></script><span class="cfa-curriculum-display-formula-number">15</span></div>
+<p>なぜなら、右辺の式において中間の値 V₁, V₂, …, V₁₁ が相殺されるためである。月次保有期間リターン Vₜ / Vₜ₋₁ = 1 + Rₜ を前式に代入すると、次式が得られる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s11-E___1"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mrow&gt;&lt;mn&gt;12&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;V&lt;/mi&gt;&lt;mn&gt;0&lt;/mn&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x22EF;&lt;/mo&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mrow&gt;&lt;mn&gt;12&lt;/mn&gt;&lt;/mrow&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-2-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="5.565ex" role="img" style="vertical-align: -2.227ex;" viewbox="0 -1437.2 16259.3 2396" width="37.764ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="1511" x="0" y="220"></rect><g transform="translate(60,676)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><g transform="translate(583,-150)"><use transform="scale(0.707)" xlink:href="#MJMAIN-31"></use><use transform="scale(0.707)" x="500" xlink:href="#MJMAIN-32" y="0"></use></g></g><g transform="translate(236,-686)"><use x="0" xlink:href="#MJMATHI-56" y="0"></use><use transform="scale(0.707)" x="825" xlink:href="#MJMAIN-30" y="-213"></use></g></g><use x="2029" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(3085,0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.707)" x="1074" xlink:href="#MJMAIN-31" y="-213"></use></g></g><use x="3326" xlink:href="#MJMAIN-29" y="0"></use></g><g transform="translate(6967,0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.707)" x="1074" xlink:href="#MJMAIN-32" y="-213"></use></g></g><use x="3326" xlink:href="#MJMAIN-29" y="0"></use></g><use x="10850" xlink:href="#MJMAIN-22EF" y="0"></use><g transform="translate(12189,0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><g transform="translate(759,-150)"><use transform="scale(0.707)" xlink:href="#MJMAIN-31"></use><use transform="scale(0.707)" x="500" xlink:href="#MJMAIN-32" y="0"></use></g></g></g><use x="3680" xlink:href="#MJMAIN-29" y="0"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mrow><mn>12</mn></mrow></msub></mrow><mrow><msub><mi>V</mi><mn>0</mn></msub></mrow></mfrac></mstyle><mo>=</mo><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mn>1</mn></msub></mrow><mo>)</mo></mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mn>2</mn></msub></mrow><mo>)</mo></mrow><mo>⋯</mo><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mrow><mn>12</mn></mrow></msub></mrow><mo>)</mo></mrow></mrow></semantics></math></span></span><script id="MathJax-Element-2" type="math/mml"><math id="m2"><semantics><mrow><mstyle displaystyle="true"><mfrac><mrow><msub><mi>V</mi><mrow><mn>12</mn></mrow></msub></mrow><mrow><msub><mi>V</mi><mn>0</mn></msub></mrow></mfrac></mstyle><mo>=</mo><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mn>1</mn></msub></mrow><mo>)</mo></mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mn>2</mn></msub></mrow><mo>)</mo></mrow><mo>⋯</mo><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mrow><mn>12</mn></mrow></msub></mrow><mo>)</mo></mrow></mrow></semantics></math></script></div>
+<p>より一般的には、R = V_T / V₀ − 1 が T 期間のリターンであるとすると、R は次の連結式（linking formula）から計算できる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s11-E13"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;munderover&gt;&lt;mo&gt;&amp;#x220F;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;/munderover&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/mstyle&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-3-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="7.17ex" role="img" style="vertical-align: -2.968ex;" viewbox="0 -1809.3 8879.7 3087" width="20.624ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use x="1037" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2093,0)"><use x="0" xlink:href="#MJSZ2-220F" y="0"></use><g transform="translate(59,-1090)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-74" y="0"></use><use transform="scale(0.707)" x="361" xlink:href="#MJMAIN-3D" y="0"></use><use transform="scale(0.707)" x="1140" xlink:href="#MJMAIN-31" y="0"></use></g><use transform="scale(0.707)" x="551" xlink:href="#MJMATHI-54" y="1627"></use><g transform="translate(1445,0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.707)" x="1074" xlink:href="#MJMATHI-74" y="-213"></use></g></g><use x="3228" xlink:href="#MJMAIN-29" y="0"></use></g></g><use x="7378" xlink:href="#MJMAIN-2212" y="0"></use><use x="8379" xlink:href="#MJMAIN-31" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><mstyle displaystyle="true"><munderover><mo>∏</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mi>t</mi></msub></mrow><mo>)</mo></mrow></mrow></mstyle><mo>−</mo><mn>1</mn></mrow></semantics></math></span></span><script id="MathJax-Element-3" type="math/mml"><math id="m3"><semantics><mrow><mi>R</mi><mo>=</mo><mstyle displaystyle="true"><munderover><mo>∏</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mi>t</mi></msub></mrow><mo>)</mo></mrow></mrow></mstyle><mo>−</mo><mn>1</mn></mrow></semantics></math></script><span class="cfa-curriculum-display-formula-number">16</span></div>
+<p>ここで、積演算子 ∏(・) は項の積を表す。この式で示される手続きは、リターンのチェーンリンク（chain linking returns）またはリターンの幾何複利化（geometric compounding of returns）とも呼ばれる。外部キャッシュフローが存在しない場合、累積リターン R は、期首価値に対するポートフォリオ価値の変化割合として解釈できる。</p>
+<figure class="dp-content-block cfa-curriculum-example-box" id="CIPM0005-R-s11-EXM15">
+<figcaption class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"></i>Example 15<span style="display: block;">Chain Linking Returns</span></figcaption>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0005-R-s11-Q1"><fieldset><span class="cfa-curriculum-question-with-label">1. </span>
+<p>次の5年間の累積リターンを計算せよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0005-R-s11-Ta">
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table class="table" data-active-table="true">
+<tbody>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">年1</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.5%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">年2</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–3.6%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">年3</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20.7%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">年4</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.4%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">年5</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.3%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel0" style="display: inline-block;">解答を確認（Check Answer）</h4>
+<div aria-labelledby="dpPanel0" class="dp-panel-content cfa-curriculum-solution" id="dpPanel0Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h5 class="cfa-curriculum-solution-title">Solution</h5>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s11-E___2">1.105 × 0.964 × 1.207 × 1.064 × 1.123 – 1 = 53.63%.</div>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+</figure>
+<p>式13は離散リターン（有限の時間間隔で測定されるリターン）の複利計算に適用される。離散リターンの複利化は離散複利（discrete compounding）と呼ばれる。また、連続複利リターン（continuously compounded return）を定義することも可能である。これは有限の時間間隔を無限に細分化した場合に得られるリターンである。連続複利リターンの複利化は連続複利（continuous compounding）と呼ばれる。次のセクションではこれらの概念を詳しく説明する。</p>
+</section>
+<section id="CIPM0005-R-s11-01-01-02">
+<h4>離散複利と連続複利（Discrete and Continuous Compounding）</h4>
+<p>金利が提示される場合、複利頻度（compounding frequency）を指定する必要がある。慣例として、名目年利率（stated annual rate）は、期間利率（periodic rate）に年間の複利回数 n を掛けたものである。したがって、名目年利率 i に対応する期間利率は i / n である。有効年利率（effective annual rate）は次のように定義される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s11-E14"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mtext&gt;EAR&lt;/mtext&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/msup&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-4-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="6.059ex" role="img" style="vertical-align: -2.35ex;" viewbox="0 -1596.6 9907.6 2608.6" width="23.011ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-45"></use><use x="681" xlink:href="#MJMAIN-41" y="0"></use><use x="1432" xlink:href="#MJMAIN-52" y="0"></use><use x="2446" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(3502,0)"><use xlink:href="#MJSZ3-28"></use><g transform="translate(736,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="720" x="0" y="220"></rect><use x="187" xlink:href="#MJMATHI-69" y="676"></use><use x="60" xlink:href="#MJMATHI-6E" y="-686"></use></g></g></g><use x="3420" xlink:href="#MJSZ3-29" y="-1"></use><use transform="scale(0.707)" x="5878" xlink:href="#MJMATHI-6E" y="1665"></use></g><use x="8406" xlink:href="#MJMAIN-2212" y="0"></use><use x="9407" xlink:href="#MJMAIN-31" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>EAR</mtext><mo>=</mo><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mstyle displaystyle="true"><mfrac><mi>i</mi><mi>n</mi></mfrac></mstyle></mrow><mo>)</mo></mrow></mrow><mi>n</mi></msup><mo>−</mo><mn>1</mn></mrow></semantics></math></span></span><script id="MathJax-Element-4" type="math/mml"><math id="m4"><semantics><mrow><mtext>EAR</mtext><mo>=</mo><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mstyle displaystyle="true"><mfrac><mi>i</mi><mi>n</mi></mfrac></mstyle></mrow><mo>)</mo></mrow></mrow><mi>n</mi></msup><mo>−</mo><mn>1</mn></mrow></semantics></math></script><span class="cfa-curriculum-display-formula-number">17</span></div>
+<p>したがって、名目年利率が12%で、年間の複利回数が12回である場合、期間利率は12%/12 = 1%となり、EAR = (1.01)¹² − 1 = 0.1268、すなわち12.68%となる。言い換えれば、月次複利で名目年利率12%で運用した1ドルは、複利なしで12.68%で運用した1ドルと1年後に同じ金額になる。</p>
+<p>原則として、複利頻度は無限に増やすことができ、その結果として連続複利が得られる。与えられた名目利率に対して、複利頻度が大きくなるほど、年率リターンはある極限値に近づく。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s11-E___3"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;munder&gt;&lt;mrow&gt;&lt;mi&gt;lim&lt;/mi&gt;&lt;/mrow&gt;&lt;mrow&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;mo&gt;&amp;#x2192;&lt;/mo&gt;&lt;mi&gt;&amp;#x221E;&lt;/mi&gt;&lt;/mrow&gt;&lt;/munder&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/msup&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msup&gt;&lt;mi&gt;e&lt;/mi&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-5-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="6.059ex" role="img" style="vertical-align: -2.35ex;" viewbox="0 -1596.6 8666 2608.6" width="20.127ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g transform="translate(224,0)"><use xlink:href="#MJMAIN-6C"></use><use x="278" xlink:href="#MJMAIN-69" y="0"></use><use x="557" xlink:href="#MJMAIN-6D" y="0"></use></g><g transform="translate(0,-601)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-6E" y="0"></use><use transform="scale(0.707)" x="600" xlink:href="#MJMAIN-2192" y="0"></use><use transform="scale(0.707)" x="1601" xlink:href="#MJMAIN-221E" y="0"></use></g><g transform="translate(1839,0)"><use xlink:href="#MJSZ3-28"></use><g transform="translate(736,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="720" x="0" y="220"></rect><use x="187" xlink:href="#MJMATHI-69" y="676"></use><use x="60" xlink:href="#MJMATHI-6E" y="-686"></use></g></g></g><use x="3420" xlink:href="#MJSZ3-29" y="-1"></use><use transform="scale(0.707)" x="5878" xlink:href="#MJMATHI-6E" y="1665"></use></g><use x="6798" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(7855,0)"><use x="0" xlink:href="#MJMATHI-65" y="0"></use><use transform="scale(0.707)" x="659" xlink:href="#MJMATHI-69" y="513"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mrow><mi>lim</mi></mrow><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mstyle displaystyle="true"><mfrac><mi>i</mi><mi>n</mi></mfrac></mstyle></mrow><mo>)</mo></mrow></mrow><mi>n</mi></msup><mo>=</mo><msup><mi>e</mi><mi>i</mi></msup></mrow></semantics></math></span></span><script id="MathJax-Element-5" type="math/mml"><math id="m5"><semantics><mrow><munder><mrow><mi>lim</mi></mrow><mrow><mi>n</mi><mo>→</mo><mi>∞</mi></mrow></munder><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mstyle displaystyle="true"><mfrac><mi>i</mi><mi>n</mi></mfrac></mstyle></mrow><mo>)</mo></mrow></mrow><mi>n</mi></msup><mo>=</mo><msup><mi>e</mi><mi>i</mi></msup></mrow></semantics></math></script></div>
+<p>ここで e は自然対数の底（base of the natural logarithm）であり、およそ2.718に等しい定数である。また、年率 R で複利なしに1ドルを運用した場合の最終額は、i_c = ln(1 + R) を用いた連続複利と同じ最終額をもたらす。したがって、i_c は連続複利リターン（continuously compounded return）と呼ばれる。例えば、Exhibit 3 は、同じ有効年利率をもたらす異なる複利頻度における名目利率を示している。連続複利に対応する EAR は exp(i_c) − 1 である。したがって、11.3329%の連続複利は e^0.113329 − 1 = 0.12、すなわち12%に等しい。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0005-R-s11-EXH3">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"></i>Exhibit 3<span style="display: block;">Equivalent Effective Annual Rates of Return</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM0005-R-s11-EXH3-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM0005-R-s11-EXH3-title">図表3：等価な有効年利率（Equivalent Effective Annual Rates of Return）</caption>
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">複利頻度（Compounding Frequency）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">名目年利率（%）（Stated Annual Rate）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">年次（Annual）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">12.0000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">半年次（Semi-annual）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11.6601</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">四半期（Quarterly）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11.4949</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">月次（Monthly）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11.3866</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">週次（Weekly）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11.3452</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">日次（365日）（Daily (365 days)）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11.3346</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">連続複利（Continuously compounded）</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">11.3329</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>連続複利の解釈はこの用語の正当性を裏付けるが、対数（logarithms）の使用は単なる変換（transformation）と考えることもできる。対数の有用な性質として、積の対数は各項の対数の和に等しいという事実がある。例えば、連結式（linking formula）、すなわち式13は次のように書き換えることができる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s11-E___4"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mi&gt;exp&lt;/mi&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mstyle displaystyle="true"&gt;&lt;munderover&gt;&lt;mo&gt;&amp;#x2211;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;mi&gt;T&lt;/mi&gt;&lt;/munderover&gt;&lt;mrow&gt;&lt;mi&gt;ln&lt;/mi&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;t&lt;/mi&gt;&lt;/msub&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-6-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="7.293ex" role="img" style="vertical-align: -3.091ex;" viewbox="0 -1809.3 13328.6 3140.1" width="30.957ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use x="1037" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2093,0)"><use xlink:href="#MJMAIN-65"></use><use x="444" xlink:href="#MJMAIN-78" y="0"></use><use x="973" xlink:href="#MJMAIN-70" y="0"></use></g><g transform="translate(3789,0)"><use xlink:href="#MJSZ4-28"></use><g transform="translate(792,0)"><use x="0" xlink:href="#MJSZ2-2211" y="0"></use><g transform="translate(142,-1090)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-74" y="0"></use><use transform="scale(0.707)" x="361" xlink:href="#MJMAIN-3D" y="0"></use><use transform="scale(0.707)" x="1140" xlink:href="#MJMAIN-31" y="0"></use></g><use transform="scale(0.707)" x="669" xlink:href="#MJMATHI-54" y="1627"></use><g transform="translate(1611,0)"><use xlink:href="#MJMAIN-6C"></use><use x="278" xlink:href="#MJMAIN-6E" y="0"></use><g transform="translate(1001,0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.707)" x="1074" xlink:href="#MJMATHI-74" y="-213"></use></g></g><use x="3228" xlink:href="#MJMAIN-29" y="0"></use></g></g></g><use x="7022" xlink:href="#MJSZ4-29" y="0"></use></g><use x="11827" xlink:href="#MJMAIN-2212" y="0"></use><use x="12828" xlink:href="#MJMAIN-31" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><mi>exp</mi><mrow><mo>(</mo><mrow><mstyle displaystyle="true"><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mi>t</mi></msub></mrow><mo>)</mo></mrow></mrow></mstyle></mrow><mo>)</mo></mrow><mo>−</mo><mn>1</mn></mrow></semantics></math></span></span><script id="MathJax-Element-6" type="math/mml"><math id="m6"><semantics><mrow><mi>R</mi><mo>=</mo><mi>exp</mi><mrow><mo>(</mo><mrow><mstyle displaystyle="true"><munderover><mo>∑</mo><mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow><mi>T</mi></munderover><mrow><mi>ln</mi><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><msub><mi>R</mi><mi>t</mi></msub></mrow><mo>)</mo></mrow></mrow></mstyle></mrow><mo>)</mo></mrow><mo>−</mo><mn>1</mn></mrow></semantics></math></script></div>
+<p>ここで、exp(・) は指数関数（exponential function）である。計算上、積ではなく和を計算する方が便利な場合がある。</p>
+<figure class="dp-content-block cfa-curriculum-example-box" id="CIPM0005-R-s11-EXM16">
+<figcaption class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"></i>Example 16<span style="display: block;">Continuously Compounded Returns</span></figcaption>
+<div class="dp-content-block">
+<div class="dp-qc dp-qc-built"><fieldset>
+<div class="dp-qc-question"><legend>
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0005-R-s11-Q2"><legend><span class="cfa-curriculum-question-with-label">1. </span>
+<p>例15の解答と同じ累積リターンを生み出す連続複利利率はいくらか。</p>
+</legend></div>
+</legend></div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse1-0" id="dp-qc-1-0" name="dp-qc-1" type="radio" value="true"/><label for="dp-qc-1-0">
+<p>A. 42.94%</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response dp-qc-correct" id="dpQcResponse1-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span>
+<div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution">
+<section>
+<h5 class="cfa-curriculum-solution-title">Solution</h5>
+<p>A が正解。ln(1 + 53.63%) = 42.94%</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-1" id="dp-qc-1-1" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-1">
+<p>B. 47.28%</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse1-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>B は不正解。詳細を学ぶには正しい解答を選択せよ。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-2" id="dp-qc-1-2" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-2">
+<p>C. 53.63%</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse1-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>C は不正解。詳細を学ぶには正しい解答を選択せよ。</p>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc dp-qc-built"><fieldset>
+<div class="dp-qc-question"><legend>
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0005-R-s11-Q3"><legend><span class="cfa-curriculum-question-with-label">2. </span>
+<p>名目金利（stated interest rate）が10.9%で半年複利（semi-annually）の場合、有効年利率（effective annual rate）を計算せよ。</p>
+</legend></div>
+</legend></div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-0" id="dp-qc-2-0" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-0">
+<p>A. 11.0%</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse2-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>A は不正解。詳細を学ぶには正しい解答を選択せよ。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-1" id="dp-qc-2-1" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-1">
+<p>B. 11.1%</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response" id="dpQcResponse2-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span>
+<div class="dp-qc-content cfa-curriculum-solution">
+<p>B は不正解。詳細を学ぶには正しい解答を選択せよ。</p>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse2-2" id="dp-qc-2-2" name="dp-qc-2" type="radio" value="true"/><label for="dp-qc-2-2">
+<p>C. 11.2%</p>
+</label><br/>
+</dt>
+<dd class="dp-qc-response dp-qc-correct" id="dpQcResponse2-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span>
+<div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution">
+<section>
+<h5 class="cfa-curriculum-solution-title">Solution</h5>
+<p>C が正解。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0005-R-s11-E___5"><span class="MathJax_Preview" style="color: inherit; display: none;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/msup&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;+&lt;/mo&gt;&lt;mstyle displaystyle="true"&gt;&lt;mfrac&gt;&lt;mrow&gt;&lt;mn&gt;0.109&lt;/mn&gt;&lt;/mrow&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/mfrac&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/msup&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;1.1120&lt;/mn&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mn&gt;1&lt;/mn&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;11.2&lt;/mn&gt;&lt;mi&gt;%&lt;/mi&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-7-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="6.429ex" role="img" style="vertical-align: -2.35ex;" viewbox="0 -1756.1 27647 2768.1" width="64.213ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use x="1037" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(2093,0)"><use xlink:href="#MJSZ3-28"></use><g transform="translate(736,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="720" x="0" y="220"></rect><use x="187" xlink:href="#MJMATHI-69" y="676"></use><use x="60" xlink:href="#MJMATHI-6E" y="-686"></use></g></g></g><use x="3420" xlink:href="#MJSZ3-29" y="-1"></use><use transform="scale(0.707)" x="5878" xlink:href="#MJMATHI-6E" y="1665"></use></g><use x="6997" xlink:href="#MJMAIN-2212" y="0"></use><use x="7998" xlink:href="#MJMAIN-31" y="0"></use><use x="8776" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(9832,0)"><use xlink:href="#MJSZ3-28"></use><g transform="translate(736,0)"><use x="0" xlink:href="#MJMAIN-31" y="0"></use><use x="722" xlink:href="#MJMAIN-2B" y="0"></use><g transform="translate(1723,0)"><g transform="translate(120,0)"><rect height="60" stroke="none" width="2400" x="0" y="220"></rect><g transform="translate(60,676)"><use xlink:href="#MJMAIN-30"></use><use x="500" xlink:href="#MJMAIN-2E" y="0"></use><use x="779" xlink:href="#MJMAIN-31" y="0"></use><use x="1279" xlink:href="#MJMAIN-30" y="0"></use><use x="1780" xlink:href="#MJMAIN-39" y="0"></use></g><use x="950" xlink:href="#MJMAIN-32" y="-686"></use></g></g></g><use x="5100" xlink:href="#MJSZ3-29" y="-1"></use><use transform="scale(0.707)" x="8254" xlink:href="#MJMAIN-32" y="1665"></use></g><use x="16345" xlink:href="#MJMAIN-2212" y="0"></use><use x="17346" xlink:href="#MJMAIN-31" y="0"></use><use x="18124" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(19180,0)"><use xlink:href="#MJMAIN-31"></use><use x="500" xlink:href="#MJMAIN-2E" y="0"></use><use x="779" xlink:href="#MJMAIN-31" y="0"></use><use x="1279" xlink:href="#MJMAIN-31" y="0"></use><use x="1780" xlink:href="#MJMAIN-32" y="0"></use><use x="2280" xlink:href="#MJMAIN-30" y="0"></use></g><use x="22184" xlink:href="#MJMAIN-2212" y="0"></use><use x="23184" xlink:href="#MJMAIN-31" y="0"></use><use x="23963" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(25019,0)"><use xlink:href="#MJMAIN-31"></use><use x="500" xlink:href="#MJMAIN-31" y="0"></use><use x="1001" xlink:href="#MJMAIN-2E" y="0"></use><use x="1279" xlink:href="#MJMAIN-32" y="0"></use></g><use x="26799" xlink:href="#MJMAINI-25" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>=</mo><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mstyle displaystyle="true"><mfrac><mi>i</mi><mi>n</mi></mfrac></mstyle></mrow><mo>)</mo></mrow></mrow><mi>n</mi></msup><mo>−</mo><mn>1</mn><mo>=</mo><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mstyle displaystyle="true"><mfrac><mrow><mn>0.109</mn></mrow><mn>2</mn></mfrac></mstyle></mrow><mo>)</mo></mrow></mrow><mn>2</mn></msup><mo>−</mo><mn>1</mn><mo>=</mo><mn>1.1120</mn><mo>−</mo><mn>1</mn><mo>=</mo><mn>11.2</mn><mi>%</mi></mrow></semantics></math></span></span><script id="MathJax-Element-7" type="math/mml"><math id="m7"><semantics><mrow><mi>R</mi><mo>=</mo><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mstyle displaystyle="true"><mfrac><mi>i</mi><mi>n</mi></mfrac></mstyle></mrow><mo>)</mo></mrow></mrow><mi>n</mi></msup><mo>−</mo><mn>1</mn><mo>=</mo><msup><mrow><mrow><mo>(</mo><mrow><mn>1</mn><mo>+</mo><mstyle displaystyle="true"><mfrac><mrow><mn>0.109</mn></mrow><mn>2</mn></mfrac></mstyle></mrow><mo>)</mo></mrow></mrow><mn>2</mn></msup><mo>−</mo><mn>1</mn><mo>=</mo><mn>1.1120</mn><mo>−</mo><mn>1</mn><mo>=</mo><mn>11.2</mn><mi>%</mi></mrow></semantics></math></script></div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div>
+</div>
+</figure>
+</section>
+<section id="CIPM0005-R-s11-01-01-03">
+<h4>実務上の論点（Practical Issues）</h4>
+<p>定期預金（term deposits）のように複利期間が明確に定義されている投資もあるが、パフォーマンス測定（performance measurement）においては、リターンの保有期間は一般に評価データ（valuation data）の入手可能性によって決定される。リターンの期間性（periodicity）は投資の特性ではなく、パフォーマンス測定者（performance measurer）が選択するパラメータである。原則として、市場価値は測定・記録されているか否かに関わらず、任意の時点で存在しうる。分析目的においては、離散複利（discrete compounding）と連続複利（continuous compounding）は成長の代替的モデルを構成する。これらのモデルは、与えられた評価時点でポートフォリオ価値が一致する場合には同等である。保有期間の選択や連続複利の使用は、分析者が取り組む課題の性質および利用可能なデータに依存する。</p>
+<figure class="dp-content-block cfa-curriculum-example-box" id="CIPM0005-R-s11-EXM17">
+<figcaption class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"></i>Example 17<span style="display: block;">Equivalent Returns with Different Compounding Intervals</span></figcaption>
+<section>
+<p>以下の3つのケースについて、名目年利率と複利回数が与えられたときの有効年利率を計算せよ。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0005-R-s11-Q4"><fieldset><span class="cfa-curriculum-question-with-label">1. </span>
+<p>名目年利率：12%</p>
+<p>年間の複利回数：4</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel1" style="display: inline-block;">解答を確認（Check Answer）</h4>
+<div aria-labelledby="dpPanel1" class="dp-panel-content cfa-curriculum-solution" id="dpPanel1Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h5 class="cfa-curriculum-solution-title">Solution</h5>
+<p>期間利率は 12%/4 = 3%。EAR = (1.03)⁴ − 1 = 0.1255、すなわち12.55%。</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0005-R-s11-Q5"><fieldset><span class="cfa-curriculum-question-with-label">2. </span>
+<p>名目年利率：10%</p>
+<p>年間の複利回数：12</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel2" style="display: inline-block;">解答を確認（Check Answer）</h4>
+<div aria-labelledby="dpPanel2" class="dp-panel-content cfa-curriculum-solution" id="dpPanel2Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h5 class="cfa-curriculum-solution-title">Solution</h5>
+<p>期間利率は 10%/12 = 0.8333%。EAR = (1.008333)¹² − 1 = 0.1047、すなわち10.47%。</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0005-R-s11-Q6"><fieldset><span class="cfa-curriculum-question-with-label">3. </span>
+<p>名目年利率：8%</p>
+<p>年間の複利回数：連続（continuous）</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel3" style="display: inline-block;">解答を確認（Check Answer）</h4>
+<div aria-labelledby="dpPanel3" class="dp-panel-content cfa-curriculum-solution" id="dpPanel3Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h5 class="cfa-curriculum-solution-title">Solution</h5>
+<p>ln(1 + R) = ln(1 + 0.08) = 8.3287%。</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+</section>
+</figure>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip9Content" role="tooltip" style="display: none;">
+<p>17 これらの用語には、世界のさまざまな市場において多様な同義語（synonyms）が存在する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip0Content" role="tooltip" style="display: none;">
+<p>元本および累積利息（accrued interest）に対する利息の計算。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip1Content" role="tooltip" style="display: none;">
+<p>ポートフォリオまたは資産の複数期間にわたるリターンを結合し、富への累積効果を反映させるための表現。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip2Content" role="tooltip" style="display: none;">
+<p>リターンに関して、連結式（linking formula）を用いてそれらを結合すること。幾何複利（geometric compounding）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip3Content" role="tooltip" style="display: none;">
+<p>チェーンリンク（chain linking）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip4Content" role="tooltip" style="display: none;">
+<p>有限の時間間隔にわたって測定されたリターン。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip5Content" role="tooltip" style="display: none;">
+<p>離散リターンの複利化。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip6Content" role="tooltip" style="display: none;">
+<p>連続複利リターン（無限に小さい時間間隔で測定されるリターン）の複利化。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip7Content" role="tooltip" style="display: none;">
+<p>複利の影響を無視した1年間の名目金利（stated interest rate）；期間利率（periodic rate）に年間の複利回数を掛けたもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip8Content" role="tooltip" style="display: none;">
+<p>利子に対する利子（interest on interest）を含めて、1単位の通貨が1年間で増加する量。</p>
+</div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1366_modules_items_99505_210_Factors_Affecting_Returns_and_Related_Adjustments.html" >← 前へ</a>
+  <span class="title">2.11 | Compounding Rates of Return</span>
+  <a href="courses_1366_modules_items_99508_212_Averaging_Rates_of_Return.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

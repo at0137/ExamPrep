@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7.06 | Scenario Analysis</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2429-R-s06-R-1" title="7.06 | Scenario Analysis">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール7：企業分析：予測 (Company Analysis: Forecasting) 7.06｜シナリオ分析 (Scenario Analysis)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">予測におけるシナリオ分析 (scenario analysis) の活用について説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>これまでのレッスンで学んだように、業界リスクおよび事業リスクは、将来の結果が予想と異なる要因となり得る。予測の最終段階では、主要なリスク要因に基づく異なる結果の可能性を組み込み、それらの発生確率を評価することが含まれる。すべての企業に影響を与える一般的なリスク要因としては（影響度は企業ごとに異なるが）、景気循環 (business cycle) の変化、競争、インフレおよびデフレ (inflation and deflation)、技術革新 (technological developments) などがある。単一の点推定 (single point estimate) に基づく予測を行うのではなく、アナリストは主要なリスク要因に関する異なる結果に基づいて複数の予測シナリオを作成する。投資家は、これらのシナリオを他のアナリスト（例：セルサイドアナリスト (sell-side analysts)）の予測や、現在のバリュエーション (valuations) に織り込まれている予測と比較し、投資判断を行う。</p>
+<p>以下の歴史的ケーススタディでは、既存製品の需要を侵食 (cannibalize) する恐れのある技術革新に対してシナリオ分析をどのように用いるかを示す。技術革新は、製品の需要、供給量、あるいはその両方に影響を与える可能性がある。技術の変化によって製造コストが低下した場合、供給者は同じ価格でより多くの製品を供給するため、供給曲線は右方にシフトする。逆に、技術の変化が魅力的な代替製品 (substitute products) の開発につながる場合、需要曲線は左方にシフトする。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2429-R-s06-EXM4">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例題4 タブレット市場がパーソナルコンピュータの需要を侵食する可能性の定量化 (Quantifying the Tablet Market’s Potential to Cannibalize Demand for Personal Computers)</h3>
+<p>世界のタブレット市場は、2010年4月の Apple iPad の登場により大きな技術革新を経験した。この出来事は、デスクトップおよびノート型コンピュータの製造業者に重要な影響を与えると予想され（実際に与えた）。タブレットは、キーボードの代わりにタッチスクリーンインターフェースを備えた、携帯可能なパーソナルコンピュータ (PC) の機能を提供することが期待された。当時の新しいタブレットのもう一つの特徴は、多くのPCが Microsoft Windows プラットフォーム上で動作するのに対し、タブレットは iOS や Android といった非Microsoftのオペレーティングシステム上で動作する点であった。タブレットは、電子メール、ウェブ閲覧、写真共有、音楽再生、動画視聴、ゲーム、カレンダー管理、連絡先管理など、PCの最も一般的な機能の多くを実行できるため、当時のアナリストは、タブレットの販売がどの程度PC需要を侵食するか、そしてそれが Microsoft の売上および利益にどのような影響を与えるかについて検討することが合理的であった。Exhibit 13 はこれらの問いに対する一つのアプローチを示している。これは、iPad発売から1年以上経過した2012年初頭時点の状況を前提としており、タブレットがPC市場およびMicrosoftに与える影響を評価するアナリストの視点から提示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s06-EXH13">
+<h4 class="cfa-curriculum-exhibit-table-title">Exhibit 13 出荷台数および売上高の予測 (Unit and Revenue Projections)（特記ない限り千単位）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">需要侵食前のPC予測 (Pre-Cannibalization PC Projections)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2011年 (FY2011)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2012年予想 (FY2012E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2013年予想 (FY2013E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2014年予想 (FY2014E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">3年複合年間成長率 (3-Year CAGR)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">個人向けPC出荷台数 (Consumer PC shipments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">170,022</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">174,430</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">184,120</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">193,811</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人向けPC出荷台数 (Non-consumer PC shipments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">180,881</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">185,570</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">195,880</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">206,189</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">世界全体のPC出荷台数合計 (Total global PC shipments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">350,903</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">360,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">380,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">400,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">うち個人向けの割合 (% of which is consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">48%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">48%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">48%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">48%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">うち法人向けの割合 (% of which is non-consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">52%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">52%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">52%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">52%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">個人向けタブレット出荷台数 (Consumer tablet shipments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">36,785</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">82,800</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">111,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">148,750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">59.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人向けタブレット出荷台数 (Non-consumer tablet shipments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,686</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7,200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">26,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">149.7%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">世界全体のタブレット出荷台数合計 (Total global tablet shipments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38,471</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">90,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">125,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">175,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">65.7%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">うち個人向けの割合 (% of which is consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">96%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">92%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">89%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">85%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">うち法人向けの割合 (% of which is non-consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食率（個人向け）(Cannibalization factor, consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食率（法人向け）(Cannibalization factor, non-consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">タブレットによって侵食された個人向けPC台数 (# of consumer PCs cannibalized by tablets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11,036</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24,840</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">33,375</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">44,625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">タブレットによって侵食された法人向けPC台数 (# of non-consumer PCs cannibalized by tablets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">169</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">720</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,375</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,625</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">タブレットによって侵食されたPC総数 (Total PCs cannibalized by tablets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11,205</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">25,560</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">34,750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">47,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">タブレットによるPC需要侵食の割合 (% of total PCs cannibalized by tablets)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食後のPC予測 (Post-Cannibalization PC Projections)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">個人向けPC出荷台数 (Consumer PC shipments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">158,987</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">149,590</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">150,745</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">149,186</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−2.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人向けPC出荷台数 (Non-consumer PC shipments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">180,712</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">184,850</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">194,505</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">203,564</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">世界全体のPC出荷台数合計 (Total global PC shipments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">339,699</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">334,440</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">345,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">352,750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Microsoft の推定平均販売価格 (implied average selling price, USD)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">個人向け (Consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">85</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">85</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">85</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">85</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人向け (Non-consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">155</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">155</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">155</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">155</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Microsoft の収益への影響 (Revenue impact for Microsoft, USD millions)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">個人向け (Consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">938</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,111</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,837</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3,793</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人向け (Non-consumer)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">26</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">112</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">213</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">407</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">収益への総影響 (Total revenue impact)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">964</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,223</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3,050</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：CAGR は複合年間成長率 (compound annual growth rate) を指す。法人向け (non-consumer) には、企業、教育機関、政府の購入者が含まれる。</p>
+<p>出所：Gartner、JPMorgan、Microsoft、および著者の分析に基づく。</p>
+</div>
+<p>会計年度2011年における世界のPC出荷台数は3億5,090万台であり、タブレットの世界出荷台数は3,850万台であった（出所：Gartner Personal Computer Quarterly Statistics Worldwide Database）。2011年度において、タブレット出荷の96%は個人向けであった。次に、タブレットがPC市場に与える潜在的な代替効果、すなわち需要侵食率 (cannibalization factor) の大きさを推定する。需要侵食率は、ユーザーの嗜好、最終用途、購入者がすでにPCを所有しているかどうかなど、多くの変数に依存するため、幅を持った推定値を用いる。また、世界のPC市場を個人向けと法人向け（企業、教育機関、政府）に分ける。これは、代替の程度が両者で異なる可能性が高いためである。説明のため、ベースケースシナリオでは、個人向け市場の需要侵食率を30%、法人向け市場を10%と仮定する。</p>
+<p>さらに、ベースケースシナリオでは、法人向けにおけるタブレットの普及率が2011年の4%から15%へ上昇すると仮定している。また、世界のPC市場の構成は個人向けと法人向けでほぼ均等に分かれている（2011年度はそれぞれ48%と52%）が、法人向けセグメントはMicrosoftにとって著しく収益性が高い。これは、同社のOffice製品の約80%が企業、教育機関、政府機関に販売されているためである。平均販売価格 (ASP, average selling price) の推定は、過去3年間の顧客タイプ別のMicrosoftの推定平均収益を、顧客タイプ別の推定PC出荷台数で割ることで算出される。タブレットによって侵食されるPC台数の予測値に、この推定ASPを掛けることで、Microsoftの収益への影響を推定できる。例えば、2012年度には、2,480万台の個人向けPCがタブレット販売によって侵食されると予測されている。個人向けのASPが85米ドルであるとすると、この需要侵食はMicrosoftに約21億米ドルの収益減少をもたらす（2,480万台 × 85米ドル = 約21億米ドル）。</p>
+<p>収益への影響を予測した後の次のステップは、PC販売台数の減少が営業費用 (operating costs) および利益率 (margins) に与える影響を推定することである。まず、Microsoftのコスト構造、特に固定費 (fixed costs) と変動費 (variable costs) の内訳を分析する。多くのソフトウェア企業は、固定費の割合が高く、変動費の割合が低いコスト構造を持つ。これは、製品開発やマーケティングに関連するコスト（主に固定費）が埋没費用 (sunk costs) で回収不能である一方、ソフトウェアの追加コピーを生産するコスト（主に変動費）が比較的低いためである。固定費と変動費の明確な内訳を開示している企業はほとんど存在しないため、通常は推定を行う必要がある。一つの方法は次の式を用いることである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E">%∆ (Cost of revenue + Operating expenses)/%∆ revenue,</div>
+<p>ここで %∆ は「〜の変化率 (percentage change in)」を意味し、変動費率の代理指標として用いられる。別のアプローチとして、営業費用の各構成要素に対して固定費と変動費の割合を割り当てる方法がある。これら2つのアプローチは Exhibit 14 および Exhibit 15 に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s06-EXH14">
+<h4 class="cfa-curriculum-exhibit-table-title">Exhibit 14 Microsoftの変動費推定（方法1）(Estimation of Variable Costs for Microsoft, Method 1)（百万米ドル, USD millions）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">主な事業セグメント (Selected Operating Segments)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2009年 (FY2009)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2010年 (FY2010)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2011年 (FY2011)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">2011年/2009年 変化率 (FY2011/FY2009 Percentage Change)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高 (Revenue):</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Windows および Windows Live</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15,563</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18,792</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18,778</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Microsoft ビジネス部門 (Microsoft business division)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">19,211</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">19,345</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">21,986</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">セグメント売上高合計 (Total segment revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">34,774</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38,137</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">40,764</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用 (Operating expenses):</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Windows および Windows Live</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6,191</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6,539</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6,810</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">Microsoft ビジネス部門</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,058</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7,703</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,159</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用合計 (Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14,249</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14,242</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14,969</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___1">%Variable cost estimate ≈ %∆ (Cost of revenue + Operating expenses)/%∆ revenue ≈ 5%/17% ≈ <strong>29%</strong>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___2">%Fixed cost ≈ 1 − %Variable cost ≈ 1 − 29% ≈ <strong>71%</strong>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s06-EXH15">
+<h4 class="cfa-curriculum-exhibit-table-title">Exhibit 15 Microsoftの変動費推定（方法2）(Estimation of Variable Costs for Microsoft, Method 2)（百万米ドル, USD millions）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">営業費用 (Operating Expenses)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2009年 (FY2009)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2010年 (FY2010)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2011年 (FY2011)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2009年〜2011年平均 (FY2009–FY2011 Average)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">総営業費用に占める割合 (% of Total Op. Expenses)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">推定固定費割合 (Estimated % of Fixed Costs)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">固定費寄与額 (Fixed Cost Contribution)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上原価（減価償却費を除く）(Cost of revenue (excl. depreciation))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10,455</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10,595</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,577</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">11,542</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">減価償却費 (Depreciation expense)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,700</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,800</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">1,833</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上原価合計 (Total cost of revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,155</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,395</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15,577</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,376</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">34%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">R&amp;D</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9,010</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,714</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9,043</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,922</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">22%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">22%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">販売およびマーケティング費用 (Sales and marketing)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,879</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,214</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,940</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,344</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">34%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">80%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">一般管理費 (General and admin.)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,030</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,063</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,222</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,105</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用合計 (Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38,074</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38,386</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42,782</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">39,747</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">100%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">60%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td colspan="7" style="text-align: left; vertical-align: top; padding: 8px; ">Microsoft の総コスト構造に占める固定費の推定割合 (Estimated percentage of Microsoft’s total cost structure that is fixed):</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">70%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：会計年度は6月に終了する。</p>
+<p>出所：Microsoft 2011年 Form 10-K および著者の分析。</p>
+</div>
+<p>見てのとおり、Microsoft のコスト構造はおおよそ70%が固定費、30%が変動費で構成されているように見える。ただし、Microsoft のような成長企業は通常、将来の成長を支えるために有形固定資産 (PP&amp;E) に再投資を行うため、「固定費」と見なされる費用であっても時間の経過とともに増加する点に注意が必要である。この固定費の増加を調整するため、本例では固定費の変化率が売上高の変化率の半分であると仮定している。一方、変動費は売上高と同じ率で変化すると仮定する。Exhibit 16 に示されているように、これらの仮定を予測に組み込むと、2014年度までの売上高の年平均成長率 (CAGR) が7.0%である場合、営業利益 (operating income) のCAGRは10.6%となる［(36,757/27,161)^(1/3) − 1 = 0.106、すなわち10.6%］。さらに、固定費比率が高いことによる営業レバレッジ (operating leverage) の効果により、同期間において営業利益率 (operating margin) は410ベーシスポイント拡大する（42.9% − 38.8% = 4.1パーセントポイント、すなわち410bps）。さらに、その他収益 (other income) に変化がないこと、実効税率 (effective tax rate) が一定であること、発行済株式数 (shares outstanding) に変化がないことを仮定すると、Exhibit 16 に示される需要侵食前モデル (pre-cannibalization model) は、2014年度において売上高857億米ドル、営業利益368億米ドル、営業利益率42.9%、および1株当たり利益 (EPS) が年平均10.3%で成長し3.62米ドルに達することを示す。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s06-EXH16">
+<h4 class="cfa-curriculum-exhibit-table-title">Exhibit 16 Microsoft 需要侵食前のEPS予測 (Microsoft Pre-Cannibalization EPS Projections)（EPSを除き百万米ドル, USD millions, except EPS）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2011年 (FY2011)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2012年予想 (FY2012E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2013年予想 (FY2013E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2014年予想 (FY2014E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">3年CAGR (3-Year CAGR)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高 (Revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">69,943</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">74,839</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">80,078</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">85,683</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">YoY%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用 (Operating Expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">固定費（70%）(Fixed (70%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,947</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,996</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32,080</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">33,203</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">変動費（30%）(Variable (30%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,835</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,733</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14,694</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15,723</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用合計 (Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42,782</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">44,729</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">46,774</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">48,926</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益 (Operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27,161</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,110</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">33,303</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">36,757</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益率 (Operating margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38.83%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">40.23%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">41.59%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42.90%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他収益（費用）(Other income (expense))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">税引前利益 (Pre-tax income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,071</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">31,020</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">34,213</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">37,667</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人所得税費用 (Provision for income taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,921</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,438</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,998</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6,603</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">実効税率 (Effective tax rate)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期純利益 (Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">23,150</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">25,582</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,215</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">31,064</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">希薄化後加重平均発行済株式数 (Weighted average shares outstanding, diluted)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食前の推定EPS (Estimated EPS pre-cannibalization)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.69</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.98</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.62</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">10.3%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>需要侵食後のシナリオでは、Exhibit 17 に示されているように、需要侵食の予想影響を反映するために売上高 (revenue) は各年で減少し、その結果、期間中の売上高の年平均成長率 (CAGR) は、需要侵食前シナリオの7.0%から5.2%へ低下する。売上成長率の低下と、固定費70%・変動費30%というコスト構造を維持する前提のもとで、営業利益 (operating income) の成長率も、需要侵食前シナリオの10.6%から8.0%へと低下する。期間末の営業利益率 (operating margin) は、売上成長の鈍化により固定費ベースを十分に活用できなくなるため、42.9%から41.9%へと約100ベーシスポイント低下する。総じて、需要侵食後シナリオでは、Microsoft は2014年度に売上高815億米ドル、営業利益342億米ドル、営業利益率41.9%、およびEPSが年平均7.7%で成長し3.37米ドルに達すると予測される。したがって、タブレット市場の成長に伴うPC需要の侵食により、2014年度の同社の年間売上高は42億米ドル、営業利益は26億米ドル、営業利益率は96ベーシスポイント、EPSは0.25米ドルそれぞれ減少すると見込まれる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s06-EXH17">
+<h4 class="cfa-curriculum-exhibit-table-title">Exhibit 17 Microsoft 需要侵食後のEPS予測（ベースケースシナリオ）(Microsoft Post-Cannibalization EPS Projections, Base Case Scenario)（EPSを除き百万米ドル, USD millions, except EPS and unless noted）</h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2011年 (FY2011)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2012年予想 (FY2012E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2013年予想 (FY2013E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2014年予想 (FY2014E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">3年CAGR (3-Year CAGR)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高 (Revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">69,943</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">72,616</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">77,028</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">81,483</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">YoY%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用 (Operating Expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">固定費（70%）(Fixed (70%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,947</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,520</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">31,447</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32,356</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">変動費（30%）(Variable (30%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,835</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,325</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14,135</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14,952</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用合計 (Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42,782</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">43,845</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">45,581</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">47,308</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益 (Operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27,161</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,771</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">31,446</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">34,175</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益率 (Operating margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38.83%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">39.62%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">40.82%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">41.94%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他収益（費用）(Other income (expense))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">税引前利益 (Pre-tax income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,071</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,681</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32,356</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">35,085</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人所得税費用 (Provision for income taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,921</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,203</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,672</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6,151</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">実効税率 (Effective tax rate)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期純利益 (Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">23,150</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24,478</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">26,684</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,934</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">希薄化後加重平均発行済株式数 (Weighted average shares outstanding, diluted)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食後の推定EPS (Estimated EPS post-cannibalization)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.69</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.85</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.11</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.37</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">7.7%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食前との比較 (Compared with pre-cannibalization:)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益率への推定影響 (Estimated impact on operating margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−61 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−77 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−96 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">EPSへの推定影響（米ドル）(Estimated impact on EPS (USD))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–0.13</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">–0.25</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−2.6%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2429-R-s06-Ba">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">知識チェック (Knowledge Check)</h3>
+<p>Microsoft に関する図表のデータを用いて、以下の問いに答えよ。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>個人向けの需要侵食率を40%、法人向けを15%と仮定して、2012年度における需要侵食後の世界PC出荷台数を推定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>タブレットによって侵食されるPC台数は、予想される世界のタブレット出荷台数、各カテゴリの構成比率、および当該カテゴリの需要侵食率の積に等しい。2012年度のタブレット出荷台数は9,000万台と予測されている；（9,000万台 × 個人向け比率92% × 個人向け需要侵食率40% = 3,312万台の個人向けPCが侵食）＋（9,000万台 × 法人向け比率8% × 法人向け需要侵食率15% = 108万台の法人向けPCが侵食）＝合計3,420万台のPCがタブレットによって侵食される。需要侵食後の出荷台数は、需要侵食前の出荷台数から予想侵食台数を差し引いたものであり、すなわち 3億6,000万台 − 3,420万台 = 3億2,580万台である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>問題1で得られた結果を用いて、2012年度におけるMicrosoftの需要侵食後の売上高を推定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>売上高への推定影響は、侵食されたPC台数と平均販売価格 (ASP) の積に等しい。問題1で得られた結果とASPデータを用いると、売上高への影響は次のように計算される：（3,312万台の個人向けPC × 85米ドル = 28.15億米ドル）＋（108万台の法人向けPC × 155米ドル = 1.674億米ドル）＝Microsoftの売上高への総影響は29.83億米ドルとなる。需要侵食後の売上高は、需要侵食前の売上高からこの影響額を差し引いたものであり、すなわち 748.39億米ドル − 29.83億米ドル = 718.56億米ドルである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>問題2で導出した需要侵食後の売上高の推定値と与えられたコスト構造を用いて、2012年度におけるMicrosoftの需要侵食後の営業利益および営業利益率を推定せよ。固定費は売上高の変化率の半分で変化すると仮定せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s06-EXH18">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 18<span style="display: block;">Solution to Question 3 (USD millions)</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2011年 (FY2011)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2012年予想 (FY2012E)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Notes</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高 (Revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">69,943</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">71,856</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">問題2から導出 (Derived from Question 2)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">YoY%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.74%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用を推定するために用いられる売上高の変化率 (Rate of change in sales used to estimate operating expenses)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用 (Operating Expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">固定費（70%）(Fixed (70%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,947</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,357</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">固定費は売上高の変化率の半分で変化する、すなわち 29,947 × (1 + 2.74% / 2)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">変動費（30%）(Variable (30%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,835</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,186</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">変動費は売上高の変化率と同じ率で変化する、すなわち 12,835 × (1 + 2.74%)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用合計 (Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42,782</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">43,543</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">表示されていないが、営業費用には売上原価 (COGS) が含まれる</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益 (Operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27,161</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,313</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高から営業費用合計を差し引いたもの、すなわち 71,856 − 43,543 = 28,313</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益率 (Operating margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">39.4%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益を売上高で割ったもの、すなわち 28,313 / 71,856 = 39.4%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>2012年度におけるMicrosoftの需要侵食後の営業利益および営業利益率は、それぞれ283億1,400万米ドルおよび39.4%である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>問題3で導出した営業利益の推定値と図表のデータを用いて、2012年度におけるMicrosoftの需要侵食後のEPSを計算せよ。その他収益（費用）(other income (expense))、実効税率 (effective tax rate)、および希薄化後加重平均発行済株式数 (diluted weighted average shares outstanding) は2011年度と同じと仮定する。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s06-EXH19">
+<h5 class="cfa-curriculum-exhibit-table-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 19<span style="display: block;">Solution to Question 4 (USD millions, except EPS and unless noted)</span>
+</h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong> </strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2011年 (FY2011)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2012年予想 (FY2012E)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; ">
+<strong>Notes</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高 (Revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">69,943</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">71,856</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">YoY%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.74%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用 (Operating Expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">固定費（70%）(Fixed (70%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,947</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,357</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">変動費（30%）(Variable (30%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,835</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,186</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用合計 (Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42,782</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">43,543</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益 (Operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27,161</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,314</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益率 (Operating margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">39.4%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他収益（費用）(Other income (expense))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">税引前利益 (Pre-tax income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,071</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,224</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益 + その他収益（費用）、すなわち 28,314 + 910 = 29,224</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人所得税費用 (Provision for income taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,921</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,123</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">税引前利益 × 実効税率、すなわち 29,224 × 17.53% = 5,123</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">実効税率 (Effective tax rate)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期純利益 (Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">23,150</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24,101</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">税引前利益 − 法人所得税費用、すなわち 29,224 − 5,123 = 24,101</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">希薄化後加重平均発行済株式数 (Weighted average shares outstanding, diluted)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食後の推定EPS（米ドル）(Estimated EPS post-cannibalization (USD))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>2.69</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>2.80</strong>
+</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期純利益 / 希薄化後加重平均発行済株式数、すなわち 24,101 / 8,593 = 2.80米ドル</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>多くの異なる変数に依存し、それらの測定が困難なものを推定する場合には、いくつかの仮定を変更して、さまざまなシナリオに基づく推定値の範囲を作成することを推奨する。したがって、ベースケースの需要侵食シナリオに基づく予測を作成した後、需要侵食に関する仮定を変更することで結果の感応度 (sensitivity) を分析することができる。ベースケースシナリオは、Exhibit 20 の表の中央に枠で示された仮定に対応している。Exhibit 21 は強気シナリオ (bull case) と弱気シナリオ (bear case) の結果を要約し、代替的な需要侵食率の仮定のもとでの2014年度の推定EPSを示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s06-EXH20">
+<h3 class="cfa-curriculum-exhibit-table-title">Exhibit 20 需要侵食率の変化に対する2014年度EPSの感応度 (Estimated FY2014 EPS Sensitivity to Changes in Cannibalization Rates)（米ドル, USD）</h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th colspan="5" style="text-align: center; vertical-align: bottom; padding: 8px; ">法人向け需要侵食 (Non-consumer Cannibalization)</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">0%</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">5%</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">10%</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">15%</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">20%</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td rowspan="7" style="text-align: left; vertical-align: middle; padding: 8px; ">個人向け需要侵食 (Consumer Cannibalization)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.11</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.12</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.14</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.15</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.16</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">20%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.15</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.16</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.19</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.20</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">25%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.19</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.20</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.21</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.23</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.25</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.26</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.27</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">35%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.26</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.27</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.31</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">40%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.31</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.32</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.33</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.35</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">45%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.34</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.35</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.36</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.37</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−0.38</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2429-R-s06-EXH21">
+<h3 class="cfa-curriculum-exhibit-table-title">Exhibit 21 強気および弱気シナリオにおける需要侵食後のEPS予測 (Post-Cannibalization EPS Projections for Bull and Bear Case Scenarios)（EPSを除き百万米ドル, USD millions, except EPS and unless noted）</h3>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="7" style="text-align: left; vertical-align: bottom; padding: 8px; ">強気シナリオ（需要侵食率：個人向け15%／法人向け5%）(Bull Case Scenario (Cannibalization Factor: 15% Consumer/5% Non-Consumer))</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; "> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2011年 (FY2011)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2012年予想 (FY2012E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2013年予想 (FY2013E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2014年予想 (FY2014E)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">3年CAGR (3-Year CAGR)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高 (Revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">69,943</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">73,728</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">78,553</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">83,583</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">YoY%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.4%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用 (Operating Expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">固定費（70%）(Fixed (70%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,947</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,758</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">31,764</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32,781</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">変動費（30%）(Variable (30%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,835</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,529</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14,414</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">15,338</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用合計 (Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42,782</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">44,287</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">46,178</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">48,119</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益 (Operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27,161</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,441</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32,374</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">35,464</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">9.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益率 (Operating margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38.83%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">39.93%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">41.21%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42.43%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他収益（費用）(Other income (expense))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">税引前利益 (Pre-tax income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,071</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,351</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">33,284</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">36,374</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人所得税費用 (Provision for income taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,921</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,321</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,835</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6,377</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">実効税率 (Effective tax rate)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期純利益 (Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">23,150</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">25,030</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27,449</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,998</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">希薄化後加重平均発行済株式数 (Weighted average shares outstanding, diluted)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食後の推定EPS（米ドル）(Estimated EPS post-cannibalization (USD))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>2.69</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>2.91</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>3.19</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>3.49</strong>
+</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>9.0%</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食前との比較 (Compared with pre-cannibalization:)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益率への推定影響 (Estimated impact on operating margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−30 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−38 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−47 bps</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">EPSへの推定影響（米ドル）(Estimated impact on EPS (USD))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>–0.07</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>–0.09</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>–0.13</strong>
+</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>−1.3%</strong>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="7" style="text-align: left; vertical-align: bottom; padding: 8px; ">弱気シナリオ（需要侵食率：個人向け40%、法人向け20%）(Bear Case Scenario (cannibalization factor: 40% consumer, 20% non-consumer))</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; "> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2011年 (FY2011)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2012年予想 (FY2012E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2013年予想 (FY2013E)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">会計年度2014年予想 (FY2014E)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">3年CAGR (3-Year CAGR)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">売上高 (Revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">69,943</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">71,801</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">75,869</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">79,812</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">YoY%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5.2%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用 (Operating Expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">固定費（70%）(Fixed (70%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,947</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,345</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">31,205</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">32,016</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">変動費（30%）(Variable (30%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,835</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,175</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">13,922</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">14,646</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業費用合計 (Total operating expenses)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">42,782</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">43,520</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">45,127</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">46,662</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">2.9%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益 (Operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">27,161</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,280</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">30,742</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">33,151</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">6.9%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益率 (Operating margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">38.83%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">39.39%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">40.52%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">41.54%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">その他収益（費用）(Other income (expense))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">910</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">税引前利益 (Pre-tax income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,071</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">29,190</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">31,652</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">34,061</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">法人所得税費用 (Provision for income taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,921</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,117</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,549</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">5,971</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">実効税率 (Effective tax rate)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">17.53%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">当期純利益 (Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">23,150</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24,073</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">26,103</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">28,090</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">希薄化後加重平均発行済株式数 (Weighted average shares outstanding, diluted)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,593</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食後の推定EPS（米ドル）(Estimated EPS post-cannibalization (USD))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>2.69</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>2.80</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>3.04</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>3.27</strong>
+</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>6.7%</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">需要侵食前との比較 (Compared with pre-cannibalization:)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業利益率への推定影響 (Estimated impact on operating margin)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−84 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−107 bps</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">−136 bps</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">EPSへの推定影響（米ドル）(Estimated impact on EPS (USD))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>–0.18</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>–0.24</strong>
+</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>–0.35</strong>
+</td>
+<td style="text-align: left; vertical-align: top; padding: 8px; "></td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">
+<strong>−3.6%</strong>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2429-R-s06-Bb">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット (Question Set)</h3>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2429-R-s06-Q5">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>不況による利益減少を推定するために、アナリストがシナリオ分析を行うことが最も重要である企業は次のうちどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 銀行 (A bank)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>A が正しい。不況時には貸出量 (lending volume) と金利 (interest rates) の双方が通常低下し、その結果、銀行の利益は減少する。一方、家庭内消費の食品 (food-at-home) や家庭用電力 (residential electricity) の需要は、一般に景気循環 (business cycle) の変化にそれほど敏感ではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 大手スーパーマーケットチェーン (A chain of large grocery stores)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>A が正しい。不況時には貸出量と金利の双方が通常低下し、その結果、銀行の利益は減少する。一方、家庭内消費の食品や家庭用電力の需要は、一般に景気循環の変化にそれほど敏感ではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 家庭用電力の供給会社 (A provider of residential electricity)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>A が正しい。不況時には貸出量と金利の双方が通常低下し、その結果、銀行の利益は減少する。一方、家庭内消費の食品や家庭用電力の需要は、一般に景気循環の変化にそれほど敏感ではない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2429-R-s06-Q6">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>あるアナリストが、企業の売上総利益率 (gross margin) に関するシナリオを作成している。前期の選択された財務データは以下のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___3">Average selling price per product EUR6.50</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___4">Quantity sold (000s) 2,300</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___5">Total revenues (EUR 000s) 14,950</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___6">Cost of sales (EUR 000s) 7,475</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___7">Gross profit (EUR 000s) 7,475</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___8">Gross profit margin 50%</div>
+<p>もし投入価格 (input prices) が20%上昇した場合、当該アナリストは企業が販売価格 (selling prices) を10%引き上げ、その結果、販売数量 (volume sold) が5%減少すると予想している。売上総利益率の予想減少幅として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 4.5%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>A が正しい。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___9">Average selling price = EUR6.50(1.10) = EUR7.15</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___10">Quantity sold in 000s = 2,300(0.95) = 2,185</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___11">Average input cost = (7,475/2,300)(1.20) = EUR3.90</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___12">Total revenues in 000s = 2,185(EUR7.15) = 15,622.75</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___13">Gross profit in 000s = 2,185(EUR7.15 − EUR3.90) = 7,101.25</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___14">Gross profit margin = 7,101.25/15,622.75 ≈ 45.5%, which is 4.5% less than 50%</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 7.4%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>A が正しい。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___9">Average selling price = EUR6.50(1.10) = EUR7.15</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___10">Quantity sold in 000s = 2,300(0.95) = 2,185</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___11">Average input cost = (7,475/2,300)(1.20) = EUR3.90</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___12">Total revenues in 000s = 2,185(EUR7.15) = 15,622.75</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___13">Gross profit in 000s = 2,185(EUR7.15 − EUR3.90) = 7,101.25</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___14">Gross profit margin = 7,101.25/15,622.75 ≈ 45.5%, which is 4.5% less than 50%</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 15.0%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>A が正しい。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___9">Average selling price = EUR6.50(1.10) = EUR7.15</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___10">Quantity sold in 000s = 2,300(0.95) = 2,185</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___11">Average input cost = (7,475/2,300)(1.20) = EUR3.90</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___12">Total revenues in 000s = 2,185(EUR7.15) = 15,622.75</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___13">Gross profit in 000s = 2,185(EUR7.15 − EUR3.90) = 7,101.25</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2429-R-s06-E___14">Gross profit margin = 7,101.25/15,622.75 ≈ 45.5%, which is 4.5% less than 50%</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2429-R-s06-Q7">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>競争が激しい業界において、製品の製造コストを低下させる新技術の発明は、最も起こりやすい結果としてどれをもたらすか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 売上総利益率の低下 (lower gross profit margins)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>C が正しい。競争が激しい業界では、製造コストの削減は、価格引き下げという形で競争を通じて顧客に転嫁される可能性が高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 売上総利益率の上昇 (higher gross profit margins)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-times"> </i>
+</span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>C が正しい。競争が激しい業界では、製造コストの削減は、価格引き下げという形で競争を通じて顧客に転嫁される可能性が高い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 売上総利益率への影響なし (no impact on gross profit margins)</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct">
+<span class="dp-qc-answer-type">
+<i class="fas fa-fw fa-check"> </i>
+</span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<p>C が正しい。競争が激しい業界では、製造コストの削減は、価格引き下げという形で競争を通じて顧客に転嫁される可能性が高い。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142394_705_Forecasting_Capital_Investments_and_Capital_Structure.html" >← 前へ</a>
+  <span class="title">7.06 | Scenario Analysis</span>
+  <a href="courses_1868_modules_items_142402_Glossary_Company_Analysis_Forecasting.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

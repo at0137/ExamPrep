@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.16 | Problems in Benchmark Selection</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Return Attribution and Benchmarks › Module 2: Introduction to Benchmarks</nav>
+<h1 class="page-title screenreader-only">2.16 | Problems in Benchmark Selection</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0146-R-s16-R-1" title="2.16 | Problems in Benchmark Selection"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：ベンチマーク入門（Introduction to Benchmarks）2.16｜ベンチマーク選定における問題（Problems in Benchmark Selection）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul id="CIPM0146-R-s16-los-1">
+<li class="cfa-curriculum-los-item">ベンチマークの誤指定（benchmark misspecification）がアトリビューション分析（attribution）およびアプレイザル分析（appraisal analysis）に与える影響を説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>本レッスンでは、ベンチマーク選定の側面について扱う。</p>
+<section id="CIPM0146-R-s16-01-01">
+<h3 class="dp-heading">ベンチマークの誤指定（Benchmark Misspecification）</h3>
+<p>本学習モジュールで強調されているように、誤指定を避けるためにはベンチマークの選定に細心の注意を払う必要がある。ベンチマークの仕様に誤りがある場合、その後のパフォーマンス測定は誤ったものとなる。誤指定はアトリビューション分析およびアプレイザル分析の双方に影響を与え、それらを実質的に無意味なものにしてしまう。</p>
+<p>ピアグループ・ベンチマーキング（peer group benchmarking）は、特に選定上の問題に影響を受けやすい。どのピアを含めるかの選択が一つの問題であるが、このアプローチはファンドマネージャーに誤ったシグナルを送るリスクもある。ピアグループ・ベンチマークは、中央値のファンドマネージャーを下回らないようにするインセンティブを与え、中央値のリターンの周囲でのハーディング（herding）を引き起こす可能性がある。その結果、ファンドマネージャーの投資判断は、選択されたベンチマークの構造によってバイアスを受ける可能性がある。</p>
+<p>時には、誤った理由でベンチマークが選択されることがある。パフォーマンスが低迷しているマネージャーが、測定される超過リターン（excess return）を改善するためにベンチマークを変更するケースが知られているが、これは不適切であり非倫理的である。ベンチマークの適切な選定は、専門的なマネジメント上の問題であると同時に倫理的な問題でもある。研究によれば、異なるスタイルを持つマネージャーのインフォメーション・レシオ（information ratio）は、ベンチマークのものとは異なることが示されている。その結果、公表されているインフォメーション・レシオの利用には注意が必要であり、不適切なベンチマークを用いたインフォメーション・レシオは割り引いて評価すべきである。</p>
+<p>ベンチマークの誤指定の影響は、プランスポンサー（plan sponsor）にとって大きなものとなり得る。なぜなら、マネージャーの付加価値（value-added）がベンチマークの誤りによって損なわれる可能性があるからである。「ノーマル・ポートフォリオ（normal portfolio）」（時に「ノーマル・ベンチマーク（normal benchmark）」とも呼ばれる）を、投資ユニバースにおけるマネージャーの通常または典型的なポジションを最もよく表すポートフォリオと定義すると、不適切なベンチマークが用いられた場合のリターン分解は次のようになる（例：Gastineau, Olma, and Zielinski 2007）。</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0146-R-s16-E">Manager’s “true” active return = Manager’s return − Manager’s normal portfolio return</div>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0146-R-s16-E___1">Manager’s “misfit” active return = Manager’s normal portfolio return − Investor’s benchmark return</div>
+<p>この分解において、「投資家のベンチマーク（investor’s benchmark）」とは、スポンサーがノーマル・ポートフォリオの代わりに実際に使用するベンチマークを指す。投資家のベンチマークは広範な市場インデックスであり、通常マネージャーのスタイルを捉え損なう。また、これはスタイル・バイアス（style bias）とも呼ばれる。</p>
+<p>この分解は、誤指定されたベンチマークがパフォーマンス評価に与える影響を理解するのに有用である。例えば、米国のバリュー株に投資するマネージャーを考える。スポンサーは、広範なRussell 3000株式インデックス（Russell 3000 equity index）（「投資家のベンチマーク」）を用いてマネージャーを評価している。しかし、マネージャーのノーマル・ポートフォリオは、実際にはバリュー株のユニバースによってよりよく表される。リターンは次のとおりである。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0146-R-s16-Ta">
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table class="table" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">マネージャーのリターン（Manager return）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Russell 3000のリターン（投資家のベンチマークのリターン）（Russell 3000 return）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ノーマル・ポートフォリオのリターン（Normal portfolio return）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.0%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>マネージャーは投資家のベンチマークを上回っている（マネージャー15%に対してRussell 3000は10%）が、ノーマル・ポートフォリオと正しく比較するとアウトパフォームしていない。</p>
+<ul class="cfa-curriculum-list-bullet" id="CIPM0146-R-s16-L1">
+<li class="cfa-curriculum-list-item">マネージャーの「真の」アクティブリターン（true active return）は、15% − 18% = −3%である。</li>
+<li class="cfa-curriculum-list-item">マネージャーの「ミスフィット」アクティブリターン（misfit active return）は、18% − 10% = 8%である。</li>
+</ul>
+<p>投資家のベンチマークではなくノーマル・ポートフォリオを用いてマネージャーの結果を測定する方が、より正確にパフォーマンスを評価できる。マネージャーの負の「真の」アクティブリターンは、実際にはノーマル・ポートフォリオを下回っていたことを示す。一方、正の「ミスフィット」アクティブリターン、すなわちスタイル・バイアスは、マネージャーのスタイル（バリュー株）が広範な市場を上回ったため、広範な市場を上回ることが期待されることを示す。すなわち、そのスタイルがアウトパフォームしているため、マネージャーもアウトパフォームすべきであるということである。適切なベンチマークで測定すると、マネージャーが優れたパフォーマンスを示していないことが確認できる。</p>
+<p>さらに、不適切なベンチマークが用いられると、マネージャーのトラッキングリスク（tracking risk）およびそれに基づくインフォメーション・レシオも誤って測定される。マネージャーのパフォーマンスが運によるものかスキルによるものかを判断すること自体が難しいが、不適切なベンチマークを導入するとその作業はさらに困難になる。残念ながら、多くの場合、ベンチマーク選定に費やされる努力はその重要性に見合っていない。しばしば、使用されているベンチマークは過去のマネージャー、スポンサー、またはコンサルタントの遺産（legacy）であり、もはや適切でない可能性がある。</p>
+<p>マネージャーが誤指定されたベンチマークを使用している場合、アトリビューションモデルはポートフォリオとベンチマークのウェイト差をオーバーウェイト（overweight）またはアンダーウェイト（underweight）として誤って解釈する。また、各セクターの超過リターンも誤ったものとなり、アトリビューション分析は無意味になる。マルチ期間分析（multiperiod analysis）が用いられる場合、これらの誤りは時間とともに累積される。43</p>
+<p>ベンチマークの選択は、運用手数料（management fee）の大きさにも影響を与える可能性がある。マネージャーの報酬は通常、運用資産額（assets under management, AUM）に依存し、例えばAUMの0.75%といった固定手数料として設定されることが多い。しかし、特にプライベートエクイティ（private equity）やヘッジファンド（hedge funds）の場合には、成功報酬（performance fee）も支払われることがある。例えば、AUMの2.0%に加えてファンド利益の20%が支払われるといった形である。場合によっては、成功報酬はベンチマークを上回るリターンに対してのみ支払われる。この場合、ベンチマークが低く設定されるほど支払われる手数料が増えるため、ベンチマークの選択が重要となる。</p>
+<p>成功報酬（incentive performance fees）は、スポンサーにとって問題となる。なぜなら通常、マネージャーが引き受けるリスクを考慮していないからである。ポートフォリオがベンチマークを下回った場合、マネージャーは罰せられないが、ベンチマークを上回った場合には成功報酬を得る。そのため、マネージャーはベンチマークに対してより高いリスクを取るインセンティブを持つ。その結果、ポートフォリオはスポンサーが意図したよりも大きなリスクを負う可能性があり、戦略目的と整合しないポートフォリオとなる。</p>
+<p>ミスマッチは、不適切な構築手法（construction methodology）を選択するだけでも発生し得る。例えば、時価総額加重株価指数（capitalization-weighted equity indexes）をベンチマークとして用いる場合の欠点は、多くの国際市場や新興市場の特性によってさらに増幅される。これらの指数はしばしば高度に集中しており、少数の企業が指数を支配していることが問題となる。その結果、多数の潜在的な証券ユニバースを代表するノーマル・ポートフォリオの構築が困難になる。また、地域別の指数ウェイトは経済発展のスピードによって歪められることがあり、急成長地域に大きなウェイトが割り当てられるため、その価値が急激に変動し、頻繁なリバランスが必要となる。</p>
+<p>国際ベンチマーク（international benchmarks）では、為替エクスポージャー（currency exposure）に関する選択も必要となる。これは追加のベンチマーク構築上の意思決定を伴い、ミスマッチの可能性を生む。為替はリスクとリターンに影響を与え、時間とともに大きく変動する可能性がある。為替分析は他の資産クラスに必要なスキルとは大きく異なる。ファンドマネージャーは、為替エクスポージャーに対して、非ヘッジ（unhedged）またはヘッジ（部分的または完全）を選択する。為替リスクを許容する投資家は非ヘッジ・ベンチマークを使用し、資本保全を重視する投資家は為替ヘッジ付きベンチマークを選択する可能性がある。</p>
+<p>その他、レバレッジ（leverage）の使用やネガティブ・スクリーニング（negative screening）もベンチマークの誤指定を引き起こす要因となる。レバレッジとは、借入やデリバティブを用いてポートフォリオのリスクエクスポージャーを資産規模以上に拡大することである。レバレッジ付きファンドのベンチマークとしては、レバレッジ付きベンチマークを使用するのが一つの方法である。例えば、ポートフォリオが3対1のレバレッジを有する場合、ベンチマークも同様に3対1のレバレッジを持つ必要がある。そうでなければ、強気相場ではアウトパフォームし、弱気相場ではアンダーパフォームする傾向が生じる。レバレッジ付きポートフォリオはより高いリスクを伴うため、ベンチマークとの比較ではリスク調整後リターンを用いるべきである。</p>
+<p>ネガティブ・スクリーニングとは、特定の活動に直接または部分的に関与する企業を除外することである。例として、社会的責任投資（socially responsible）におけるスクリーニングがあり、たとえばタバコ、アルコール、ギャンブル関連銘柄を避ける。このようなスクリーニングはすべてベンチマークへの影響と考慮事項を伴う。ネガティブ・スクリーニングによりスポンサーの目的はより適切に達成されるが、理論的には、より広い投資ユニバースを持つ未スクリーニングのベンチマークの方が優れたパフォーマンスを示すとされる。ネガティブ・スクリーニングへの最善の対応は、当初からベンチマーク構成銘柄を定義することである。</p>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist"><i aria-hidden="true" class="dp-icon fas fa-clipboard-list" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Reference List</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel0">参考文献（References）</h3>
+<div aria-labelledby="dpPanel0" class="dp-panel-content" id="dpPanel0Content" role="region" style="display: none;" tabindex="0">
+<ul id="CIPM0146-R-s16-ref1">
+<li id="CIPM0146-R-s16-R1list">Gastineau, Gary L., Olma, Andrew L. および Zielinski, Robert G.（2007）「株式ポートフォリオ管理（Equity Portfolio Management）」『投資ポートフォリオの管理：動的プロセス（Managing Investment Portfolios: A Dynamic Process）』第3版、Maginn, John、Tuttle, Donald、McLeavey, Dennis、Pinto, Jerald 編、ニュージャージー州ホーボーケン（Hoboken, NJ）：John Wiley &amp; Sons。</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip1Content" role="tooltip" style="display: none;">
+<p>43 この結果は重要であり、「時間が経てば物事は均衡に戻る傾向がある」という通常の直感や通説に強く反するものである。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="transformedTip0Content" role="tooltip" style="display: none;">Gastineau, Gary L., Olma, Andrew L. and Zielinski, Robert G. (2007). “Equity Portfolio Management.” In <em>Managing Investment Portfolios: A Dynamic Process</em>. 3rd ed., ed. Maginn, John, Tuttle, Donald, McLeavey, Dennis and Pinto, JeraldHoboken, NJ: John Wiley &amp; Sons.</div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1367_modules_items_99633_215_Other_Benchmarks.html" >← 前へ</a>
+  <span class="title">2.16 | Problems in Benchmark Selection</span>
+  <a href="courses_1367_modules_items_99635_217_Benchmark_Selection_An_Example.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

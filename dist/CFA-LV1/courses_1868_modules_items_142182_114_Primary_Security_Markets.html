@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.14 | Primary Security Markets</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s14" title="1.14 | Primary Security Markets">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.14｜プライマリー証券市場（Primary Security Markets）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">プライマリー市場（primary markets）とセカンダリー市場（secondary markets）を定義し、セカンダリー市場がどのようにプライマリー市場を支えるかを説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>発行体（issuer）が初めて証券を投資家に販売する際、実務家はその取引がプライマリー市場（primary markets）で行われると言う。発行体が証券を初めて一般投資家に販売する場合、それは新規株式公開（initial public offering, IPO）—時にプレーシング（placing）と呼ばれる—である。既発行証券（seasoned security）とは、発行体がすでに発行している証券を指す。発行体が既発行証券を追加で販売したい場合、それはシーズンド・オファリング（seasoned offering）（セカンダリー・オファリング（secondary offering）とも呼ばれる）となる。これらはいずれもプライマリー市場で行われ、発行体が投資家に証券を販売する。その後、投資家同士がこれらの証券を取引する場合、それはセカンダリー市場（secondary markets）で行われる。本節では、プライマリー市場と、発行体が証券を一般に提供するための手続きについて説明する。</p>
+<section id="CFA0161-R-s14-01">
+<h3 class="dp-heading">公募（Public Offerings）</h3>
+<p>企業は一般に、証券を公衆に販売するために投資銀行（investment bank）と契約する。投資銀行は、その証券を購入する投資家（subscriber）を募る。投資銀行はこのプロセスをブックビルディング（book building）と呼ぶ。ロンドンでは、ブックビルダーはブックランナー（book runner）と呼ばれる。銀行は、発行を販売できる注文のブックを構築しようとする。投資銀行はしばしば、発行体に関する投資情報や意見を顧客および一般に提供することで、このブックビルディングを支援する。発行前には、発行体は通常、自社の事業内容、内在するリスク、および新規資金の使途について非常に詳細な開示を行う。</p>
+<p>時間が重要な場合、欧州の発行体はアクセラレーテッド・ブックビルド（accelerated book build）を通じて証券を発行することがある。この場合、投資銀行は1日または2日で発行を手配する。このような販売はしばしばディスカウント価格で行われる。</p>
+<p>企業の普通株式の初回公募は、企業が新規に発行する株式の販売で構成される。また、創業者や初期投資家が保有株式を売却する場合も含まれることがある。新規株式公開（IPO）は、これらの投資家にとって投資の現金化手段を提供する。</p>
+<p>引受発行（underwritten offering）—最も一般的な発行形態—では、投資銀行は発行体と交渉した発行価格で証券の販売を保証する。需要不足（undersubscribed）の場合、銀行は販売できなかった証券を発行価格で引き取る。IPOの場合、引受業者（underwriter）は通常、約1か月間その証券のマーケットメイクを行うことも約束し、セカンダリー市場の流動性を確保し、必要に応じて価格を支える。大規模な発行では、投資銀行およびブローカー・ディーラー（broker–dealer）のシンジケートが主幹事（lead underwriter）を支援してブックを構築する。発行体は通常、これらのサービスに対して約7%の引受手数料（underwriting fee）を支払う。この手数料は発行のプレースメントコスト（placement cost）である。</p>
+<p>ベストエフォート発行（best effort offering）では、投資銀行は単にブローカーとして行動する。需要不足の場合、発行体は予定していたほどの販売ができない。</p>
+<p>いずれの発行形態でも、発行体と銀行は通常、交渉により発行価格を共同で決定する。価格が高すぎると需要不足となり、全量を販売できない。価格が低すぎると過剰応募（oversubscribed）となり、証券は優先顧客に配分されるか、または比例配分（pro-rata basis）される。</p>
+<p>（CFA職業行動基準（Standard of Professional Conduct）III.B—公正取扱い（fair dealing）は、配分が顧客に開示された書面の方針に基づくことを求め、同等の関係にある顧客間では比例配分されるべきであると示唆している。）</p>
+<p>引受発行において、投資銀行は発行価格に関して利益相反（conflict of interest）を有する。発行体の代理人としては最大の資金調達額となる価格を選ぶべきだが、引受業者としては低い価格を選ぶインセンティブがある。価格が低ければ、銀行は価値のある株式を顧客に配分し、自らにも間接的な利益をもたらすことができる。一方、価格が高すぎると、引受業者は過大評価された株式を引き受ける必要があり、さらにセカンダリー市場で価格維持のために追加購入が必要となる場合もあり、直接的なコストが発生する。これらの要因により、IPOの発行価格は低めに設定される傾向があり、その結果、セカンダリー市場ではIPO直後に価格が上昇することが多い。シーズンド・オファリングでは、セカンダリー市場での取引が適正価格の判断に役立つため、この問題はそれほど重要ではない。</p>
+<p>初回発行体は一般に低めの発行価格を受け入れる。というのも、需要不足のIPOは企業の将来見通しに関して市場に非常に不利な情報を与えると広く信じられているためである。特に企業が最も市場の評価に敏感な時期において、その影響は大きい。需要不足のIPOは、その後のシーズンド・オファリングでの資金調達を著しく困難にする可能性がある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM24">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例24 ヘルシーボッツ（Healthybots）の新規株式公開</h4>
+<section>
+<p>ヘルシーボッツ（Healthybots）は、人工知能（artificial intelligence）ベースのソリューションを用いて疾病を治療するヘルスケア企業である。同社は、1株あたり2.57ポンドで103,142,466株の普通株式を新規株式公開し、総額約2億6,500万ポンドを調達した。IPO後、ヘルシーボッツの発行済普通株式数は213,333,333株となった。</p>
+<p>ヘルシーボッツは約3,430万ポンドの総調達額（gross proceeds）と、3,180万ポンドの純調達額（net proceeds）を受け取った。公募された普通株式は、同社の発行済普通株式総数の約48%を占めていた。</p>
+<p>株式はロンドン証券取引所（London Stock Exchange）のAIM市場で午前8時に取引を開始し、初値は2.74ポンド、2.68ポンドから2.74ポンドの範囲で3,700万株が取引され、終値は2.73ポンドであった。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>会社は新規に何株発行し、創業者は何株売却したか。また、創業者は保有株式のうちどの程度の割合を売却したか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s14-01-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>ヘルシーボッツは1株2.57ポンドで3,430万ポンドの総調達額を得たため、同社は13,346,304株（＝3,430万ポンド÷2.57ポンド）を新規発行・販売した。総発行株数は103,142,466株であったため、創業者は89,796,162株（＝103,142,466株 − 13,346,304株）を売却した。プレースメント前の発行済株式は約2億株（＝2億1,330万株 − 1,330万株）であったため、創業者は約45%（＝9,000万株÷2億株）を売却したことになる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>IPOに参加した投資家（subscriber）は初日にどの程度のリターンを得たか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s14-01-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>The subscribers bought the stock for £2.57 per
+                                                share, and it closed at £2.73. The first day
+                                                return thus was <span class="cfa-curriculum-display-inline-formula">
+<math display="inline" id="m2_d4e2108_d694e77">
+<mrow>
+<mn>6.2</mn>
+<mi>%</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>2.73</mn>
+<mo>−</mo>
+<mn>2.57</mn>
+</mrow>
+<mrow>
+<mn>2.57</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mn>100</mn>
+</mrow>
+</math>
+</span>. </p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>ヘルシーボッツは新規資金に対してどの程度の割合のプレースメントコストを支払ったか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s14-01-01-03">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>ヘルシーボッツは3,430万ポンドの総調達額を得たが、純調達額は3,180万ポンドであった。その差額250万ポンドが発行コストであり、これは純調達額（新規資金）に対して7.9%（＝250万ポンド÷3,180万ポンド）である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA0161-R-s14-02">
+<h3 class="dp-heading">私募（Private Placements）およびその他のプライマリー市場取引</h3>
+<p>企業は時に私募（private placement）で証券を発行する。私募では、企業は通常投資銀行の支援を受けつつ、限られた数の適格投資家（qualified investors）に直接証券を販売する。適格投資家は、リスクを理解するための十分な知識と経験、およびそれを適切に負担できる十分な資産を有する。多くの国では、公募に比べてはるかに少ない開示で私募が許可されている。そのため私募はコストが低い場合があるが、購入者は後に組織化されたセカンダリー市場で取引できないため、通常より高いリターン（低い購入価格）を要求する。</p>
+<p>企業はまた、棚卸登録（shelf registration）を通じて既発行証券を段階的に公募することがある。棚卸登録では、企業は通常の公募と同様の開示を行うが、一度にすべての株式を販売するのではなく、時間をかけてセカンダリー市場に直接売却する。一般に追加資金が必要なときに販売される。棚卸登録は資金調達のタイミングに柔軟性を与え、大規模なセカンダリー発行に伴う価格下落圧力を緩和することができる。</p>
+<p>多くの企業はまた、配当再投資計画（dividend reinvestment plans, DRPsまたはDRIPs）を通じて株式を発行する。これにより株主は配当を新規発行株式に再投資できる（特に、企業は市場から株式を購入するのではなく、新株を発行する）。これらの計画は、既存株主や他の投資家が市場価格よりわずかに割安で追加株式を購入できる場合もある。</p>
+<p>最後に、企業はライツ・オファリング（rights offering）によって新株を発行することができる。この場合、企業は既存株主に対して、保有割合に応じて一定価格で株式を購入する権利（rights）を配布する。これらの権利は行使義務がないためオプション（options）である。行使価格は市場価格より低く設定されるため、権利を行使すれば即時に利益が得られる。その結果、既存株主は保有株式の価値の希薄化（dilution）を経験する。株主は権利を行使するか、他者に売却することでこの損失を相殺できる。一般に株主はライツ・オファリングを好まない。希薄化を避けるために追加資金の拠出（または権利売却）が必要だからである。財務アナリストは、これらの証券は名称こそ権利だが実質的には短期株式ワラント（stock warrants）であると認識し、そのように評価する。</p>
+<p>財政的に強固な国の政府は通常、政府機関（通常は財務省に関連）によって組織される公開入札（public auctions）を通じて国債、ノート、ビルを発行する。また、ディーラーに直接販売することもある。</p>
+<p>より小規模または財政的に不安定な国や、多くの地方政府は、証券の販売および配分を支援するために投資銀行と契約することが多い。ただし、多くの国の法律では、証券の発行を入札方式で行うことが義務付けられている。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM25">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例25 私募と公募</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>私募は公募とどのように異なるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s14-02-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>発行体は私募を、一般に財務的に洗練されリスクに精通した限られた投資家に対して行う。これらの投資家は通常、発行体と何らかの関係を持つ。発行体は公募では一般投資家に証券を販売する。公募は通常、私募よりもはるかに多くの財務開示を必要とする。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA0161-R-s14-03">
+<h3 class="dp-heading">セカンダリー市場がプライマリー市場にとって重要である理由</h3>
+<p>企業や政府は、自らの証券が流動性の高いセカンダリー市場で取引される場合、より低コストでプライマリー市場から資金を調達できる。流動性の高い市場（liquid market）では、取引コストが低く、価格への影響も小さいため、トレーダーは容易に売買できる。投資家は流動性を重視する。なぜなら、流動性ニーズに応じて証券を売却する必要があるかもしれないからである。そのため、容易に売却できる証券には高い価格を支払い、そうでない証券には低い価格しか支払わない。価格が高いほど、発行体の資本コストは低くなる。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PrimaryMarketContent">
+<p>証券が最初に販売され、発行体がその対</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="InitialPublicOfferingContent">
+<p>以前は非公開であった企業が、初めて普通株式を一般に発行すること。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SeasonedOfferingContent">
+<p>発行体が、すでに発行された証券の追加単位を販売する発行。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PrimaryMarketContent">
+<p>証券が最初に販売され、発行体がその対価を受け取る市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SecondaryMarketContent">
+<p>投資家同士の間で証券が取引される市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BookBuildingContent">
+<p>投資銀行が、発行の一部を購入したいという関心の表示（indications of interest）をまとめた「ブック（book）」またはリストを作成するプロセス。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AcceleratedBookBuildContent">
+<p>投資銀行が自己勘定（principal）で行動し、1日または2日で完了する証券発行。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="UnderwrittenOfferingContent">
+<p>投資銀行が発行体と交渉した発行価格で証券の販売を保証する証券発行方式。ファーム・コミットメント発行（firm commitment offering）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LeadUnderwriterContent">
+<p>証券引受（underwriting）に関与する投資銀行およびブローカー・ディーラー（broker–dealer）のシンジケートにおける主幹事投資銀行。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BestEffortOfferingContent">
+<p>投資銀行を利用した証券発行で、投資銀行が発行体の代理人として最善努力（best efforts）で販売を行うことを約束するが、特定の販売額を保証しない方式。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PrivatePlacementContent">
+<p>債券または株式を、規制の少ない形で少数の投資家に販売すること。発行条件は発行体と投資家の間で交渉される。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ShelfRegistrationContent">
+<p>発行体が、複数回の債券発行を対象とする包括的な発行目論見書（offering circular）を一度提出することを可能にする公募の一形態。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LiquidMarketContent">
+<p>取引者が売買を望むときに、総取引コストが低く抑えられた状態で売買できる市場を指す。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142179_113_Validity_Instructions_and_Clearing_Instructions.html" >← 前へ</a>
+  <span class="title">1.14 | Primary Security Markets</span>
+  <a href="courses_1868_modules_items_142184_115_Secondary_Security_Market_and_Contract_Market_Structures.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

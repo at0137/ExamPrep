@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12.03 | Behavioral Finance and Analyst Forecasts</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1434-R-s03-R-1" title="12.03 | Behavioral Finance and Analyst Forecasts">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール12：財務諸表モデリング入門（Introduction to Financial Statement Modeling）12.03｜行動ファイナンスとアナリスト予測（Behavioral Finance and Analyst Forecasts）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">行動要因がアナリスト予測にどのように影響するかを説明し、アナリストのバイアスに対する是正措置を提案せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>多くの分野における専門家が、行動バイアスに起因する予測誤差を継続的に犯していることが研究により示されており、投資アナリストの財務諸表モデルも例外ではない。予測およびそれに基づく投資判断を改善するためには、アナリストはバイアスの影響とその潜在的な是正策を認識する必要がある。アナリスト予測に影響を与える主要な行動バイアスには、過信（overconfidence）、コントロールの錯覚（illusion of control）、保守性（conservatism）、代表性（representativeness）、および確証バイアス（confirmation bias）がある。</p>
+<section id="CFA1434-R-s03-01-01">
+<h3 class="dp-heading">予測における過信（Overconfidence in Forecasting）</h3>
+<p>過信バイアス（overconfidence bias）は、人々が自らの能力に対して根拠のない信頼を示すときに生じる。研究では、予測の90％信頼区間（90 percent confidence intervals）は本来誤差率が10％にとどまるはずであるにもかかわらず、実際には40％もの頻度で誤っていることが示されている（Russo and Schoemaker 1992）。また、コンセンサスに反する予測を行う場合、個人はより強い自信を持つ傾向があることも示唆されている。すなわち、他者が予想しないことを予測する場合に、過信はより頻繁に生じる（Dunning, Griffin, Milojkovic, and Ross 1990）。</p>
+<p>過信バイアスを軽減するために、アナリストは自身の予測を記録・共有し、定期的に見直して、正しかった予測と誤っていた予測の双方を特定すべきである。多くの財務変数において結果の範囲は広いため、アナリストは自分が正しかった回数と同程度、あるいはそれ以上に誤っていたことに気づく可能性が高い。目的は、予測誤差率が高いことを認識し、予測の信頼区間を広げるような対策を講じることである。その一つがシナリオ分析（scenario analysis）である。「どこで、どの程度誤り得るのか？」と問うことで、アナリストは異なる予測シナリオを作成できる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1434-R-s03-EXM1">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例1 過信の軽減：Rémyにおけるシナリオ分析（Mitigating Overconfidence: Scenario Analysis for Rémy）</h4>
+<p>前のレッスンでは、Rémy Cointreau Groupの財務諸表モデルを構築したが、そこでは単一の予測値のセット、すなわち1つのシナリオのみが含まれていた。複数のシナリオを作成することは重要なモデリングのステップである。なぜなら、最も重要な変数の結果の範囲は単一の点推定よりも広いからである。</p>
+<p>フリーキャッシュフローの予測における重要な変数は3つあり、コニャックセグメントのオーガニック売上成長率（organic sales growth）、EBITマージン（EBIT margin）、および売上高に対する純運転資本（net working capital as a percentage of sales）である。スプレッドシートベースのモデルの利点は、予測を容易に変更して異なるフリーキャッシュフローの推計を算出できる点にある。ベースケースの入力および2024年度予想（2024E）の企業向けフリーキャッシュフロー（free cash flow to the firm）の予測に加え、2つの異なるシナリオの数値が図表15（Exhibit 15）に示されている。</p>
+<p>代替シナリオ1（Alternative Scenario 1）では、コニャックセグメントのオーガニック成長率がFY2021と同水準で維持され、EBITマージンはCOVID-19パンデミック以前の23.6％、運転資本は売上高の86％（FY2019のパンデミック前水準）と仮定する。代替シナリオ2（Alternative Scenario 2）では、コニャックセグメントのオーガニック成長率はベースケースと同じとするが、EBITマージンは25.0％、運転資本は売上高の90％と仮定する。このシナリオは強い成長を反映する一方で、その成長を支えるための販売・マーケティング費用および熟成コニャック在庫への再投資が高水準であることを示している。</p>
+<p>図表15（Exhibit 15）が示すように、主要変数の合理的な入力値の幅が広いため、2022年度予想（2022E）から2024年度予想（2024E）にかけてのフリーキャッシュフローの推計には大きな幅が存在する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1434-R-s03-EXH15">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 15<span style="display: block;">Calculating Free Cash Flow to the Firm as Basis for a DCF Valuation Model <strong>(euro millions)</strong> </span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">ベースケース（Base Case）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2022E</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2023E</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2024E</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">コニャックセグメントのオーガニック成長率（Cognac segment organic growth）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11.3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10.2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">EBITマージン（EBIT margin）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">24.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">26.2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">27.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高に対する運転資本の割合（Working capital as percent of sales）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">91%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">78%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">65%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">企業向けフリーキャッシュフローの推計（Free cash flow to the firm est.）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">230</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">267</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">300</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">代替シナリオ1（Alternative Scenario 1）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2022E</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2023E</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2024E</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">コニャックセグメントのオーガニック成長率（Cognac segment organic growth）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.0%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.0%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">EBITマージン（EBIT margin）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">23.6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">23.6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">23.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高に対する運転資本の割合（Working capital as percent of sales）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">86%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">86%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">86%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">企業向けフリーキャッシュフローの推計（Free cash flow to the firm est.）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">318</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">133</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">129</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">代替シナリオ2（Alternative Scenario 2）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2022E</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2023E</strong></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2024E</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">コニャックセグメントのオーガニック成長率（Cognac segment organic growth）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11.3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10.2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">EBITマージン（EBIT margin）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">25.0%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">25.0%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">25.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高に対する運転資本の割合（Working capital as percent of sales）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">企業向けフリーキャッシュフローの推計（Free cash flow to the firm est.）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">240</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">109</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">105</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA1434-R-s03-01-02">
+<h3 class="dp-heading">コントロールの錯覚（Illusion of Control）</h3>
+<p>過信としばしば関連するバイアスであるコントロールの錯覚（illusion of control）は、制御できないものを過大に制御できると見積もり、その制御を追求して最終的には無益な行動をとる傾向である。このバイアスは、予測の精度が次の2つの方法で向上するとアナリストが信じる形で現れることが多い。すなわち、より多くの情報や専門家の意見を収集すること、そしてより詳細で複雑なモデルを作成することである。追加の情報やモデルの複雑性は予測精度を向上させる可能性があるが、限界効用は逓減する。投資に関する有用な情報の量は有限であり、重要でない情報を追加すると誤解を招く。複雑なモデルは過去データに過剰適合（overfitting）しやすく、未経験の外れ値を含むさまざまな環境において頑健ではない。また、過度に広範なデータやモデルの複雑性は前提条件を隠し、新しい情報を得た際の予測更新を困難にする。さらに、アナリストには機会費用が存在し、1社のモデル作成に追加の時間を費やすことは、分析できる投資機会の総数を減らす可能性がある。</p>
+<p>このバイアスの認識および投資に不確実性が内在するという理解に加え、コントロールの錯覚は、モデル変数を企業が定期的に開示するものに限定すること、最も重要または影響の大きい変数に焦点を当てること、そして独自または重要な視点を持つ可能性が高い相手とのみ対話することによって軽減できる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1434-R-s03-EXM2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例2 コントロールの錯覚：どの程度のモデル複雑性か（Illusion of Control: How Much Model Complexity?）</h4>
+<p>Rémy Cointreau Groupは、セグメント別および地域別（欧州／中東／アフリカ（Europe/Middle East/Africa）、米州（the Americas）、アジア太平洋（Asia Pacific））の売上を定期的に開示している。しかし、地域別セグメント売上（例えばアジア太平洋地域におけるコニャックセグメント売上）や、小売業者とバー・レストラン、トラベルリテール（travel retail）などの販売チャネル別売上は開示していない。ただし、四半期決算説明会（earnings calls）では、具体的な数値は開示されないものの、特定地域におけるセグメント成長率や特定チャネルの成長率について頻繁に言及される。このような慣行は一般的であり、特にCOVID-19パンデミック中には顕著であった。すなわち、販売チャネルの大きなシフトが生じ、トラベルリテールは多くの地域で90％超の減少を経験し、消費はバーやレストランから家庭消費向けの小売へと移行し、地域ごとにパンデミックの影響時期が異なった。</p>
+<p>アナリストは、経営陣が決算説明会で開示するこれらの成長率やその他の逸話的情報（anecdotal figures）を収集し、場合によっては第三者の売上推計と組み合わせて、各セグメントを地域および販売チャネル別に細分化した詳細な売上モデルを構築したくなるかもしれない。</p>
+<p>しかし、このような試みは期待値の設定やモニタリングには有用である可能性があるものの、この方法で売上予測を構築するといくつかの問題が生じ、精度の大幅な向上にはつながらない可能性が高い。第一に、モデルで使用されるデータが定期的に開示されないため、実績値と推計値を比較することができない。第二に、モデル構築には数十時間を要する。最後に、そしておそらく最も重要なのは、そのようなモデルの細分化された構成要素の精度が不確かであり、その結果、統合された売上予測の精度が単純なモデルよりも向上するとは限らない点である。</p>
+</div>
+</section>
+<section id="CFA1434-R-s03-01-03">
+<h3 class="dp-heading">保守性バイアス（Conservatism Bias）</h3>
+<p>保守性バイアス（conservatism bias）は、新しい情報を十分に取り入れずに、従来の見解や予測を維持するバイアスである。これは予測において、期待外れの業績や競合の行動といった矛盾する情報を受け取ったにもかかわらず、アナリストが予測を更新しない場合にしばしば発生する。保守性の最も一般的な形は、新たなネガティブ情報を予測に反映させることへの消極性であるが、ポジティブ情報を十分に取り入れないことで予測が過小になる場合もある。この文脈における別名はアンカリングと調整（anchoring and adjustment）であり、アナリストが以前の予測を「アンカー」として用い、それを調整することを指す。以前の予測を修正すること自体は問題ではないが、その影響が大きく残り、調整幅が小さくなり、更新後の予測が過度に過去の予測に近づく傾向がある。</p>
+<p>保守性バイアスは、投資チームによる定期的（例えば四半期ごと）の予測およびモデルのレビューや、前提変更を容易にするために変数の少ない柔軟なモデルを構築することで軽減できる。また、保守性バイアスは過信やコントロールの錯覚と関連しているため、それらのバイアスを軽減することも保守性の軽減につながる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1434-R-s03-EXM3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例3 保守性バイアス：RémyのFY2022に関する経営ガイダンス（Conservatism Bias: Rémy Management Guidance for FY2022）</h4>
+<p>Rémy Cointreau Groupモデルのベースケース予測では、FY2021に対してFY2022Eのオーガニック売上成長率は11.3％、純利益成長率は24％と見込んでいる。しかし、FY2021第4四半期の決算説明会において、Rémyの経営陣はFY2022について次のようなガイダンスを示した。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1434-R-s03-L1">
+<li class="cfa-curriculum-list-item">「2022年度は成長と投資の強い年となり、2030年の目標（売上総利益率72％、営業利益率33％）の達成に向けて順調に進んでいる。」</li>
+<li class="cfa-curriculum-list-item">「［当社は］2030年の戦略計画を前倒しで進めており、また良好な環境を踏まえ、回復局面においてブランドを支援し、ブランド認知度と魅力度の向上を通じて中期的な成長ポテンシャルを高めるため、［販売およびマーケティングにおける］戦略的投資を引き上げることを決定した。」</li>
+<li class="cfa-curriculum-list-item">2022年度は「オーガニックベースで売上高および利益のいずれも中十数％台の成長」となる見込みである。</li>
+</ul>
+<p>これらのコメントに基づき、同僚はRémyモデルをわずかに修正し、営業利益率の予測を引き下げて純利益成長率を24％から20％へと低下させることを提案している。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>あなたの同僚の提案はどの行動バイアスを示しているか。また、Rémyモデルの修正に関して、どのような調査または対応を取るべきか。説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>同僚は保守性バイアス（conservatism bias）またはアンカリングと調整（anchoring and adjustment）を示している。すなわち、純利益成長率24％という従来の予測にアンカーされており、収益性に関する経営陣のガイダンスを十分に考慮していない。</p>
+<p>追加的な検討なしにガイダンスに従ってモデルを変更することが必ずしも適切とは限らない。なぜなら、実績はガイダンスを下回る場合も上回る場合もあるからである。しかし、このケースでは、売上成長および純利益成長の両方において、経営陣のガイダンスはFY2022E予測と大きく異なっている。第一のステップとして、過去におけるガイダンスと実績の比較を通じて、経営陣の信頼性を評価すべきである。第二に、そのガイダンスをシナリオ分析（scenario analysis）の一つとして取り入れ、そのシナリオの投資上の含意を検討すべきである。例えば、同社が実際にFY2022において中十数％台の成長で売上と利益を拡大する場合、それは投資判断にどのような影響を与えるのかを検討する。最後に、他のアルコールおよび蒸留酒企業（alcohol and spirits companies）の業績およびガイダンスと比較し、妥当性のチェックを行うべきである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA1434-R-s03-01-04">
+<h3 class="dp-heading">代表性バイアス（Representativeness Bias）</h3>
+<p>代表性バイアス（representativeness bias）とは、過去の経験や既知の分類に基づいて情報を分類する傾向を指す。新しい情報は、すでに分類されている馴染みのある要素に似ている、または代表しているように見えることがあるが、実際には大きく異なる場合があり、別の視点から捉えるべきである。このような場合、分類の反射的な行動が誤解を招き、その情報に関する将来の思考全体にバイアスをもたらす。予測における代表性バイアスの一般的な形はベースレート無視（base-rate neglect）である。ベースレート無視とは、より大きな母集団における発生頻度や、特定の対象が属するクラスの特性（ベースレート）を無視し、状況固有または個別固有の情報を優先することである。ベースレートを考慮することは「外部視点（outside view）」と呼ばれ、状況固有の視点は「内部視点（inside view）」と呼ばれる。</p>
+<p>例えば、あるアナリストがバイオ医薬品企業（biopharmaceutical company）の営業コストとマージンをモデル化しているとする。「内部視点（inside view）」のアプローチでは、企業が販売する医薬品の種類、各地域における各製品の販売に必要な営業人員数など、企業固有の要因を考慮する。一方、「外部視点（outside view）」では、その企業を多数存在する「バイオ医薬品」業界の一員として捉え、売上総利益率、売上高に対する研究開発費（R&amp;D expense）比率などの業界平均やセクター平均をモデルに用いる。</p>
+<p>外部視点と内部視点のいずれかが優れているわけではなく、優れた予測を生み出すのは両者を考慮することである。その一つの方法は、まずベースレートから出発し、対象企業がそのベースレートやクラス平均とどのように異なるのか、そしてその違いがどのような意味を持つのかを検討することである。例えば、バイオ医薬品企業をモデル化するアナリストは、まず業界平均を用いるが、ロイヤルティ収入と製品売上の構成、地域別売上構成、予測期間中に特許満了に直面する可能性などを考慮して、いくつかの変数を調整することができる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1434-R-s03-EXM4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例4 Rémyにおけるベースレートの考慮（Considering Base Rates for Rémy）</h4>
+<p>While constructing the Rémy model in the prior lesson, little attention was given to comparable companies or to the broader industry to which Rémy belongs. In other words, the model was constructed primarily with the “inside view.” In this example, Rémy is put in the context of six other spirits-focused alcohol companies: Brown-Forman Corporation, Pernod Ricard SA, Davide Campari-Milano N.V., Diageo plc, Becle S.A.B de C.V. (Cuervo), and the Wine &amp; Spirits segment of LVMH (LVMH W&amp;S) for the five most recently reported fiscal years at the time of analysis. The variable used for the industry comparison is the five-year average of EBIT margin because it is a key model input, and the profitability of an individual company is strongly influenced by industry profitability. Many of these peer companies are significantly larger by revenue than Rémy, which is useful because we have modeled Rémy becoming larger over time. The analysis for <a aria-label="View Exhibit 16" class="internal" href="#CFA1434-R-s03-EXH16" role="button">Exhibit 16</a> is included in the <a aria-label="View Exhibit 16" class="internal" href="#CFA1434-R-s03-EXH16" role="button">Exhibit 16</a> worksheet in <a class="instructure_file_link instructure_scribd_file inline_disabled" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1802/files/382204" data-api-returntype="File" data-canvas-previewable="true" href="https://learn.cfainstitute.org/courses/1802/files/382204?wrap=1" id="382204" target="_blank" title="Link">the downloadable Microsoft Excel workbook</a>.</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1434-R-s03-EXH16">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 16<span style="display: block;"> <strong>EBIT Margin Comparison of Spirits Companies, Last Five Reported Fiscal Years</strong> (euro millions)</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">EBITマージン（EBIT margin）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>MRY-4</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>MRY-3</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>MRY-2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>MRY-1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">直近年度（Most Recent Year (MRY)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">Rémy</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">20%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">20%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">24%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">19%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">23%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Brown Forman</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">34%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">32%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">34%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">32%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">34%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Pernod</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">24%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">25%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">26%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">26%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">12%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Campari</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">22%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">26%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">25%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">25%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">17%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Diageo</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">27%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">30%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">30%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">31%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">18%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cuervo</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">23%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">26%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">20%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">18%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">20%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">LVMH ワイン＆スピリッツ（LVMH W&amp;S）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">31%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">31%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">32%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">31%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">29%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ピア平均（Rémy除く）（Peer average (ex Rémy)）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">27%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">28%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">28%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">27%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">22%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ピアの5年平均（Rémy除く）（Peer five-year average (ex Rémy)）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">26%</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>図表16（Exhibit 16）の分析を踏まえ、Rémyモデルのベースケース予測およびRémy経営陣の2030年営業利益率33％の目標を評価せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Rémyモデルのベースケース予測では、FY2022E、FY2023E、FY2024EにおけるEBITマージンはそれぞれ24.8％、26.2％、27.6％である。多くの同業他社の直近年度の実績には、COVID-19パンデミックに伴う売上減少によるデレバレッジ（deleveraging）の影響が含まれている。それを除けば、ベースケース予測はピア平均に近く、その点では妥当と考えられるが、Rémy自身の過去5年間の収益性と比較すると大幅に高い。</p>
+<p>Rémy経営陣の2030年営業利益率33％という目標は、同業他社と比較して高い水準に見える。この水準の収益性を達成しているのはBrown Formanのみであり、その売上規模はRémyの約3倍である。この目標を達成するには、Rémyのコニャックセグメントにおける業界トップレベルの成長と収益性が必要となる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA1434-R-s03-01-05">
+<h3 class="dp-heading">確証バイアス（Confirmation Bias）</h3>
+<p>確証バイアス（confirmation bias）とは、既存の信念を裏付ける情報を探し、それに注目し、それに反する情報を無視または過小評価する傾向である。投資アナリストにおける一般的な現れ方として、ポジティブなニュースや特定の基準のみを追求するように調査プロセスを構築したり、調査の範囲を狭めたりすることが挙げられる。例えば、ある企業を調査する際に、その競合企業や代替製品を提供する企業については表面的な調査しか行わない場合がある。ある企業に対してポジティブな見方を持つアナリストは、同様の見解を持つ他のアナリストや企業経営陣とだけ対話する可能性があり、その結果、聞きたいことや既に知っていることしか得られない。確証バイアスは過信や代表性バイアスと密接に関連している。</p>
+<p>企業経営陣が過度に楽観的である可能性は、図表17（Exhibit 17）に示されており、これは破綻し国有化される数か月前に公表された2007年の欧州大手銀行の年次報告書を分析したものである。</p>
+<p>経営陣との対話はその役割を踏まえると有益であり、調査プロセスから除外すべきではないが、アナリストは経営陣が本質的にバイアスを持つことを認識し、特に論争性の高い企業を分析する際には異なる視点を求める必要がある。予測プロセスにおける確証バイアスを軽減する方法として、対象銘柄に対してネガティブな見方を持つアナリストの意見を聞く、またはその調査を読むこと、さらに対象銘柄に対して経済的または心理的に関与していない同僚の視点を求めることが挙げられる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1434-R-s03-EXM5">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例5 経営陣の楽観主義（Management Optimism）</h4>
+<p>政府による救済の数か月前に2008年に公表された欧州大手銀行の2007年年次報告書における会長声明および事業レビューのテキスト分析を考察せよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1434-R-s03-EXH17">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 17<span style="display: block;">Text Analysis</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: center; vertical-align: top; padding: 8px;">出現回数（Occurrences of …）</th>
+</tr>
+<tr>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">ネガティブな単語（Negative words）</th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;">ポジティブな単語（Positive words）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">失望／失望した（Disappoint/disappointed）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">Good</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">55</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">悪い／悪く（Bad/badly）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">優れている（Excellent）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">12</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Poor</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">成功／成功した（Success/successful）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">35</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">弱い／弱まっている（Weaker/weakening）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">改善（Improvement）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">23</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">減速（Slowdown）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">強い／より強い／強く（Strong/stronger/strongly）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">78</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧（Reference List）</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA1434-R-s03-R1list">Dunning, D., Griffin, D. W., Milojkovic, J. D. and Ross, L. (1990). “The Overconfidence Effect in Social Prediction.” <em>Journal of Personality and Social Psychology</em> 58 (4): 568–81. <a href="https://psycnet.apa.org/record/1990-22524-001" target="_blank">https://psycnet.apa.org/record/1990-22524-001</a> <a href="https://doi.org/10.1037/0022-3514.58.4.568" target="_blank">https://doi.org/10.1037/0022-3514.58.4.568</a></li>
+<li id="CFA1434-R-s03-R2list">Russo, J. Edward and Schoemaker, Paul J. H. (1992). “Managing Overconfidence.” <em>MIT Sloan Management Review</em> 15 (January). <a href="https://sloanreview.mit.edu/article/managing-overconfidence/" target="_blank">https://sloanreview.mit.edu/article/managing-overconfidence/</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1434-R-s03-R2Content">Russo, J. Edward and Schoemaker, Paul J. H. (1992). “Managing Overconfidence.” <em>MIT Sloan Management Review</em> 15 (January). <a href="https://sloanreview.mit.edu/article/managing-overconfidence/" target="_blank">https://sloanreview.mit.edu/article/managing-overconfidence/</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1434-R-s03-R1Content">Dunning, D., Griffin, D. W., Milojkovic, J. D. and Ross, L. (1990). “The Overconfidence Effect in Social Prediction.” <em>Journal of Personality and Social Psychology</em> 58 (4): 568–81. <a href="https://psycnet.apa.org/record/1990-22524-001" target="_blank">https://psycnet.apa.org/record/1990-22524-001</a> <a href="https://doi.org/10.1037/0022-3514.58.4.568" target="_blank">https://doi.org/10.1037/0022-3514.58.4.568</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ScenarioAnalysisContent">
+<p>ベースケースと代替的な結果を組み合わせたバリュエーションプロセスの一種であり、より好ましいシナリオまたは不利なシナリオを評価プロセスに組み込むことを可能にするもの。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143815_1202_Building_a_Financial_Statement_Model.html" >← 前へ</a>
+  <span class="title">12.03 | Behavioral Finance and Analyst Forecasts</span>
+  <a href="courses_1867_modules_items_143820_1204_The_Impact_of_Competitive_Factors_in_Prices_and_Costs.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

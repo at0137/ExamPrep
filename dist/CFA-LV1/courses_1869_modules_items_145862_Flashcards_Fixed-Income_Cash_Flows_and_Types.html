@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flashcards: Fixed-Income Cash Flows and Types</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2432-flashcards" title="Flashcards: Fixed-Income Cash Flows and Types">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：債券（Fixed-Income）のキャッシュフローと種類 フラッシュカード（Flashcards: Fixed-Income Cash Flows and Types）</h2>
+</header>
+<h3 class="dp-has-icon"><i aria-hidden="true" class="dp-icon fas fa-book-reader"></i></h3>
+<p class="cfa-curriculum-flashcard-inst">下のカードをクリックすると、その用語の定義が表示される。次または前をクリックするとカードをスクロールできる。</p>
+<div class="flashcard-container">
+<div class="flashcard" id="flashcard1">
+<div class="front">
+<p>償却債（amortizing debt）</p>
+</div>
+<div class="back">
+<p>満期までの期間にわたり元本が完全に返済される支払いスケジュールを持つローンまたは債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard2" style="display: none;">
+<div class="front">
+<p>バルーン支払い（balloon payment）</p>
+</div>
+<div class="back">
+<p>債券の未償還元本を償還するために満期時に必要とされる大きな支払い。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard3" style="display: none;">
+<div class="front">
+<p>無記名債（bearer bonds）</p>
+</div>
+<div class="back">
+<p>所有者が記録されず、クリアリングシステムのみが債券保有者を把握している債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard4" style="display: none;">
+<div class="front">
+<p>一括償還債（bullet bond）</p>
+</div>
+<div class="back">
+<p>元本の返済がすべて満期時に行われる債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard5" style="display: none;">
+<div class="front">
+<p>コール期間（call period）</p>
+</div>
+<div class="back">
+<p>コーラブル債の発行体がコールオプションを行使できる期間。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard6" style="display: none;">
+<div class="front">
+<p>コール価格（call price）</p>
+</div>
+<div class="back">
+<p>コーラブル債の発行体が投資家から債券を購入する権利を有する価格。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard7" style="display: none;">
+<div class="front">
+<p>コール保護期間（call protection period）</p>
+</div>
+<div class="back">
+<p>コーラブル債の発行体がコールオプションを行使できない期間。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard8" style="display: none;">
+<div class="front">
+<p>コールリスク（call risk）</p>
+</div>
+<div class="back">
+<p>コーラブル債に関連する、不確実な満期および価格上昇の制限。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard9" style="display: none;">
+<div class="front">
+<p>コーラブル債（callable bond）</p>
+</div>
+<div class="back">
+<p>発行体に、あらかじめ定められた日付に指定された価格で債券を投資家から買い戻す権利を与える組み込みコールオプション（embedded call option）を含む債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard10" style="display: none;">
+<div class="front">
+<p>元本連動債（capital-indexed bond）</p>
+</div>
+<div class="back">
+<p>指数の変化が元本の調整によって反映されるタイプのインデックス連動債。代表例は米国政府が発行する物価連動国債（Treasury Inflation-Protected Securities, TIPS）である。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard11" style="display: none;">
+<div class="front">
+<p>偶発転換債（contingent convertible bonds, CoCo bonds）</p>
+</div>
+<div class="back">
+<p>発行体の自己資本が規制上の最低要件を下回るなどの特定の事象が発生した場合に、自動的に株式へ転換される債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard12" style="display: none;">
+<div class="front">
+<p>転換価格（conversion price）</p>
+</div>
+<div class="back">
+<p>転換期間中に転換社債が普通株式に完全に交換される際の、あらかじめ定められた株価。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard13" style="display: none;">
+<div class="front">
+<p>転換比率（conversion ratio）</p>
+</div>
+<div class="back">
+<p>一定の額面に対して、転換社債またはノート保有者が受け取ることができる普通株式の数。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard14" style="display: none;">
+<div class="front">
+<p>転換価値（conversion value）</p>
+</div>
+<div class="back">
+<p>転換社債の価格と、債券を株式に転換した場合の価値を比較することによって得られる、現在の偶発特性の価値。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard15" style="display: none;">
+<div class="front">
+<p>転換社債（convertible bond）</p>
+</div>
+<div class="back">
+<p>債券保有者に、発行体の普通株式の一定数と交換する権利を与える債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard16" style="display: none;">
+<div class="front">
+<p>クレジット連動債（credit-linked notes）</p>
+</div>
+<div class="back">
+<p>債券の信用格付け（credit rating）が変化した場合にクーポンが変動する債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard17" style="display: none;">
+<div class="front">
+<p>繰延クーポン債（deferred coupon bonds）</p>
+</div>
+<div class="back">
+<p>最初の数年間はクーポンを支払わず、その後残存期間において通常より高いクーポンを支払う債券。スプリットクーポン債（split coupon bond）とも呼ばれる。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard18" style="display: none;">
+<div class="front">
+<p>国内債（domestic bonds）</p>
+</div>
+<div class="back">
+<p>発行体の所在地（domicile）と発行の管轄が同一である債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard19" style="display: none;">
+<div class="front">
+<p>ユーロ債（Eurobonds）</p>
+</div>
+<div class="back">
+<p>債券の表示通貨の国の管轄外で国際的に発行される債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard20" style="display: none;">
+<div class="front">
+<p>固定価格コール（fixed-price call）</p>
+</div>
+<div class="back">
+<p>将来のあらかじめ定められた価格で、発行体に債券を買い戻す権利を与える偶発条項（contingency provision）。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard21" style="display: none;">
+<div class="front">
+<p>外国債（foreign bonds）</p>
+</div>
+<div class="back">
+<p>発行体の所在地（domicile）と発行管轄（jurisdiction of issuance）が異なる債券の一種。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard22" style="display: none;">
+<div class="front">
+<p>完全償却型ローン（fully amortizing loan）</p>
+</div>
+<div class="back">
+<p>支払スケジュールにより、満期までに元本が完全に返済されるローンまたは債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard23" style="display: none;">
+<div class="front">
+<p>グリーンボンド（green bonds）</p>
+</div>
+<div class="back">
+<p>環境関連プロジェクトの資金調達に特化して用いられる債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard24" style="display: none;">
+<div class="front">
+<p>指数連動債（index-linked bonds）</p>
+</div>
+<div class="back">
+<p>クーポン支払または元本返済が特定の指数に連動する債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard25" style="display: none;">
+<div class="front">
+<p>インフレ連動債（inflation-linked bonds）</p>
+</div>
+<div class="back">
+<p>元本および利息がインフレに連動する債務証券（debt instruments）。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard26" style="display: none;">
+<div class="front">
+<p>利息指数連動債（interest-indexed bond）</p>
+</div>
+<div class="back">
+<p>指数の変化が利息支払の調整として反映されるタイプの指数連動債。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard27" style="display: none;">
+<div class="front">
+<p>レバレッジドローン（leveraged loans）</p>
+</div>
+<div class="back">
+<p>比較的信用力が低い、またはレバレッジが高い借り手または発行体に対して行われる貸出。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard28" style="display: none;">
+<div class="front">
+<p>モーゲージ担保証券（mortgage-backed securities, MBS）</p>
+</div>
+<div class="back">
+<p>主に住宅不動産に関するモーゲージローンのプールからのキャッシュフローに対する請求権を表す債務証券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard29" style="display: none;">
+<div class="front">
+<p>部分償却型債券（partially amortizing bond）</p>
+</div>
+<div class="back">
+<p>債券期間中に元本の一部が返済され、残りの元本が満期時に支払われる支払スケジュールを持つローンまたは債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard30" style="display: none;">
+<div class="front">
+<p>現物支払（payment-in-kind）</p>
+</div>
+<div class="back">
+<p>クーポン支払が追加発行や元本への組み入れの形で、全部または一部支払われる債券の特徴。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard31" style="display: none;">
+<div class="front">
+<p>プット付債券（putable bonds）</p>
+</div>
+<div class="back">
+<p>債券保有者に、特定の日にあらかじめ定められた価格で債券を発行体に売却する権利を与える債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard32" style="display: none;">
+<div class="front">
+<p>登録債（registered bonds）</p>
+</div>
+<div class="back">
+<p>所有者が氏名またはシリアル番号によって記録される債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard33" style="display: none;">
+<div class="front">
+<p>減債基金（sinking fund）</p>
+</div>
+<div class="back">
+<p>発行体に毎年債券の未償還元本の一部を償還させることにより、債券の信用リスクを低減する条項。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard34" style="display: none;">
+<div class="front">
+<p>ステップアップ債（step-up bonds）</p>
+</div>
+<div class="back">
+<p>固定または変動いずれのクーポンであっても、特定の日に所定の幅でクーポンが上昇する債券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard35" style="display: none;">
+<div class="front">
+<p>物価連動国債（Treasury Inflation-Protected Securities, TIPS）</p>
+</div>
+<div class="back">
+<p>消費者物価指数（Consumer Price Index）に応じて元本が調整される米国財務省債（US Treasury bonds）。TIPSは5年、10年、30年の満期で発行される。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard36" style="display: none;">
+<div class="front">
+<p>ワラント（warrant）</p>
+</div>
+<div class="back">
+<p>一定期間内にあらかじめ定められた価格で、企業が発行する追加の普通株式（common equity shares）を購入する権利を与える債務の特徴または証券。</p>
+</div>
+</div>
+<div class="flashcard" id="flashcard37" style="display: none;">
+<div class="front">
+<p>ウォーターフォール構造（waterfall structures）</p>
+</div>
+<div class="back">
+<p>資金調達構造において、キャッシュフローおよびリスクが各トランシェ（tranches）にどの順序で配分されるかを示すもの。</p>
+</div>
+</div>
+</div>
+<div class="controls">
+<div class="control-button" id="prevBtn">Previous Card</div>
+<div class="control-button" id="nextBtn">Next Card</div>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_145856_Glossary_Fixed-Income_Cash_Flows_and_Types.html" >← 前へ</a>
+  <span class="title">Flashcards: Fixed-Income Cash Flows and Types</span>
+  <a href="courses_1869_modules_items_145870_Real_World_Applications_Bloombergs_Debt_Distribution.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

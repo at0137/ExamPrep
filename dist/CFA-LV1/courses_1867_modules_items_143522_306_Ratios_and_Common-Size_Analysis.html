@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.06 | Ratios and Common-Size Analysis</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2419-R-s06-R-1" title="3.06 | Ratios and Common-Size Analysis"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3：貸借対照表の分析（Analyzing Balance Sheets）3.06｜比率および共通サイズ分析（Ratios and Common-Size Analysis）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">共通サイズ貸借対照表および関連する財務比率を計算し、解釈する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>企業の貸借対照表の分析は、貸借対照表日時点における企業の流動性（liquidity）および支払能力（solvency）、ならびに企業が支配する経済資源に関する洞察を提供する。流動性とは、企業が短期的な財務上の義務を履行する能力を指す。流動性の評価は、企業が資産を現金に転換し、事業運営上の必要資金を支払う能力に焦点を当てる。支払能力とは、企業が長期的に財務上の義務を履行する能力を指す。支払能力の評価は、企業の財務構造および長期資金調達に関する義務を支払う能力に焦点を当てる。本レッスンでは、貸借対照表を分析するための2つの手法、すなわち共通サイズ分析（common-size analysis）と貸借対照表比率（balance sheet ratios）について説明する。</p>
+<section id="CFA2419-R-s06-01-01">
+<h3 class="dp-heading">貸借対照表の共通サイズ分析（Common-Size Analysis of the Balance Sheet）</h3>
+<p>最初の手法である縦方向の共通サイズ分析（vertical common-size analysis）は、貸借対照表の各項目を総資産に対する割合で表示することを含む。共通サイズ貸借対照表は、企業の貸借対照表の構成を時系列で比較する（時系列分析（time-series analysis））場合や、同一業界内の企業間で比較する場合に有用である。例として、図表10のパネルAは3つの仮想企業の貸借対照表を示している。総資産が975万米ドル（USD9.75 million）の企業Cは、総資産がそれぞれ325万米ドル（USD3.25 million）しかない企業Aおよび企業Bよりもはるかに大きい。パネルBに示される共通サイズ貸借対照表は、これら異なる規模の企業の比較を容易にする。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-EXH10">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 10<span style="display: block;">Balance Sheets for Companies A, B, and C</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="6" style="text-align: left; vertical-align: bottom; padding: 8px;">パネルA：貸借対照表（Balance Sheets）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">（米ドル千単位（in thousands of US dollars））</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>A</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>B</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>C</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">資産（ASSETS）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">流動資産（Current assets）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">現金および現金同等物（Cash and cash equivalents）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">短期市場性有価証券（Short-term marketable securities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">900</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">300</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">売掛金（Accounts receivable）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,050</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,500</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">棚卸資産（Inventory）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">950</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">300</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">流動資産合計（Total current assets）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2,500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2,200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5,100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">有形固定資産（純額）（Property, plant, and equipment, net）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">750</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4,650</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">無形資産（Intangible assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">のれん（Goodwill）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">資産合計（Total assets）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9,750</td>
+</tr>
+<tr>
+<td colspan="6" style="text-align: left; vertical-align: bottom; padding: 8px;">負債および株主資本（LIABILITIES AND SHAREHOLDERS’ EQUITY）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">流動負債（Current liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">買掛金（Accounts payable）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2,500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">600</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">流動負債合計（Total current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2,500</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">600</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">長期社債（Long-term bonds payable）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">負債合計（Total liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">2,510</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9,600</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">株主資本合計（Total shareholders’ equity）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3,240</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">740</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">150</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">負債および株主資本合計（Total liabilities and shareholders’ equity）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3,250</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9,750</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="6" style="text-align: left; vertical-align: bottom; padding: 8px;">パネルB：共通サイズ貸借対照表（Common-Size Balance Sheets）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">（百分率（Percent））</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>A</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>B</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>C</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">資産（ASSETS）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">流動資産（Current assets）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">現金および現金同等物（Cash and cash equivalents）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">30.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">30.8</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">短期市場性有価証券（Short-term marketable securities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">27.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">売掛金（Accounts receivable）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">15.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">32.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">15.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">棚卸資産（Inventory）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">29.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">流動資産合計（Total current assets）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">76.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">67.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">52.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">有形固定資産（純額）（Property, plant, and equipment, net）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">23.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">23.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">47.7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">無形資産（Intangible assets）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">のれん（Goodwill）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">資産合計（Total assets）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100.0</td>
+</tr>
+<tr>
+<td colspan="6" style="text-align: left; vertical-align: bottom; padding: 8px;">負債および株主資本（LIABILITIES AND SHAREHOLDERS’ EQUITY）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">流動負債（Current liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">買掛金（Accounts payable）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">76.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">流動負債合計（Total current liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">76.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">長期社債（Long-term bonds payable）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">92.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">負債合計（Total liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">77.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">98.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">株主資本合計（Total shareholders’ equity）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">99.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">22.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">負債および株主資本合計（Total liabilities and shareholders’ equity）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>企業Aおよび企業Bの資産の大部分は流動資産である。しかし、企業Aは総資産の約60％を現金および短期市場性有価証券で保有しているのに対し、企業Bは現金を総資産のわずか6％しか保有していない。企業Aは企業Bよりも流動性が高い。企業Aは流動負債をほとんど有しておらず（その流動負債は1万米ドル未満に丸められる）、100万米ドルの現金を保有しており、近い将来の財務上の義務を満たすことができる。一方、企業Bは250万米ドルの流動負債を有しており、これは20万米ドルしかない利用可能な現金を上回っている。これらの短期債務を支払うために、企業Bは売掛金を回収するか、在庫をさらに販売するか、銀行から借入を行うか、または長期資本（例えば、社債や株式の発行）を調達する必要がある。企業Cもまた企業Bより流動性が高いと見られる。企業Cは総資産の30％超を現金および短期市場性有価証券で保有しており、流動負債は総資産の6.2％にすぎない。</p>
+<p>企業Cの現金および短期市場性有価証券33万米ドルは、流動負債60万米ドルを大きく上回っている。しかし支払能力（solvency）の観点では、企業Cの資産の98.5％が負債で賄われている点に注意が必要である。企業Cのキャッシュフローが大きく変動した場合、長期社債の利息および元本を支払えない可能性がある。企業Aは資産の1％未満しか負債で賄われておらず、企業Cよりもはるかに支払能力が高い。</p>
+<p>これらの例はあくまで仮定である。一般的な比較以外に、さらなる詳細なしに多くを述べることはできない。実務においては、企業の流動性管理および資本構造には多くの要因が影響する。資本構造（capital structure）の研究は、Corporate Issuersモジュールで扱われる基本的な論点である。</p>
+<p>共通サイズ貸借対照表は、企業戦略の違いを明らかにすることもできる。資産構成を比較すると、企業Cは有形固定資産（property, plant, and equipment, PP&amp;E）への投資比率が高く、おそらく製品の多くを自社で製造していると考えられる。企業Bの貸借対照表にのれん（goodwill）が存在することは、過去に1回以上の買収を行っていることを示している。これに対し、企業Aおよび企業Cの貸借対照表にのれんがないことは、これらの企業が買収ではなく内部成長戦略を採用してきた可能性を示唆する。企業Aは貸借対照表の構成から、創業初期または清算段階にある可能性がある。在庫が比較的少なく、買掛金も存在しないことから、まだ商業信用を確立していないか、清算過程において債務を返済している段階であると考えられる。</p>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2419-R-s06-Ba">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Common-Size Analysis</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2419-R-s06-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>図表2、6、および8の情報に基づき、2016年から2017年にかけて総資産に対する割合が増加した項目はどれか。複数選択が可能である。該当するものを1つ選べ。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 流動資産合計（Total current assets）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>AおよびCが正しい。</p>
+<p>流動資産合計は、2016年の総資産の26.1％（11,564ユーロ ÷ 44,277ユーロ）から、2017年には28.1％（11,930ユーロ ÷ 42,497ユーロ）に増加した。</p>
+<p>現金および現金同等物は、2016年の総資産の8.4％（3,702ユーロ ÷ 44,277ユーロ）から、2017年には9.4％（4,011ユーロ ÷ 42,497ユーロ）に増加した。</p>
+<p>総金融負債（total financial liabilities）は、2017年には絶対額（5,034ユーロ）および総資産に対する割合（5,034 ÷ 42,497 = 11.8％）のいずれにおいても、2016年（6,481 ÷ 44,277 = 14.6％）と比較して減少した。</p>
+<p>全体として、企業の流動性の状況は2016年より2017年の方がやや改善している。総資産に対する現金残高の割合は増加した。流動負債は総資産に対する割合で増加し、負債合計はほぼ同水準であったが、負債の構成は変化した。将来のキャッシュアウトフローを伴う金融負債は、総資産に対する割合で減少した。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 総金融負債（Total financial liabilities）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>AおよびCが正しい。</p>
+<p>流動資産合計は、2016年の総資産の26.1％（11,564ユーロ ÷ 44,277ユーロ）から、2017年には28.1％（11,930ユーロ ÷ 42,497ユーロ）に増加した。</p>
+<p>現金および現金同等物は、2016年の総資産の8.4％（3,702ユーロ ÷ 44,277ユーロ）から、2017年には9.4％（4,011ユーロ ÷ 42,497ユーロ）に増加した。</p>
+<p>総金融負債は、2017年には絶対額および総資産比率の双方で減少した。</p>
+<p>全体として、企業の流動性の状況は2016年より2017年の方がやや改善している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 現金および現金同等物（Cash and cash equivalents）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>AおよびCが正しい。</p>
+<p>流動資産合計は、2016年の総資産の26.1％から2017年には28.1％に増加した。</p>
+<p>現金および現金同等物は、2016年の8.4％から2017年には9.4％に増加した。</p>
+<p>総金融負債は2017年に減少した。</p>
+<p>全体として、流動性の状況は改善している。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+<p>貸借対照表の共通サイズ分析は、特にクロスセクション分析（cross-sectional analysis）において有用である。すなわち、特定の時点における企業間比較や、企業と業界・セクターのデータとの比較である。アナリストは比較対象として個別の同業他社を選択することもできるし、公表された業界データを利用したり、データベースから独自に集計したりすることもできる。企業分析において、多くのアナリストは比較対象企業を自ら選択するか、独自の業界統計を作成することを好む。</p>
+<p>図表11は、2017年データを用いてS&amp;P500（S&amp;P 500）の10セクターについて作成された共通サイズ貸借対照表データを示している。セクター分類はS&amp;P/MSCIグローバル産業分類基準（Global Industry Classification System, GICS）に従っている。この図表は、Compustatデータベースにおいて2017年データが利用可能であったS&amp;P500構成企業について、平均値および中央値の共通サイズ貸借対照表データを提示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-EXH11">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 11<span style="display: block;">Common-Size Balance Sheet Statistics for the S&amp;P 500 Grouped by S&amp;P/MSCI GICS Sector, 2017 (in percent except for No. of Observations) </span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="12" style="text-align: center; vertical-align: bottom; padding: 8px;">パネルA：中央値データ（Median Data）</th>
+</tr>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>10</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>15</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>20</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>25</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>30</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>35</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>40</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>45</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>50</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>55</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>60</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">エネルギー（Energy）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">素材（Materials）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">資本財・サービス（Industrials）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">一般消費財（Consumer Discretionary）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">生活必需品（Consumer Staples）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ヘルスケア（Health Care）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">金融（Financials）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">情報技術（Information Technology）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">電気通信サービス（Telecommunication Services）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">公益事業（Utilities）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">不動産（Real Estate）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">観測数（Number of observation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">68</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">81</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">64</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">64</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金および短期投資（Cash and short-term investments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売掛金（Receivables）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産（Inventories）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産合計（Total current assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">41.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">N.A.</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">48.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.8%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PP&amp;E</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">73.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">36.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">19.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">72.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33.4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">無形資産（Intangibles）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">41.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">37.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">49.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">のれん（Goodwill）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>0.7%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>20.0%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>28.3%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>11.3%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>26.2%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>22.8%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>2.2%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>22.3%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>26.0%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>4.8%</em></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><em>0.0%</em></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">買掛金（Accounts payable）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債（Current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">N.A.</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期債務（Long-term debt）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">43.4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債合計（Total liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">49.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">64.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">65.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">64.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">63.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">86.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">71.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">53.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">普通株主資本（Common equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">47.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">36.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40.4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">優先株（Preferred stock）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純資産合計（Total equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">47.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">36.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">41.8%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-Ta">
+<h4 class="cfa-curriculum-unknownType-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">(Continued from previous Exhibit) </span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="12" style="text-align: center; vertical-align: bottom; padding: 8px;">パネルB：平均データ（前の例からの続き）（Panel B. Mean Data (Continued from Previous Example)）</th>
+</tr>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>10</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>15</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>20</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>25</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>30</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>35</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>40</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>45</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>50</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>55</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>60</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">エネルギー（Energy）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">素材（Materials）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">資本財・サービス（Industrials）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">一般消費財（Consumer Discretionary）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">生活必需品（Consumer Staples）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ヘルスケア（Health Care）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">金融（Financials）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">情報技術（Information Technology）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">電気通信サービス（Telecommunication Services）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">公益事業（Utilities）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">不動産（Real Estate）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">観測数（Number of observations）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">68</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">81</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">33</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">59</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">64</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">64</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金および短期投資（Cash and short-term investments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.9%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売掛金（Receivables）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.8%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産（Inventories）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産合計（Total current assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">36.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">N.A.</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">49.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16.1%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">PP&amp;E</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">68.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">36.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">69.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.9%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">無形資産（Intangibles）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">43.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">43.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">48.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">のれん（Goodwill）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">27.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.7%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">買掛金（Accounts payable）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債（Current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">23.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">N.A.</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.8%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期債務（Long-term debt）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">29.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">28.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">47.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">44.8%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債合計（Total liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">50.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">63.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">67.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">67.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">68.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">60.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">80.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">61.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">77.6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">73.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">54.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">普通株主資本（Common equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">38.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">37.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24.7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">40.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">優先株（Preferred stock）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.2%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純資産合計（Total equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.4%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">32.3%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.9%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">39.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18.5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">37.8%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">22.2%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25.0%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">42.3%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>PPE＝有形固定資産（Property, plant, and equipment）、LT＝長期（Long term）。</p>
+<p>出所：Compustatのデータに基づく（Source: Based on data from Compustat）。</p>
+</div>
+</section>
+<section id="CFA2419-R-s06-01-02">
+<h3 class="dp-heading">これらのデータから、いくつかの興味深い一般的な観察ができる（Some interesting general observations can be made from these data:）。</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2419-R-s06-L1">
+<li class="cfa-curriculum-list-item">エネルギー企業および公益事業会社は、有形固定資産（PP&amp;E）の額が最も大きい。電気通信サービスは、公益事業に次いで長期債務の水準が最も高い。公益事業はまた、優先株も一部利用している。</li>
+<li class="cfa-curriculum-list-item">金融会社は、負債合計の割合が最も大きい。金融会社は通常、比較的高い財務レバレッジを有している。</li>
+<li class="cfa-curriculum-list-item">公益事業会社および不動産会社は、売掛金の水準が最も低い。</li>
+<li class="cfa-curriculum-list-item">棚卸資産の水準は、一般消費財（consumer discretionary）が最も高い。素材（materials）および生活必需品（consumer staples）がそれに次いで高い。</li>
+<li class="cfa-curriculum-list-item">情報技術企業は、長期債務および負債合計の割合が最も低く、普通株主資本および純資産合計の割合が最も高いことから示されるように、レバレッジの使用が最も少ない。</li>
+</ul>
+<p>例1では、アナリストが横断的な共通サイズ貸借対照表データ（cross-sectional common-size balance sheet data）を使用するケースについて説明する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2419-R-s06-EXM4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 1<span style="display: block;">Cross-Sectional Common-Size Analysis</span></h4>
+<p>Jason Luは、貸借対照表に反映された相対的な財務状態を評価するため、コンピュータ業界の2社を比較している。彼は、AppleとMicrosoftの縦型共通サイズデータ（vertical common-size data）を以下のようにまとめており、それは図表12（Exhibit 12）に示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-EXH12">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 12<span style="display: block;">Cross-Sectional Analysis: Consolidated Balance Sheets (as percent of total assets)</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Apple</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">マイクロソフト（Microsoft）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">資産（ASSETS）：</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2017年9月30日（30 September 2017）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">2017年6月30日（30 June 2017）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産（Current assets）：</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金および現金同等物（Cash and cash equivalents）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">短期市場性有価証券（Short-term marketable securities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">52.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売掛金（Accounts receivable）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">8.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産（Inventories）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.9</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">仕入先関連の非取引債権（Vendor non-trade receivables）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の流動資産（Other current assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産合計（Total current assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">34.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">66.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期市場性有価証券（Long-term marketable securities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">51.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.5</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産（純額）（Property, plant, and equipment, net）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9.8</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">のれん（Goodwill）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.5</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">取得した無形資産（純額）（Acquired intangible assets, net）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.6</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の資産（Other assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産合計（Total assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left; vertical-align: top; padding: 8px;">負債および株主資本（LIABILITIES AND SHAREHOLDERS’ EQUITY）：</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債（Current liabilities）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">買掛金（Accounts payable）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">短期債務（Short-term debt）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.8</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期債務のうち1年以内返済分（Current portion of long-term debt）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">未払費用（Accrued expenses）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.7</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延収益（Deferred revenue）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の流動負債（Other current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動負債合計（Total current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">26.8</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期債務（Long-term debt）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">繰延収益（非流動）（Deferred revenue non-current）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の非流動負債（Other non-current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債合計（Total liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">64.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">70.0</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left; vertical-align: top; padding: 8px;">契約上のコミットメントおよび偶発債務（Commitments and contingencies）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">株主資本合計（Total shareholders’ equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">35.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">30.0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債および株主資本合計（Total liabilities and shareholders’ equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>出所：各社の年次報告書のデータに基づく（Source: Based on data from companies’ annual reports）。</p>
+</div>
+<p>これらのデータから、Luは次のことを学ぶ（From these data, Lu learns the following:）。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2419-R-s06-L2">
+<li class="cfa-curriculum-list-item">AppleとMicrosoftは、図表11（Exhibit 11）で報告されている情報技術セクターと整合的に、現金および短期市場性有価証券の水準が高い。Appleはまた、長期市場性有価証券の残高も高い。これは、近年大きな営業キャッシュフローを生み出している同社のビジネスモデルの成功を反映している可能性がある。</li>
+<li class="cfa-curriculum-list-item">Appleの売掛金の水準はMicrosoftより低く、業界平均よりも低い。これが同社の自社小売店舗における現金販売とどの程度関連しているかを把握するには、さらなる調査が必要である。別の説明としては、同社が他社よりも大きな程度で売掛金の売却またはファクタリング（factoring）を行っている可能性があるが、Appleの現金ポジションを踏まえると、その説明は可能性が低い。また、Appleは仕入先関連の非取引債権（vendor non-trade receivables）を計上しており、これは契約製造業者との取り決めを反映している。</li>
+<li class="cfa-curriculum-list-item">AppleとMicrosoftはいずれも棚卸資産の水準が低く、図表11（Exhibit 11）で報告されている業界中央値と同様である。Appleは契約製造業者（contract manufacturers）を利用しており、必要になるまで在庫を保有することをサプライヤーに依存できる。さらに、年次報告書の経営者による討議および分析（Management Discussion and Analysis）セクションにおいて、Appleは取消不能の製造購入義務（noncancelable manufacturing purchase obligations）として380億米ドルを開示しており、そのうち330億米ドルが12か月以内に支払期日を迎える。これらの金額は現在、棚卸資産として計上されておらず、一部の完成品の組立および検査に契約製造業者を利用していることを反映している。購入コミットメントおよび契約製造業者の利用は、棚卸資産が「過少計上（understated）」されている可能性を示唆する。Microsoftの棚卸資産が低水準であることは、ハードウェアよりもソフトウェアに比重を置いた同社の事業構成と整合的である。</li>
+<li class="cfa-curriculum-list-item">AppleとMicrosoftの有形固定資産（PP&amp;E）の水準は、図表11（Exhibit 11）で報告されているセクター中央値と比較的近い。</li>
+<li class="cfa-curriculum-list-item">Appleののれんは非常に少なく、これは買収ではなくオーガニック成長を重視する戦略を反映している。MicrosoftののれんはAppleより高いものの、業界の中央値および平均よりは低い。Microsoftは2014年のNokiaなど多数の大型買収を行ったが、その後2015年に減損損失（impairment charge）として多額ののれんを償却した。</li>
+<li class="cfa-curriculum-list-item">Appleの買掛金の水準はコンピュータ業界平均より高いが、同社の高い現金および投資水準を考慮すると、問題である可能性は低い。</li>
+<li class="cfa-curriculum-list-item">AppleおよびMicrosoftの長期債務の水準は、業界平均よりやや高い。これもまた、両社の高い現金および投資水準を考慮すると、問題である可能性は低い。</li>
+</ul>
+</div>
+</section>
+<section id="CFA2419-R-s06-01-03">
+<h3 class="dp-heading">貸借対照表比率（Balance Sheet Ratios）</h3>
+<p>比率は、企業の財務状態の時系列分析および横断面分析を容易にする。貸借対照表比率とは、貸借対照表項目のみを用いる比率である。縦型共通サイズ貸借対照表の各項目は、総資産に対する割合を示しているという点で、いずれも比率である。他の貸借対照表比率は、ある貸借対照表項目を別の項目と比較する。例えば、流動比率（current ratio）は、企業の流動性の指標として、流動資産を流動負債に対して表したものである。貸借対照表比率には、流動性比率（短期債務の支払能力を測定する）とソルベンシー比率（長期およびその他の債務の支払能力を測定する）が含まれる。これらの比率およびその他の比率については、後のリーディングで説明する。図表13（Exhibit 13）は、いくつかの貸借対照表比率の計算方法および解釈を要約している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-EXH13">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 13<span style="display: block;">Balance Sheet Ratios</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">流動性比率（Liquidity Ratios）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">計算（Calculation）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">示すもの（Indicates）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動比率（Current）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">流動資産 ÷ 流動負債（Current assets ÷ Current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">流動負債を支払う能力（Ability to meet current liabilities）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当座比率（Quick (acid test)）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（現金＋市場性有価証券＋売掛金）÷ 流動負債（(Cash + Marketable securities + Receivables) ÷ Current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">流動負債を支払う能力（Ability to meet current liabilities）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">（現金＋市場性有価証券）÷ 流動負債（(Cash + Marketable securities) ÷ Current liabilities）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">流動負債を支払う能力（Ability to meet current liabilities）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">ソルベンシー比率（Solvency Ratios）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期負債資本比率（Long-term debt-to-equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">長期負債合計 ÷ 純資産合計（Total long-term debt ÷ Total equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">財務リスクおよび財務レバレッジ（Financial risk and financial leverage）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債資本比率（Debt-to-equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">総負債 ÷ 純資産合計（Total debt ÷ Total equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">財務リスクおよび財務レバレッジ（Financial risk and financial leverage）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総負債（Total debt）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">総負債 ÷ 総資産（Total debt ÷ Total assets）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">財務リスクおよび財務レバレッジ（Financial risk and financial leverage）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">財務レバレッジ（Financial leverage）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">総資産 ÷ 純資産合計（Total assets ÷ Total equity）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">財務リスクおよび財務レバレッジ（Financial risk and financial leverage）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2419-R-s06-Bb">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Ratio Analysis</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2419-R-s06-Q2"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>先に提示された貸借対照表に基づくと、2017年12月31日時点のSAPグループ（SAP Group）の流動比率として最も近いものはどれか：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 1.17。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。SAPグループの2017年12月31日時点の流動比率（流動資産 ÷ 流動負債）は1.17（11,930百万ユーロ ÷ 10,210百万ユーロ）である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 1.20。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。SAPグループの2017年12月31日時点の流動比率（流動資産 ÷ 流動負債）は1.17（11,930百万ユーロ ÷ 10,210百万ユーロ）である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 2.00。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。SAPグループの2017年12月31日時点の流動比率（流動資産 ÷ 流動負債）は1.17（11,930百万ユーロ ÷ 10,210百万ユーロ）である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2419-R-s06-Q3"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>先に提示されたSAPの貸借対照表に基づき、次のうち2016年と比較して2017年に低下した流動性比率はどれか。複数正解の可能性がある。該当するものを1つ選べ。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 現金比率（Cash）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>BとCが正しい。比率は下表に示されている。当座比率および流動比率は、2016年と比較して2017年に低下している。一方、現金比率は2016年より2017年の方がわずかに高い。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">流動性比率（Liquidity Ratios）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">計算（Calculation）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">2017年（百万ユーロ）（2017 EUR in millions）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">2016年（百万ユーロ）（2016 EUR in millions）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動比率（Current）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産 ÷ 流動負債（Current assets ÷ Current liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">11,930ユーロ ÷ 10,210ユーロ ＝ 1.17（EUR11,930 ÷ EUR10,210 = 1.17）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">11,564ユーロ ÷ 9,674ユーロ ＝ 1.20（EUR11,564 ÷ EUR9,674 = 1.20）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当座比率（Quick (acid test)）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（現金＋市場性有価証券＋売掛金）÷ 流動負債（(Cash + Marketable securities + Receivables) ÷ Current liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（4,011百万ユーロ＋990百万ユーロ＋5,899百万ユーロ）÷ 10,210百万ユーロ ＝ 1.07</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（3,702百万ユーロ＋1,124百万ユーロ＋5,924百万ユーロ）÷ 9,674百万ユーロ ＝ 1.11</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash*</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（現金＋市場性有価証券）÷ 流動負債（(Cash + Marketable securities) ÷ Current liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（4,011百万ユーロ＋990百万ユーロ）÷ 10,210百万ユーロ ＝ 0.49</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（3,702百万ユーロ＋1,124百万ユーロ）÷ 9,674百万ユーロ ＝ 0.50</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>* 市場性有価証券（Marketable securities）は、図表6（Exhibit 6）に示されているその他の金融資産（Other Financial Assets）と等しいと仮定する。</p>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 当座比率（Quick）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>BとCが正しい。比率は下表に示されている。当座比率および流動比率は、2016年と比較して2017年に低下している。一方、現金比率は2016年より2017年の方がわずかに高い。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">流動性比率（Liquidity Ratios）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">計算（Calculation）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">2017年（百万ユーロ）（2017 EUR in millions）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">2016年（百万ユーロ）（2016 EUR in millions）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動比率（Current）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産 ÷ 流動負債（Current assets ÷ Current liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">11,930百万ユーロ ÷ 10,210百万ユーロ ＝ 1.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">11,564百万ユーロ ÷ 9,674百万ユーロ ＝ 1.20</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当座比率（Quick (acid test)）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（現金＋市場性有価証券＋売掛金）÷ 流動負債（(Cash + Marketable securities + Receivables) ÷ Current liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（4,011百万ユーロ＋990百万ユーロ＋5,899百万ユーロ）÷ 10,210百万ユーロ ＝ 1.07</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（3,702百万ユーロ＋1,124百万ユーロ＋5,924百万ユーロ）÷ 9,674百万ユーロ ＝ 1.11</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash*</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（現金＋市場性有価証券）÷ 流動負債（(Cash + Marketable securities) ÷ Current liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（4,011百万ユーロ＋990百万ユーロ）÷ 10,210百万ユーロ ＝ 0.49</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（3,702百万ユーロ＋1,124百万ユーロ）÷ 9,674百万ユーロ ＝ 0.50</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>* 市場性有価証券（Marketable securities）は、図表6（Exhibit 6）に示されているその他の金融資産（Other Financial Assets）と等しいと仮定する。</p>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 流動比率（Current）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>BとCが正しい。比率は下表に示されている。当座比率および流動比率は、2016年と比較して2017年に低下している。一方、現金比率は2016年より2017年の方がわずかに高い。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">流動性比率（Liquidity Ratios）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">計算（Calculation）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">2017年（百万ユーロ）（2017 EUR in millions）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">2016年（百万ユーロ）（2016 EUR in millions）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動比率（Current）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">流動資産 ÷ 流動負債（Current assets ÷ Current liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">11,930百万ユーロ ÷ 10,210百万ユーロ ＝ 1.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">11,564百万ユーロ ÷ 9,674百万ユーロ ＝ 1.20</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当座比率（Quick (acid test)）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（現金＋市場性有価証券＋売掛金）÷ 流動負債（(Cash + Marketable securities + Receivables) ÷ Current liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（4,011百万ユーロ＋990百万ユーロ＋5,899百万ユーロ）÷ 10,210百万ユーロ ＝ 1.07</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（3,702百万ユーロ＋1,124百万ユーロ＋5,924百万ユーロ）÷ 9,674百万ユーロ ＝ 1.11</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Cash*</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（現金＋市場性有価証券）÷ 流動負債（(Cash + Marketable securities) ÷ Current liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（4,011百万ユーロ＋990百万ユーロ）÷ 10,210百万ユーロ ＝ 0.49</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">（3,702百万ユーロ＋1,124百万ユーロ）÷ 9,674百万ユーロ ＝ 0.50</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>* 市場性有価証券（Marketable securities）は、図表6（Exhibit 6）に示されているその他の金融資産（Other Financial Assets）と等しいと仮定する。</p>
+</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2419-R-s06-Q4"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>先に提示されたSAPの貸借対照表に基づき、次のうち2016年と比較して2017年に低下したレバレッジ比率はどれか。複数正解の可能性がある。該当するものを1つ選べ。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 負債資本比率（Debt-to-equity）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>A、B、Cが正しい。3つすべてのレバレッジ比率が2016年と比較して2017年に低下している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-Tc">
+<h6 class="cfa-curriculum-unknownType-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Solvency Ratios</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期負債資本比率（Long-term debt-to-equity）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期負債合計 ÷ 純資産合計（Total long-term debt ÷ Total equity）</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">5,034百万ユーロ ÷ 25,540百万ユーロ ＝ 19.7%</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">6,481百万ユーロ ÷ 26,397百万ユーロ ＝ 24.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債資本比率（Debt-to-equity）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総負債 ÷ 純資産合計（Total debt ÷ Total equity）</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">（1,561百万ユーロ＋5,034百万ユーロ）÷ 25,540百万ユーロ ＝ 25.8%</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">（1,813百万ユーロ＋6,481百万ユーロ）÷ 26,397百万ユーロ ＝ 31.4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">財務レバレッジ（Financial Leverage）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産 ÷ 純資産合計（Total assets ÷ Total equity）</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">42,497百万ユーロ ÷ 25,540百万ユーロ ＝ 1.66</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">44,277百万ユーロ ÷ 26,397百万ユーロ ＝ 1.68</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 財務レバレッジ（Financial leverage）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>A、B、Cが正しい。3つすべてのレバレッジ比率が2016年と比較して2017年に低下している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-Tc">
+<h6 class="cfa-curriculum-unknownType-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Solvency Ratios</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期負債資本比率（Long-term debt-to-equity）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期負債合計 ÷ 純資産合計（Total long-term debt ÷ Total equity）</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">5,034百万ユーロ ÷ 25,540百万ユーロ ＝ 19.7%</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">6,481百万ユーロ ÷ 26,397百万ユーロ ＝ 24.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債資本比率（Debt-to-equity）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総負債 ÷ 純資産合計（Total debt ÷ Total equity）</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">（1,561百万ユーロ＋5,034百万ユーロ）÷ 25,540百万ユーロ ＝ 25.8%</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">（1,813百万ユーロ＋6,481百万ユーロ）÷ 26,397百万ユーロ ＝ 31.4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">財務レバレッジ（Financial Leverage）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産 ÷ 純資産合計（Total assets ÷ Total equity）</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">42,497百万ユーロ ÷ 25,540百万ユーロ ＝ 1.66</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">44,277百万ユーロ ÷ 26,397百万ユーロ ＝ 1.68</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 長期負債資本比率（Long-term debt-to-equity）</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>A、B、Cが正しい。3つすべてのレバレッジ比率が2016年と比較して2017年に低下している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2419-R-s06-Tc">
+<h6 class="cfa-curriculum-unknownType-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Solvency Ratios</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期負債資本比率（Long-term debt-to-equity）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">長期負債合計 ÷ 純資産合計（Total long-term debt ÷ Total equity）</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">5,034百万ユーロ ÷ 25,540百万ユーロ ＝ 19.7%</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">6,481百万ユーロ ÷ 26,397百万ユーロ ＝ 24.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">負債資本比率（Debt-to-equity）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総負債 ÷ 純資産合計（Total debt ÷ Total equity）</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">（1,561百万ユーロ＋5,034百万ユーロ）÷ 25,540百万ユーロ ＝ 25.8%</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">（1,813百万ユーロ＋6,481百万ユーロ）÷ 26,397百万ユーロ ＝ 31.4%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">財務レバレッジ（Financial Leverage）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産 ÷ 純資産合計（Total assets ÷ Total equity）</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">42,497百万ユーロ ÷ 25,540百万ユーロ ＝ 1.66</td>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">44,277百万ユーロ ÷ 26,397百万ユーロ ＝ 1.68</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+<p>横断面での財務比率分析（cross-sectional financial ratio analysis）は、会計手法の違いによって制約を受ける可能性がある。さらに、企業の営業活動の同質性の欠如も比較可能性を制限する可能性がある。異なる業界で事業を行う多角化企業の場合、事業ごとに業界特有の比率を用いることで、より適切な比較が可能となる。企業はオペレーティング・セグメント（operating segments）に関する情報を開示している。これらのセグメントの財務状態および業績は、該当する業界と比較することができる。</p>
+<p>比率分析（ratio analysis）には相当な判断が必要である。判断が必要となる重要な領域の一つは、各比率の限界を理解することである。例えば、流動比率（current ratio）は特定時点における流動性の粗い指標に過ぎない。この比率は流動資産の総額のみを捉えるが、流動資産の構成要素は現金化の容易さにおいて大きく異なる（例えば、市場性有価証券と棚卸資産）。流動比率のもう一つの制約は、期末の資金調達や営業上の意思決定に対する感応度であり、これらは流動資産および流動負債の金額に影響を与える可能性がある。さらに別の判断領域として、企業の比率が業界において妥当な範囲内にあるかどうかを判断する必要がある。また、その比率が持続的な状態を示しているのか、それとも一時的な状態を反映しているのかを評価する必要もある。総じて、特定の比率を評価するには、企業の全体的な事業活動、競合他社、そして当該企業が活動する外部の経済環境および業界環境を検討する必要がある。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2419-R-s06-FN1Content">
+<p>9 共通サイズ分析（common-size analysis）の別の種類として「横型共通サイズ分析（horizontal common-size analysis）」があり、これは選択された基準年（base-year）の値に対する比率で数値を表す。特に断りがない限り、「共通サイズ分析」は縦型分析（vertical analysis）を指す。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2419-R-s06-FN2Content">
+<p>10 ある項目（例：流動資産）の値がゼロである場合、そのデータは除外されている。ただし、優先株（preferred stock）の場合は例外である。なお、多くの金融機関は流動資産または流動負債のデータを提供していないため、これらはデータベース上では利用不可（not available）として報告されている。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LiquidityContent">
+<p>企業がキャッシュフローおよび容易に現金化できる資産を用いて短期債務をどの程度履行できるかの度合い。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SolvencyContent">
+<p>企業価値が、その資産を賄うために用いられた負債の額面価値を上回っている状態を指す。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CapitalStructureContent">
+<p>企業が事業資金を調達するために用いる負債と資本の構成；すなわち企業の長期資金調達の構成。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BalanceSheetRatiosContent">
+<p>貸借対照表項目のみを用いる財務比率。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LiquidityRatiosContent">
+<p>債務の期日到来時に、企業が短期債務を返済する能力を測定する財務比率。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SolvencyRatiosContent">
+<p>企業が長期債務を返済する能力を測定する比率。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143520_305_Non-Current_Liabilities.html" >← 前へ</a>
+  <span class="title">3.06 | Ratios and Common-Size Analysis</span>
+  <a href="courses_1867_modules_items_143528_Glossary_Analyzing_Balance_Sheets.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

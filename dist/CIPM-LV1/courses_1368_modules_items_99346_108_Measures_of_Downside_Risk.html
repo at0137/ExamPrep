@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.08 | Measures of Downside Risk</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Risk Measurement and Attribution › Module 1: Risk Measurement and Risk Attribution</nav>
+<h1 class="page-title screenreader-only">1.08 | Measures of Downside Risk</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0018-R-s08a-R-1" title="1.08 | Measures of Downside Risk">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：リスク測定とリスク要因分解 (Risk Measurement and Risk Attribution) 1.08｜ダウンサイドリスクの尺度 (Measures of Downside Risk)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul id="CIPM0018-R-s08a-los-1">
+<li class="cfa-curriculum-los-item">次のダウンサイドリスクの尺度を計算し、解釈し、評価しなさい：セミ分散 (semi-variance)、ターゲット・セミ分散 (target semi-variance)、セミ標準偏差 (semi-standard deviation)、およびターゲット・セミ標準偏差 (target semi-standard deviation)</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>前述の対称的リスク尺度 (symmetric risk measures) の問題の一つは、利益（平均またはベンチマークからの正の偏差）と損失（平均またはベンチマークからの負の偏差）が同じように扱われることである。多くの投資家は損失のみをリスクとみなす。したがって、ダウンサイドリスクを定量化するために用いられる非対称的リスク尺度 (asymmetric risk measures) に注目する。これらには、セミ分散、ターゲット・セミ分散、セミ標準偏差、およびターゲット・セミ標準偏差が含まれる。</p>
+<p>セミ分散は分散と類似しているが、平均を下回る偏差のみを用いる点が異なる。セミ分散の計算手順は以下の通りである：</p>
+<ol class="cfa-curriculum-list-decimal" id="CIPM0018-R-s08a-L1">
+<li class="cfa-curriculum-list-item">算術平均リターン (arithmetic mean return) を計算する；</li>
+<li class="cfa-curriculum-list-item">平均からの偏差を計算するが、平均未満のリターンに対してのみ行う；</li>
+<li class="cfa-curriculum-list-item">偏差を二乗する；</li>
+<li class="cfa-curriculum-list-item">偏差平方を合計し、nで割る。ここでnは全てのリターン数（平均未満および平均超の両方）である。</li>
+</ol>
+<p>セミ分散の式は次の通りである：20</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0018-R-s08a-E11"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mtext&gt;Semi-variance&lt;/mtext&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mrow&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mrow&gt;&lt;mstyle displaystyle="true"&gt;&lt;munder&gt;&lt;mo&gt;&amp;#x2211;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mi&gt;o&lt;/mi&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;&lt;/mi&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mi&gt;l&lt;/mi&gt;&lt;mi&gt;l&lt;/mi&gt;&lt;mi&gt;&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;lt;&lt;/mo&gt;&lt;mover accent="true"&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;/munder&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mover accent="true"&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mo&gt;&amp;#xAF;&lt;/mo&gt;&lt;/mover&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;/&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-1-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="8.281ex" role="img" style="vertical-align: -3.585ex;" viewbox="0 -2021.9 18655.6 3565.4" width="43.329ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-53"></use><use x="556" xlink:href="#MJMAIN-65" y="0"></use><use x="1001" xlink:href="#MJMAIN-6D" y="0"></use><use x="1834" xlink:href="#MJMAIN-69" y="0"></use><use x="2113" xlink:href="#MJMAIN-2D" y="0"></use><use x="2446" xlink:href="#MJMAIN-76" y="0"></use><use x="2975" xlink:href="#MJMAIN-61" y="0"></use><use x="3475" xlink:href="#MJMAIN-72" y="0"></use><use x="3868" xlink:href="#MJMAIN-69" y="0"></use><use x="4146" xlink:href="#MJMAIN-61" y="0"></use><use x="4647" xlink:href="#MJMAIN-6E" y="0"></use><use x="5203" xlink:href="#MJMAIN-63" y="0"></use><use x="5648" xlink:href="#MJMAIN-65" y="0"></use><use x="6370" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(7426,0)"><g transform="translate(0,1960)"><use x="0" xlink:href="#MJSZ4-23A1" y="-1155"></use><use x="0" xlink:href="#MJSZ4-23A3" y="-2777"></use></g><g transform="translate(667,0)"><use x="1202" xlink:href="#MJSZ2-2211" y="0"></use><g transform="translate(0,-1216)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-66" y="0"></use><use transform="scale(0.707)" x="550" xlink:href="#MJMATHI-6F" y="0"></use><use transform="scale(0.707)" x="1036" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="1487" xlink:href="#MJMATHI-61" y="0"></use><use transform="scale(0.707)" x="2017" xlink:href="#MJMATHI-6C" y="0"></use><use transform="scale(0.707)" x="2315" xlink:href="#MJMATHI-6C" y="0"></use><g transform="translate(1848,0)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.5)" x="1074" xlink:href="#MJMATHI-69" y="-213"></use></g><use transform="scale(0.707)" x="3717" xlink:href="#MJMAIN-3C" y="0"></use><g transform="translate(3179,0)"><use transform="scale(0.707)" x="35" xlink:href="#MJMATHI-52" y="0"></use><g transform="translate(83,179)"><use transform="scale(0.707)" x="-70" xlink:href="#MJMAIN-AF" y="0"></use><g transform="translate(250.16057003474964,0) scale(0.10387811634349046,1)"><use transform="scale(0.707)" xlink:href="#MJMAIN-AF"></use></g><use transform="scale(0.707)" x="329" xlink:href="#MJMAIN-AF" y="0"></use></g></g></g><g transform="translate(4015,0)"><use xlink:href="#MJSZ1-28"></use><g transform="translate(458,0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.707)" x="1074" xlink:href="#MJMATHI-69" y="-213"></use><use x="1326" xlink:href="#MJMAIN-2212" y="0"></use><g transform="translate(2326,0)"><use x="35" xlink:href="#MJMATHI-52" y="0"></use><g transform="translate(83,220)"><use x="-70" xlink:href="#MJMAIN-AF" y="0"></use><g transform="translate(353.7804709141274,0) scale(0.1038781163434903,1)"><use xlink:href="#MJMAIN-AF"></use></g><use x="329" xlink:href="#MJMAIN-AF" y="0"></use></g></g></g><use x="3698" xlink:href="#MJSZ1-29" y="-1"></use><use transform="scale(0.707)" x="5878" xlink:href="#MJMAIN-32" y="816"></use></g></g><g transform="translate(9293,1960)"><use x="0" xlink:href="#MJSZ4-23A4" y="-1155"></use><use x="0" xlink:href="#MJSZ4-23A6" y="-2777"></use></g></g><use x="17554" xlink:href="#MJMAIN-2F" y="0"></use><use x="18055" xlink:href="#MJMATHI-6E" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>Semi-variance</mtext><mo>=</mo><mrow><mo>[</mo><mrow><mstyle displaystyle="true"><munder><mo>∑</mo><mrow><mi>f</mi><mi>o</mi><mi>r</mi><mi></mi><mi>a</mi><mi>l</mi><mi>l</mi><mi></mi><msub><mi>R</mi><mi>i</mi></msub><mo>&lt;</mo><mover accent="true"><mi>R</mi><mo>¯</mo></mover></mrow></munder><mrow><msup><mrow><mrow><mo>(</mo><mrow><msub><mi>R</mi><mi>i</mi></msub><mo>−</mo><mover accent="true"><mi>R</mi><mo>¯</mo></mover></mrow><mo>)</mo></mrow></mrow><mn>2</mn></msup></mrow></mstyle></mrow><mo>]</mo></mrow><mo>/</mo><mi>n</mi></mrow></semantics></math></span></span><script id="MathJax-Element-1" type="math/mml"><math id="m1">
+            <semantics>
+                <mrow>
+                    <mtext>Semi-variance</mtext>
+                    <mo>=</mo>
+                    <mrow>
+                        <mo>[</mo>
+                        <mrow>
+                            <mstyle displaystyle="true">
+                                <munder>
+                                    <mo>∑</mo>
+                                    <mrow>
+                                        <mi>f</mi>
+                                        <mi>o</mi>
+                                        <mi>r</mi>
+                                        <mi></mi>
+                                        <mi>a</mi>
+                                        <mi>l</mi>
+                                        <mi>l</mi>
+                                        <mi></mi>
+                                        <msub>
+                                            <mi>R</mi>
+                                            <mi>i</mi>
+                                        </msub>
+                                        <mo>&lt;</mo>
+                                        <mover accent="true">
+                                            <mi>R</mi>
+                                            <mo>¯</mo>
+                                        </mover>
+                                    </mrow>
+                                </munder>
+                                <mrow>
+                                    <msup>
+                                        <mrow>
+                                            <mrow>
+                                                <mo>(</mo>
+                                                <mrow>
+                                                    <msub>
+                                                        <mi>R</mi>
+                                                        <mi>i</mi>
+                                                    </msub>
+                                                    <mo>−</mo>
+                                                    <mover accent="true">
+                                                        <mi>R</mi>
+                                                        <mo>¯</mo>
+                                                    </mover>
+                                                </mrow>
+                                                <mo>)</mo>
+                                            </mrow>
+                                        </mrow>
+                                        <mn>2</mn>
+                                    </msup>
+                                </mrow>
+                            </mstyle>
+                        </mrow>
+                        <mo>]</mo>
+                    </mrow>
+                    <mo>/</mo>
+                    <mi>n</mi>
+                </mrow>
+            </semantics>
+        </math></script><span class="cfa-curriculum-display-formula-number">11</span></div>
+<p>ターゲット・セミ分散はセミ分散と同様であるが、平均リターンの代わりに指定された目標リターン (target return) を用いる点が異なる。</p>
+<p>目標リターンがBである場合、ターゲット・セミ分散の式は次の通りである：</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0018-R-s08a-E12"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;semantics&gt;&lt;mrow&gt;&lt;mtext&gt;Target&amp;#xA0;semi-variance&lt;/mtext&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mrow&gt;&lt;mo&gt;[&lt;/mo&gt;&lt;mrow&gt;&lt;mstyle displaystyle="true"&gt;&lt;munder&gt;&lt;mo&gt;&amp;#x2211;&lt;/mo&gt;&lt;mrow&gt;&lt;mi&gt;f&lt;/mi&gt;&lt;mi&gt;o&lt;/mi&gt;&lt;mi&gt;r&lt;/mi&gt;&lt;mi&gt;&lt;/mi&gt;&lt;mi&gt;a&lt;/mi&gt;&lt;mi&gt;l&lt;/mi&gt;&lt;mi&gt;l&lt;/mi&gt;&lt;mi&gt;&lt;/mi&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;lt;&lt;/mo&gt;&lt;mi&gt;B&lt;/mi&gt;&lt;/mrow&gt;&lt;/munder&gt;&lt;mrow&gt;&lt;msup&gt;&lt;mrow&gt;&lt;mrow&gt;&lt;mo&gt;(&lt;/mo&gt;&lt;mrow&gt;&lt;msub&gt;&lt;mi&gt;R&lt;/mi&gt;&lt;mi&gt;i&lt;/mi&gt;&lt;/msub&gt;&lt;mo&gt;&amp;#x2212;&lt;/mo&gt;&lt;mi&gt;B&lt;/mi&gt;&lt;/mrow&gt;&lt;mo&gt;)&lt;/mo&gt;&lt;/mrow&gt;&lt;/mrow&gt;&lt;mn&gt;2&lt;/mn&gt;&lt;/msup&gt;&lt;/mrow&gt;&lt;/mstyle&gt;&lt;/mrow&gt;&lt;mo&gt;]&lt;/mo&gt;&lt;/mrow&gt;&lt;mo&gt;/&lt;/mo&gt;&lt;mi&gt;n&lt;/mi&gt;&lt;/mrow&gt;&lt;/semantics&gt;&lt;/math&gt;' id="MathJax-Element-2-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="7.54ex" role="img" style="vertical-align: -3.338ex;" viewbox="0 -1809.3 21101.5 3246.4" width="49.01ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use xlink:href="#MJMAIN-54"></use><use x="722" xlink:href="#MJMAIN-61" y="0"></use><use x="1223" xlink:href="#MJMAIN-72" y="0"></use><use x="1615" xlink:href="#MJMAIN-67" y="0"></use><use x="2116" xlink:href="#MJMAIN-65" y="0"></use><use x="2560" xlink:href="#MJMAIN-74" y="0"></use><use x="3200" xlink:href="#MJMAIN-73" y="0"></use><use x="3594" xlink:href="#MJMAIN-65" y="0"></use><use x="4039" xlink:href="#MJMAIN-6D" y="0"></use><use x="4872" xlink:href="#MJMAIN-69" y="0"></use><use x="5151" xlink:href="#MJMAIN-2D" y="0"></use><use x="5484" xlink:href="#MJMAIN-76" y="0"></use><use x="6013" xlink:href="#MJMAIN-61" y="0"></use><use x="6513" xlink:href="#MJMAIN-72" y="0"></use><use x="6906" xlink:href="#MJMAIN-69" y="0"></use><use x="7184" xlink:href="#MJMAIN-61" y="0"></use><use x="7685" xlink:href="#MJMAIN-6E" y="0"></use><use x="8241" xlink:href="#MJMAIN-63" y="0"></use><use x="8686" xlink:href="#MJMAIN-65" y="0"></use><use x="9408" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(10464,0)"><use xlink:href="#MJSZ4-5B"></use><g transform="translate(583,0)"><use x="1135" xlink:href="#MJSZ2-2211" y="0"></use><g transform="translate(0,-1117)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-66" y="0"></use><use transform="scale(0.707)" x="550" xlink:href="#MJMATHI-6F" y="0"></use><use transform="scale(0.707)" x="1036" xlink:href="#MJMATHI-72" y="0"></use><use transform="scale(0.707)" x="1487" xlink:href="#MJMATHI-61" y="0"></use><use transform="scale(0.707)" x="2017" xlink:href="#MJMATHI-6C" y="0"></use><use transform="scale(0.707)" x="2315" xlink:href="#MJMATHI-6C" y="0"></use><g transform="translate(1848,0)"><use transform="scale(0.707)" x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.5)" x="1074" xlink:href="#MJMATHI-69" y="-213"></use></g><use transform="scale(0.707)" x="3717" xlink:href="#MJMAIN-3C" y="0"></use><use transform="scale(0.707)" x="4496" xlink:href="#MJMATHI-42" y="0"></use></g><g transform="translate(3883,0)"><use x="0" xlink:href="#MJMAIN-28" y="0"></use><g transform="translate(389,0)"><use x="0" xlink:href="#MJMATHI-52" y="0"></use><use transform="scale(0.707)" x="1074" xlink:href="#MJMATHI-69" y="-213"></use><use x="1326" xlink:href="#MJMAIN-2212" y="0"></use><use x="2326" xlink:href="#MJMATHI-42" y="0"></use></g><use x="3475" xlink:href="#MJMAIN-29" y="0"></use><use transform="scale(0.707)" x="5466" xlink:href="#MJMAIN-32" y="675"></use></g></g><use x="8785" xlink:href="#MJSZ4-5D" y="-1"></use></g><use x="20000" xlink:href="#MJMAIN-2F" y="0"></use><use x="20500" xlink:href="#MJMATHI-6E" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>Target semi-variance</mtext><mo>=</mo><mrow><mo>[</mo><mrow><mstyle displaystyle="true"><munder><mo>∑</mo><mrow><mi>f</mi><mi>o</mi><mi>r</mi><mi></mi><mi>a</mi><mi>l</mi><mi>l</mi><mi></mi><msub><mi>R</mi><mi>i</mi></msub><mo>&lt;</mo><mi>B</mi></mrow></munder><mrow><msup><mrow><mrow><mo>(</mo><mrow><msub><mi>R</mi><mi>i</mi></msub><mo>−</mo><mi>B</mi></mrow><mo>)</mo></mrow></mrow><mn>2</mn></msup></mrow></mstyle></mrow><mo>]</mo></mrow><mo>/</mo><mi>n</mi></mrow></semantics></math></span></span><script id="MathJax-Element-2" type="math/mml"><math id="m2">
+            <semantics>
+                <mrow>
+                    <mtext>Target semi-variance</mtext>
+                    <mo>=</mo>
+                    <mrow>
+                        <mo>[</mo>
+                        <mrow>
+                            <mstyle displaystyle="true">
+                                <munder>
+                                    <mo>∑</mo>
+                                    <mrow>
+                                        <mi>f</mi>
+                                        <mi>o</mi>
+                                        <mi>r</mi>
+                                        <mi></mi>
+                                        <mi>a</mi>
+                                        <mi>l</mi>
+                                        <mi>l</mi>
+                                        <mi></mi>
+                                        <msub>
+                                            <mi>R</mi>
+                                            <mi>i</mi>
+                                        </msub>
+                                        <mo>&lt;</mo>
+                                        <mi>B</mi>
+                                    </mrow>
+                                </munder>
+                                <mrow>
+                                    <msup>
+                                        <mrow>
+                                            <mrow>
+                                                <mo>(</mo>
+                                                <mrow>
+                                                    <msub>
+                                                        <mi>R</mi>
+                                                        <mi>i</mi>
+                                                    </msub>
+                                                    <mo>−</mo>
+                                                    <mi>B</mi>
+                                                </mrow>
+                                                <mo>)</mo>
+                                            </mrow>
+                                        </mrow>
+                                        <mn>2</mn>
+                                    </msup>
+                                </mrow>
+                            </mstyle>
+                        </mrow>
+                        <mo>]</mo>
+                    </mrow>
+                    <mo>/</mo>
+                    <mi>n</mi>
+                </mrow>
+            </semantics>
+        </math></script><span class="cfa-curriculum-display-formula-number">12</span></div>
+<p>目標リターンはゼロ（損失回避を重視する顧客の場合）、一定の正のリターン、無リスク利子率 (risk-free rate)、市場ベンチマークのリターン（指数に対して評価される場合）、あるいは負債を満たすために必要な数理的に決定されたリターン（actuarially determined return）などである。目標リターンが算術平均リターンである場合、ターゲット・セミ分散はセミ分散に等しくなる。</p>
+<p>セミ標準偏差は単にセミ分散の平方根であり、ターゲット・セミ標準偏差はターゲット・セミ分散の平方根である。ターゲット・セミ標準偏差はしばしばダウンサイド偏差 (downside deviation) と呼ばれ、目標リターンは最小許容リターン (minimum acceptable return) と呼ばれる。目標リターンが運用者のベンチマークに等しい場合、ターゲット・セミ標準偏差はトラッキングリスク (tracking risk) をダウンサイドの観点から示す。</p>
+<p>ターゲット・セミ分散およびターゲット・セミ標準偏差の利点は、一部の投資家が目標リターン未満のリターンをリスクとみなす点に対応していることである。一方、セミ分散とその平方根は平均未満のリターンのみをリスクとみなす。</p>
+<p>ダウンサイドリスクの尺度は損失に焦点を当てることで、多くの投資家のリスク概念をより適切に表現するが、いくつかの問題も存在する。</p>
+<p>第一に、分散および標準偏差は投資家にとってより馴染みがあり、その統計的性質も十分に確立されている。これらはベータ (beta)、シャープレシオ (Sharpe ratio)、およびその他の主要なパフォーマンス評価指標の計算に用いられる。</p>
+<p>第二に、ダウンサイドリスクの推定はリターン分布の半分のみの情報を使用し、上昇側のリターンの情報を無視するため、対称的リスク尺度ほど統計的に正確ではない。</p>
+<p>第三に、リターンが平均の周りで対称的に分布している場合、セミ分散およびセミ標準偏差は、分散および標準偏差というより理解されている対称的リスク尺度に対して追加的な情報を提供しない。この場合、セミ分散は分散の半分となり、実質的に同じ指標となる。21 しかし、リターンが対称でない場合、非対称リスクは対称リスクよりも時間的に不安定であるため、ダウンサイドリスクの予測は困難となる。</p>
+<p>第四に、個別資産のリスクからポートフォリオのリスクを測定する場合、ポートフォリオの分散および標準偏差を求める方が、ポートフォリオのダウンサイドリスクを求めるよりも容易である。個別資産のセミ分散やセミ標準偏差をポートフォリオのそれらに集約するための明確な方法は存在しない。22</p>
+<p>最後に、ターゲット・セミ分散およびターゲット・セミ標準偏差は目標リターンの設定を必要とするため、投資家の選好に依存し曖昧である。例えば、ある投資家は無リスク利子率を目標とする一方、別の投資家は一定の5%を設定するかもしれない。</p>
+<figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0018-R-s08a-Ba">
+<figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Knowledge Check: Calculating and Interpreting Semi-variance, Target Semi-variance, Semi-standard Deviation, and Target Semi-standard Deviation</figcaption>
+<section>
+<p>以下は、2010年および2011年の12日間におけるクムホ石油化学 (Kumho Petrochemical) とコリアライン (Korea Line) の株式の日次リターン（韓国ウォン建て）である。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s08a-EXH13">
+<div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 13<span style="display: block;">Two Korean Share Issues</span></div>
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table aria-labelledby="CIPM0018-R-s08a-EXH13-title" class="table" data-active-table="true">
+<caption class="cfa-curriculum-table-caption-hidden" id="CIPM0018-R-s08a-EXH13-title">図表13 (Exhibit 13)：韓国株2銘柄 (Two Korean Share Issues)</caption>
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">クムホ石油化学 (Kumho Petrochemical)</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">コリアライン (Korea Line)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月23日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.01%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月13日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.42%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月24日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.67</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月14日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.11</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月27日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.55</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月15日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.16</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月28日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.22</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月18日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.73</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月29日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.25</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月19日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.26</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月30日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.44</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月20日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.07</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月31日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月21日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.83</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月3日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.22</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月22日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.65</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月4日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.21</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月25日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–13.07</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月5日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.06</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月26日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.67</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月6日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.43</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月27日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.38</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月7日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.46</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2010年10月28日</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.51</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p>出所：データストリーム (Datastream)。</p>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0018-R-s08a-Q1"><fieldset><span class="cfa-curriculum-question-with-label">1. </span>
+<p>クムホ石油化学 (Kumho Petrochemical) とコリアライン (Korea Line) のセミ分散 (semi-variance) を計算しなさい。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel0" style="display: inline-block;">解答を確認 (Check Answer)</h4>
+<div aria-labelledby="dpPanel0" class="dp-panel-content cfa-curriculum-solution" id="dpPanel0Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>まず、クムホ石油化学 (Kumho Petrochemical) の算術平均リターン (arithmetic mean return) を計算する：</p>
+<div class="cfa-curriculum-display-formula-container" id="CIPM0018-R-s08a-E">(1.01% + 0.67% − 0.55% − 1.22% + 2.25% + 0.44% + 0.00% − 0.22% + 5.21% + 3.06% + 10.43 − 0.46%)/12 = 1.7183%</div>
+<p>同様にコリアライン (Korea Line) についても計算し、算術平均リターンは−1.3433%となる。以下の表では、クムホ石油化学について日次リターンが平均を下回る場合にのみ平均からの偏差とその二乗を計算している。日次リターンが平均を上回る場合には偏差は計算されず、その行は空欄となっている。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s08a-Ta">
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table class="table" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">クムホ石油化学 (Kumho Petrochemical)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">平均からの下方乖離 (underperformance from mean)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">下方乖離の二乗 (square of underperformance)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月23日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.01%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.71%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0050%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月24日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.67</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.05</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0110</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月27日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.55</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.27</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0515</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月28日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.94</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0863</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月29日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.25</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月30日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.44</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.28</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0163</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月31日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.72</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0295</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月3日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.94</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0376</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月4日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.21</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月5日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.06</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月6日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.43</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月7日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.46</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.18</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0475</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left; vertical-align: top; padding: 8px;">偏差平方和 (sum of squared deviations)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.2847%</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left; vertical-align: top; padding: 8px;">セミ分散 (semi-variance)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0237%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>偏差平方を合計すると0.2847%となる。これをn = 12で割ることで、セミ分散は0.0237%となる。その後、同様の手順をコリアライン (Korea Line) に対して行う。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s08a-Tb">
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table class="table" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">コリアライン (Korea Line)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">平均からの下方乖離 (underperformance from mean)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">下方乖離の二乗 (square of underperformance)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月13日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.42%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月14日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.11</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月15日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.16</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月18日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.73</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月19日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.26</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月20日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.07</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月21日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.83</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.49%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0024%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月22日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.65</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.31</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0009</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月25日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–13.07</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–11.73</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.3751</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月26日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.67</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月27日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.38</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月28日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.51</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left; vertical-align: top; padding: 8px;">偏差平方和 (sum of squared deviations)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.3784%</td>
+</tr>
+<tr>
+<td colspan="3" style="text-align: left; vertical-align: top; padding: 8px;">セミ分散 (semi-variance)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1149%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>同様の手順を用いることで、コリアライン (Korea Line) のセミ分散は0.1149%となる。</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0018-R-s08a-Q2"><fieldset><span class="cfa-curriculum-question-with-label">2. </span>
+<p>クムホ石油化学 (Kumho Petrochemical) とコリアライン (Korea Line) のセミ標準偏差 (semi-standard deviation) を計算しなさい。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel1" style="display: inline-block;">解答を確認 (Check Answer)</h4>
+<div aria-labelledby="dpPanel1" class="dp-panel-content cfa-curriculum-solution" id="dpPanel1Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>The semi-standard deviation is the square root of the semi-variance, so for Kumho Petrochemical it is <span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msqrt&gt;&lt;mrow&gt;&lt;mn&gt;0.0237&lt;/mn&gt;&lt;mi&gt;%&lt;/mi&gt;&lt;/mrow&gt;&lt;/msqrt&gt;&lt;mo&gt;=&lt;/mo&gt;&lt;mn&gt;1.54&lt;/mn&gt;&lt;mi&gt;%&lt;/mi&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-3-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.849ex" role="img" style="vertical-align: -0.498ex;" viewbox="0 -1011.9 8423.6 1226.6" width="19.564ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMAIN-221A" y="67"></use><rect height="60" stroke="none" width="3628" x="833" y="808"></rect><g transform="translate(833,0)"><use xlink:href="#MJMAIN-30"></use><use x="500" xlink:href="#MJMAIN-2E" y="0"></use><use x="779" xlink:href="#MJMAIN-30" y="0"></use><use x="1279" xlink:href="#MJMAIN-32" y="0"></use><use x="1780" xlink:href="#MJMAIN-33" y="0"></use><use x="2280" xlink:href="#MJMAIN-37" y="0"></use><use x="2781" xlink:href="#MJMAINI-25" y="0"></use></g><use x="4739" xlink:href="#MJMAIN-3D" y="0"></use><g transform="translate(5796,0)"><use xlink:href="#MJMAIN-31"></use><use x="500" xlink:href="#MJMAIN-2E" y="0"></use><use x="779" xlink:href="#MJMAIN-35" y="0"></use><use x="1279" xlink:href="#MJMAIN-34" y="0"></use></g><use x="7576" xlink:href="#MJMAINI-25" y="0"></use></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msqrt><mrow><mn>0.0237</mn><mi>%</mi></mrow></msqrt><mo>=</mo><mn>1.54</mn><mi>%</mi></mrow></math></span></span><script id="MathJax-Element-3" type="math/mml"><math id="m3">
+                                                <mrow>
+                                                    <msqrt>
+                                                        <mrow>
+                                                            <mn>0.0237</mn>
+                                                            <mi>%</mi>
+                                                        </mrow>
+                                                    </msqrt>
+                                                    <mo>=</mo>
+                                                    <mn>1.54</mn>
+                                                    <mi>%</mi>
+                                                </mrow>
+                                            </math></script></span>. The calculated semi-standard deviation for Korea Line is 3.39%.</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0018-R-s08a-Q3"><fieldset><span class="cfa-curriculum-question-with-label">3. </span>
+<p>クムホ石油化学 (Kumho Petrochemical) の分散 (variance) は0.0989%、標準偏差 (standard deviation) は3.14%である。コリアライン (Korea Line) の分散は0.1360%、標準偏差は3.69%である。各株式について、分散および標準偏差を、それぞれのセミ分散およびセミ標準偏差と比較し、その違いについてコメントしなさい。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel2" style="display: inline-block;">解答を確認 (Check Answer)</h4>
+<div aria-labelledby="dpPanel2" class="dp-panel-content cfa-curriculum-solution" id="dpPanel2Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>リターンが対称的である場合、セミ分散 (semi-variance) はヒストグラムの片側のみの変動性を測定するため、分散 (variance) の半分となる。分散とセミ分散はいずれも外れ値リターン (outlier returns) の影響を受ける。しかし、セミ分散は平均未満のリターンのみを考慮するため、リターンが負の歪度 (negatively skewed) を持つ場合には、セミ分散は分散の半分より大きくなる。一方、リターンが正の歪度 (positively skewed) を持つ場合には、変動の大きな部分がヒストグラムの右側にあるため、セミ分散は分散の半分より小さくなる。</p>
+<p>クムホ石油化学 (Kumho Petrochemical) のリターンは、2011年1月6日の10.43%のリターンにより正の歪度を持つ。その結果、セミ分散は0.0237%/0.0989% = 0.24となる。セミ標準偏差 (semi-standard deviation) の1.54%も、標準偏差 (standard deviation) の3.14%より小さい。</p>
+<p>コリアライン (Korea Line) の場合、2010年10月25日の−13.07%のリターンにより負の歪度が生じている。セミ分散は0.1149%/0.1360% = 0.84である。セミ分散は分散の半分より大きいが、これはより大きな偏差を持つ側の分布を測定しているためである。セミ標準偏差の3.39%も、標準偏差の3.69%に近い値である。</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0018-R-s08a-Q4"><fieldset><span class="cfa-curriculum-question-with-label">4. </span>
+<p>クムホ石油化学 (Kumho Petrochemical) とコリアライン (Korea Line) のリスクを比較しなさい。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel3" style="display: inline-block;">解答を確認 (Check Answer)</h4>
+<div aria-labelledby="dpPanel3" class="dp-panel-content cfa-curriculum-solution" id="dpPanel3Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>クムホ石油化学の標準偏差3.14%は、コリアラインの3.69%と類似している。対称的リスク尺度を用いると、これら2銘柄のリスクは同程度であるように見える。</p>
+<p>しかし、クムホ石油化学の分散および標準偏差は正の歪度によって押し上げられている。このような場合、これらの尺度は誤解を招く可能性がある。なぜなら、多くの投資家は正の歪度を好むためである。セミ標準偏差を比較すると、クムホ石油化学は1.54%、コリアラインは3.39%である。セミ標準偏差はコリアラインのより大きなダウンサイドリスクを反映しており、この場合には過去パフォーマンスのより適切な指標である。</p>
+<p>セミ分散およびセミ標準偏差の価値は、クムホ石油化学のダウンサイドリスクが分散や標準偏差が示すほど大きくないことを反映している点にある。ただし、リターンの非対称性は時間を通じて一定ではないため、過去の非対称性が将来にも当てはまるとは限らない点に留意する必要がある。</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0018-R-s08a-Q5"><fieldset><span class="cfa-curriculum-question-with-label">5. </span>
+<p>投資家が日次の目標リターン (target return) を0.17%と指定した場合、各株式のターゲット・セミ分散 (target semi-variance) およびターゲット・セミ標準偏差 (target semi-standard deviation) はいくらか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel4" style="display: inline-block;">解答を確認 (Check Answer)</h4>
+<div aria-labelledby="dpPanel4" class="dp-panel-content cfa-curriculum-solution" id="dpPanel4Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>以下の表では、クムホ石油化学について日次リターンが目標リターンを下回る場合にのみ、目標リターンからの偏差およびその二乗を計算している。日次リターンが目標リターンを上回る場合には偏差は計算されず、その行は空欄となる。</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s08a-Tc">
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table class="table" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">クムホ石油化学 (Kumho Petrochemical)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">目標リターン (target return)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">目標からの下方乖離 (underperformance from target)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">下方乖離の二乗 (square of underperformance)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月23日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.01%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月24日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.67</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月27日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.55</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.72%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0052%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月28日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.39</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0193</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月29日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.25</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月30日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.44</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年12月31日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0003</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月3日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.22</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.39</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0015</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月4日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.21</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月5日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.06</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月6日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.43</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2011年1月7日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.46</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.63</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0040</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td colspan="4" style="text-align: left; vertical-align: top; padding: 8px;">二乗の合計 (sum of squares)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0303%</td>
+</tr>
+<tr>
+<td colspan="4" style="text-align: left; vertical-align: top; padding: 8px;">ターゲット・セミ分散 (target semi-variance)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0025%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>We sum the squared deviations from the target return and obtain 0.0303%. Dividing by <em>n</em> = 12, we obtain the target semi-variance of 0.0025%. The target semi-standard deviation is the square root of the target semi-variance, so for Kumho Petrochemical it is <span class="cfa-curriculum-display-inline-formula"><span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax_SVG" data-mathml='&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;&lt;mrow&gt;&lt;msqrt&gt;&lt;mrow&gt;&lt;mn&gt;0.0025&lt;/mn&gt;&lt;mi&gt;%&lt;/mi&gt;&lt;/mrow&gt;&lt;/msqrt&gt;&lt;/mrow&gt;&lt;/math&gt;' id="MathJax-Element-4-Frame" role="presentation" style="font-size: 100%; display: inline-block; position: relative;" tabindex="0"><svg aria-hidden="true" focusable="false" height="2.849ex" role="img" style="vertical-align: -0.498ex;" viewbox="0 -1011.9 4462 1226.6" width="10.363ex" xmlns:xlink="http://www.w3.org/1999/xlink"><g fill="currentColor" stroke="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><use x="0" xlink:href="#MJMAIN-221A" y="67"></use><rect height="60" stroke="none" width="3628" x="833" y="808"></rect><g transform="translate(833,0)"><use xlink:href="#MJMAIN-30"></use><use x="500" xlink:href="#MJMAIN-2E" y="0"></use><use x="779" xlink:href="#MJMAIN-30" y="0"></use><use x="1279" xlink:href="#MJMAIN-30" y="0"></use><use x="1780" xlink:href="#MJMAIN-32" y="0"></use><use x="2280" xlink:href="#MJMAIN-35" y="0"></use><use x="2781" xlink:href="#MJMAINI-25" y="0"></use></g></g></svg><span class="MJX_Assistive_MathML" role="presentation"><math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msqrt><mrow><mn>0.0025</mn><mi>%</mi></mrow></msqrt></mrow></math></span></span><script id="MathJax-Element-4" type="math/mml"><math id="m4">
+                                                <mrow>
+                                                    <msqrt>
+                                                        <mrow>
+                                                            <mn>0.0025</mn>
+                                                            <mi>%</mi>
+                                                        </mrow>
+                                                    </msqrt>
+                                                </mrow>
+                                            </math></script></span> = 0.50%. The calculations for Korea Line are below.</p>
+<div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s08a-Td">
+<div class="cfa-curriculum-table-container">
+<div class="dp-table-scroll"><table class="table" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">コリアライン (Korea Line)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">目標リターン (target return)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">目標からの下方乖離 (underperformance from target)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">下方乖離の二乗 (square of underperformance)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月13日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.42%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17%</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月14日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.11</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−0.06%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0000%</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月15日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.16</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月18日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.73</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">−0.90</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0081</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月19日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.26</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.43</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0204</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月20日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.07</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0154</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月21日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.83</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–2.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0400</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月22日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.65</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–1.82</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0331</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月25日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–13.07</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–13.24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.7530</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月26日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.67</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月27日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.38</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">–0.55</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.0030</td>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;">2010年10月28日</th>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.51</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.17</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td colspan="4" style="text-align: left; vertical-align: top; padding: 8px;">二乗の合計 (sum of squares)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.8730%</td>
+</tr>
+<tr>
+<td colspan="4" style="text-align: left; vertical-align: top; padding: 8px;">ターゲット・セミ分散 (target semi-variance)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1561%</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<p>偏差平方を合計し、それを12で割ると、ターゲット・セミ分散は0.1561%となる。ターゲット・セミ標準偏差 (target semi-standard deviation) は3.95%となる。</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0018-R-s08a-Q6"><fieldset><span class="cfa-curriculum-question-with-label">6. </span>
+<p>ターゲット・セミ分散およびターゲット・セミ標準偏差を用いて、クムホ石油化学 (Kumho Petrochemical) とコリアライン (Korea Line) の目標リターン未達のリスクを比較しなさい。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel5" style="display: inline-block;">解答を確認 (Check Answer)</h4>
+<div aria-labelledby="dpPanel5" class="dp-panel-content cfa-curriculum-solution" id="dpPanel5Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>クムホ石油化学の目標リターン未達のリスクははるかに低く、ターゲット・セミ分散は0.0025%であるのに対し、コリアラインは0.1561%である。ターゲット・セミ標準偏差は、クムホ石油化学が0.50%であるのに対し、コリアラインは3.95%である。</p>
+<p>コリアラインのアンダーパフォーマンスの別の見方として、12日中8日でリターンが目標を下回ったのに対し、クムホ石油化学は5日間のみであった。この日数の違いも、ターゲット・セミ分散およびターゲット・セミ標準偏差によって得られた結論を裏付けている。</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label dp-qc-built" id="CIPM0018-R-s08a-Q7"><fieldset><span class="cfa-curriculum-question-with-label">7. </span>
+<p>クムホ石油化学のセミ標準偏差とターゲット・セミ標準偏差を比較しなさい。また、コリアラインのセミ標準偏差とターゲット・セミ標準偏差を比較しなさい。それぞれの差異の要因は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer dp-panels-built" href="javascript:void(0)" id="dpPanel6" style="display: inline-block;">解答を確認 (Check Answer)</h4>
+<div aria-labelledby="dpPanel6" class="dp-panel-content cfa-curriculum-solution" id="dpPanel6Content" role="region" style="display: none;" tabindex="0">
+<section>
+<h3 class="cfa-curriculum-solution-title">解答 (Solution)</h3>
+<p>上記より、クムホ石油化学のセミ標準偏差は1.54%であり、ターゲット・セミ標準偏差は0.50%である。セミ標準偏差はクムホ石油化学の算術平均リターン1.7183%からの下方偏差を測定する。一方、ターゲット・セミ標準偏差は目標リターン0.17%からの下方偏差を測定する。目標リターンは平均リターンより低いため、平均リターンを下回るリスクの方が大きい。したがって、ターゲット・セミ標準偏差はセミ標準偏差よりも小さくなる。</p>
+<p>コリアライン (Korea Line) の場合は逆である。目標リターン0.17%は算術平均リターン−1.3433%より大きい。したがって、目標リターンを下回るリスクは平均を下回るリスクよりも大きい。その結果、ターゲット・セミ標準偏差 (target semi-standard deviation) の3.95%は、セミ標準偏差 (semi-standard deviation) の3.39%よりも大きくなる。</p>
+</section>
+</div>
+</div>
+</fieldset></div>
+</div>
+</section>
+</figure>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist"><i aria-hidden="true" class="dp-icon fas fa-clipboard-list" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Reference List</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel7">参考文献 (References)</h3>
+<div aria-labelledby="dpPanel7" class="dp-panel-content" id="dpPanel7Content" role="region" style="display: none;" tabindex="0">
+<ul id="CIPM0018-R-s08a-ref1">
+<li id="CIPM0018-R-s08a-R1list">Josephy, N.H. および Aczel, A.D.（1993）「セミ分散 (semivariance) の統計的に最適な推定量」European Journal of Operational Research, 第67巻, 2267–171頁。</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip1Content" role="tooltip" style="display: none;">
+<p>20 統計的推論 (statistical inference) に使用可能な、セミ分散の不偏かつ一致推定量については Josephy および Aczel（1993）を参照のこと。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip5Content" role="tooltip" style="display: none;">
+<p>21 セミ分散およびセミ標準偏差が分散および標準偏差に対して追加情報を提供しない理由は、リターンの偏差が依然として算術平均に対して測定されるためである。例えば、2つの資産 Good と Bad を考える。Good の平均リターンは10%、Bad は−10%である。両者が平均の周りで同じ対称的なリターン変動を持つ場合、それらの分散および標準偏差は等しくなる。また、ヒストグラムが平均を中心として同一であり、Bad が左にシフトしているだけであるため、セミ分散およびセミ標準偏差も等しくなる。セミ分散およびセミ標準偏差が分散および標準偏差と異なるのは、リターンが歪んでいる場合のみであり、その場合は分布の一方の側の変動が他方より大きくなる。クムホ石油化学 (Kumho Petrochemical) とコリアライン (Korea Line) の例を参照のこと。ただし、ターゲット・セミ分散およびターゲット・セミ標準偏差は、偏差が算術平均ではなく目標リターンに対して測定されるため、Good と Bad で等しくはならない。例えば、目標リターンが5%である場合、Bad は Good よりも目標を大きく下回るため、より高いターゲット・セミ分散およびターゲット・セミ標準偏差となる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip6Content" role="tooltip" style="display: none;">
+<p>22 セミ分散およびセミ標準偏差は、ポートフォリオ最適化 (portfolio optimization) の目的では微分することもできない。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip0Content" role="tooltip" style="display: none;">
+<p>分散に類似した非対称的リスク尺度であり、平均未満の偏差のみを測定するもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip2Content" role="tooltip" style="display: none;">
+<p>セミ分散と同様であるが、平均リターンの代わりに指定された目標リターンを用いるもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip3Content" role="tooltip" style="display: none;">
+<p>セミ分散の平方根。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip4Content" role="tooltip" style="display: none;">
+<p>目標値を下回る偏差に焦点を当てたダウンサイドリスクの尺度。ターゲット・セミディビエーション (target semideviation) とも呼ばれる。</p>
+</div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1368_modules_items_99345_107_Beta.html" >← 前へ</a>
+  <span class="title">1.08 | Measures of Downside Risk</span>
+  <a href="courses_1368_modules_items_99347_109_Drawdown_Measures.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

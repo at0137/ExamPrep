@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.04 | Non-Recurring Items</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2418-R-s04-R-1" title="2.04 | Non-Recurring Items"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：損益計算書の分析(Module 2: Analyzing Income Statements) 2.04｜非継続項目(Non-Recurring Items)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">非継続項目（廃止事業(Discontinued operations)、異常項目(Unusual items)や稀発項目(Infrequent items)を含む）および会計方針変更の財務報告上の取り扱いと分析について説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>企業の損益計算書から、直近年度および前年度の収益を確認できる。今後の見通しとしては、企業は来年度およびその後の年度に何を稼ぐかが問題となる。</p>
+<p>企業の将来の収益を評価するためには、過去年度の収益・費用項目のうち、将来も継続する可能性が高いものと、継続の可能性が低いものを分けることが有効である。過去年度の項目の中には、将来の期間には継続しないと明確に予想され、企業の損益計算書で別途開示されるものがある。IFRSは、基準で明示的に規定されていない情報を開示する際の考慮事項を示している。IFRSおよびUS GAAPの両方で、廃止事業の結果は継続事業から分離して報告することが規定されている。その他、損益計算書で別途報告される可能性がある項目（異常項目、稀発項目、会計変更による影響、営業外収益など）は、アナリストが一定の判断を下す必要がある。</p>
+<section id="CFA2418-R-s04-01-01">
+<h3 class="dp-heading">異常項目(Unusual items)および稀発項目(Infrequent Items)</h3>
+<p>IFRSでは、企業の財務パフォーマンスの理解に重要または関連性のある収益・費用項目は、別途開示することが求められる。異常項目や稀発項目はこれらの基準を満たす可能性が高い。US GAAPでは、2015年12月15日以降に開始する報告期間において、異常または稀発で重要な項目は、継続事業の一部として表示されるが、別途表示される。例えば、工場閉鎖費用や従業員解雇費用などのリストラクチャリング費用は、企業の通常の活動の一部と見なされる。また、資産や事業の一部を帳簿価額より多いまたは少ない金額で売却した際の損益も、損益計算書で別途開示され、通常の事業活動と見なされる。</p>
+<p>これらの項目の異常性や稀発性を強調することは、アナリストがこれらの項目が再発する可能性を判断する際に役立つ。これは、企業の財務パフォーマンスの理解に関連する項目を開示するというIFRSの基準を満たすものである。表8(Exhibit 8)では、ダノン(Danone)の損益計算書に「継続的営業利益(Recurring operating income)」の金額が示され、その後に「その他営業収益(費用)(Other operating income (expense))」が別行で表示され、継続収益の構成要素には含まれていない。表9(Exhibit 9)には、この非継続項目に関するダノンの追加開示の抜粋が示されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s04-EXH-1-8">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 8<span style="display: block;">Danone Income Statement</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">グループ・ダノン(Groupe Danone) 連結損益計算書（百ユーロ単位）[抜粋]</th>
+</tr>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">12月31日に終了する年度(Year Ended 31 December)</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><strong>Sales</strong></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21,944</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24,677</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上原価(Cost of goods sold)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(10,744)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(12,459)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">販売費(Selling expense)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(5,562)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(5,890)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">一般管理費(General and administrative expense)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2,004)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(2,225)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">研究開発費(Research and development expense)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(333)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(342)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他収益(費用)(Other income (expense))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(278)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(219)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">継続的営業利益(Recurring operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>3,022</strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>3,543</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他営業収益(費用)(Other operating income (expense))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(99)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">192</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業利益(Operating income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>2,923</strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>3,734</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">現金同等物および短期投資の利息収益(Interest income on cash equivalents and short-term investments)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">130</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">151</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">支払利息(Interest expense)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(276)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(414)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">正味負債コスト(Cost of net debt)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(146)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(263)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の金融収益(Other financial income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">67</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">137</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の金融費用(Other financial expense)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(214)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(312)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">税引前利益(Income before tax)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>2,630</strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>3,296</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税費用(Income tax expense)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(804)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(842)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">完全子会社からの純利益(Net income from fully consolidated companies)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>1,826</strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>2,454</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">持分法投資利益(Share of profit of associates)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">109</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当期純利益(Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,827</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,563</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">親会社株主に帰属する純利益(Net income – Group share)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>1,720</strong></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>2,453</strong></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非支配株主持分に帰属する純利益(Net income – Non-controlling interests)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">107</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">110</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2418-R-s04-EXH-1-9">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 9<span style="display: block;"> Highlighting Infrequent Nature of Items—Excerpt from Groupe Danone footnotes to its 2017 financial statements </span></h4>
+<p>注6(NOTE 6). グループの通常活動外の事象および取引(Events and Transactions Outside the Group’s Ordinary Activities) [抜粋]</p>
+<div class="cfa-curriculum-blockquote">
+<p>「その他営業収益(費用)」は、フランスCNC(French CNC)の勧告2013-03(Recommendation 2013-03)に基づき、国際会計基準(International Accounting Standards)に従って作成された連結財務諸表の形式に関するもので、ダノン(Danone)の現行活動に固有のものと見なせない重要項目を含む。これには主に、完全子会社の売却に伴うキャピタルゲイン・損失、のれん(Goodwill)の減損損失、戦略的リストラクチャリングや大規模外部成長取引に関連する重要コスト、主要な危機および訴訟に関連する発生または見積コストが含まれる。さらに、改訂IFRS3(Revised IFRS 3)および改訂IAS27(Revised IAS 27)に関連して、ダノンはその他営業収益(費用)に(i) 企業結合に関連する取得費用、(ii) 支配権喪失後の再評価損益、(iii) 取得日以降の企業結合に関連するアーンアウト(Earn-outs)の変動を分類している。</p>
+<p>2017年のその他営業収益(費用)の純額€192百万は、主に以下の項目で構成されている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s04-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">（百万ユーロ）(Euro Millions)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">関連収益（費用）(Related Income (Expense))</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ストーニーフィールド(Stonyfield)売却によるキャピタルゲイン(Capital gain on disposal of Stonyfield)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">628</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">フォンテラ(Fonterra)訴訟におけるシンガポール仲裁裁判所(Singapore arbitration court)の決定に基づく受領補償金(Compensation received following the decision of the Singapore arbitration court in the Fonterra case)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">105</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">地域リスク、主にALMA地域(ALMA region)の特定国におけるもの(Territorial risks, mainly in certain countries in the ALMA region)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(148)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ホワイトウェーブ(WhiteWave)統合に関連する費用(Costs associated with the integration of WhiteWave)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(118)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ウォーターズ(Waters)および専門栄養(Specialized Nutrition)報告対象企業における複数の無形資産の減損(Impairment of several intangible assets in Waters and Specialized Nutrition Reporting entities)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">(115)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>表の残り部分は省略(Remainder of table omitted)</p>
+</div>
+</div>
+</div>
+<p>表9(Exhibit 9)では、ダノン(Danone)は、企業の現行活動に「固有(inherent)」でない「例外的(exceptional)」項目と見なされる項目の詳細を提供している。例外的項目には、資産売却による損益、訴訟による受領、買収統合費用、無形資産の減損などが含まれる。一般に、将来の事業を予測する際、アナリストは報告された項目が再発する可能性や将来の収益への影響を評価する。すべての異常項目を単純に無視することは推奨されない。</p>
+</section>
+<section id="CFA2418-R-s04-01-02">
+<h3 class="dp-heading">廃止事業(Discontinued Operations)</h3>
+<p>企業が構成事業の一部を売却する、または売却計画を策定し、その事業に今後関与しない場合、損益計算書はIFRSおよびUS GAAPの両方で、この売却の影響を「廃止(discontinued)事業」として別途報告する。財務基準は、別途報告のためのさまざまな基準を提供しており、一般に廃止事業は物理的・運営上分離可能である必要がある。</p>
+<p>廃止事業の結果は、損益計算書の下部に純額(Net basis)で表示され、1株当たりでも示される。損益計算書の残りの部分（売上高、売上原価、残存事業のEPSなど）は継続事業の結果であり、そのように開示される。廃止事業に関連する資産・負債は集計され、売却予定資産として貸借対照表に認識される。この表示により、アナリストは継続事業と廃止事業を明確に評価できる。</p>
+<p>廃止事業は売却完了後、企業に収益やキャッシュフローをもたらさないため、アナリストは特定日以降の企業の将来財務パフォーマンス予測において廃止事業を除外することができる。</p>
+</section>
+<section id="CFA2418-R-s04-01-03">
+<h3 class="dp-heading">会計方針の変更(Changes in Accounting Policy)</h3>
+<p>標準設定者(Standard setters)が新しい基準を発行し、企業に会計方針の変更を求めることがある。基準に応じて、企業は将来の期間に適用する順次適用(prospectively)や、過去の財務諸表を遡及的に(restrospectively)修正することが許される場合がある。他の場合、在庫評価方法の変更など、会計方針の変更は、企業業績をより正確に反映するために経営陣が行うことがある。会計方針の変更は、原則として遡及適用により報告される。</p>
+<p>遡及適用(retrospective application)とは、財務報告書に示されるすべての会計年度の財務諸表が、採用された新会計原則を期間全体にわたり使用したかのように表示されることを意味する。財務諸表の脚注には、変更内容とその正当性が説明される。原則変更は遡及適用されるため、財務報告内の財務諸表は比較可能である。</p>
+<p>例7(Example 7)では、マイクロソフト(Microsoft Corporation)の2018年6月30日終了会計年度のForm 10-Kから、収益認識基準(new revenue recognition standard)に起因する会計原則の変更を説明した抜粋を示す。マイクロソフトは、必要な採用日より早く、2017年7月1日に新基準を採用することを選択した。また、「完全遡及法(full retrospective method)」を使用し、過去期間の結果を修正することも選択した。損益計算書には、2016年および2017年の両年度が、新基準が両年度で適用されたかのように表示される。脚注では、新基準採用の影響が開示されている。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2418-R-s04-EXM-1-7">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 7<span style="display: block;">Microsoft Corporation—Excerpt from Footnotes to the Financial Statements</span></h4>
+<section>
+<p>新収益認識基準([new revenue recognition] standard)の最も重要な影響は、ソフトウェアライセンス収益の会計処理に関連する。具体的には、Windows 10について、収益は関連機器の耐用期間にわたって均等配分せず、主に請求・納品時に認識する。複数年契約の商用ソフトウェアサブスクリプションでは、ライセンス収益は契約締結時に認識する。商用ライセンス契約の複雑性により、実際の収益認識は契約条件に依存し、請求時認識と異なる場合もある。ハードウェア、クラウド製品(Office 365等)、LinkedIn、専門サービスの収益認識は実質的に変更なしである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2418-R-s04-EXH-1-10">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 10<span style="display: block;">Microsoft Impacts to Previously Reported Results</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">（米ドル百万、1株当たり金額を除く）(US dollar millions, except per share amounts)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">以前の報告値(As Previously Reported)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">新収益基準調整(New Revenue Standard Adjustment)</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">修正後(As Restated)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">損益計算書(Income Statements)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2017年6月30日に終了する年度(Year Ended 30 June 2017)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高(Revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">89,950</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6,621</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">96,571</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税引当金(Provision for income taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,945</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,467</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,412</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純利益(Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">21,204</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4,285</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25,489</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">希薄化後1株当たり利益(Diluted earnings per share)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.71</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.54</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.25</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2016年6月30日に終了する年度(Year Ended 30 June 2016)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高(Revenue)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">85,320</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,834</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">91,154</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">法人税引当金(Provision for income taxes)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,953</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2,147</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5,100</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純利益(Net income)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,798</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3,741</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">20,539</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">希薄化後1株当たり利益(Diluted earnings per share)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.46</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.56</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>表10(Exhibit 10)に基づき、新収益認識基準(new revenue recognition standard)の下でマイクロソフト(Microsoft)の業績はより良く見えるか、それとも悪く見えるかを説明せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">回答を確認(Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答(Solution)</h4>
+<p>新収益認識基準の下では、マイクロソフトの業績はより良く見える。新基準の下では収益および利益が高く、純利益率(Net profit margin)も高い。2017年度の純利益率は、新基準で26.4％(= 25,489 ÷ 96,571)、旧基準で23.6％(= 21,204 ÷ 89,950)である。報告収益は新基準の下でより早く成長しており、新基準では収益成長率は5.9％[= (96,571 ÷ 91,154) – 1]、旧基準では5.4％[= (89,950 ÷ 85,320) – 1]である。</p>
+<p>マイクロソフトによる新収益認識の影響の提示により、アナリストは会計基準変更の影響を特定できる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<p>新収益認識基準では、「修正遡及法(modified retrospective)」の採用オプションも提供される。修正遡及法では、企業は過去に報告した財務諸表を修正する必要はなく、代わりに新基準の累積影響を考慮して期首繰越利益(および他の適用勘定)を調整する。</p>
+<p>会計方針の変更(例：従業員株式オプション費用の費用計上の可否)とは対照的に、企業は会計見積り(例：減価償却資産の耐用年数)を変更する場合がある。会計見積りの変更は順次適用(prospectively)され、変更が生じた期間および将来期間に影響する。過去の財務諸表は修正されず、損益計算書の表面には調整は示されない。重要な変更は脚注で開示される。表11(Exhibit 11)には、米国のバイオテクノロジー企業Catalent Inc.(Catalent Inc.)の年次Form 10-Kから、会計見積りの変更を示す抜粋が示されている。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2418-R-s04-EXH-1-11">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 11<span style="display: block;"> Change in Accounting Estimate—Excerpt from Catalent Form 10-K </span></h4>
+<p>Catalent Inc.は、確定給付年金プラン(defined benefit pension plans)に関連する年間費用の計算方法の変更を開示している。従来の単一加重平均割引率(weighted-average discount rate)ではなく、各予想キャッシュフローに適用されるスポットレート(spot rates)を使用する。</p>
+<section id="CFA2418-R-s04-01-03-01">
+<h5 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h1">Post-Retirement and Pension Plans</h5>
+<p>関連給付債務(benefit obligations)の測定および毎年計上される純年次給付費用(net periodic benefit costs)は、アクチュアリー計算に基づき、割引率など特定の前提に関する経営判断が必要である。</p>
+<p>2016年6月30日以降、サービスおよび利息部分の純年次給付費用の推定方法が変更され、より正確に測定する方法が採用された。従来、単一加重平均割引率に基づき計算していたが、今後は各キャッシュフローをスポットレートで割引する方法を採用する。これは会計原則の変更に伴う会計見積りの変更として順次適用される。</p>
+</section>
+</div>
+<p>もう一つの可能な調整は、過去期間の誤謬訂正(e.g., prior period error)である。これは当期損益計算書を単に調整することで対応できない。過去期間の誤謬は、当期財務諸表に示す過去期間の財務諸表(貸借対照表、株主持分計算書、キャッシュフロー計算書を含む)を修正して処理する。誤謬に関する開示も必要であり、企業の会計システムや内部統制の弱点を示す可能性があるため注意して確認する必要がある。</p>
+</section>
+<section id="CFA2418-R-s04-01-04">
+<h3 class="dp-heading">適用範囲(Scope)および為替レート(Exchange Rates)の変動</h3>
+<p>企業が他社の支配権を取得した場合、決算日を基準に連結財務諸表を作成する。対象会社の規模によっては、買収前後の企業の財務結果や財務状況の比較可能性に大きく影響する。また、多国籍企業では為替レート変動も損益計算書に影響する(例：機能通貨(functional currency)が報告通貨に対して強化されると収益が増加し、低下すると収益が減少する)。残念ながら、会計基準では適用範囲や為替変動の影響を個別項目や財務諸表に開示することを要求していないが、多くの企業は管理報告などで有用な概要情報(収益やEPS成長率から適用範囲および為替変動を除外)を開示している。</p>
+<p>適用範囲や為替変動の財務諸表への影響は、カリキュラムの後半で詳細に説明される。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2418-R-s04-FN-1-1Content">
+<p>IAS第8号(IAS No. 8)、会計方針、会計見積りの変更および誤謬、並びにFASB ASC Topic 250 [Accounting Changes and Error Corrections].</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143493_203_Expense_Recognition.html" >← 前へ</a>
+  <span class="title">2.04 | Non-Recurring Items</span>
+  <a href="courses_1867_modules_items_143498_205_Earnings_per_Share.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

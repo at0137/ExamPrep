@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>12.06 | The Forecast Horizon and Long-Term Forecasting</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1434-R-s06-R-1" title="12.06 | The Forecast Horizon and Long-Term Forecasting">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール12：財務諸表モデリング入門（Introduction to Financial Statement Modeling）12.06｜予測期間と長期予測（The Forecast Horizon and Long-Term Forecasting）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">明示的な予測期間の選択に関する考慮事項および短期予測期間を超えた予測を作成する際のアナリストの選択について説明せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>予測期間の選択は、証券が検討される投資戦略、業界の循環性（cyclicality）、企業固有の要因、およびアナリストの雇用主の方針など、いくつかの要因に影響される可能性がある。多くのプロフェッショナルに運用される投資戦略では、投資期間または平均保有期間が投資目的として明示されており、この期間は理想的にはポートフォリオの年間平均回転率と対応するべきである。例えば、3年から5年の投資期間は、年間平均ポートフォリオ回転率が20％から33％であることを意味する（平均保有期間は1/ポートフォリオ回転率で計算される）。業界の循環性もアナリストの期間選択に影響を与える可能性があり、予測期間は事業が期待される中間サイクル水準の売上および収益性に到達するのに十分な長さであるべきである。循環性と同様に、最近の買収や事業再編などの企業固有の要因も、これらの活動の期待される効果が財務諸表に反映されるのに十分な時間を確保するため、予測期間の選択に影響を与える可能性がある。他の場合には、アナリストの選択の余地がなく、雇用主がほぼ固定的なパラメータを指定している場合もある。これまでの議論の多くは、明示的な短期予測期間における損益計算書（income statement）、貸借対照表（balance sheet）、キャッシュフロー計算書（cash flow）の予測方法に焦点を当ててきた。時間軸を延長した場合でも基本原則は同じであるが、長期予測を作成する際には特有の考慮事項や選択肢が存在する。</p>
+<p>長期予測は、特に一時的な要因が存在する場合、短期予測よりも企業の正規化利益（normalized earnings）をより適切に表すことが多い。正規化利益とは、収益性に影響を与える異常または一時的な要因（プラスまたはマイナス）を除いた場合の、中間サイクルにおける期待利益水準である。例えば、ある時点において、企業の収益性は景気循環の段階、最近のM&amp;A活動、事業再編など、さまざまな一時的要因の影響を受ける可能性がある。同様に、正規化フリーキャッシュフロー（normalized free cash flow）は、これらの異常項目を調整した営業キャッシュフローから、継続的な設備投資（capital expenditures）を控除した中間サイクル水準のキャッシュフローとして定義できる。予測期間を延長することで、アナリストはこれらの一時的要因を調整し、企業が通常の年に稼得すると見込まれる利益を推定できる。本節では、長期予測の2つの側面、すなわち売上予測とターミナルバリュー（terminal value）について検討する。</p>
+<p>多くの損益計算書予測と同様に、長期予測は売上予測から始まり、残りの多くの項目は売上水準またはその変化から導出される。売上予測手法については前述した。</p>
+<section id="CFA1434-R-s06-01-01">
+<h3 class="dp-heading">ケーススタディ：正規化売上の推定（Case Study: Estimating Normalized Revenue）</h3>
+<p><a aria-label="View Exhibit 33" class="internal" href="#CFA1434-R-s06-EXH33" role="button">Exhibit 33</a> contains 10 years of historical revenue data and four years of estimated normalized data for Continental AG, a global automotive supplier. The accompanying bar chart in <a aria-label="View Exhibit 34" class="internal" href="#CFA1434-R-s06-EXH34" role="button">Exhibit 34</a> graphically depicts the data and includes a trend line based on a linear regression of the data. The numerical values for each point along the trend line can be found by using the TREND formula in Microsoft Excel. The TREND formula uses observations on the dependent variable (in this case revenue) and observations on the explanatory (time) variable to perform a linear regression by using least squares criterion to find the best fit. After computing the best fit regression model, the TREND formula returns predicted values associated with new points in time. The worksheet for <a aria-label="View Exhibit 33" class="internal" href="#CFA1434-R-s06-EXH33" role="button">Exhibit 33</a> and <a aria-label="View Exhibit 34" class="internal" href="#CFA1434-R-s06-EXH34" role="button">Exhibit 34</a> in <a class="instructure_file_link instructure_scribd_file inline_disabled" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1802/files/382204" data-api-returntype="File" data-canvas-previewable="true" href="https://learn.cfainstitute.org/courses/1802/files/382204?wrap=1" id="382204" target="_blank" title="Link">the downloadable Microsoft Excel workbook</a> demonstrates the calculations used in the exhibits.</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1434-R-s06-EXH33">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 33<span style="display: block;">Historical and Estimated Revenue Data for Continental AG, 2011–2024E (euro billions) </span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2011</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2012</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2013</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2014</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2018</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2019</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2020</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2021</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2022</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2023</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2024</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">売上高（Revenue）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">30.5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">32.7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">33.3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">34.5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">39.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">40.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">44.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">44.4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">44.5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">37.7</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">正規化売上（Normalized revenue）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">31.8</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">33.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">34.6</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">36.0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">37.4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">38.9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">40.3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">41.7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">43.1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">44.5</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">45.9</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">47.3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">48.7</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">50.1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">トレンドに対する上振れ／下振れ（Percent above/below trend）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–4.1%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–1.4%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–3.7%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–4.2%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.4%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9.3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">–6.6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">3.3%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−15.2％</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-exhibit-figure" id="CFA1434-R-s06-EXH34">
+<h4 class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 34<span style="display: block;">Historical and Estimated Revenue for Continental AG, 2011–2024E</span></h4>
+<div class="cfa-curriculum-graphic"><img alt="A bar graph. Years from 2009 to 2022 on x-axis and revenue in Euro billions from 0 to 60 on y-axis. A rising line from 23 in 2009 to 55 in 2022. Lowest bar at 20 in 2009 and highest bar at 45 in 2018." data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1867/files/459420" data-api-returntype="File" id="CFA1434-R-s06-EXH34" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/></div>
+</div>
+<p>前述の「GDP成長に対する成長（growth relative to GDP growth）」および「市場成長と市場シェア（market growth and market share）」の手法は、長期予測の作成にも適用できる。売上予測が確立された後は、前述のコスト予測手法を用いて損益計算書、貸借対照表、キャッシュフロー計算書を完成させることができる。</p>
+<p>アナリストがDCFモデル（discounted cash flow model）などの評価モデルを構築する場合、明示的予測期間後の継続企業価値（going-concern value）を捉えるためにターミナルバリューの推定が必要となる。長期予測に基づいてターミナルバリューを算出する際には、いくつかの重要な点を考慮する必要がある。</p>
+<p>第一に、ターミナル年のフリーキャッシュフローを長期予測に組み込む前に正規化すべきかどうかを検討する必要がある。例えば、明示的に予測されたターミナル年のフリーキャッシュフローが「低い」場合（景気循環や設備投資の影響など）、その水準を正規化する調整が必要となる可能性がある。第二に、将来の長期成長率が過去の成長率とどのように異なるかを検討する必要がある。例えば、成熟企業であっても製品革新や市場拡大（例：Apple）により長期成長率を加速できる場合がある一方、技術変化により予想外の事業縮小を経験する可能性もある（例：Eastman Kodak Company）。</p>
+<p>アナリストにとって最大の課題の一つは、将来が過去と大きく異なる転換点（inflection points）を予測することである。多くのDCFモデルは永久成長モデル（perpetuity）に依存しており、これは明示的予測期間の最終年のキャッシュフローが一定率で永続的に成長すると仮定する。この永久成長部分は企業価値の大部分を占めることが多いため、使用するキャッシュフローが「正規化」または「中間サイクル」水準を代表していることが極めて重要である。循環的な企業を分析する場合、好況期の数値を基にすると評価が過大となり、不況期の数値を基にすると過小評価となる可能性がある。</p>
+<p>もう一つの重要な考慮事項は経済的ショック（economic disruption）である。経済は時として、2008年の世界金融危機（global financial crisis）やCOVID-19パンデミックのように、多くの企業に影響を与える突発的かつ前例のない変化を経験する。健全な戦略と堅実な経営を持つ企業であっても、特に財務レバレッジが高い場合には、このようなショックによって大きく影響を受ける可能性がある。</p>
+<p>規制（regulation）と技術（technology）も転換点の要因となり得るため、アナリストはこれらを注意深く監視する必要がある。政府の政策は、一部の企業に対して極端かつ予測困難な影響を与えることがある。技術革新は、急成長していた企業を数か月で時代遅れにする可能性がある。規制と技術の影響は業界によって異なる。公益事業は厳しい規制に直面するが技術変化は遅い場合が多い。一方、半導体メーカーは技術変化への対応が不可欠であるが、規制は比較的少ない。製薬企業は規制と技術の双方に大きく影響を受ける。</p>
+<p>最後に、長期成長率は永久成長計算における重要な入力である。一部の企業や業界は長期間にわたり経済全体よりも速く成長し、経済全体に占める割合を拡大する可能性がある（例：Tencent、Amazon、Google）。一方、印刷メディアのような業界は、経済全体よりも遅い成長または縮小を経験する可能性がある。非現実的な長期成長率を用いると、評価は大きく誤る可能性がある。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1434-R-s06-EXM10">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 10<span style="display: block;">Important Considerations When Making Assumptions</span></h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1434-R-s06-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>Turkish Airlines (THYAO.IS) operates in the highly cyclical global airline industry. Operating margins for 2011–2019 are shown in the following table and in the <a aria-label="View Example 10" class="internal" href="#CFA1434-R-s06-EXM10" role="button">Example 10</a> worksheet in <a class="instructure_file_link instructure_scribd_file inline_disabled" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1802/files/382204" data-api-returntype="File" data-canvas-previewable="true" href="https://learn.cfainstitute.org/courses/1802/files/382204?wrap=1" id="382204" target="_blank" title="Link">the downloadable Microsoft Excel workbook</a>.</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1434-R-s06-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2011</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2012</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2013</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2014</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2015</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2016</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2017</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2018</strong></th>
+<th style="text-align: center; vertical-align: top; padding: 8px;"><strong>2019</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">営業利益率（Operating margin）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.0%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10.8%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.5%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5.6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">8.6%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">−2.9%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9.0%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9.9%</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7.9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>表に示された情報のみを基にすると、トルコ航空（Turkish Airlines）の合理的な内在価値（intrinsic value）を算出するための永久成長計算において、どの営業利益率を用いるのが最も適切か。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 6.0％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。航空業界は循環的であるため、「中間サイクル」または「正規化」された営業利益率を用いる必要がある。9年間の平均営業利益率は6.3％であった。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 9.0％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。航空業界は循環的であるため、「中間サイクル」または「正規化」された営業利益率を用いる必要がある。9年間の平均営業利益率は6.3％であった。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 9.9％</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Aが正しい。航空業界は循環的であるため、「中間サイクル」または「正規化」された営業利益率を用いる必要がある。9年間の平均営業利益率は6.3％であった。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<section>
+<p>次の各企業について、見通しに変化をもたらす可能性が最も低いものを選択肢から示せ。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1434-R-s06-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>ABC Diesel（仮想企業）、ディーゼルトラック製造業者</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 消費者が電動エンジン搭載トラックへと移行し始めており、ディーゼルトラックにおけるABCの従来の強みが脅かされている。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。環境規制の強化は重要ではあるが、これは過去と一貫しており、転換点を示すものではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. ABC Dieselは電動エンジンの研究開発を行うElectrico（仮想企業）と提携を結んだ。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。環境規制の強化は重要ではあるが、これは過去と一貫しており、転換点を示すものではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 環境規制は多くの地域で強化されており、過去の傾向と一致して、今後数年間もエンジンの低公害化の必要性は続くと予想される。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。環境規制の強化は重要ではあるが、これは過去と一貫しており、転換点を示すものではない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1434-R-s06-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>Abbott Laboratories（医療機器を含むヘルスケア製品の多角的メーカー）</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 経営陣は資本配分（capital deployment）に関する従来からの方針を改めて表明している。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。経営陣は過去からの資本配分アプローチを維持しており、これは転換点を示すものではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 競合企業が、重要なアボット（Abbott）の製品と競合する医療機器候補について有望な有効性データを示した。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。経営陣は過去からの資本配分アプローチを維持しており、これは転換点を示すものではない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 安全性への懸念の高まりにより、医療機器メーカーが新製品の規制承認（regulatory approval）を取得することがより困難になっている。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Aが正しい。経営陣は過去からの資本配分アプローチを維持しており、これは転換点を示すものではない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1434-R-s06-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>Grupo Aeroportuario del Sureste（メキシコ南東部、特に観光客の多い地域で9つの空港を運営する企業）</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 世界的な経済混乱により、国際旅行が急激に減少している。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。技術革新は航空会社にとっては有益であるが、旅客数に大きな影響を与えないため、空港がその恩恵を共有する可能性は低い。一方で、AおよびBはいずれもメキシコの空港の長期的な収益力に重大な影響を与える可能性がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 規制当局が、Grupo Aeroportuario del Suresteのサービス地域内に競合による新空港の建設を許可する見込みである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。技術革新は航空会社にとっては有益であるが、旅客数に大きな影響を与えないため、空港がその恩恵を共有する可能性は低い。一方で、AおよびBはいずれもメキシコの空港の長期的な収益力に重大な影響を与える可能性がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 技術革新により航空会社は燃料費を5％節約できるようになるが、旅客数に意味のある変化はもたらさないと予想される。過去の類似の事例では航空会社は恩恵を受けたが、旅客1人当たりの価格が規制されている空港は恩恵を受けなかった。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。技術革新は航空会社にとっては有益であるが、旅客数に大きな影響を与えないため、空港がその恩恵を共有する可能性は低い。一方で、AおよびBはいずれもメキシコの空港の長期的な収益力に重大な影響を与える可能性がある。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA1434-R-s06-Q5"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>LinkedIn（専門職向けオンラインソーシャルネットワークを運営し、Microsoft Corporationの一部。投資ニーズが限定的で無借金）</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 別のオンラインソーシャルネットワークであるFacebookが、プロフェッショナル分野でのサービス強化計画を発表した。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。LinkedInは無借金であるため、金利上昇が企業の見通しに変化をもたらす可能性は低い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 規制当局がLinkedInのプライバシー慣行に関する調査を発表し、サービスに大きな変更が生じる可能性がある。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。LinkedInは無借金であるため、金利上昇が企業の見通しに変化をもたらす可能性は低い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 米国連邦準備制度（US Federal Reserve）が金利を引き上げた。借入コストは上昇するが、この利上げは経済に悪影響を与えないと予想されている。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答</h4>
+<p>Cが正しい。LinkedInは無借金であるため、金利上昇が企業の見通しに変化をもたらす可能性は低い。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="NormalizedEarningsContent">
+<p>企業の収益性に影響を与える異常または一時的な要因（プラス・マイナスのいずれも）を除いた場合における、中期的な循環局面で期待される利益水準。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143823_1205_Modeling_Inflation_and_Deflation.html" >← 前へ</a>
+  <span class="title">12.06 | The Forecast Horizon and Long-Term Forecasting</span>
+  <a href="courses_1867_modules_items_143830_Glossary_Introduction_to_Financial_Statement_Modeling.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

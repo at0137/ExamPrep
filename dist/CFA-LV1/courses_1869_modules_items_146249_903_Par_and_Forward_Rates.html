@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>9.03 | Par and Forward Rates</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2439-R-s03-R-1" title="9.03 | Par and Forward Rates"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール9：金利の期間構造（The Term Structure of Interest Rates）：スポットカーブ（spot）、パーカーブ（par）、フォワードカーブ（forward） 9.03｜パーレート（Par）およびフォワードレート（Forward Rates）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">パーレート（par rates）およびフォワードレート（forward rates）を定義し、スポットレート（spot rates）からパーレートやフォワードレートを計算し、フォワードレートからスポットレートを求め、さらにフォワードレートを用いた債券価格を計算できるようにする。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<section id="CFA2439-R-s03-01-01">
+<h3 class="dp-heading">スポットレートからパーレート（Par Rates from Spot Rates）</h3>
+<p>スポットレートの重要な用途の一つはパーレートを求めることである。パーレート（par rate）とは、債券のキャッシュフローの現在価値が額面（par, 100% of face value）と等しくなる満期利回り（yield-to-maturity）である。異なる満期を持つ仮想政府債のパーレートは、実際の割引またはプレミアムで取引される債券に関連する税制、取引、およびその他の潜在的な歪みを制御できるため、期間構造分析（term structure analysis）でよく使用される。例えば、米国財務省（US Department of the Treasury）が毎日公表する有名な米国債利回り曲線（US Treasury yield curve）はパーレートで構成されている。ただし、前のレッスンで紹介した最も最近発行された現行国債（on-the-run government securities）は、実際の債券であり、その満期利回りはパーレートに近いが完全には一致しない。</p>
+<p>クーポン支払日において、次の方程式を用いて、スポットレート</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E2"><math> <semantics> <mrow> <mn>100</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>z</mi> <mn>1</mn> </msub> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>z</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mo>⋯</mo> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>z</mi> <mi>N</mi> </msub> </mrow> </mfenced> </mrow> <mi>N</mi> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math> <span class="cfa-curriculum-display-formula-number">2</span></div>
+<p>この方程式は式1と非常に似ており、ただしPV = FV = 100である。債券がパーで取引されるためには、クーポンレートと満期利回りが等しくなければならないことを思い出す。したがってPMTを解くことで、債券がパーで取引されるための満期利回りも求めることができる。この単一のレートを100で割ることで、期間ごとのパーレート（par rate per period）が得られる。</p>
+<p>例として、スポットレートからパーレートを計算する。政府債の現在の1年、2年、3年、4年のスポットレートがそれぞれ5.263%、5.616%、6.359%、7.008%であるとする。これらは有効年率（effective annual rates）である。</p>
+<p>1年パーレートは5.263%である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E"><math> <semantics> <mrow> <mn>100</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.05263</mn> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mtext>; </mtext> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>=</mo> <mn>5.263.</mn> </mrow> </semantics> </math></div>
+<p>2年パーレートは5.606%である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___1"><math> <semantics> <mrow> <mn>100</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.05263</mn> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.05616</mn> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mtext>; </mtext> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>=</mo> <mn>5.606.</mn> </mrow> </semantics> </math></div>
+<p>3年および4年パーレートはそれぞれ6.306%および6.899%である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___2"><math> <semantics> <mrow> <mn>100</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.05263</mn> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.05616</mn> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.06359</mn> </mrow> </mfenced> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mtext>; </mtext> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>=</mo> <mn>6.306.</mn> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___3"><math> <semantics> <mrow> <mn>100</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.05263</mn> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.05616</mn> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.06359</mn> </mrow> </mfenced> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.07008</mn> </mrow> </mfenced> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mtext>; </mtext> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>=</mo> <mn>6.899.</mn> </mrow> </semantics> </math></div>
+<p>価格計算式を用いることで、これらがパーレートであることを確認できる。パーレートをクーポンおよび満期利回りとして使用すると、2年債の価格は100となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___4">5.606/(1.05606)<sup>1</sup> + 105.606/(1.05606)<sup>2</sup> = 100.</div>
+<p>同様に、4年債の価格も100となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___5">6.899/(1.06899)<sup>1</sup> + 6.899/(1.06899)<sup>2</sup> + 6.899/(1.06899)<sup>3</sup> + 106.899/(1.06899)<sup>4</sup> = 100.</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2439-R-s03-EXM2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 2<span style="display: block;">Bond Prices and Yields-to-Maturity Based on Par Rates</span></h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>債券のパーレートは、希望するパーレートの満期までのスポットレートのセットから計算できる。図表1のスポットレートデータを用いて、3年カナダ国債のパーレートを計算せよ。この例（および以降の例）では、年次支払いと年次複利を仮定する。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>式2を用いてPMTを解く：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___6"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mn>100</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>z</mi> <mn>1</mn> </msub> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>z</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mo>⋯</mo> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <msub> <mi>z</mi> <mi>N</mi> </msub> </mrow> </mfenced> </mrow> <mi>N</mi> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> <mtr> <mtd> <mrow></mrow> </mtd> </mtr> <mtr> <mtd> <mn>100</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.003117</mn> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.00568</mn> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.007977</mn> </mrow> </mfenced> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>PMTを因数分解して解く：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___7"><math> <semantics> <mrow> <mn>100</mn> <mo>=</mo> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>×</mo> <mo stretchy="false">(</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.003117</mn> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.00568</mn> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.007977</mn> </mrow> </mfenced> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo stretchy="false">)</mo> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1</mn> <mo>+</mo> <mn>0.007977</mn> </mrow> </mfenced> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___8"><em>PMT </em>= 0.7952.</div>
+<p>クーポン支払を期間ごとのパーレートに変換するため、100で割る（すなわち0.7952/100）。したがって、パーレートは0.7952%となる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA2439-R-s03-01-02">
+<h3 class="dp-heading">スポットレートからフォワードレート（Forward Rates from Spot Rates）</h3>
+<p>スポットレートは、インプライド・フォワードレート（implied forward rates, forward yields）を計算するためにも用いられる。これは損益分岐の再投資レート（breakeven reinvestment rates）であり、短期ゼロクーポン債への投資リターンと長期ゼロクーポン債への投資リターンを結びつける。</p>
+<p>例えば、3年および4年ゼロクーポン債の満期利回りがそれぞれ3.65%および4.18%であるとする。アナリストは、3年よりも4年間投資することで追加的に得られるリターン（すなわち増分1年）を知りたいと考える。この場合、これは3年後の1年フォワード利回り（implied one-year forward yield three years into the future）となる。図表4に示されている。</p>
+<div class="cfa-curriculum-exhibit-figure" id="CFA2439-R-s03-EXH4">
+<h4 class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 4<span style="display: block;">The One-Year Implied Rate, Three Years from Today</span></h4>
+<div class="cfa-curriculum-graphic"><img alt="Time from t = 0, to t = 3 then t = 4. At 3-year zero, Z sub A = 3.65%. Implied forward rate = 3y1y. t = 0,  At 4-year zero. Z sub B = 4.18%." data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1869/files/461546" data-api-returntype="File" id="CFA2439-R-s03-EXH4" loading="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABEEAAAI2CAYAAAC/lpaXAAAACXBIWXMAAC4jAAAuIwF4pT92AAAgAElEQVR4nOzdv28cWbo39nMuBoazHTqRAQcz5v4BuwYn1xiS4isHJOzA2DFgUKH3jaRAwJ0FFIiR5wY2IMKAZzObTOaNReGdCZyJ8GzmRPQos5LhLODgBgbKKN1TuoeHp7qqf5Ds7vp8gJ4Rm9Vdv9hs1ref85zYNE0AAAAA2Hb/4AwDAAAAUyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQpA7FGNsFrg97bY4e+zTddw/AAAAWCdCEAAAAGASPnOa79Sjysr3QwiH6d+1719k/36W/n++RccEAAAAbkRsmsaRXSNpaMvLdouapolTPx4AAACwKobDAAAAAJMgBNlgsxqjpvvfZl8/jDG+ijG+yx73NsZ4WDzuMMZ4EmP8NS3za/r64awjlT3/26LZ67v0+P2pny8AAADuluEwa2ae4TBtyJD++axpmqOe7x2EENrn3JvxVMchhNMQwqsQwu6M5R41TXNW2Y6XaR1DjpumebLu5+AmxRi/DCG0t1+apvlle/cUAKYnxvh5COGPIYTfmqb52Y8ArCev1WlTCbL9TlIA0oYcT1Kz1Ufp35dp79tqkNcpADkrljvOjtC1ao5USdIFIBepWeuj7PYsa+Z6aDrf8E0I4T+k/wMA2+WP6X3+O+cV1prX6oSZHWb7fQw1mqa5KPc0xniZQpKQZphplytnmjmLMbbhyMN0K+UByFdN01xWHn+cQpa9FLgcVZ4HAAAAbpRKkO13VgtAwr8OtznNvjytBCCdbgjMlaEyKRzp7juuBCDdei6zipLdGOOsoTkAAABwI4QgLCMPM671Cink35/VdwQAAABuhBCEZXwKM2ZUkXTfz6tRhCAAAADcOiEIAAAAMAkao7IS2ZS8AAAAsJZUggAAAACToBKElWiaJjqSAAAArDOVIKxEjHHHkQQAAGCdCUFYRj4jzENHEgAAgHUmBGFhTdOchRAu0+MPHUkAAADWmZ4gLOsohPCyrQSJMb4LIRwXFSKdvfT/naZpnjnqAAAA3DYhCEtpmuYoxribKkF2UyAyy5kjDgAAwF0QgrC0pmmexBhPQwj7qeJjr3jOi+xWqxIBAACAGycEWTNtZUUaYjJo1rS0Y6esHbPcmG1K/UFUeQAAALC2NEYFAAAAJkEIAgAAAEyCEAQAAACYBCEIAAAAMAkao8Ld+DLG+LVjDwBb5Y9pZz73Pg9r7T91eqZLCAJ340/pBgBsnz+EEP6D8wpr669OzXQJQeBuvA8h/OLYA8BW+TwFIL+FEP7m1MLa+n+cmukSgsDd+L5pmm8dewDYHmkITFsB8remaQyHgTWVXqtPnZ9p0hgVAAAAmAQhCAAAADAJQhAAAABgEoQgAAAAwCQIQQAAAIBJEIIAAAAAkyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQhAAAABgEoQgAAAAwCQIQQAAAIBJEIIAAAAAkyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQhAAAABgEoQgAAAAwCQIQQAAAIBJ+Mxphlv1Y1rZjw47AGydX0IIf0n/B9aX1+qExaZppn4MAAAAgAkwHAYAAACYBCEIAAAAMAlCEAAAAGAShCAAAADAJAhBAAAAgEkQggAAAACTIAQBAAAAJkEIAgAAAEyCEAQAAACYBCEIAAAAMAlCEAAAAGAShCAAAADAJAhBAAAAgEkQggAAAACTIASBLRZj3I8xvooxvo0xNtntXYzxJMZ46PwDwPrK3stfZ+/jv6avX8YYd50+WG8xxp3y73Gn7O7EpnH8YUiM8WkI4WEIYadpmq/W/YClP4hepW0ecto0zcHdbjEA3KwNfC/fS+/leyMWf9I0zfEtbBbcqk173fZpP3wMIexn3z5rmubRem3ldAhBYIT2E5f2l+8mBAZt0hxCeJ390XTWbncI4SJbrH0zOUz71HrWNM3RHWwuANyKDXsvbz/MeJu9Tx+n9/PL9PVO9l7e+X3TNBf1Z4TNtEmv2z5txVYI4Wl6/X56TTdN82T9tnYaPpv6AYAh6Q+R7hfW+QYcsJdZANL3ydBZjPEshSUh/SElBAFgK23ge/mrtL3tRdOjpmlq23waY7xI7/shfcrsvZytsYGv22vS0POn6f6j7PUqsLxDeoLAsLwMda1/Aac3i+5ToeNZpbFN05xlv4DHDJsBgE21Se/lD7P35aOeAKSzkReGMNLGvG5rsiFtrSdZJVfw2r1bQhDo0Y5BbJuOhRBOsiXypmTv1vDY5WMNx4wNlkIDsLU29L08/2BCnw8mZ0Nft1dkw9NDCjPb13LexFgIcocMh4F++wPNyNYxQOj+cLoc+OSoJAwBYBtt4nt5u03Pwr9WbV4OLLuT/XtoWdgUm/i6/SQLQLpeJs/S97p9uhzx2uYGCUGgX/cL6yT9EjvP7gtrHoKczbm8EASAbbRx7+VzzvKSV42c3sDmwF3YxL/Bc11/vvM0DKbThSCqQO6YEAR6pJ4ZXZob0lRWY8OFW5fGHXYGf7mm/iGjlweATbNp7+XzSO/7XR+wI58ssy02+XWbpvQ9TJVZT7rXZdqXjW7yuk30BIEZUnOyzsKpc/s82TjGeW77I56+k4caY7Z13uUBYONs2Hv52G05zPoNnJsVhm2zitftbb9m0+uym/3loBiann9YKbC8Y0IQmG1VQcGscY2zzLPOeSs78m0SggCwrTbpvbyqbRKZX6RlM048S1Pouqhi26zidXtrr9lUmdUFIE8qlSsbPdPNthGCwGyffgEvU4bXNE1bphoXuM3zS/JTYt40zVyVINtSGgwAFZv0Xt6nbyr7neGHwkZa+nV7W6/ZohHqcU9fn/y1KgS5Y3qCwGxdarsJlRLdm8XYNwrNmQCYgk16L+/zKLt/J82e0d6epoDkq/XaXFjaRrxuiwDkvGmaJz2LftoflVt3TwgCs21EUJB+AXchyNg3i234oxAAhmx86F/5JPw0xvgqNWDca3sYNE1jdhi2yaa8bruZYC6KsLJkRsY1IgSBHhvWxXmu/h7zziQDAJtoy2dkOM1mh9kdWBY2xqa8brOZYFrHKZCsLZoPhbnImr6eqwq5G0IQ6LeSxqGpU/SrEYuWvppjTOIyTVGFIABsq415L08XRt32Hs95ceRCim2y9Ov2lv7+ftnz71kOu+Ck7T+ywPaxAkIQ6Leq2VMW+nRmzqZM8zZGy5uoaooKwLbapPfy/eziaMyUt/m+eS9nm6zidXujr9miqnoRPoS8Q2aHgX55V+qFf1E1TfNskc7US5yXmb/0Y4y76Q+tkEr3AGBbbdJ7+adtTcMBhnRl+BcjZ4WDTbH06/amX7Ptds3xnKfZ47r7NTO+Q0IQ6Nf9At6EEtP8DWK/b6H0R9VJdteYT5oAYFNt6nv54YzlQmqK2u2b93K2zSa9bsfo9kf1x5owHAaG7aTGR90vrt2e+b/vTDukJcZ4kX7JPowxvk6pc/7J0MP0R1X36dIznxwBMBFr/16ehrQ8Tf9+mSo3z4v38r30Xt5dVB2v4X7AqmzC63YMMzKuGSEI9DvLemfkzY6erekxe5KqPHbSdj+cseyzkeONAWCTbcx7efpA41m2nTOrQdoKkLbk/xY2DW7bpv0N3suMjOtJCAI92pAgDR85LKbpWssUN/3x9FXa3r0iBLlM296+qZyqAAFgCjbwvbzd3vM0tHW3eC+/SDfv5Wy1TXvdDsh79XnNrom2KcvUjwEAAAAwARqjAgAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJMgBAEAAAAm4TOnGQAA4KoY424IYTe/s2mas00+TDHGnRDC0xDCwxDCXrr7PIRw2TTNozvePLgVKkEAAICZYoyvYoxNcdvZ5KMWYzwp9uddscirEMLr7Pbyjja13dZ3xba+WuA52kDnXQpB9rJv7ZVhD7djFeeV+akEAQAAhpQXyRdN01xu+FG7tk9zfv9WpLBpFdvShh99wdWd7NuUrfC83qoY48MsONtNvwuebNKpFIIAAABDHhbf34aL5r3i609DXXouUM9vZ7OuKbdz7m1J+3NY3H2ZPc/pajaVOSx9Xm9b+jl6Xaz22aaddCEIAADQKw2jKG16b4zaBWge7KzTBerQti76HE+aphF+3J1VnNfbtnHBTY0QBAAAmKUWgmz6UJiZF6CpAWq83U3qVR7/tonp0iGIAOTOreK83rbaz9HGBaIaowIAALMMfvpbNBl9m+7bjTG+bL/Om4+m+3bSMntDy8xYz7vs/sP0vV+z779u7+/Zr2vP3TTNp30a0TS1W24nxvg0ratscvk2NZQthxKVzzG07eXxH/3Je3dsa01ds3XtV/bpsGef3qVt7d2nkT8L3XG70my38lxvRyzzstK0d7dYZic7zq+z5X5NX888T2P3qXjMjZ3XJbZpoeMw8ufo157tXPo1snJN07i5ubm5ubm5ubm5uVVvIYST9rIhv5XLhRDeFsu8Kh9T3N6m3gKzlnk5Yj1P04wns57naeV5ynW/HljP68pztBezvw6su7sdVh6/M+IY1Pbt2nGZce7GbNtutvz+HPv0qmedQz8Lb9NyT2f9XKWQoLbeh8Vy5TEqz+XDET8jM4/t2H26rfM67zYtexxGPmblr5GbuqkEAQAAZhnTILT8VLuvAiNffujT39pzlOt5OWJ611pVSfk85TCE3qapIX3Kny46x04T/KrSW+XViGNQ27dRQybGfrreDcFIFSEnc+zTYc86hn4WLor/99kf+H7X26U8RqfZ9x+mQGLsFMBPl9yncNPndZFtWuY4zFGlUVaHreI1ciP0BAEAAGaZGRj0NBntluuW7buQ6pbZqaynLOXvW09IF2Bdn5K+i9iz8G8zXJQXZvkFY209l9n3d2rDAopt2Kuso72oPwr/dmFZu8jvwpbdGRes81wsn/Uc2/N8dpi0T68W3Kd8Vp1Z56hb31n29SyDIUhlmbavxnH29SL7tLfoPt3WeZ3zOIcVHIehn6OQhyCreI0MyYKdeT0TggAAAFU9F1tlJUjtou5R3jCx7UFQuTh8kl+wpp4D+frKi+TaetrpOU/zhpJt/4GeC7DO0D4NfUp/WLl4K/dlJw09yJfL11u7UP6q6EtymPbjyrrGNqJMy52l41Hu80HRhHPRfSqPVd9MQkfzNNAsKjwuZ1QTlMcx3979yvY8a5rmKFtmN+3TLPPs042f12T0Ni17HOb8Oeqs4jUyZJ5lc+dCEAAAoM+Ysv1ry1Qu6MpAo/zEvrbMYNiSX8jNeFxp7hCk2J9y2MFpuS9N01zGGM9nVMBcu3jPL5TTcxynC9j8ORaZPaTWBLZ8nnKfzhbYp9Bz7B7Nu8HF8TmtDY3qGQqTb/NOOYyp/Hlpj0OMg5MAzbNPt3Ve59mmVR2HMT9HnVW8RoYsOnRGCAIAAPQaE4KMmeVikb4ic/XpmLFcub7a1KR5ANO7Pz0X3te2Iy1XXtydZ98rLyj7gpsxx23IUH+T2hCNvulzh/o7zDPjyazv5RfRZz39YcrA4UpFULroLoO2K3r6XSzy833b53X0cb7B41B9/a3iNTLS8Yyf017ta10IAgAA9Ll2cVR+sj0ivAhDFztDfTqS8sKq71Poa89ThBxDF6Cz9qcWsByW08z2fLrdXbDVgqVrF3/pmNxECFIet9q29q1n6EJ4zM/CR6kS4Nr96Vh257ANqE57qhSuhSCV59pJAUoZ9OQ9OkpDF/99+3Sb53X0cQ6rOw5jA4tVvEYGVX4PjSYEAQAA+gx+ojt0Qdcz40M59GVM75GxF37zXvSX+zRrf2r7MqY3wZOsSqE2lGFMZUyYd9jEyHCpNsyhdvE+ZntWEdrk56d6UVypNmiDrtNimWrvjco6rqjs+9h9urXzOs9xXsVxGPka7tu2sMBr5EYJQQAAgD4zqy8WLKMPIwKOUAxDmadaoTfkGDHzy9D+lI+/TN/v2/7zNEwjD1pWNaxnjDHPMRQKzdqechrW3u/PIa8Y6NuW3oao4er0rPMqhwrNs0+3cl7n2aZVHYexVS7JKl4jM/UM4Rrj3HAYAACgauTF1qoapw716Rg71GDoU/ah7Z33++3F25PKY2ZZeHjFAp+ULzK7z9jtuSwqHcb8LJTO8hCmNhSm53FDQ2HK2YHOazOZxBh/LSokFvn57tzWeZ1nm1Z1HK79HM0ILVbxGhmyPzADVJ+2eezZP6x4YwAAgO0wJngYM5RizMXhUHl/uZ4yJOkMVYwMBTJD+zM2MJhl0dBhnilU+56jdtyuLdPzXGXwUG7PqGE1A8pZYWrKoTDHxRTJDyvbclS58N9d1VCh5LbO69jhS6s8DvP83K/iNTJk4elx2/8IQQAAgJpaD4F5+2uEkRdFQ00Xy+/vxBif5ndkzR+vPE9x0TfveoYuUMtg4Jqefgq5Kxd07X6kYQzltqwicBkTSuynY5lv08sRM8jMe+yq6x7x+GvTrxZf1y6Qy/152DNMZNmfh97tWOF5XWb40qLHYZlgYxWvkdIiQ2E+NUg2HAYAAKgpL7YuK2X7Y6o8hqZoXaThZutlCkK6C7baFKXl1KBDF3ND+3NeLLMXY3w3EOw8az+Br3y/04YOb1MFxs6MT7kXCUHGzOhxURyX9t9vY4x5I9drYUplqMpcM5YMmDUUpmyIWoYAtUqWV9nsJLP6SSw6M0zNTZ3Xsdu0yuNQ/hw9jDG+Tv8+a5om//m+idfIFU3TfDV22RohCAAAUFNebM09re1N9hVJdmbMcNFeqA+FIHnz1TEzqZxWjstQk8YyeChDhzCyvH+uoSVzzOhxXOmvMGuf2ue40uNh5LGrOVtyqtTy/IYZlRG9M6Ekl8Wwmnn36cbP65zbtJLj0N1XWW/3POV6VvEauVGDw2Hakp0Y40mbYsUYm+z2a5v+tOlrWS4FzHhNnbz42uEBgO0V33z4Y3zz4fNN3sGei625ZnRJlm6cuuCsIxeVC/WhfiFj9ud4gWEe5XM8G/GYZ5XHzXuhOHZGj+M5nrs9ro9G9H3pW9dYY4/xtRAkXcDXwpFyP8pmncvu022c19HbtMLjEAZCqZt4jdyo3kqQbHzQUOra3togpPZiAK77Np68+K45eP6DYwMAW+nPIYQfQwjfb/DOzZxKdsYyYwKOoYvNwSClaZrfZ/0Vyj4SZ6lZ5rzbO7g/6TkfZesum3R223/Z/b/cjnaYR3vtlHpb5M0rz7Ntv4gx5tt00dMIdpZRF8zpeb9K+7Rf+dT+PB2Hs0plTWfMz8JYs4bC5GrnuNunJ2k4z362bZfdz0e3H2k4VbevY0KQ3n26pfM67zat4jiELOB5mC13mf1s5Otc+jVy02LTNNdWkcYJncy57vYE/v42Nx42TTx58WUI4f8OIfzUHDxXEQIAWyZVgLR/0L9vHtz70vldXmrKmTdBbS+a/pNN3Z/bEmN8VTQRdb3G5IXacJhU+lbrEHuRJavVaa16SsyAf/Nt+tf9FIgAANvlz2lvvohvPvjAYzWGKkWoW2WjUtgatZ4gh5Xxf8/a1LBpmkfp9vuecUGLztcLWy+evGg/GXqc7ee3zjoAbI9UBfLnbIe816+GEGQxM2flganqC0Fy58WUN51aCDJ3ulg0W22yqXbK5Q4ry16bGzw1am0btr4rlm0bu74aqlbp5m9OzWBfVxrBznyO9LhP60z3tVUyL7PmsjMbyVb2c+j2bsa+LHQ8FtmP7NjV1vcuPeeUq4XaP4p+l339J9UgALBVvive6+/HNx/+e6d4cT0NWm+1f8CmapomFrfRU5DCNrvSGDX9kimbloyZn7mzyC+kclqkvoDgafH1Zd7tNjVeeTnj8Xvp1l6kP6k19RloBptPv9U+x1HTNLUOwPlj9ypj8c5nNX7pmSd9yLXwaQXHY679SH1kXs1YX9dgqZ0vu20KVHYh3mqpCuTPlX1sPyH6ZkrHAgC2UaoC+W8ru/Y/hRD+Fyd9YauedQSYuCuVIO1F7RyJYfmJ/mU+ldUcygv4a7/oUjhRBhNH3UV4uuCfdQFeelXOm53W8Xpg/uLc056qhnL7y8qaoWqZRUKQK8d9Fcdjnv3IGumOXd/hBCtCyiqQjmoQANgO/3NPlfV/FN988IHH4lY56whA9Rf1oGy6m9yi5VVjfomVF+CfqkBS9crLymPOs0autcqL/eLrWjPYoee48kt5oIrjMnuuIWc9t9qxusyfcxXHY579mNFId97jv7VSyPFPM/bvu6kcCwDYRqkB6n8zY9e+S5UizKn9QLbyIa0QBFjYZ2MemKal6i6My3mjQ5rzeNEQ5Fo5W1sl0FWVpAqF8oL5KBuKUWvkemV4R7pQf1cst5d9f7+yT8/yfUrbUe29kalVkZyl7R1VJZO2uzZUZy9VquQ+zsFczLW+9PGYcz8WXd/YipttMBRy/GM8efF1c/D8xwkdEwDYCinc+H5gX36Xlnm8JbsNsLHGVoI8TZUf5bCU9uL7YMn+DkNJ7sxeIJUqkdOyv0UKTGaNHdwpKy/KUGdk4nztwj7NprNUJ+as2qIWNpT7tYrjMc9+lOs7W2B9WyuevGj/2PnHEfv3feobAgBslu7Djn9O1SDvs61v//1fhxD+GkL4Or75UOsPBsAtGqwEGRgaUe0BkWYTmfW4T1UWbbgQY7ysVQmki//eKpC0beUF+7UL9bRcOXzn00V5X/VF8Ry1HhZD/UyWvvBPx+B15bnbAOS0WHYlx2PsfqTqmLGNdMf2C9kaKdQoPxn6lxDCf1zZxy9Sk1R/HAHAhohvPrRDXr9rHtzLe378b5Wt/9/Dvy6vEgTgjo0ZDjNr2EL7vZPK7CJDzT3L8OC8Z4aYcqhFWQVSW89hGt6SqwUYZYCwk9ZXXth3IULtOAyFIEuNVxwIQGqhzaqOx9j9qD1PX/AzxXnKv0/lr38PIfyQvm6Djvvp+20Q+H+l4OMPIYT/IZ68+LE5eP7DHW83ADBC8+DeL/Mcp+bBPe/xAHdsMARJ1Qax+zpVRJQzgbzMGpWOmd1kKATplEMtjorpZWvBxJj1P8mHtwxMJ9s7i0llKEq5PctWgryq7M+zngCktv6wyPGYYz+uHa/KMen7mdjqhlbx5MW36Z//VR5qxJMX+WL/0hw8/z4NhfkyjRP+Np68+Lk5eD7XH1UAAAAMG9UYNdf2hYgxnhYBxU7x75mf8lculMvZQx7GGC+Ki/GyCiRULvAv08V133zi56lHRj6bymHP7CZDymlpxwyXGS3G+KoyFGioAe0qjsc8+1Eu23feJxeCNAfPvx2xWL78L2lMsZliAAAAbsinECTGeK0B6YyKg17pgnreoQ61SoOhKpBQ60exQJPWcjrZrtnrlYv0GOOvRdhTXsSPGS4zSgpAyv0/HrFvqzge8+xHuezY5S5rFSMAAABwk/JKkDIMOOuZqrXWrHTZC9ry8XsDvUA6Yy/Cq1LVQzmk46gSgOxWlivXNWpoyIhtetozw8uYMGOp45HMsx/Xwo2e5cqflyn0AwEAAGDNzJoid6/s5ZACkFrvjKUualOFR37BXgsm+i6wc+XF9jUp0OjUhmlcWXcKSmrDZcpgYOzQkFnbdthTmbLoFMTzHo+w5H7sp5+R/PlfzjGDDAAAANyYvBKk7MHRXsy+jTHmF8FlhUaYUaUxr3L9Y57/vAgy2uDmXU8FRHdx/yzNyhF6KhdeZbOp1KaA7ax0ZpiB3iTtDDy1+9thJQfZ18sejzDnfpTnbDf9zFxkX19rslpO7QsAsA3imw9fp9ngvki7875tfN48uPezE8wmSdcmD9Pf8vn1wWW65jhLw/XHfFC9sGwUwsPiA95HeV9DmEceghxXqhDCrNlRkmfl8JEFnfWsa1YVyGnlon1WcBGKCo6+F87QPl8Ws8vsjBguM6SvamPW7C7l9i91PBbYj9rPzKz1XS5R1QIAsO7yACSkf7ezxH3pzLEJsir4vr/nd9K1Unt7GmN8tOpef+ma5DBdH/VdC231JAvcrE/DYdKsI/N8Qn+ZplZdRRVI6KnKGKoyOV6mCWsKMoa2/6Jy4V7rYdK7npHGTGU7tI6ljscC+3E8x35epMRWQ1QAYOvENx8+LwKQTu0+WDupGv71wAeouTasOLmB/dhLH7T2XR9druhDeCbqyhS57dCKlP51qVv5g3eeLmbPUrPOVZY/1X6QZ/YCSd97lJVr7dWGX2RlW5fl87UNR9PwjTxpvEz7eNaFPKlh6W72nLmlpoDtqcAYo9yXZY/HXPuRHvtVWt9+pQrk08/LCsMyAABghdL1SG1o/kV2PVCr+N5trx9XPDRlt/hgt6zS96EqS4lN06zFEUwhQz60or3A/v1NjzOD2xRPXvwYQrifVvmX5uD5t04AAGyH+ObDL5XKj/fNg3uGw7DWKtdiIbU9yHsHtsudVIbxX1tuVVI482vxdO0H5c/8RLGoWbPD3Jo0C035ohs7IwwAAKyDb1Iz1M7HxqjODBvgsNjE84CfXQIAACAASURBVJ5go9Y+4WOlSIyxKW6va7vdVpFXln3ac4hqleqfrhFvaJ1suc/uYvdijHmznZ3ajCQ3lSYCAMBNaB7c+1ETVDZNqrYoh7n09Yrsm80zVCa66BvuX4YPs/pADvUsvIl1suXuqhJkN+sqXPvBNoMIAKO14XrlE56hW/mp18ZIn2i106e/zfax/ffr9pOt9AftUtrnSOtpn/PX8pO2GOPLGOPM5nkLnJPqp3LtePO0v/myJ6mPWd+6X/ukD2BYW33fNE0sbn0fSJe/dy+zfiBlL8Fr13np93b53jFrBEDt/SwPQW5inWy5O6kEmTEF7WUaU2bOZwDmMbaTfW7jGqul4aMnPfvb/eHXTVt4sOj7aVrPqxmd+bsPMtqQ5Fmt+fUqgphsW7ry5q65904ak74fY/yqnHksaxB+prIUYDWy3625/HfsmIkhyg8ghioyyvehcmKHm1gnW+7WQ5D0R9F58QN9lu47Nt0RAAs4Kv4Qq3mYlcOebtqU3en983X2qVg3LXr3x+BOF0x00xamgGCR99U8ABlaT1uFc1ZZT/4+/2xk6FTb1u6cXWm8lzXxa/9/kN2/k/UZ0zgPYEFtxV/2u7w2M8xxETRf+z2fzxyTqgfLpqpDFRlDM8PcxDrZcrcegnTTqvrBAmBVhioe0oXxSfryYkOHXR5mAciTnqnHT2OMp1lYcjhvEBBjzKeM7+v4366nXf/b9PXTgWN6vkSVZx7G5I5T2FH+gfw07fvRpgVdAGumbzjhefodW/YNGQrd5+rL0TPksnwvWek6mYa1mB0GAG7YSRYgHGzoJ0Ddxf55TwDyUQobzovHLLKemU3KU8DQ/QFcGzazkuEw3SeP5TnLvv60njR05mn6I9cwGIAFpd+nfaq/31NFYPn++vF3ePowYt6KjFlNWG9qnUyAEASArZaGTXQX9s82uDqg24cxFRWzwokh3WPGHKdumdp6FunTsqxPw2D8kQuwlFm/w3fTkMtag/HyvaMLTA6L8GRMRUbtvaVW+bHKdTIBd9UYFQBuXOoI310Yn254k8xuWMtNhzjzhCCnt7A9H/uItWXRed+RrEz6PFxvhuqPXO5EfPPh6xDC9yGEL9L634cQHjcP7v3sjLBJ0lCX2G1yej89KUKFl5VQ4bynCrEMTMZUZFwLYnqGVq5ynUyAEASArVT0Abnc9OnX5wxwuj8cb7TZeAol+tZRfvq2qK6Zejslb9sL5bJofnqmGSprJA9AQvr3DyGEL50kNlkbPqSeU3mwUBsWU/6+b6c4vygCjbEVGWUI0vd+s8p1MgFCEAC21Tb0AZlbMQa6bFp3mz6VMbdDkNJ2ddUae+ncXKaQ43RG9caz9JhuStz8exep94dmqNy5+ObD50UA0qndB2shDRnNXS5ZTVf7HbxoRcbQzDA3sU4mQAgCwNap9AFZdGaSUVKZ8OsFHto3+8qi27GXprfdWUVz0CxQ2ctuIYUP52OHnqTz8bTyqWE33e7DNJzlUa0BajvVb/qDtgxPjtMnfZqhAizmZfGos1rFRE+T0Vr4UN63t0hfjp7GrGNDkIXWyXRojArAVkl/OH0aKrHhfUBmasOFGGPT3dKUtXvpj9hrgcKc2j9236VQ5bBoULebvv8qxvg2/XFcKseNn6aKnNjd2q+L5qrV6Rjb/WjPY9M07eMfpf93n+pphspaaB7c+y2E8FNlW2r3wbraKwOIbMhh+bv+2gcM6fdwPmylfMzYioxaY9bqcJgVrpOJEIIAsDUqfUAObmPf2kqT/OJ+jttNBjTLTlG7l45hOxzlqyK8+Cr7VG2v8kliSI89S+FH+/gnqdHeJ+3XTdN8lQUhT3sClSrNUFlDj4vQ46d0H6yrMlhofwe34fbr7pYC8XJ4yazqilm9O8b+rh4dgqxwnUyE4TAAbJNX2R9OU+gDUs7O0lVodENMniwRDhy3wUXtG6nvxpMY42Wq3jiMMR7ls7e0FRtzrOsoC6/2xkwDrBkq6yhVg3zt5LBBjnuC7NpsK7ln+e/8wlnP4+epyLg2HGag59Mq1slEqAQBYCukvhPdeOUb7wOyDto/QFMVSnc7TuFDV3Hxap7KisKYmWXyyo7a+O2xzhZ4nivNUNu+LDHGkxjjr2l40K/p62W2C2CrpYrEeZpof5xtbSBgr4UO81ZklJUgQ02vV7FOJkIIAsDGK/qAnG9zH5CR8v0vG9mtTPGpXK10eZR5P6VL5/tTM9SsMe1+Cm/O0v/3U1m3IASgR9tnqe0jlQKDvmanp2mq+d+PqDCshejzVmSUv7eHgvlVrJOJMBwGgI2WKh1epX24tT4guduYHSabxvB8qMolVUZ0Xy7bG2Qh82zvArrA60maPaYbq37leKZteJkCk1v/uQDYFOn39Kp+V5cBxtwVGan/1K2uk+lQCQLApnuZ/fHzZMYY5W3Yz5dLDjsZozt+g5UdA0Ntuu0dGlfePk++rpmf2hXNULsS7o/rqARKx/n3AbhZRWVm50YrMu5inWw2lSAAbKx0QdxVARyVs4/clvQJ2ryfWs3rPAUg+8Vwl2tijPkQmHlDoYsUgIwJDvJlyhLqrknd/ojGpfn29o77Lpqh5k1bq2FMqhLp/T4Ay4kx5g3Jd2rDWFY9RPUu1sl2UQkCwEaq9AHZ9hlCunBgLxv+cU0KCrqhKJcLlDd3QdLuPOupDHnpvt7NhsbUnmcve56Lge7/XTPUclaCy1CpTMm+9mkgtyK++fB5fPPhx/jmQ5Nu7b8/d/TZYl1o/rCnUrE6y9iS7mKdbBGVIABsnKwPSHeRe5z6cgy52ODhMkepYmInzfqyl4KRfH/2UmVM9wlZtRy4nT0l+/JREWCcprBhN1vPWREkXFtPZXuPs9DiZfY83fbuZM/TncfeICsLSy4q47zP0rE5LLblMPs+3IYfQgj3s/XcT/eZNpdt1ffee3mDM7XdxTrZIkIQADbRfvHpz6uR+/BogeEha6ENb2KMT7Lwp7dKIzlapBw4DSFpm4iepJDjcGBd1fWk53mUPc/+wEw1zwaGM73MliuDndP03C+zMCwvkdYcjxuXKj7uV9ZTuw82XvpA4rx4Pz5L9x3fxIcOd7FOto8QBIBNtOh0rLP6TbxOny6dpukC104bEsQYz1Io0ZUB50NAuj8ETweGlcyUZpf5KgsuyvWcp3XNXM8czzPzD9c0nKZshpqv5zQFN4fFJ4Sn6bl9KgiwYimQ/uo2j+tdrJPtE5umcVrhlsSTFz9mnwj9pTl4/q1jD3cvDbV4mzak7S/iDyxgbvHNh19CCF8Uj3vfPLj3paMJsB40RgWAf2vMeb5ElQnAN23okR2F9t+PJ39UANaI4TAATFqMsetXcdwz1R7AKM2De23Fp6oPgDWmEgSAqeuqQI6yqVZVgwAAbCEhCACTlbrMH6aGmxfZzDFCEACALSQEAWDK8iqQ0FWCCEEAALaTEASAScqqQM6zKVS7EGTHTwUAwPbRGBWAqTpMYcdljLGrCNkt/g8AwBYRggAwVV3w8TDdckIQAIAtJAQBYHJijF0VyLOmaY7y/Y8xNkIQYBHxzYevQwjfhxC+SA9/H0J43Dy497MDCrAe9AQBYIqepv4fx5V9vxCCAAvKA5CQ/v2DgwmwPoQgAExKjHE/hRzHTdNcVvb94zS5qXEqwCjxzYfPiwCkU7sPgDtiOAwAk9I0zWl7vdK3z03TPPITAQCwnVSCAADAkpoH935LPUBKtfsAuCNCEAAAWI1vitDjY2NUxxZgfRgOAwAAK9A8uPdjCOFLxxJgfakEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQhAAAABgEoQgAAAAwCSYIhcAAFYgvvnwdQjh+xDCF+nZ3ocQHjcP7v3s+AKsB5UgAACwGnkAEtK/f3BsAdaHEAQAAJYU33z4vAhAOrX7ALgjQhAAAABgEoQgAACwpObBvd9SD5BS7T4A7ogQBAAAVuObIvT42BjVsQVYH2aHAQCAFWge3PsxhPBl7ZkqM8f8lGaO+a1n+c9TU9X72d1Dj5l7dpp5H7PgdpWPWfl29TxmSsf4xrer5zHreu7NzEQvIQjcnX+KJy/+yfEHgK31l+bg+bdp58qZY+6ni8Ove3a+vAge85i+2WmqwcyCj1lku8rH3MR21R4zpWN8G9tVe8y6nvsxj2GiDIcBAIAbNGPmmPJC96O0fPV7A4+Za3aaeR+zxHbVvrey7Rp4zFSO8Y1u18Bj1vXcm5mJKiEIAADcjb/OWGvf92Y95jYssl13uc1TOcZ3aV3PPVQZDgO3688hhM8dcwDYWt+FEP6Q71zbLyG++fBT8an4X5sH976pHYTUX+Gb+OZD++Wfxj6mso6QejZUzfuYRber5zEr264Zj5nMMb7p7ZrxmHU99zMfw7QJQeAWNQfPNWcCgC0WT15UG0SmWWK6/gi9F465dpnsAnLMYx4XPRh+GjE7zdyPWWC7ysfcyHZN/Bjfynat4BjfxnaNfQwTFZumce4BAGAF4smLH7MLsbwxKgBrQE8QAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJNgdhgAAAA2Wnzz4fNihpj37QwxzYN7ZmfkCpUgAAAAbLo8AGl9ke6DK4QgAAAAbKxUBXK/sv1fOKuUhCAAAADAJAhBAAAA2FjNg3u/hRB+qmz/e2eVkhAEAACATfe4CELep/vgCrPDAAAAsNFSNcjXziJDVIIAAAAAkyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQhAAAABgEkyRCwAAwEaLbz58HkL4IYRwP+3H+xDC4+bBvZ+dWXIqQQAAANh0eQDS+iLdB1cIQQAAANhYqQrkfmX7v3BWKQlBAAAA2HR/dQYZQwgCAADAxmoe3PuteXDvm0oQ8pOzSkkIAgAAwMYrgpA2AHnsrFIyOwwAAABbIQUh3zib9FEJAgAAAEyCEAQAAACYBCEIAAAAMAlCEAAAAGAShCAAAADAJJgdBgAAgK0Q33z4PoTwp26K3ObBvd+cWXIqQQAAANh4WQDSuh9C+MFZpSQEAQAAYKMVAUjnvrNKSQgCAADApisDEKgSggAAALDpfqps/3tnlZIQBAAAgE33uAhC3qf74AqzwwAAALDR0iwwXzuLDFEJAgAAAEyCEAQAAACYBCEIAAAAMAlCEAAAAGAShCAAAADAJAhBAAAAgEkwRS4AAAAbLb758HkI4YcQwv20H+9DCI+bB/d+dmbJqQQBAABg0+UBSOuLdB9cIQQBAABgY6UqkPuV7f/CWaUkBAEAAAAmQQgCAADAxmoe3PsthPBTZfvfO6uUhCAAAABsusdFEPI+3QdXmB0GAACAjZaqQb52FhmiEgQAAACYBJUgAAAwp3jyoi2zb2ek+KE5eP7bmEfHkxdfpvL8n5uD5z865gC3TwgCAADz+zHd/td48uKvKQz5oXyWePLi8xR8fJOm8Pxrc/D8O8cb4G7EpmkcegAAmFM8efHHFIT8Lj3y7yGE/zeE8J+lr/8WQvhD9qxto8Y/jq0cAWD1hCAAALCgePLizyGE/3Hko/9Lw2AA7pbGqAAAsKA0tOWnEY/+ZwEIwN3TEwQAAJbTVoP8nzOeoR0m861jDDcnvvnwsVFx6r0T0vCzx82Dez877ORUggAAwBKag+ftRdZfZzzDn/UBgRuXByCtL9J9cIUQBAAAltdX6fG+OXj+veMLNydVgdyvrOALh52SEAQAAJbUHDz/pacaxDAYgDUiBAEAgNUoAw9VIHALmgf3futpUPze8ackBAEAgBWoVIOoAoHb87gIQt6n++AKs8MAAMDqtFPm/inNCKMpI9ySVA3ytePNEJUgAACwImmmmPbT6O/NCAOwflSCAADAarV9QH50TAHWT2yaxmkBAAAAtp7hMAAAAMAkCEEAAACASdATBAAAgK0Q33z4Ps3Q1DYofpxmjYFPVIIAAACw8bIApHXfNNXUCEEAAADYaEUA0rnvrFISggAAALDpygAEqoQgAAAAbLq/OoOMIQQBAABgozUP7n1TCUJ+clYpCUEAAADYeEUQ8nF2GGeVUmyaxkEBAAAAtp5KEAAAAGAShCAAAADAJAhBAAAAgEkQggAAAACTIAQBAAAAJuEzpxkAAIBNFt98+DyE8EMI4X7ajfftFLnNg3s/O7HkVIIAAACw6fIApPVFug+uEIIAAACwsVIVyP3K9n/hrFISggAAAACTIAQBAABgYzUP7v0WQvipsv3vnVVKQhAAAAA23eMiCHmf7oMrYtM0jggAAACw9VSCAAAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAAAAYBI+c5oBAADYZPHNh89DCD+EEO6n3XgfQnjcPLj3sxNLTiUIAAAAmy4PQFpfpPvgCiEIAAAAGytVgdyvbP8XziolIQgAAAAwCUIQAAAANlbz4N5vIYSfKtv/3lmlJAQBAABg48Q3H77MtvlxEYS8T/d91A6ZScNmmDizwwAAALCJvolvPrRBx/dtE9Tmwb2vy31I329vfwwhXPs+0xObpnHaAQAA2DjxzYcfs6ao/z7NCPNLG5Ck8ON3IYS/twGI6XIJQhAAAAA2VRri8ksKO/r8u+bBve+cZIKeIAAAAGyq1BT12xmb/5MAhJwQBAAAgI2VQo6/9Wz/n51ZckIQAAAANl0t7PirPiCUhCAAAABstObBvR+LKXLDwDAZJkoIAgAAwDbIQ4+2CuQXZ5WSEAQAAICNl6pB3qf9+N4ZpUYIAgAAwLZoq0H+lgIRuOYzhwQAAIAt8UMI4Tcnkz6xaRoHBwAAANh6hsMAAAAAkyAEAQAAACZBCAIAAABMghAElhRPXnweT1586TgCAACsNyEILO9xCOHPjiMAAMB6E4LA8tq5yL9xHAEAANabEASWEE9efB1C+CKE8Lt48kIQAgAAsMaEILCcb7NHf+tYAgAArC8hCCwoNUO9nz36C9UgAAAA60sIAov7rvJI1SAAAABrSggCC0i9QP6x8kjVIAAAAGtKCAKLmVXxoRoEAABgDQlBYE7x5MXjohdIqa0GEYQAAACsmdg0jXMCI8WTF5+HEH5pp8QdeMTfQwh/bA6e/+LYAgAArAeVIDCf70cEICEt871jCwAAsD6EIDBSanjaNUP9Wwjh34UQ/jl79P8RQvjvQgg/pa/vGxYDAACwPoQgMEI8efHHEMKfU+jxXzQHz9uhLu0Uub9lj/7/moPn3zcHz9uZY/7zFJJ8k3qIAAAAcMc+cwJglF/a4GPswqkXSBuSfJf6iAAAAHDHVILACM3B898WPU7LPBYAAIDVEYIAAAAAkzB3CBJjfBpjbCq3135kAAAAgHU1VwgSY9wPIbzs+faZswwAAACsq9EhSIxxN4TwasYil84yAAAAsK5GhSAxxp0QwkkIYWfGYhfOMgAAALCuxlaCtENg9rKvrwUeTdMYDgMAAACsrcEQJMZ4GEI4zO56VglBFq4CGdtgtd2OyrJPi2V2UuPW1zHGd8Wyb2OMr2KMDwe2Zyet6yQ9T/f4X9PXM58jPe7TOtN9uzHGl2kbmlRZM88xGbq9m7EvCx2PRfYjO3a19b1Lzznz+AMAAMBN+WzW88YY94o+IGdN0xy1F8LFossMhWkrSPIL476A4GnxdduD5Djb1sNUsdL3+L10ay/SnzRNc1wukC7Q2/3drTx+J9vO9jmOmqZ5Vlkuf+xeGzQUIdJ50zS9/VPSMZ/XteO/guMx136kprmvZqxvN932Y4zHTdM8WWA/AQAAYGG9lSBZH5BOe8F7kBqklpYZClNewF8LAVI4Ua73qLsITxf8sy7AS6/K/UjreN0TgNQ87alqKLf/sPh6KDBaJAS5cvxXcTzm2Y8UgAz1jLnyXCpCAAAAuG2zKkFOikDgoA0deioVlpkZZkwVSXkB/qkKJIU1tWl7z7Pt2qtcoLcX7kfZ17WZb4aeYy8PIAaqOC7T840JjPqW2a2ENJfFNix9PObZj7S+RY7dvmmVAQAAuE3VECT12sg/qX+WNT6tXSAvMxzmvLL+h936UoXCfrHIUTYU47BygX1leEe6UH9XLLeXfX+/Ei60+3yULbObnmOWviqZo7GNY9N214bq7KVKlVx7DB41TZMfw6WPx5z7sej6xlbcAAAAwEpcC0HSMIW8kuAsDwNqF69LzgwzFKDM7AVSqRI5LftbpAqW8yLYye2UVQnFPrdfX8QYBza1emweDT1oSFZtUQsbyhBpFcdjnv0o13e2wPoAAADgxl0JQVK1w7U+IMVGlBfItaacbwd6W3yqskjhwmWtSiBd/PdWgaTqiHJ7rgUyabnyAvxTeNBXfVE8R+0CfqifybUql3mlY/C68txtAHJa2c+lj8fY/Ug/L+X6TmvLztEvBAAAAG5EWQlSNrc8qMxkUl481yo5hpp7lo8pqwS6bSiHWpRVILX1HKbhLbO2OZQX6ylsOKz03ehChNrwjaEQZJlhQkMBSC20WdXxGLsftefpC37K59QPBAAAgFv1KQRJU6DmF6rPymEuY2aGGTnF61AI0imHWhwVoUxte8asvw0R8tlNZk0n2zuEozIUpdyeZStBynMS0nnpq1pZyfGYYz+uHa/KMen7mVgqIAIAAIB5fQxB0kVqGTi8jDHWZhkpdcudpb4R1/prlCoXyteqTWKMF8XFeFkFEioX+Jfp4rp20X2ebqd5uJNNJzuvMvwZM1xmtBRKlRUcx2Wvkhs4HvPsR7ls33kXggAAAHDnukqQMdUCQz5eAKcL6nmHOtQqDYaqQEKtH0XTNE/mXHcZ9JynYUBXLtJjjL8WlQ/lRfyY4TKjpACk3P/jEfu2iuMxz34M9ofpWe6yVjECAAAAN6kLQVbRtHKV0+TuDfQC6Yy9CK9KVQ/lvh9VApDdynLlukYNDRmxTU97ZngZE2YsdTySefbjWrjRs1xZ0aIfCAAAALcuD0HGXJiWwx8uswBj4U/20xSq+fCXWjDRd4Gday+2Zw0X+RhoZCFHrQJmp1j+YWWa3lDZ37FDQ2Zt22FPZcq81RydeY9HWHI/9mOMV85VGio1dgYZAAAAuDEfQ5CmaZ4NrSDNVPJrcffxmMeOVPYA6fRVgYQUEORBxl6M8V1PBUR3cf8sCwZqwcqrbDaV2hSwnZXODDPQm+Qkxli7vx1Wkk9hvOzxCHPuR3nO2n+/TYFW6Dl+5+XUvgAAAHAbyilyZ6lVTYypzhjrrGcmlllVIKeV7ZoVXISigqOvyqF3RpjksphdZmfEcJkh5ZCRzqx+LeX2L3U8FtiP40rlyqz1XS5R1QIAAABL+Yc5Htw3w8iq1IKOWVUgIX1v4SasKciY9fwhhQDlhXuth0nvekZapDltuY6ljscC+3E8x362x/GRhqgAAADclXkqQWrNU1d5QVurOJjZCyR971EaSvIwXcRfG36R9S65LJ+vbTiahm/sZyHAZQoT2ml/P4YkqWHpbvacuaWmgO2pwBij3Jdlj8dc+5Ee+1Va336lCuQ8Pf7TcQQAAIC7EpumWYuDn0KGfGhFe4H9+5ENUeFOxJMX34YQ/imt+6fm4PnXzgQAAMB6mmc4zI2JMe5VekuMnREGAAAAYNA8w2FWJsb4qpgO99qMJE3TzJzaFQAAAGAedxKCpABk1gwsZhABAAAAVuquhsP0BSAfp1BtmmbeGU4AAAAAZrr1SpA0E8p5MQTmLN13nKatBQAAAFipWw9BumlVnUYAAADgNq3F7DAAAAAAN00IAgAAAEyCEAQAAACYBCEIAAAAMAlCEAAAAGAShCAAAADAJAhBAAAAgEkQggAAAACTIAQBAAAAJkEIAgAAAEyCEAQAAACYBCEIAAAAMAlCEAAAAGAShCAAAADAJAhBAAAAgEkQggAAAACTIAQBAAAAJkEIAgAAAEyCEAQAAACYBCEIAAAAMAlCEAAAAGAShCAAAADAJAhBAAAAgEkQggAAAACTIAQBAAAAJkEIAgAAAEyCEAQAAACYBCEIAAAAMAlCEAAAAGAShCAAAADAJHzmNMPK3I8nLxqHEwAAbs1fmoPn3zrcjKUSBAAAAJgEIQgAAAAwCYbDwHK+DyH86BgCAMCt+S6E8AeHm0UIQWAJzcHzX0IIvziGAABwO+LJi98cahZlOAwAAAAwCUIQAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAAAAYBKEIAAAAMAkCEEAAACASRCCAAAAAJMgBAEAAAAmQQgCAAAATIIQBAAAAJgEIQgAAAAwCUIQAGDjxBhfxRibOW+H23amY4y7McZfs+PwdIHn2Gsfl47pu7HPk9b9Msb4utiG9vY2Pd/MYx5jfBhjPCke2379cMZjXi+6rwDw2eSPAACwiXYX2ObzLTzTr0IIO4s+OIUNrxd43GFad5+9dGuX3Q8hHDRNc1k8x1627vbcXKZ9aZffjzF+1TTNeWW97TafNU1ztOh+AzBdQhAAYBMdpdss7cVyVy1wWl5Qb7pUCfEwCw8WcRFCeJY97uXQc6TwIg9AjrIQo7OXwoy9tI3t8gfFU3Xn5lkeaKT9epm+f5Ddv5Nt37MAAAsQggAAG6dpmrNZ25wumE/Sl+2F/pNtOsvtUJQsRDgaE17UNE1zkYdJ7fCWEQ/Lh7hcq9ZI2vNz1A5tySo7dtP6Onvp/8fFY4/T/pRDYp6msOdo2wItAG6PniAAwDY6yaojrg3F2ALdMJi7GBbShRNjqmvybStDjY9Dmspzk339qbolVZ88TdUmhsEAsDAhCACwVbJhIiENtdjmYTB3UeHS9WMZPK7FsV+4d0k+DGYLAy0AbpEQBADYGqnRZ3fBfLptzTPLYTDF8JJNc57tU7mPIft+3gy1HDoDAHMRggAAW6HoA3JXVRI3rRsGc36HAU/Xj2VvYLluGEunrBzpvn6Zzl3Z/PRMM1QAe0b28QAABzFJREFUVk0IAgBsi63uA5JVRIQ7Dni6EORhWcVR0TVRvaw0s32Wmta2jVN/jTE27f/T113DVs1QAVgpIQgAsPEqfUBmzh6zrHbYTXvRvsDt6SKrLisi7jgQOE5VHO02vW7Dma6So9NWgMQYX2UhyLXQJoVUX6Uw5DSFK6fp669S7xHNUAFYKVPkAgAbLQ25+DSEYtv6gCTrMAzmoza8iDE+Ssd8P23bqxhjbfHzWaFUCkKq+5NN16sZKgArIwQBADZWpQ/IwW3sS7qor171r1qMcT+FDWGN+pzsptvQjC87qXfIXJU5mqECcFMMhwEANtmrbMrWbewDspP2MazLdL8plHmbQorTdNxjfgshPErf202NT09GPHX3/JqhAnBjhCAAwEZK/TW6Cokb7wNyR9ZmGEymC2XaKYjbAOS0XKA9F+33UhDS2k/VHWNcaYaa+q+cxBh/TT1Yfk1fD85OAwAlw2EAgI1T9AFZp4BgZYphMKdtGDDiuXe75W4iFErP3Q2BGXPMj7J92E9NVWc9/17eDDWt73X69nm6fyc9VxusfGXWGADmIQQBADZKMUTk1vqA5IqL83k8myOwySsnXs5YrnxM97ib6FnyqfpiTPiQKjm6L8eEON1+PkkNWLt9uXLcUhXQyxSY3Pr5B2BzGQ4DAGyal9nFeHuxfOEMbr6iGWo3jKaraimDo+P8+wAwlkoQAGBjpAvlrjrgqNaP4jbcxuwwTdM8Grts2ysj/XOeSpNFfGo82w5dGaoGKfp29IZVRTPUfAac6uwzqUqk9/sA0EclCACwESp9QMwccvvyPiOvUngxy9Pse7N6lHTNUJ8VlT0fQ5dyPdnXWzUbEAA3TyUIALD2sj4g3cXv8chGoReGy1ypFGk9WrRpanssY4ynqTFpG0q9TV+Xz7eXKnZ2s/uqTVGzZqgXlWXO0roOi0ash9n3AWA0IQgAsAn286acWWPUIY9mDcNgIU9SGPUwhRxPi4qP0mWq8OgbOtNV97TLlJUdXeDyMgu9drKfhZmzzQBAyXAYAGAT7C64jVcuvNueIm1VROX2Ns04woA2qEj9Sh6lEKJWjXGR7m+HLP2+aZq+KpCnlWaon6T7DtJzPUy3vRSOLFzRAsB0qQQBANZe6v+xih4gXZhynFWI7GbVBhd31Wx1GU3TzGzSOvT9eZcL/9YcdqkQIjVxndnINZ2PjTsnAKwnIQgAMCXdMIorQy9ijOdpiM2iFScAwAYwHAYAmJI2BLms9J4AACZACAIATEKaYWan7BOSdBUiekwAwBYTggAAU9EFHVdmi4kxdlOwns6YwQQA2AJCEABgKroQ5MoMMSGEkzQ7yYGfBADYbhqjAgBTUZsZZqeberWdPrdvKlcAYDsIQQCAqeibGaYNQn4NITxNAQkAsKUMhwEApqKtBLkoZ4bJvjZjDABsOSEIALD1Yoy7aejLRbmvqTFqMDMMAGw/w2EAgCnohsLsxBifZvvb3r+fqkCO/CQAwHYTggAAU9A1Rd3LApGQKkOOyz4hAMB2EoIAAFuvaZojlR4AgJ4gAAAAwCQIQQAAAIBJEIIAAAAAkyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQhAAAABgEoQgAAAAwCQIQQAAAIBJEIIAAAAAkyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQhAAAABgEoQgAAAAwCQIQQAAAIBJEIIAAAAAkyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQhAAAABgEoQgAAAAwCQIQQAAAIBJEIIAAAAAkyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQhAAAABgEoQgAAAAwCQIQQAAAIBJEIIAAAAAkyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJQhAAAABgEoQgAAAAwCQIQQAAAIBJEIIAAAAAkyAEAQAAACZBCAIAAABMghAEAAAAmAQhCAAAADAJnznNAAAArJt48uJxCOHzEMIPzcHz38ZsXjx50S7fPu635uD5D04qJZUgAAAArJ0UYvw5hHAZT178kEKRqvZ77TLtsiGEbwQg9IlN0zg4AAAArJ1U2fFLCOF3adv+HkL4lxDCvfT130IIXxbf/3Js5QjToxIEAACAtZTCjG+ybftdFoC0/pAFICFVgQhA6KUSBAAAgLUWT178GEK4P7CN/745eN47ZAaCShAAAAA2wDcDm/j31D8EZhKCAAAAsNaag+dtX5C/zNjG79IyMJMQBAAAgE3wXar4KP09fQ8GCUEA+P/bu2MTAIEYCqARnNFpLB3AEa62cjQ3OBsLFUGvM/DeBEeu+3wSAIDfOxaePoUds2WofCUEAQAAIIt7G0QLhCZCEAAAAFJ4aINogdBECAIAAEAm5fTW4udo0dVaDQwAAIA0umVaI2Krw/h2OhcueuMAAAAgGQ0Q2kXEDs9EmpIQYKrQAAAAAElFTkSuQmCC" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/></div>
+</div>
+<p>市場で一般的に、このフォワードレートは「3y1y」と呼ばれる（発音は“three-year into one-year rate”または単に“3’s, 1’s”）。最初の数字は今日からのフォワード期間の長さ（年）を示し、2つ目の数字は基となる債券のテナー（tenor）、すなわち残存期間を示す。マネーマーケットでは、フォワードレートは通常月単位で表される。</p>
+<p>投資家が3年後の1年利回りが3y1yより低いと予想する場合、単純に4年ゼロクーポン債に投資した方がよい。しかし、予想利回りがインプライド・フォワードレートより高い場合、3年債に投資し、追加1年を予想利回りで再投資する方が望ましい。これが、インプライド・フォワードレートが損益分岐の再投資レートとなる理由である。</p>
+<p>式3は、証券がt = Aで開始しt = Bで満期となる場合（期間B – A）のインプライド・フォワードレート（implied forward rate, IFR A,B–A）の一般式である。計算にはスポットレート z_A および長期スポットレート z_B が必要であり、図表5に示される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E3">(1 + <em>Z<sub>A</sub></em>)<em><sup>A</sup> </em> × (1 + <em>IFR<sub>A,B</sub></em><sub>–</sub><em><sub>A</sub></em>)<em><sup>B</sup></em><sup>–</sup><em><sup>A</sup> </em>= (1 + <em>Z<sub>B</sub></em>)<em><sup>B</sup></em>.<span class="cfa-curriculum-display-formula-number">3</span></div>
+<div class="cfa-curriculum-exhibit-figure" id="CFA2439-R-s03-EXH5">
+<h4 class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 5<span style="display: block;">Implied Forward Rates</span></h4>
+<div class="cfa-curriculum-graphic"><img alt="Time from t = 0, to t = A to t = B. At shorter-term bond A, Z sub A until Z sub B. Implied forward rate, IFR A, B minus A. Longer-term bond B. Z sub B from t = 0 until t = B.   " data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1869/files/461552" data-api-returntype="File" id="CFA2439-R-s03-EXH5" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/></div>
+</div>
+<p>式3を用いて、3y1yを求める。3年および4年ゼロクーポン債の満期利回りは3.65%および4.18%である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___9">(1 + <em>Z<sub>A</sub></em>)<em><sup>A</sup> </em> × (1 + <em>IFR<sub>A,B</sub></em><sub>–</sub><em><sub>A</sub></em>)<em><sup>B</sup></em><sup>–</sup><em><sup>A</sup> </em>= (1 + <em>Z<sub>B</sub></em>)<em><sup>B</sup></em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___10">(1 + 0.0365)<sup>3</sup> × (1 + <em>IFR</em><sub>3,1</sub>)<sup>1</sup> = (1 + 0.0418)<sup>4</sup>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___11"><em>IFR</em><sub>3,1 </sub>= 0.057863 = 5.79%</div>
+<p>“3y1y”インプライド・フォワード利回りは5.79%である。投資家が3年後の1年利回りがこれより高いと考える場合、4年債より3年債への投資が望ましい（逆も同様）。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2439-R-s03-EXM3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 3<span style="display: block;">Deriving Forward Rates from Spot Rates</span></h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>図表1のスポットレートに戻る。次の例では年次複利（periodicity = 1）を仮定し、カナダ国債の2y1yインプライド・フォワードレートを計算する。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>2y1yインプライド・フォワードレートを計算するには、Time 0から2年後の1年利回りを推定することになる。したがって、A = 2, B = 3、Z_Aは2年スポットレート、Z_Bは3年スポットレートとなる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___12">(1 + <em>Z<sub>A</sub></em>)<em><sup>A</sup> </em> × (1 + <em>IFR<sub>A,B</sub></em><sub>–</sub><em><sub>A</sub></em>)<em><sup>B</sup></em><sup>–</sup><em><sup>A</sup> </em> = (1 + <em>Z<sub>B</sub></em>)<em><sup>B</sup></em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___13">(1 + 0.0188) × (1 + 0.0277) = (1 + Z2)<sup>2</sup>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___14">IFR<sub>2,1</sub> = 0.0126.</div>
+<p>したがって、2年後の1年債に対するインプライド・フォワードレートは1.26%である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA2439-R-s03-01-03">
+<h3 class="dp-heading">フォワードレートからスポットレートおよびフォワードレートを用いた債券価格評価（Spot Rates from Forward Rates and Bond Pricing with Forward Rates）</h3>
+<p>フォワードレートはスポットレートから計算できるが、逆にスポットレートもフォワードレートから計算可能であり、どちらも債券価格評価に利用できる。例でこのプロセスを示す。</p>
+<p>例えば、現在の1年レートと1年後、2年後、3年後の1年レートが次の通りであるとする：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2439-R-s03-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">期間（Time Period）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">フォワードレート（Forward Rate）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">0y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.88%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.77%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.54%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">4.12%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>これらは年率（annual rates）で、期間設定1（periodicity = 1）で表される。有効年率（effective annual rates）である。最初のレート0y1yは1年スポットレートである。他は1年フォワードレートである。スポットレートは式3を用いて計算できる。2年インプライドスポットレートは2.324%である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___15">(1 + <em>Z<sub>A</sub></em>)<em><sup>A</sup> </em> × (1 + <em>IFR<sub>A,B</sub></em><sub>–</sub><em><sub>A</sub></em>)<em><sup>B</sup></em><sup>–</sup><em><sup>A</sup> </em>= (1 + <em>Z<sub>B</sub></em>)<em><sup>B</sup></em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___16">(1 + 0.0188)<sup>1</sup> × (1 + 0.0277)<sup>1</sup> = (1 + Z<sub>2</sub>)<sup>2</sup>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___17">Z<sub>2</sub> = 0.023240 = 2.324%</div>
+<p>0y1yと1y1yの積が2年スポットレートになることに注目。この性質は一般的に成立し、スポットカーブはフォワードレートの幾何平均を取ることで計算できることを意味する。3年および4年スポットレートも同様に式3を用いて計算できる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___18">(1 + <em>Z<sub>A</sub></em>)<em><sup>A</sup> </em> × (1 + <em>IFR<sub>A,B</sub></em><sub>–</sub><em><sub>A</sub></em>)<em><sup>B</sup></em><sup>–</sup><em><sup>A</sup> </em>= (1 + <em>Z<sub>B</sub></em>)<em><sup>B</sup></em>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___19">(1 + 0.023240)<sup>2</sup> × (1 + 0.0354)<sup>1</sup> = (1 + Z<sub>3</sub>)<sup>3</sup>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___20">Z<sub>3</sub> = 0.027278 = 2.73%</div>
+<p>また、2年スポットレートが0y1yと1y1yの積で求められるため、3年および4年スポットレートもフォワードカーブに沿って単純に掛け合わせることができる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___21">(1.0188 × 1.0277 × 1.0354) = (1+ Z<sub>3</sub>)<sup>3</sup>; Z<sub>3</sub> = 0.27278</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___22">(1.0188 × 1.0277 × 1.0354 × 1.0412) = (1 + Z<sub>4</sub>)<sup>4</sup>; Z<sub>4</sub> = 0.030741</div>
+<p>アナリストが、フォワードカーブを作成する際に使用した債券と同じリスクを持つ4年、年3.75%クーポン債を評価する必要があるとする。インプライドスポットレートを用いると、この債券の価値は額面100あたり102.637となる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___23"><math> <semantics> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.75</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.0188</mn> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.75</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.023240</mn> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.75</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.027278</mn> </mrow> </mfenced> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>103.75</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.030741</mn> </mrow> </mfenced> </mrow> <mn>4</mn> </msup> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>102.637.</mn> </mrow> </semantics> </math></div>
+<p>この債券は、次のようにフォワードレート（forward rates）を用いて評価することもできる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___24"><math> <semantics> <mtable> <mtr> <mtd> <maligngroup></maligngroup> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.75</mn> </mrow> <mrow> <mfenced> <mrow> <mn>1.0188</mn> </mrow> </mfenced> </mrow> </mfrac> </mstyle> <malignmark></malignmark> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.75</mn> </mrow> <mrow> <mfenced> <mrow> <mn>1.0188</mn> <mo>×</mo> <mn>1.0277</mn> </mrow> </mfenced> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>3.75</mn> </mrow> <mrow> <mfenced> <mrow> <mn>1.0188</mn> <mo>×</mo> <mn>1.0277</mn> <mo>×</mo> <mn>1.0354</mn> </mrow> </mfenced> </mrow> </mfrac> </mstyle> </mtd> </mtr> <mtr> <mtd> <maligngroup></maligngroup> <mo>+</mo> <mtext> </mtext> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>103.75</mn> </mrow> <mrow> <mfenced> <mrow> <mn>1.0188</mn> <mo>×</mo> <mn>1.0277</mn> <mo>×</mo> <mn>1.0354</mn> <mo>×</mo> <mn>1.0412</mn> </mrow> </mfenced> </mrow> </mfrac> </mstyle> <mo>=</mo> <mn>102.637.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2439-R-s03-EXM4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 4<span style="display: block;">Deriving Spot Rates from Forward Rates and Pricing Bonds Using Forward Rates</span></h4>
+<p>例えば、カナダ国債（Canadian government bonds）のフォワードレートが次の通り与えられているとする：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2439-R-s03-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">フォワード期間（Forward tenor）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Rates</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">0y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3117%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.8250%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.2587%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1y2y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.0416%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>フォワードレート情報を用いて、カナダ国債の3年スポットレート（three-year spot rate）を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>3年スポットレートは、上記の1年フォワードレートのうち0y1y、1y1y、および2y1yを用いて計算する。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___25">(1.003117 × 1.008250 × 1.012587) = (1 + <em>z</em><sub>3</sub>)<sup>3</sup>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___26"><em>z</em><sub>3</sub> = 0.7977%.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>フォワードレートを用いて、クーポン0.50%の3年カナダ国債の価値を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___27"><math> <semantics> <mrow> <mi>P</mi> <mi>V</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.5</mn> </mrow> <mrow> <mn>1.003117</mn> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>0.5</mn> </mrow> <mrow> <mo stretchy="false">(</mo> <mn>1.003117</mn> <mo>×</mo> <mn>1.008250</mn> <mo stretchy="false">)</mo> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>100.50</mn> </mrow> <mrow> <mo stretchy="false">(</mo> <mn>1.003117</mn> <mo>×</mo> <mn>1.008250</mn> <mo>×</mo> <mn>1.0012587</mn> <mo stretchy="false">)</mo> </mrow> </mfrac> </mstyle> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___28">PV = 99.126</div>
+<p>この例は、前のレッスン問題セットの問題4に対応している。その解答を確認すると、スポットレート（spot rates）を用いるかフォワードレート（forward rates）を用いるかにかかわらず、3年クーポン0.50%のカナダ国債の価格が99.126であることが示されている。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2439-R-s03-Ba">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Question Set</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>パーレート（par rate）と満期利回り（yield-to-maturity, YTM）を比較せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>パーレートとは、債券が額面（par value）で価格付けされ、キャッシュフローがスポットレートで割引される場合の満期利回り（YTM）およびクーポンレートを指す。一方、満期利回り（yield-to-maturity）は、債券の現在価格を用いて債券のキャッシュフローから求められる内部収益率（internal rate of return）である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>以下のスポットレートを用いて3年パーレートを計算せよ。年次複利（annual compounding）を仮定する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2439-R-s03-Tc">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1年</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.0000%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2年</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.8000%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3年</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.6000%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>2.607%</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___29"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <mn>100</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <msub> <mi>z</mi> <mn>1</mn> </msub> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <msub> <mi>z</mi> <mn>2</mn> </msub> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mn>...</mn> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <msub> <mi>z</mi> <mi>N</mi> </msub> <mo stretchy="false">)</mo> </mrow> <mi>N</mi> </msup> </mrow> </mfrac> </mstyle> </mtd> </mtr> <mtr> <mtd> <mrow></mrow> </mtd> </mtr> <mtr> <mtd> <mn>100</mn> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mn>0.03</mn> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mn>0.028</mn> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mn>0.026</mn> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>+</mo> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mn>0.026</mn> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> </mtd> </mtr> <mtr> <mtd> <mrow></mrow> </mtd> </mtr> <mtr> <mtd> <mn>100</mn> <mo>=</mo> <mi>P</mi> <mi>M</mi> <mi>T</mi> <mo>×</mo> <mo stretchy="false">(</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mn>0.03</mn> <mo stretchy="false">)</mo> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mn>0.028</mn> <mo stretchy="false">)</mo> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>1</mn> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mn>0.026</mn> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo stretchy="false">)</mo> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>100</mn> </mrow> <mrow> <msup> <mrow> <mo stretchy="false">(</mo> <mn>1</mn> <mo>+</mo> <mn>0.026</mn> <mo stretchy="false">)</mo> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> </mtd> </mtr> </mtable> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___30"><em>PMT </em>= 2.607%</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>計算に必要なスポットレートに対応するインプライド・フォワードレート（implied forward rate）を確認せよ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2439-R-s03-Td">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1. 1y2y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">A. 3年および2年スポットレート</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2. 3y2y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">B. 3年および1年スポットレート</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3. 2y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">C. 5年および3年スポットレート</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>1. B. 1y2yは1年後の2年フォワードレートである。したがって、3年スポットレートを出発点とし、1年スポットレートを用いてインプライド2年フォワードレートを求める。</p>
+<p>2. C. 3y2yは3年後の2年フォワードレートである。したがって、5年スポットレートを出発点とし、3年スポットレートを用いてインプライド2年フォワードレートを求める。</p>
+<p>3. A. 2y1yは、2年後の1年フォワードレート（one-year forward rate）である。したがって、3年スポットレート（three-year spot rate）を出発点として、2年スポットレート（two-year spot rate）を用いてインプライド1年フォワードレート（implied one-year forward rate）を求める。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>次の文の空欄に入る語を求めよ：インプライド・フォワードレート（implied forward rate）は、スポットレートとフォワードレート間に裁定機会（arbitrage opportunities）が存在しないようにする__________再投資率を表す。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>インプライド・フォワードレート（implied forward rate）は、スポットレートとフォワードレート間に裁定機会が存在しないようにする損益分岐（breakeven）再投資率を表す。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>以下のスポットレートを用いて、2y3yインプライド・フォワードレートを計算せよ。年次複利（annual compounding）を仮定。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2439-R-s03-Te">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Tenor</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">スポットレート（Spot Rate）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1年</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.0%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2年</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.3%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">3年</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">4年</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.6%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">5年</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.4%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>2.467%</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___31">(1 + <em>Z<sub>A</sub></em>)<em><sup>A</sup> </em> × (1 + <em>IFR<sub>A,B</sub></em><sub>–</sub><em><sub>A</sub></em>)<em><sup>B</sup></em><sup>–</sup><em><sup>A</sup> </em> = (1 + <em>Z<sub>B</sub></em>)<em><sup>B</sup> </em></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___32">(1 + 0.023)<sup>2</sup> × (1 + <em>IFR</em><sub>2,3</sub>)<sup>3</sup> = (1 + 0.024)<sup>5</sup></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___33"><em>Z<sub>3</sub> </em>= 2.467%</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">6. </span>
+<p>以下のフォワードレートを用いて、額面100のクーポン2%の満期3年債の価格を計算せよ。また、割引率としてスポットレートまたはフォワードレートを用いた場合でも価格が同等であることを示せ。年次複利を仮定。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2439-R-s03-Tf">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Tenor</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">フォワードレート（Forward Rate）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">0y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2.5%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2y1y</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.5%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>価格は98.619である。</p>
+<p>フォワードレートアプローチ（Forward rate approach）：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___34"><math> <semantics> <mrow> <mi>P</mi> <mi>V</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mn>2</mn> <mrow> <mfenced> <mrow> <mn>1.015</mn> </mrow> </mfenced> </mrow> </mfrac> </mstyle> <malignmark></malignmark> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>2</mn> <mrow> <mfenced> <mrow> <mn>1.015</mn> <mo>×</mo> <mn>1.025</mn> </mrow> </mfenced> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>102</mn> </mrow> <mrow> <mfenced> <mrow> <mn>1.015</mn> <mo>×</mo> <mn>1.025</mn> <mo>×</mo> <mn>1.035</mn> </mrow> </mfenced> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___35"><em>PV</em> = 98.6190.</div>
+<p>インプライド1年、2年、3年スポットレートは次の通り：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___36">One-year = 1.5%.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___37">Two-year = (1.015 × 1.025)<sup>(1/2)</sup> – 1 = 1.999%.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___38">Three-year = (1.015 × 1.025 × 1.035)<sup>(1/3)</sup> – 1 = 2.4967%.</div>
+<p>スポット価格を用いて債券を評価すると次の通り：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___39"><math> <semantics> <mrow> <mi>P</mi> <mi>V</mi> <mo>=</mo> <mstyle displaystyle="true"> <mfrac> <mn>2</mn> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.015</mn> </mrow> </mfenced> </mrow> <mn>1</mn> </msup> </mrow> </mfrac> </mstyle> <malignmark></malignmark> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mn>2</mn> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.01999</mn> </mrow> </mfenced> </mrow> <mn>2</mn> </msup> </mrow> </mfrac> </mstyle> <mo>+</mo> <mstyle displaystyle="true"> <mfrac> <mrow> <mn>102</mn> </mrow> <mrow> <msup> <mrow> <mfenced> <mrow> <mn>1.024967</mn> </mrow> </mfenced> </mrow> <mn>3</mn> </msup> </mrow> </mfrac> </mstyle> <mo>.</mo> </mrow> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___40"><em>PV</em> = 98.6190.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">7. </span>
+<p>5年投資期間を持つ投資家が、次の2つの戦略のうちどちらを最適に選択するか示せ：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2439-R-s03-L1">
+<li class="cfa-curriculum-list-item">3年国債（government bond）を3%スポットレートで購入し、その後、予想される将来の2年利回りで2年間再投資する。</li>
+<li class="cfa-curriculum-list-item">5年国債（government bond）を4%スポットレートで購入する。</li>
+</ul>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>3年後の2年フォワードレート（implied two-year forward rate in three years）を計算せよ：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___41">(1 + <em>Z<sub>A</sub></em>)<em><sup>A</sup></em> × (1 + <em>IFR<sub>A,B</sub></em><sub>–</sub><em><sub>A</sub></em>)<em><sup>B</sup></em><sup>–</sup><em><sup>A</sup> </em> = (1 + <em>Z<sub>B</sub></em>)<em><sup>B</sup>.</em></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___42">(1 + 0.03)<sup>3</sup> × (1 + IFR<sub>3,2</sub>)<sup>2</sup> = (1 + 0.04)<sup>5</sup>.</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2439-R-s03-E___43"><em>IFR</em><sub>3,2 </sub>= 5.52%</div>
+<p>投資家が3年後の2年利回りが5.52%より高いと考える場合、3年国債を購入してより高い利率で再投資する方が有利である。2年利回りが5.52%未満と考える場合は、5年国債を購入する方が望ましい。インプライド・フォワードレートは損益分岐（breakeven）再投資率を表す。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ParRateContent">
+<p>債券のキャッシュフローの現在価値が額面（par）と等しくなる満期利回り（yield-to-maturity）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ImpliedForwardRateContent">
+<p>現在の金利の期間構造（term structure of interest rates）から導出される、将来期間の金利または利回り（interest rate or yield）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TenorContent">
+<p>固定利付証券（fixed-income instrument）の残存期間（remaining time-to-maturity）。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146242_902_Maturity_Structure_of_Interest_Rates_and_Spot_Rates.html" >← 前へ</a>
+  <span class="title">9.03 | Par and Forward Rates</span>
+  <a href="courses_1869_modules_items_146256_904_Spot_Par_and_Forward_Yield_Curves_and_Interpreting_Their_Relationship.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

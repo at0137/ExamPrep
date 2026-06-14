@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.05 | Systematic and Nonsystematic Risk</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0160-R-s05" title="2.05 | Systematic and Nonsystematic Risk"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール(Module) 2: ポートフォリオリスクとリターン(Portfolio Risk and Return): パートII 2.05 | システマティックリスク(Systematic Risk)と非システマティックリスク(Nonsystematic Risk)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">システマティックリスク(Systematic Risk)および非システマティックリスク(Nonsystematic Risk)を説明し、なぜ投資家が非システマティックリスクに対して追加リターンを期待すべきでないかを含めて解説する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>ポートフォリオを構築する際、相関(correlation)の概念と、完全でない相関がポートフォリオのリスクを分散できる仕組みを理解することが重要です。その結果、単独で保有する資産のリスクは、同じ資産がポートフォリオの一部である場合のリスクよりも大きくなることがあります。資産のリスクは環境によって異なるため、投資家はどの種類のリスクを考慮すべきか、またそのリスクはどのように価格付けされるべきかを検討する必要があります。本節では、証券またはポートフォリオの総リスクをシステマティックリスク(Systematic Risk)と非システマティックリスク(Nonsystematic Risk)に分解することでリスクの価格付け(pricing of risk)の問題を扱います。これらのリスクの意味、計算方法、資産の価格付けにおける関連性も議論されます。</p>
+<section id="CFA0160-R-s05-01">
+<h3 class="dp-heading">システマティックリスク(Systematic Risk)と非システマティックリスク(Nonsystematic Risk)</h3>
+<p>システマティックリスク(Systematic Risk)は、非分散化不可(non-diversifiable)または市場リスク(market risk)とも呼ばれ、市場全体または経済全体に影響を与えるリスクです。これに対して、非システマティックリスク(Nonsystematic Risk)は特定の企業や業界に関連するリスクであり、企業固有(company-specific)、業界固有(industry-specific)、分散可能(diversifiable)、または特異性リスク(idiosyncratic risk)とも呼ばれます。</p>
+<p>システマティックリスク(Systematic Risk)は回避できず、市場全体に内在するリスクです。市場内に固有で市場全体に影響を及ぼすリスク要因を含むため非分散化不可です。システマティックリスク(Systematic Risk)を構成する要因には、金利(interest rates)、インフレ(inflation)、景気循環(economic cycles)、政治的不確実性(political uncertainty)、広範な自然災害(widespread natural disasters)などがあります。これらの事象は市場全体に影響を及ぼし、その影響を避ける方法はありません。システマティックリスク(Systematic Risk)は、選択やレバレッジ(leverage)を用いることで拡大することも、ポートフォリオに低相関(low correlation)の証券を含めることで軽減することも可能です（ただし、既にポートフォリオに含まれていない場合に限ります）。</p>
+<p>非システマティックリスク(Nonsystematic Risk)は、特定の資産や業界に限定され、同資産クラス外の資産には影響しないリスクです。非システマティックリスク(Nonsystematic Risk)の例として、薬の臨床試験の失敗や航空機事故があります。これらの事象は直接的に該当する企業や業界に影響しますが、遠く離れた資産には影響を及ぼしません。投資家は、相互に高い相関を持たない資産でポートフォリオを構築することで、非システマティックリスク(Nonsystematic Risk)を分散(diversification)して回避できます。</p>
+<p>本節の後半で、各リスクの式(expression)を導出します。システマティック分散(variance)と非システマティック分散の合計が、証券またはポートフォリオの総分散(total variance)に等しいことがわかります。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___41">Total variance = Systematic variance + Nonsystematic variance</div>
+<p>この等式は分散に関するものですが、総リスク(total risk)をシステマティックリスク(Systematic Risk)と非システマティックリスク(Nonsystematic Risk)の合計として言及する場合が頻繁にあります。その場合、標準偏差ではなく分散を指しています。</p>
+<section id="CFA0160-R-s05-01-01">
+<h4>リスクの価格付け(Pricing of Risk)</h4>
+<p>資産の価格付けまたは評価(valuing an asset)は、その期待リターン(expected rate of return)の推定に相当します。資産が満期価値(terminal value)を持つ場合（例: 債券の額面価格(face value)）、現在価格が低ければ将来リターンは高く、現在価格が高ければ将来リターンは低くなります。価格とリターンの関係は、2.1.2節で示した評価式でも観察可能です。そのため、リスクの価格(price of risk)の議論では、価格(price)とリターン(return)を時折同義で扱います。</p>
+<p>システマティックリスク(Systematic Risk)と非システマティックリスク(Nonsystematic Risk)を持つ資産を考えます。両方のリスクが価格付けされると仮定します。すなわち、システマティックリスクと非システマティックリスクの両方に対してリターンが得られるとします。もし非システマティックリスク(Nonsystematic Risk)を持つ資産を購入した場合、他の非高相関資産を含めて分散(diversify)することで、その非システマティックリスクを最小化し、最終的には完全に排除できます。結果として、ポートフォリオにはシステマティックリスク(Systematic Risk)のみが残り、非システマティックリスクに対する報酬は得られません。つまり、分散可能リスク(diversifiable risk)には追加報酬は存在せず、効率的市場(efficient market)では、分散可能リスクに対してはゼロリターンが理論的に正しいとされます。</p>
+<p>投資家は非システマティックリスク(Nonsystematic Risk)に対して報酬を受け取るべきではないため、投資家は複数の業界、複数の国、複数の資産クラスに分散投資することで非システマティックリスクを除去する必要があります。将来のリターンは未知であり、勝者だけを選ぶことは不可能なため、分散投資(diversification)により、ある資産クラスの低リターンを別の資産クラスの高リターンで相殺し、ポートフォリオ全体のリスクを低減できます。一方、システマティックリスク(Systematic Risk)は分散できないため、投資家はこれを受け入れることで報酬(compensated)を得る必要があります。システマティックリスクに対して適切なリターンを得られない場合、投資家はそのリスクを受け入れません。</p>
+<p>まとめると、理論によれば、システマティックリスク(Systematic Risk)は価格付けされ、その投資のシステマティックリスクに応じて投資家は報酬を受けます。非システマティックリスク(Nonsystematic Risk)については報酬はなく、リスク回避型(risk-averse)投資家は十分に分散されたポートフォリオのみを保有することが合理的です。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0160-R-EXM4">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i> Example 4<span style="display: block;">Systematic and Nonsystematic Risk</span></h5>
+<ol class="cfa-curriculum-list-decimal" id="CFA0160-R-L6">
+<li class="cfa-curriculum-list-item">次の資産のシステマティックリスク(Systematic Risk)と非システマティックリスク(Nonsystematic Risk)の構成要素を説明してください: 3か月物財務省短期証券(three-month Treasury bill)のようなリスクフリー資産(risk-free asset)、S&amp;P 500のような市場ポートフォリオ(market portfolio)</li>
+<li class="cfa-curriculum-list-item">資産AとBを考えます。資産Aの総リスク(total risk)は資産Bの2倍です。資産Aでは総リスクの3分の2がシステマティックリスク(Systematic Risk)であり、資産Bでは総リスクの全てがシステマティックリスクです。どちらの資産が高い期待リターン(expected rate of return)を持つべきでしょうか。</li>
+</ol>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認(Check Answer)</h4>
+<div class="dp-panel-content">
+<section id="CFA0160-R-s05-01-01-01-01">
+<h4 class="cfa-curriculum-solution">解答1A(Solution to 1A):</h4>
+<p>定義により、リスクフリー資産(risk-free asset)にはリスクはありません。したがって、システマティックリスク(Systematic Risk)も非システマティックリスク(Nonsystematic Risk)もゼロです。</p>
+</section>
+<section id="CFA0160-R-s05-01-01-01-02">
+<h4 class="cfa-curriculum-solution">解答1B(Solution to 1B):</h4>
+<p>前述のように、市場ポートフォリオ(market portfolio)は分散されたポートフォリオ(diversified portfolio)であり、これ以上リスクを分散できません。また、効率的ポートフォリオ(efficient portfolio)とも呼ばれます。そのため、市場ポートフォリオには非システマティックリスクは含まれません。</p>
+</section>
+<section id="CFA0160-R-s05-01-01-01-03">
+<h4 class="cfa-curriculum-solution">解答2(Solution to 2):</h4>
+<p>与えられた事実に基づき、資産Aのシステマティックリスク(Systematic Risk)は資産Bよりも3分の1多いです。システマティックリスクのみが価格付けされるため、資産Aの期待リターン(expected rate of return)は資産Bよりも高くなります。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SystematicRiskContent">
+<p>市場全体または経済全体に影響を与えるリスクであり、回避できず、市場全体に内在するリスクです。システマティックリスク(Systematic Risk)は非分散化不可(non-diversifiable)または市場リスク(market risk)とも呼ばれます。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="NonsystematicRiskContent">
+<p>特定の資産や業界に限定され、同資産クラス外の資産に影響を及ぼす必要のない固有リスク(unique risk)が非システマティックリスク(Nonsystematic Risk)です。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_145835_204_Capital_Market_Theory_CML_-_Leveraged_Portfolios.html" >← 前へ</a>
+  <span class="title">2.05 | Systematic and Nonsystematic Risk</span>
+  <a href="courses_1872_modules_items_145841_206_Return_Generating_Models.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

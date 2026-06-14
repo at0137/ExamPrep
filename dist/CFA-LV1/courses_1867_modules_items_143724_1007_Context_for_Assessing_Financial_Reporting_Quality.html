@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10.07 | Context for Assessing Financial Reporting Quality</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1533-R-s06-R-1" title="10.07 | Context for Assessing Financial Reporting Quality"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール10：財務報告の質（Financial Reporting Quality） 10.07｜財務報告の質を評価するための文脈（Context for Assessing Financial Reporting Quality）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">経営者が低品質な財務報告を行う動機（motivations）および、低品質または不正な財務報告を生み出しやすい条件（conditions）を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>財務報告の質を評価する際には、企業の経営者が低品質な財務報告を行う動機を持っているかどうかを検討することが有用である。もし動機が存在する場合、アナリストは報告環境（reporting environment）が経営者の不正報告（misreporting）を助長する状況にあるかどうかを検討すべきである。また、規制体制（regulatory regime）など、財務報告の質を規律づけるメカニズム（mechanisms）についても考慮することが重要である。</p>
+<section id="CFA1533-R-s06-01-01">
+<h3 class="dp-heading">動機（Motivations）</h3>
+<p>経営者は、市場シェアの喪失（loss of market share）や競合他社より低い収益性（lower profitability）などの不振な業績（poor performance）を隠すために、低品質な財務報告を行う動機を持つ場合がある。Lewis（2012）は、「業績問題を抱える企業、特にそれを一時的（transient）と考えている企業は、将来の利益を犠牲にして現在の利益数値（current earnings numbers）を膨らませる行動を誘発する可能性がある」と述べている。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s06-L1">
+<li class="cfa-curriculum-list-item">不振な業績を隠す必要がない場合でも、経営者はしばしばアナリスト予想（analysts’ forecasts）や自社の予想（management’s own forecasts）に反映された市場期待（market expectations）を達成または上回るインセンティブを持つ。予想を上回ることは、たとえ一時的であっても株価（stock price）を上昇させる可能性がある。さらに、株価の上昇や報告利益（reported earnings）に連動した経営者報酬（management compensation）の増加にもつながる可能性がある。Graham, Harvey, and Rajgopal（2005）は、調査対象の最高財務責任者（chief financial officers, CFOs）が利益を金融市場にとって最も重要な財務指標と考えていることを明らかにした。前期利益（prior-year earnings）やアナリスト予想など、特定のベンチマーク（benchmarks）を達成または上回ることは非常に重要である。著者らは、経営者が「望ましい利益目標（desirable earnings goal）を達成するために会計裁量（accounting discretion）を行使する」さまざまな動機を検討した。利益目標を達成する動機には、株式市場効果（equity market effects）（例：市場参加者との信頼関係の構築や株価への好影響）や取引効果（trade effects）（例：顧客や供給業者との評判の向上）が含まれる。株式市場効果が最も強力なインセンティブであるが、特に小規模企業においては取引効果も重要である。</li>
+<li class="cfa-curriculum-list-item">キャリア上の懸念（career concerns）やインセンティブ報酬（incentive compensation）も会計選択の動機となり得る。例えば、業績の悪い企業で働くことが将来のキャリア機会（future career opportunities）を制限するのではないか、あるいは特定の利益目標を達成しなければボーナスを受け取れないのではないかと経営者が懸念する場合がある。このような場合、経営者は利益を増加させるための会計選択を行う動機を持つ可能性がある。業績がわずかに悪い期間には、収益の前倒し（accelerate）や水増し（inflate）、費用の繰延べ（delay）や過少計上（under-report）を行う可能性がある。逆に、業績が好調な期間には、収益認識を遅らせたり費用認識を前倒ししたりすることで、次期の目標を上回る可能性を高める（すなわち、利益を「貯める（bank）」）ことがある。調査対象の経営者は、インセンティブ報酬よりも報告結果がキャリアに与える影響の方をより重視していると回答している。</li>
+</ul>
+<p>債務契約条項（debt covenants）違反の回避も、経営者が利益を水増しする動機となり得る。Graham, Harvey, and Rajgopalの調査によると、社債契約（bond covenant）違反の回避は高レバレッジかつ収益性の低い企業にとって重要であるが、全体としてはそれほど重要ではない。</p>
+</section>
+<section id="CFA1533-R-s06-01-02">
+<h3 class="dp-heading">低品質な財務報告を生み出す条件（Conditions Conducive to Issuing Low-Quality Financial Reports）</h3>
+<p>前述のとおり、財務結果の中立的な表示からの逸脱は、経営者の選択または法域の財務報告基準によって生じる可能性がある。最終的に、低品質または不正な財務報告を行うという意思決定は個人または複数の個人によってなされる。なぜ個人がそのような選択を行うのかは、必ずしも明らかではない。例えば、すでに1億米ドル以上の純資産（net worth）を持つサンビーム（Sunbeam）の新任CEOが、なぜ期待を下回る業績を認めるのではなく、「ビル・アンド・ホールド（bill-and-hold）」販売による収益の不適切な計上や費用計上時期の操作によって会計不正を行ったのかという疑問がある。</p>
+<p>通常、低品質な財務報告が行われる際には、3つの条件が存在する：機会（opportunity）、圧力または動機（pressure or motivation）、および正当化（rationalization）であり、これらはしばしば不正のトライアングル（fraud triangle）と呼ばれる。機会は、内部統制（internal controls）の不備や取締役会（board of directors）の機能不全といった内部要因、あるいは多様な選択を許容する会計基準や不適切な選択に対する罰則が軽微であるといった外部要因によって生じる可能性がある。動機は、ボーナスなどの個人的理由や将来の資金調達（financing）に対する懸念といった企業的理由による圧力から生じる可能性がある。正当化は重要であり、意思決定者がその選択に不安を感じる場合、自分自身に対してその行為を正当化できる必要がある。</p>
+<p>元エンロン（Enron）の最高財務責任者（CFO）であるアンドリュー・ファストウ（Andrew Fastow）は、2013年の公認不正検査士協会（Association of Certified Fraud Examiners）の年次不正会議（Annual Fraud Conference）での講演において、自分が誤ったことをしていると認識していたが、その決定を正当化するために手続きを踏んでいたと述べている（Pavlo, 2013）。彼は経営陣および取締役会の承認、法務および会計の意見の取得、適切な開示の実施を確実に行った。インセンティブや企業文化は、長期的価値（long-term value）ではなく利益の創出（create earnings）に焦点を当てていた。彼の実刑判決が示すように、彼の行為は誤りであるだけでなく違法であったことは明らかである。</p>
+</section>
+<div class="dp-content-block cfa-curriculum-reflist">
+<h3 class="dp-has-icon cfa-curriculum-reflist"><i aria-hidden="true" class="dp-icon fas fa-clipboard-list" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Reference List</h3>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h3 class="dp-panel-heading cfa-curriculum-reflist-title">参考文献（References）</h3>
+<div class="dp-panel-content">
+<ul>
+<li id="CFA1533-R-s06-R-1-1list">Graham, John, Harvey, Campbell and Rajgopal, Shiva December (2005). “The Economic Implications of Corporate Financial Reporting.” <em>Journal of Accounting and Economics</em> 40 (1-3): 3−73. <a href="https://doi.org/10.1016/j.jacceco.2005.01.002" target="_blank">https://doi.org/10.1016/j.jacceco.2005.01.002</a></li>
+<li id="CFA1533-R-s06-R-1-2list">Lewis, Craig M.“<em>Risk Modeling at the SEC: The Accounting Quality Model.</em>” Speech, the Financial Executives International Committee on Finance and Information Technology (13 December (2012)), <a href="http://www.sec.gov/news/speech/2012/spch121312cml.htm" target="_blank">www.sec.gov/news/speech/2012/spch121312cml.htm</a>.</li>
+<li id="CFA1533-R-s06-R-1-3list">Pavlo, Walter“<em>Former Enron CFO Andrew Fastow Speaks At ACFE Annual Conference</em>,” Forbes (26 June (2013)), <a href="http://www.forbes.com/sites/walterpavlo/2013/06/26/fmr-enron-cfo-andrew-fastow-speaks-at-acfe-annual-conference/" target="_blank">www.forbes.com/sites/walterpavlo/2013/06/26/fmr-enron-cfo-andrew-fastow-speaks-at-acfe-annual-conference/</a>.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1533-R-s06-R-1-2Content">Lewis, Craig M.“<em>Risk Modeling at the SEC: The Accounting Quality Model.</em>” Speech, the Financial Executives International Committee on Finance and Information Technology (13 December (2012)), <a href="http://www.sec.gov/news/speech/2012/spch121312cml.htm" target="_blank">www.sec.gov/news/speech/2012/spch121312cml.htm</a>.</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1533-R-s06-R-1-1Content">Graham, John, Harvey, Campbell and Rajgopal, ShivaDecember (2005). “The Economic Implications of Corporate Financial Reporting.” <em>Journal of Accounting and Economics</em> 40 (1-3): 3−73. <a href="https://doi.org/10.1016/j.jacceco.2005.01.002" target="_blank">https://doi.org/10.1016/j.jacceco.2005.01.002</a></div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-ref" id="CFA1533-R-s06-R-1-3Content">Pavlo, Walter“<em>Former Enron CFO Andrew Fastow Speaks At ACFE Annual Conference</em>,” Forbes (26 June (2013)), <a href="http://www.forbes.com/sites/walterpavlo/2013/06/26/fmr-enron-cfo-andrew-fastow-speaks-at-acfe-annual-conference/" target="_blank">www.forbes.com/sites/walterpavlo/2013/06/26/fmr-enron-cfo-andrew-fastow-speaks-at-acfe-annual-conference/</a>.</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143721_1006_Differentiate_between_Conservative_and_Aggressive_Accounting.html" >← 前へ</a>
+  <span class="title">10.07 | Context for Assessing Financial Reporting Quality</span>
+  <a href="courses_1867_modules_items_143726_1008_Mechanisms_That_Discipline_Financial_Reporting_Quality.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

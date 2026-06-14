@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.02 | Leases</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2425-R-s02-R-1" title="8.02 | Leases"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール8：長期負債および資本に関するトピック（Topics in Long-Term Liabilities and Equity）8.02｜リース（Leases）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">貸手（lessors）および借手（lessees）の観点からリースの財務報告を説明する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>企業は通常、資産の使用権を一括購入（outright purchase）によって取得する。これに対する代替手段として、リース（lease）は対価（consideration）と引き換えに一定期間資産を使用する権利を移転する契約である。資産を使用し対価を支払う当事者を借手（lessee）といい、資産を所有し使用権を付与し対価を受け取る当事者を貸手（lessor）という。</p>
+<p>リースは、資産を一括購入することなくその便益を得る方法である。借手の観点からは、支払手形（note payable）によって資産を取得することに類似した資金調達の一形態である。貸手の観点からは、リースは投資の一形態であり、顧客が一般に分割払いを好むことから、有効な販売戦略ともなり得る。</p>
+<p>リース契約の要件を確認した後、本レッスンではリースの利点、分類、および財務報告について検討する。</p>
+<section id="CFA2425-R-s02-01-01">
+<h3 class="dp-heading">リース会計の要件（Requirements for Lease Accounting）</h3>
+<p>契約がリースである、またはリースを含むためには、次の要件を満たす必要がある：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s02-L1">
+<li class="cfa-curriculum-list-item">特定の原資産（underlying asset）を識別していること；</li>
+<li class="cfa-curriculum-list-item">契約期間中に、その資産から生じる経済的便益のほぼすべてを顧客が取得する権利を有していること；</li>
+<li class="cfa-curriculum-list-item">原資産がどのように、またどの目的のために使用されるかを指示する能力が、供給者（supplier）ではなく顧客にあること。</li>
+</ul>
+<p>例えば、顧客とトラック運送会社との契約が、特定のトラックを指定し、契約期間中に顧客に排他的使用を認め、かつ顧客がその使用方法を指示できる場合、その契約はリースとなる。しかし、顧客が運送会社と有償で貨物輸送契約を結ぶ場合、特定のトラックが識別されず、また顧客が契約期間中にトラックからの経済的便益のほぼすべてを取得するわけではないため、その契約はリースには該当しない。</p>
+</section>
+<section id="CFA2425-R-s02-01-02">
+<h3 class="dp-heading">リースの例（Examples of Leases）</h3>
+<p>リースは最も一般的な資金調達手段の一つである。多くの企業は不動産（real estate）や情報技術資産（information technology assets）の借手である。2014年に国際会計基準審議会（International Accounting Standards Board, IASB）は、14,000社以上の上場企業が借手であり、将来のリース支払額の総額が3.3兆米ドルを超えていることを確認した。図表1はこれらの契約のいくつかの例を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-EXH-1-1">
+<h4 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 1<span style="display: block;">Examples of Leases</span></h4>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">借手（Lessee）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">リース開示抜粋（Lease Disclosure Excerpt）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Alibaba</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">「当社は主に店舗およびショッピングモール、オフィス、倉庫、および土地についてオペレーティング・リース契約を締結している。」</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Copa Airlines</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">「当社は一部の航空機を平均10年の期間の長期リース契約でリースしている。その他のリース資産には、不動産、空港およびターミナル施設、営業所、整備施設、および一般事務所が含まれる。」</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Meta（旧Facebook）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">「当社は一部のオフィス、データセンター、土地、コロケーション施設（colocations）、および設備について、さまざまな解約不能のオペレーティング・リース契約を締結している。」</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Standard Bank</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">「当グループは、さまざまなオフィス、支店スペース、およびATMスペースをリースしている。」</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>出所：各社の2020年および2019年年次報告書</p>
+</div>
+<p>貸手は、不動産投資会社や銀行であることが多いが、AerCap Holdings N.V.のような独立系の専門リース会社も存在する。同社は「航空機リースにおける世界的リーダー」であると自称している。2022年6月30日時点で、同社は1,557機の旅客機を保有し、これらを航空会社にリースしている。</p>
+</section>
+<section id="CFA2425-R-s02-01-03">
+<h3 class="dp-heading">リースの利点（Advantages of Leasing）</h3>
+<p>資産を購入する場合と比較したリースの利点には以下がある：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s02-L2">
+<li class="cfa-curriculum-list-item">初期の現金支出が少ない。リースは通常、頭金（down payment）をほとんど、あるいは全く必要としない。</li>
+<li class="cfa-curriculum-list-item">コスト効率性：リースは担保付借入（secured borrowing）の一形態であり、支払いが行われない場合、貸手は単にリース資産を回収することができる。そのため、リースの実効金利（effective interest rate）は、借手が無担保ローンや債券で支払う金利よりも通常低い。</li>
+<li class="cfa-curriculum-list-item">利便性および資産所有に伴うリスク（陳腐化など）の低減。</li>
+</ul>
+<p>貸手の観点からは、リースは一括販売よりも利点があり、リース期間中に利息収益を得られること、また顧客が少額の分割払いで資産を使用または管理できるようにすることで市場拡大につながる点が挙げられる。</p>
+</section>
+<section id="CFA2425-R-s02-01-04">
+<h3 class="dp-heading">リースの分類：ファイナンスまたはオペレーティング（Lease Classification as Finance or Operating）</h3>
+<p>リースは、資産の購入または賃貸契約のいずれかに類似する場合がある。例えば、耐用年数が10年の自動車について、合計支払額がその公正価値以上となる10年リースは、実質的にその自動車の負債による購入に相当する。一方、耐用年数が20年の機械についての1年リースは賃貸契約に類似する。購入に類似するリースはファイナンス・リース（finance lease）に分類され、それ以外はオペレーティング・リース（operating lease）に分類される。</p>
+<p>より具体的には、以下の5つの基準のいずれかを満たす場合、リースはファイナンス・リースと分類される。これらの基準はIFRSおよびUS GAAPで共通である。いずれの基準も満たさない場合、リースはオペレーティング・リースとなる。これらの基準は、借手および貸手の双方がリースを分類する際に使用される。</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA2425-R-s02-L3">
+<li class="cfa-curriculum-list-item">リースは原資産（underlying asset）の所有権を借手（lessee）に移転する。</li>
+<li class="cfa-curriculum-list-item">借手は原資産を購入するオプションを有しており、かつそれを行使することが合理的に確実である。</li>
+<li class="cfa-curriculum-list-item">リース期間は資産の耐用年数の大部分を占める。</li>
+<li class="cfa-curriculum-list-item">リース料総額の現在価値（present value）が資産の公正価値（fair value）のほぼすべてに等しいか、それを上回る。</li>
+<li class="cfa-curriculum-list-item">原資産は貸手（lessor）にとって代替的な用途がない。</li>
+</ol>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2425-R-s02-EXM-1-1">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 1<span style="display: block;">Lease Identification and Classification</span></h4>
+<section>
+<p>会社Cは会社Dと契約を締結し、今後2年間の各期末にそれぞれ1億円を支払い、その期間中、特定の機械を独占的に使用する。この支払いの現在価値は1億8,600万円である。契約終了時に会社Cは機械を会社Dに返却する。この契約には購入オプションは含まれていない。当該機械は多様な用途で多くの顧客に使用可能である。機械の残存耐用年数は4年であり、公正価値は1億9,000万円である。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2425-R-s02-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>この契約は：</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. リースではない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。この契約は、特定の資産が識別されており、会社Cが排他的に使用し、その使用方法を指示する能力を有しているため、リースである。また、5つの基準のうち1つを満たしているため、ファイナンス・リースである：リース料の現在価値が公正価値のほぼすべてに等しい（186/190 = 98%）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. オペレーティング・リースである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。この契約は、特定の資産が識別されており、会社Cが排他的に使用し、その使用方法を指示する能力を有しているため、リースである。また、5つの基準のうち1つを満たしているため、ファイナンス・リースである：リース料の現在価値が公正価値のほぼすべてに等しい（186/190 = 98%）。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. ファイナンス・リースである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。この契約は、特定の資産が識別されており、会社Cが排他的に使用し、その使用方法を指示する能力を有しているため、リースである。また、5つの基準のうち1つを満たしているため、ファイナンス・リースである：リース料の現在価値が公正価値のほぼすべてに等しい（186/190 = 98%）。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2425-R-s02-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>問題1において当該機械の公正価値が3億円であった場合、契約の分類は変わるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p><span class="cfa-curriculum-option-label">A. </span>No</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。この変更により、リースはファイナンス・リースの5つの基準のいずれも満たさなくなる。いずれの基準も満たさない場合、そのリースはオペレーティング・リースとなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. はい、オペレーティング・リースからファイナンス・リースへ</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。この変更により、リースはファイナンス・リースの5つの基準のいずれも満たさなくなる。いずれの基準も満たさない場合、そのリースはオペレーティング・リースとなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. はい、ファイナンス・リースからオペレーティング・リースへ</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"><span class="dp-icon-content" style="display: none;"> </span></i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Cが正しい。この変更により、リースはファイナンス・リースの5つの基準のいずれも満たさなくなる。いずれの基準も満たさない場合、そのリースはオペレーティング・リースとなる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA2425-R-s02-01-05">
+<h3 class="dp-heading">リースの財務報告（Financial Reporting of Leases）</h3>
+<p>リースの財務報告は、当事者が借手か貸手か、IFRSまたはUS GAAPのいずれを適用しているか、そしてリースがファイナンスかオペレーティングかの分類によって異なる。さらに借手については、特定のリース契約に対する会計上の免除がある：契約期間が12か月以下（IFRSおよびUS GAAP）、または「低価値資産（low-value asset）」で販売価格が最大5,000米ドル（IFRSのみ）の場合、借手はリース料を定額法（straight-line basis）で費用処理することを選択できる。これらの免除は貸手には適用されない。図表2はリース会計のさまざまなパターンを示している。</p>
+<div class="cfa-curriculum-exhibit-figure" id="CFA2425-R-s02-EXH-1-2">
+<h4 class="cfa-curriculum-exhibit-figure-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Exhibit 2<span style="display: block;">Lease Classifications for Lessee and Lessor</span></h4>
+<div class="cfa-curriculum-graphic"><img alt="A diagram showing the relationship between lessees and lessors and the different accounting standards for leases, which are contracts that grant the right to use an asset for a period of time." data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1867/files/459440" data-api-returntype="File" id="CFA2425-R-s02-EXH-1-2" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/></div>
+</div>
+<p>幸いにも、IFRSおよびUS GAAPの双方において貸手の会計処理は実質的に同一であり、借手に関する取扱いの違いも限定的である。</p>
+</section>
+<section id="CFA2425-R-s02-01-06">
+<h3 class="dp-heading">借手の会計処理—IFRS（Lessee Accounting—IFRS）</h3>
+<p>IFRSの下では、借手に対してファイナンス・リースおよびオペレーティング・リースの双方に単一の会計モデルが適用される。リース開始時に、借手は将来のリース支払の現在価値に等しいリース負債（lease payable liability）と使用権資産（right-of-use asset, ROU asset）を貸借対照表に計上する。現在価値の計算に用いる割引率は、リースに内在する利率（rate implicit in the lease）または推定担保付借入利率（secured borrowing rate）である。</p>
+<p>リース負債は、その後、各リース支払により実効金利法（effective interest method）を用いて減少する。各リース支払は、リース負債に割引率を乗じた利息費用（interest expense）と、リース支払額から利息費用を差し引いた元本返済（principal repayment）から構成される。</p>
+<p>使用権資産は、その後、通常はリース期間にわたり定額法で償却（amortized）される。したがって、リース負債と使用権資産は貸借対照表上で同じ帳簿価額（carrying value）から開始するものの、リース負債を減少させる元本返済と使用権資産を減少させる償却費の計算方法が異なるため、その後の期間では乖離するのが一般的である。</p>
+<p>以下は、この取引が財務諸表に与える影響である：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s02-L4">
+<li class="cfa-curriculum-list-item">元本返済控除後のリース負債および累計償却控除後の使用権資産が貸借対照表に計上される。</li>
+<li class="cfa-curriculum-list-item">リース負債に係る利息費用（interest expense）および使用権資産（ROU asset）に関連する償却費（amortization expense）は、損益計算書（income statement）上で別々に表示される。</li>
+<li class="cfa-curriculum-list-item">リース支払のうち元本返済部分（principal repayment）は、キャッシュフロー計算書（statement of cash flows）の財務活動（financing activities）における現金流出として表示され、利息費用は借手の報告方針に応じて、営業活動（operating activities）または財務活動のいずれかに表示される。</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2425-R-s02-EXM-1-2">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 2<span style="display: block;">Lease Impact on Balance Sheet and Income Statement</span></h4>
+<section>
+<p>ドイツに拠点を置く仮想の製造企業であるProton Enterprisesは、機械のリースについて以下の条件を提示されている：リース期間5年、内在利率（implied interest rate）10%、各年末に支払う年間リース料EUR100,000。この場合、機械の現在価値（present value）はEUR379,079となる（Microsoft Excelでは、=PV(10%,5,-100,000)）。当該資産は5年間のリース期間にわたり定額法（straight-line basis）で償却される。ProtonはIFRSを適用している。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>このリースは、期首におけるProtonの貸借対照表にどのような影響を与えるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>ProtonはEUR379,079のリース負債（lease liability）および使用権資産（ROU asset）を計上する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>このリースは、翌年度のProtonの損益計算書にどのような影響を与えるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>利息費用および償却費が損益計算書に計上される。2年目（Year 2）において、利息費用はEUR31,699、償却費はEUR75,816であり、以下の表に示される：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リース支払（Lease Payment）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">利息費用（10% × リース負債）（Interest Expense）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">元本返済（支払額 − 利息）（Principal Repayment）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リース負債（Lease Liability）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">FO.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">FO.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">FO.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">FO.4</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年0（Year 0）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">379,079</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年1（Year 1）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">37,908</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">62,092</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">316,987</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年2（Year 2）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">31,699</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">68,301</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">248,685</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年3（Year 3）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">24,869</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75,131</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">173,554</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年4（Year 4）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17,355</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">82,645</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">90,909</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年5（Year 5）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">9,091</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">90,909</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">120,921</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">379,079</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">償却費（Amortization Expense）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">使用権資産（ROU Asset）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">定額法（Straight-Line）F.1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">F.2</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年0（Year 0）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">379,079</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年1（Year 1）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">303,263</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年2（Year 2）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">227,447</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年3（Year 3）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">151,631</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年4（Year 4）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75,816</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年5（Year 5）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">379,079</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>注：端数処理のため合計が一致しない場合がある（Note: Totals may not sum due to rounding.）</p>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>このリースは、翌年度のProtonのキャッシュフロー計算書にどのような影響を与えるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>元本返済（principal repayments）はキャッシュフロー計算書の財務活動（financing activities）における現金流出として表示され、利息費用（interest expense）はProtonの報告方針に応じて営業活動（operating activities）または財務活動に表示される。前述の表より、2年目の元本返済はEUR68,301、利息費用はEUR31,699であり、合計EUR100,000となる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA2425-R-s02-01-07">
+<h3 class="dp-heading">借手の会計処理—US GAAP（Lessee Accounting—US GAAP）</h3>
+<p>US GAAPの下では、借手に対して2つの会計モデルが存在する：ファイナンス・リース用とオペレーティング・リース用である。ファイナンス・リースの会計モデルはIFRSの借手会計モデルと同一であるが、オペレーティング・リースの会計モデルは異なる。</p>
+<p>オペレーティング・リースの開始時において、借手はリース負債（lease payable liability）および対応する使用権資産（ROU asset）を貸借対照表に計上し、その後、リース支払の元本返済部分および償却によってそれぞれ減少させる。この処理はIFRSの借手と同様である。</p>
+<p>オペレーティング・リースとファイナンス・リースの主な違いは、使用権資産の償却費の計算方法である。オペレーティング・リースでは、借手の使用権資産の償却費はリース支払額から利息費用を差し引いた額となる。この結果、損益計算書に計上される総費用（利息＋償却）はリース支払額と等しくなり、また元本返済と償却が同一の方法で計算されるため、リース負債と使用権資産は常に同額となる。</p>
+<p>以下は、この取引が財務諸表にどのように表示されるかである：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s02-L5">
+<li class="cfa-curriculum-list-item">元本返済控除後のリース負債および累計償却控除後の使用権資産が貸借対照表に計上される。</li>
+<li class="cfa-curriculum-list-item">リース負債に係る利息費用および使用権資産に関連する償却費は、損益計算書において「リース費用（lease expense）」という単一の項目として営業費用（operating expense）に計上される。利息および償却の構成要素は個別には表示されず、他の種類の利息費用や償却費（例：社債の利息、無形資産の償却）とも区分表示されない。</li>
+<li class="cfa-curriculum-list-item">リース支払全額がキャッシュフロー計算書の営業活動における現金流出として表示される。利息および元本返済の構成要素は区別して表示されない。</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2425-R-s02-EXM-1-3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 3<span style="display: block;">Lessee Accounting—Operating Lease under US GAAP</span></h4>
+<section>
+<p>例2の機械のリースについて、Proton Enterprisesがこれをオペレーティング・リースとして分類した場合の会計上の違いを考えよ。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>財務諸表はどのように異なるか（もし異なる場合）。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>最初のステップは、オペレーティング・リースの場合のリース負債および使用権資産（ROU asset）の償却表を作成することである。リース負債の償却は、例2のファイナンス・リースにおける列FO.1～FO.4と同一である。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-c">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">償却費（リース支払額 − 利息）（Amortization Expense）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">使用権資産（ROU Asset）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リース費用（償却＋利息）（Lease Expense）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.3</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年0（Year 0）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">379,079</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年1（Year 1）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">62,092</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">316,987</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年2（Year 2）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">68,301</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">248,685</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年3（Year 3）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">75,131</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">173,554</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年4（Year 4）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">82,645</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">90,909</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">年5（Year 5）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">90,909</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">100,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">379,078</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">500,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>次に、ファイナンス・リースとオペレーティング・リースの両方のケースにおける財務諸表への影響を比較する。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-d">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">貸借対照表（Balance Sheet）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年1（Year 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年2（Year 2）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年3（Year 3）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年4（Year 4）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年5（Year 5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ファイナンス・リース（Finance lease）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">使用権資産（ROU asset）、純額（net）：F.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">303,263</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">227,447</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">151,631</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">リース負債（lease liability）、純額（net）：FO.4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">316,987</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">248,685</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">173,554</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90,909</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">オペレーティング・リース（Operating lease）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">使用権資産（ROU asset）、純額（net）：O.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">316,987</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">248,685</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">173,554</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90,909</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">リース負債（lease liability）、純額（net）：FO.4</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">316,987</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">248,685</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">173,554</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90,909</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ファイナンス・リースの方が償却費（amortization expense）が高いため、各期間において使用権資産はより低くなる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-e">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">損益計算書（Income Statement）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年1（Year 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年2（Year 2）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年3（Year 3）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年4（Year 4）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年5（Year 5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ファイナンス・リース（Finance lease）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">償却費（Amortization）：F.1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">75,816</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">75,816</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利息（Interest）：FO.2</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">37,908</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">31,699</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">24,869</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">17,355</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9,091</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">113,724</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">107,515</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,685</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">93,171</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">84,907</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">オペレーティング・リース（Operating lease）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">リース費用（Lease expense）：O.3</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>総費用は、1～3年目ではファイナンス・リースの方が高いが、4年目および5年目では低くなる。最大の違いは表示区分であり、ファイナンス・リースでは償却費と利息が個別に表示されるのに対し、オペレーティング・リースではリース費用が営業費用として表示される。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-f">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">キャッシュフロー計算書（Statement of Cash Flows）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年1（Year 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年2（Year 2）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年3（Year 3）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年4（Year 4）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年5（Year 5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ファイナンス・リース（Finance lease）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業活動によるキャッシュフロー（Cash flow from operating activities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(37,908)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(31,699)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(24,869)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(17,355)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(9,091)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">財務活動によるキャッシュフロー（Cash flow from financing activities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(62,902)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(68,301)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(75,131)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(82,645)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(90,909)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">Total</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">オペレーティング・リース（Operating lease）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業活動によるキャッシュフロー（Cash flows from operating activities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(100,000)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>キャッシュフロー計算書における差異は表示区分のみであり、いずれの場合も総現金流出はリース支払額と等しい。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>その他の条件が同じ場合、この分類はEBITDAマージン（EBITDA margin）、総資産回転率（total asset turnover）、および1株当たりキャッシュフロー（cash flow per share）にどのような影響を与えるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>以下の表は、分類が各財務比率に与える影響を示している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-g">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Ratio</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">計算式（Formula）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">ファイナンス・リースの代わりにオペレーティング・リースを用いた場合の影響（Impact of Using an Operating Lease Instead of a Finance Lease）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">EBITDAマージン（EBITDA margin）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m1"> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mtext>EBITDA</mtext> </mrow> <mrow> <mtext>Total revenues</mtext> </mrow> </mfrac> </mstyle> </mrow> </math> </span></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">低下：リース費用が利息および償却ではなく営業費用として分類されるため。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総資産回転率（Asset turnover）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m2"> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mtext>Total revenues</mtext> </mrow> <mrow> <mtext>Total assets</mtext> </mrow> </mfrac> </mstyle> </mrow> </math> </span></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">低下：オペレーティング・リースでは、1～3年目において使用権資産（ROU asset）の償却がより遅いため、総資産がより大きくなるため。</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">1株当たりキャッシュフロー（Cash flow per share）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"><span class="cfa-curriculum-display-inline-formula"> <math id="m3"> <mrow> <mstyle displaystyle="true"> <mfrac> <mrow> <mtext>Cash flow from operations</mtext> </mrow> <mrow> <mtext>Shares outstanding</mtext> </mrow> </mfrac> </mstyle> </mrow> </math> </span></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">低下：キャッシュフロー計算書の営業活動において、ファイナンス・リースでは利息費用のみが含まれるのに対し、オペレーティング・リースではリース支払全額が含まれるため、営業キャッシュフローが低下する。</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section id="CFA2425-R-s02-01-08">
+<h3 class="dp-heading">貸手の会計処理（Lessor Accounting）</h3>
+<p>貸手の会計処理は、IFRSおよびUS GAAPの下で実質的に同一である。両基準において、貸手はリースをファイナンス・リースまたはオペレーティング・リースに分類し、それに基づいて財務報告を行う。US GAAPの下ではファイナンス・リースを「売上型（sales-type）」または「直接金融型（direct financing）」として認識するが、この区別は分析者の観点からは重要ではない。</p>
+<p>ファイナンス・リース開始時において、貸手は将来のリース支払の現在価値に等しいリース債権（lease receivable）を資産として認識し、リース資産の認識を中止（de-recognize）するとともに、その差額を損益（gain or loss）として認識する。現在価値の計算に用いる割引率はリースに内在する利率（rate implicit in the lease）である。</p>
+<p>リース債権は、その後、実効金利法（effective interest method）を用いて各リース支払により減少する。各リース支払は、リース債権に割引率を乗じた利息収益（interest income）と、現金受取額との差額である元本回収額（principal proceeds）から構成される。</p>
+<p>この取引は財務諸表に以下の影響を与える：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s02-L6">
+<li class="cfa-curriculum-list-item">元本回収控除後のリース債権が貸借対照表に計上される。</li>
+<li class="cfa-curriculum-list-item">利息収益は損益計算書に計上される。リースが企業の主要な事業活動である場合（金融機関や独立系リース会社で一般的）、収益（revenue）として表示される。</li>
+<li class="cfa-curriculum-list-item">現金受取額全額がキャッシュフロー計算書の営業活動における現金流入として表示される。</li>
+</ul>
+<p>オペレーティング・リースの会計処理は異なる：この契約は本質的に賃貸契約であるため、貸手はリース資産を帳簿上に保持し、リース収益（lease revenue）を定額法で認識する。これは資金調達とは見なされないため、利息収益は認識されない。</p>
+<p>この取引は財務諸表に以下の影響を与える：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s02-L7">
+<li class="cfa-curriculum-list-item">貸借対照表は影響を受けない。貸手は引き続き、取得原価から累計減価償却を控除した額でリース資産を認識する。</li>
+<li class="cfa-curriculum-list-item">リース収益は損益計算書において定額法で認識される。減価償却費は引き続き認識される。</li>
+<li class="cfa-curriculum-list-item">現金受取額全額がキャッシュフロー計算書の営業活動における現金流入として表示される。これはファイナンス・リースと同様である。</li>
+</ul>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2425-R-s02-EXM-1-4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 4<span style="display: block;">Lessor Accounting</span></h4>
+<section>
+<p>例2および例3におけるProtonの機械リースを貸手の観点から検討する。リース直前の資産の帳簿価額（carrying value）がEUR350,000、累計減価償却がゼロであり、貸手はこれを5年間にわたり定額法で減価償却するものとする。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>リースがファイナンス・リースまたはオペレーティング・リースに分類されることにより、貸手の財務諸表はどのように影響を受けるか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>貸借対照表における差異は重要である。なぜなら、ファイナンス・リースでは貸手は資産の認識を中止（de-recognize）し、リース債権（lease receivable）を認識するのに対し、オペレーティング・リースでは貸手は引き続き資産を認識し、その耐用年数にわたって減価償却するためである。本ケースでは、リース支払の現在価値（present value）が資産の帳簿価額（carrying value）を大きく上回っているため、ファイナンス・リースの分類は資産の大幅な増加をもたらす。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-h">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">貸借対照表（Balance Sheet）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年1（Year 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年2（Year 2）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年3（Year 3）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年4（Year 4）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年5（Year 5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ファイナンス・リース（Finance lease）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">リース債権（純額）（Lease receivable, net）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">316,987</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">248,685</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">173,554</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">90,909</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">オペレーティング・リース（Operating lease）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産（純額）（Property, plant, and equipment, net）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">280,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">210,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">140,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">70,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>損益計算書における差異も重要である。なぜなら、ファイナンス・リースの貸手は実効金利法（effective interest method）に基づいて利息収益（interest revenue）を認識するのに対し、オペレーティング・リースの貸手は定額法（straight-line）でリース収益（lease revenue）を認識するためである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-i">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">損益計算書（Income Statement）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年1（Year 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年2（Year 2）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年3（Year 3）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年4（Year 4）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年5（Year 5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ファイナンス・リース（Finance lease）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">利息収益（Interest revenue）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">37,908</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">31,699</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">24,869</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">17,355</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9,091</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">オペレーティング・リース（Operating lease）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">リース収益（Lease revenue）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>しかし、キャッシュフロー計算書は、貸手にとってファイナンス・リースとオペレーティング・リースの間で差異はない：リース支払による現金流入の全額が営業活動として認識される。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s02-T-1-j">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">キャッシュフロー計算書（Statement of Cash Flows）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年1（Year 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年2（Year 2）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年3（Year 3）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年4（Year 4）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年5（Year 5）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ファイナンス・リース（Finance lease）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業活動によるキャッシュフロー（Cash flows from operating activities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">オペレーティング・リース（Operating lease）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業活動によるキャッシュフロー（Cash flows from operating activities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">100,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2425-R-s02-FN-1-1Content">
+<p><sup>1</sup> IFRS, “IASB Shines Light on Leases by Bringing Them onto the Balance Sheet,” 13 January 2016, <a href="http://www.ifrs.org/news-and-events/2016/01/iasb-shines-light-on-leases-by-bringing-them-onto-the-balance-sheet" target="_blank">www.ifrs.org/news-and-events/2016/01/iasb-shines-light-on-leases-by-bringing-them-onto-the-balance-sheet</a>.</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2425-R-s02-FN-1-2Content">
+<p>AerCap Holdings N.V.の2019年12月31日終了事業年度に関する年次報告書（Form 20-F）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA2425-R-s02-FN-1-3Content">
+<p>ただし、貸手（lessors）は資産の陳腐化（obsolescence）を認識しており、そのコストおよびリスクをリース料に織り込んでいる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LesseeContent">
+<p>不動産の所有者または貸手とリース契約を締結する借手または物件利用者。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LessorContent">
+<p>不動産を借手または物件利用者に貸し出す不動産所有者または管理者。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="FinanceLeaseContent">
+<p>原資産（underlying asset）の購入または売却により近い性質を持つリースの一種。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="OperatingLeasesContent">
+<p>原資産の賃貸により近い性質を持つリースの一種。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143649_801_Introduction.html" >← 前へ</a>
+  <span class="title">8.02 | Leases</span>
+  <a href="courses_1867_modules_items_143655_803_Financial_Reporting_for_Postemployment_and_Share-Based_Compensation_Plans.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

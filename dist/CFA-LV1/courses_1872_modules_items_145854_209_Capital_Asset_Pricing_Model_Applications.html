@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.09 | Capital Asset Pricing Model: Applications</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0160-R-s09" title="2.09 | Capital Asset Pricing Model: Applications">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：ポートフォリオのリスクとリターン：パートII 2.09 | 資本資産価格モデル（CAPM）：応用（Applications）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">CAPMを用いて資産の期待リターンを計算し、解釈せよ</li>
+<li class="cfa-curriculum-los-item">CAPMおよび証券市場線（SML）の応用を説明し、実演せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>CAPMは、リスクおよびリスクとリターンの関係について強力で直感的に理解しやすい予測を提供する。CAPMは理論的観点から重要であるだけでなく、実務においても広く用いられている。本節では、このモデルの一般的な応用について議論する。これらのツールをさまざまな状況に適用する際には、CAPMおよびSMLが、ある一定のリスク水準に対して市場で期待されるべきリターンを示す関数であることを理解することが重要である。実際のリターンは期待リターンと大きく異なる場合がある。</p>
+<p>CAPMの応用には、資本予算（capital budgeting）のための期待リターンの推定、パフォーマンス評価のためにポートフォリオまたはポートフォリオマネージャーの実際のリターンをCAPMによるリターンと比較すること、そして証券選択の基礎として代替的なリターン推定とCAPMリターンを分析することが含まれる。本節ではこれらの応用についてより詳細に説明する。</p>
+<section id="CFA0160-R-s09-01">
+<h3 class="dp-heading">期待リターンの推定（Estimate of Expected Return）</h3>
+<p>資産のシステマティックリスクが与えられれば、期待リターンはCAPMを用いて計算できる。資産の価格は、将来のすべてのキャッシュフローを要求収益率（required rate of return）で割り引いた現在価値の合計であることを思い出そう。この割引率、すなわち要求収益率は、その資産のリスクに見合ったものである。CAPMから得られる期待収益率は、通常、株式、債券、不動産などの資産を評価する際に投資家が最初に用いる推定値である。また、CAPMによる要求収益率は資本予算においてプロジェクトの経済的実現可能性を判断するためにも用いられる。正味現在価値（net present value）を計算する際には、投資および純収益をキャッシュフローとして扱い、それらを要求収益率で割り引く。プロジェクトのリスクに基づく要求収益率はCAPMを用いて算出される。</p>
+<p>リスクとリターンは投資意思決定のほぼすべての側面に関わるため、CAPMが多くの場面で期待リターンの推定に用いられるのは当然である。他の例としては、規制当局による規制企業の資本コストの算出や、公正な保険料の設定などがある。次の例では、CAPMを資本予算に適用する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0160-R-EXM9">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例9 CAPMの資本予算への応用（Application of the CAPM to Capital Budgeting）</h4>
+<section>
+<p>GlaxoSmithKline Plcは、新薬開発の経済的実現可能性を検討している。初年度（Year 1）の初期投資は5億ドルである。2年目（Year 2）の投資は2億ドルである。この薬が開発され成功する確率は50%である。成功した場合、3年目にさらに1億ドルを投資する必要があるが、3年目のプロジェクトからの収入は（3年目の追加投資を除いて）5億ドルとなる。4年目、5年目、6年目には、成功した場合、毎年4億ドルの収益を得る。6年目の終了時には、この薬のすべての権利を6億ドルで売却する予定である。もし薬が失敗した場合、これまでの投資はすべて回収不能となる。市場リターンは12%、無リスク利子率は2%、プロジェクトのベータは2.3とする。すべてのキャッシュフローは各年末に発生するものとする。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>成功確率を用いて期待年間キャッシュフローを計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0160-R-s09-01-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>3年目から6年目のキャッシュフローは50%の確率で発生する。この点を考慮すると、期待年間キャッシュフローは次のようになる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___76">Year 1: –$500
+                                                million (outflow)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___77">Year 2: –$200
+                                                million (outflow)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___78">Year 3: 50% of
+                                                –$100 million (outflow) + 50% of $500 million
+                                                = $200 million</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___79">Year 4: 50% of $400
+                                                million = $200 million</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___80">Year 5: 50% of $400
+                                                million = $200 million</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___81">Year 6: 50% of $400
+                                                million + 50% of $600 million = $500
+                                                million</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>期待リターンを計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0160-R-s09-01-01-02">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>プロジェクトの期待リターン（要求収益率）はCAPMを用いて計算され、</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>正味現在価値（NPV）を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0160-R-s09-01-01-03">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>正味現在価値は、すべてのキャッシュフローを割り引いた現在価値である：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0160-R-E___82">
+<math>
+<semantics>
+<mtable>
+<mtr>
+<mtd>
+<mi>N</mi>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>t</mi>
+<mo>=</mo>
+<mn>0</mn>
+</mrow>
+<mi>T</mi>
+</munderover>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>C</mi>
+<msub>
+<mi>F</mi>
+<mi>t</mi>
+</msub>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<msub>
+<mi>r</mi>
+<mi>t</mi>
+</msub>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mi>t</mi>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</mstyle>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo>−</mo>
+<mn>500</mn>
+</mrow>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.25</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mo>−</mo>
+<mn>200</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.25</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>200</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.25</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>3</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>200</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.25</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>4</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mtext> </mtext>
+<mtext> </mtext>
+<mtext> </mtext>
+<mtext> </mtext>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>200</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.25</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>500</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.25</mn>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+<mn>6</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mo>=</mo>
+<mo>−</mo>
+<mtext> </mtext>
+<mn>400</mn>
+<mo>−</mo>
+<mn>128</mn>
+<mo>+</mo>
+<mn>102.40</mn>
+<mo>+</mo>
+<mn>81.92</mn>
+<mo>+</mo>
+<mn>65.54</mn>
+<mo>+</mo>
+<mn>131.07</mn>
+<mo>=</mo>
+<mo>−</mo>
+<mn>147.07.</mn>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math>
+</div>
+<p>正味現在価値が負（−1億4,707万ドル）であるため、このプロジェクトはGlaxoSmithKlineによって採択されるべきではない。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1872_modules_items_145849_208_Capital_Asset_Pricing_Model_Assumptions_and_the_Security_Market_Line.html" >← 前へ</a>
+  <span class="title">2.09 | Capital Asset Pricing Model: Applications</span>
+  <a href="courses_1872_modules_items_145858_210_Beyond_CAPM_Limitations_and_Extensions_of_CAPM.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

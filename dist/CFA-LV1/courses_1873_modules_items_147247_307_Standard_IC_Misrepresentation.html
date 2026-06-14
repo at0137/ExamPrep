@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.07 | Standard I(C) Misrepresentation</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0008-R-s07-R-1" title="3.07 | Standard I(C) Misrepresentation">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール3：基準I～VIIのガイダンス 3.07｜基準I(C) 虚偽表示（Misrepresentation）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">職業上の誠実性に関わる状況において、倫理規範（Code of Ethics）および職業行動基準（Standards of Professional Conduct）の適用を示す</li>
+<li class="cfa-curriculum-los-item">倫理規範および職業行動基準の違反を防止するための慣行および手順を推奨する</li>
+<li class="cfa-curriculum-los-item">倫理規範および基準に準拠する行為と、違反する行為を特定する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<div class="dp-content-block cfa-curriculum-shaded-box" id="">
+<h3 class="dp-has-icon cfa-curriculum-shaded-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-info-circle" style="background: inherit !important;"> </i>
+</h3>
+<p>会員および受験者は、投資分析、推奨、行動、その他の専門活動に関して、故意に虚偽表示を行ってはならない。</p>
+</div>
+<section id="CFA0008-R-s07-01-01">
+<h3 class="dp-heading">ガイダンス</h3>
+<p>ハイライト：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0008-R-s07-L1">
+<li class="cfa-curriculum-list-item">投資実務への影響（Impact on Investment Practice）</li>
+<li class="cfa-curriculum-list-item">パフォーマンス報告（Performance Reporting）</li>
+<li class="cfa-curriculum-list-item">ソーシャルメディア（Social Media）</li>
+<li class="cfa-curriculum-list-item">省略（Omissions）</li>
+<li class="cfa-curriculum-list-item">盗用（Plagiarism）</li>
+<li class="cfa-curriculum-list-item">雇用主のために行った業務（Work Completed for Employer）</li>
+</ul>
+<p>信頼は投資専門職の基盤である。投資家は、自らの財務状況を信頼して預けた相手から提供される情報や陳述に依拠できなければならない。虚偽または誤解を招く陳述を行う投資専門家は、投資家に損害を与えるだけでなく、投資専門職に対する信頼を低下させ、資本市場全体の健全性を脅かす。</p>
+<p>虚偽表示（misrepresentation）とは、事実の不正確な陳述や省略、またはその他誤解を招く陳述のことを指す。会員または受験者は、意図的に情報を省略したり誤って伝えたり、口頭の表現、広告（新聞・パンフレット等）、電子コミュニケーション、書面資料（公開済みか否かを問わず）において、企業、組織、証券に関して虚偽の印象を与えてはならない。この文脈における「意図的に（knowingly）」とは、会員または受験者が虚偽表示が行われていること、または省略された情報が投資意思決定に影響を与える可能性があることを知っている、または知るべきであったことを意味する。</p>
+<p>書面資料には、リサーチレポート、引受書類、企業財務報告書、市場レター、新聞コラム、書籍などが含まれるが、これに限定されない。電子コミュニケーションには、インターネット通信、ウェブページ、モバイルアプリケーション、電子メールなどが含まれる。ウェブページを使用する会員および受験者は、掲載情報が最新であることを定期的に確認すべきである。また、サイトの整合性および安全性を保護するための合理的な予防措置を講じ、情報を誤って表示せず、完全な開示が行われるようにする必要がある。</p>
+<p>基準I(C)は、変動性のある投資に対して特定の利回りを保証することを会員および受験者に禁止している。ほとんどの投資にはリスクが含まれ、その利回りは本質的に予測不可能である。このような投資において、特定の利回りや投資元本の保全を保証すること（例：「今年株式で8%の利回りを保証します」や「この投資で損失は出ません」）は、投資家に誤解を与えるものである。ただし、投資商品自体に保証が組み込まれている場合や、機関が損失を補償することに同意している場合に、会員および受験者が顧客に情報を提供することは禁止されない。</p>
+<section id="CFA0008-R-s07-01-01-01">
+<h4>投資実務への影響</h4>
+<p>会員および受験者は、資格・認定、所属企業の資格や提供サービス、パフォーマンス記録や企業の記録、投資の特性など、実務のいかなる側面も虚偽表示してはならない。会員または受験者の専門活動に関連する虚偽表示は、本基準違反となる。</p>
+<p>会員および受験者は、第三者情報を組み込む際には注意と勤勉さをもって行うべきである。外部の信用格付け、リサーチ、推薦状、マーケティング資料の使用による虚偽表示は、その専門家の業務慣行に影響を及ぼす場合、その投資専門家の責任となる。</p>
+<p>外部マネージャーを通じた投資は、企業の中核的能力外の分野における投資方法として拡大している。会員および受験者は、外部マネージャーの利用意図を開示し、当該マネージャーの投資慣行を自らのものとして表示してはならない。外部マネージャーの関与度は時間とともに変化する可能性があるが、適切な開示は虚偽表示を避けるために重要である。特に主要活動が単一の外部マネージャーへの直接投資である場合は注意が必要である。基準V(B)「顧客および潜在顧客とのコミュニケーション（Communication with Clients and Prospective Clients）」では、企業の投資慣行の伝達について詳しく説明している。</p>
+</section>
+<section id="CFA0008-R-s07-01-01-02">
+<h4>パフォーマンス報告</h4>
+<p>ベンチマーク選定プロセスも虚偽表示が生じやすい領域である。会員および受験者は、戦略と比較できないベンチマークを提示することでパフォーマンス記録の成功を誤って示す可能性がある。また、ベンチマーク結果がファンドや顧客の結果と比較可能な基準で報告されなければ、顧客は誤解される。最善実務は、利用可能なオプションの中から最も適切なベンチマークを選択することである。適切なベンチマークを透明性高く提示することは、顧客が投資判断に役立つ情報を得る上で重要である。</p>
+<p>ただし、基準I(C)は遵守のために常にベンチマークを提示することを要求しているわけではない。投資戦略の複雑性や多様性により、適切なベンチマークを表示できない場合もある。さらに、一部の投資戦略では、投資資産の機会セットを反映していない参照指数（例：ヘッジファンドがパフォーマンスを「キャッシュプラス」で比較）を使用する場合がある。このような場合、会員および受験者は、パフォーマンスの虚偽表示を避けるため、参照指数使用の理由を開示するよう合理的な努力をすべきである。また、パフォーマンス評価や関連手数料計算に使用する適切なベンチマークについて、顧客と継続的に議論すべきである。</p>
+<p>流動性の低い、または取引されない証券の評価に複数の情報源がある場合にも虚偽表示が生じる可能性がある。選択肢が複数ある場合、会員および受験者はより高い評価を得るために提供者を切り替えたくなるかもしれない。評価の操作は、証券の価値を誤って示し、売却や保有の判断を誤らせ、顧客に過剰な手数料を課す結果につながる可能性がある。</p>
+<p>会員および受験者は、顧客に対して正確かつ信頼性のある証券価格情報を一貫して提供するために合理的な措置を取るべきである。価格提供者を変更する際は、単に新しい提供者の証券の現在価値が高いという理由だけで決定すべきではない。一貫性のある情報提供は、流動性の低い証券の評価プロセスの信頼性を高める。顧客は、自身のポートフォリオでこれらの証券を保持し続ける判断が情報に基づくものであったことに、さらに自信を持つことができる。</p>
+</section>
+<section id="CFA0008-R-s07-01-01-03">
+<h4>ソーシャルメディア</h4>
+<p>オンライン掲示板やコミュニケーションプラットフォーム（一般に「ソーシャルメディア」と呼ばれる）の進展は、会員および受験者に追加的責任を課す。ソーシャルメディアで情報を発信する場合、会員および受験者は、他の従来の形式で顧客や潜在顧客に配信可能な情報と同等の情報のみを提供すべきである。オンライン・インタラクティブな特性は、配信情報の透明性や誠実性を免除するものではない。</p>
+<p>会員および受験者は、ソーシャルメディアの使用に関する既存および新たに制定される規則や規制を理解し遵守するとともに、この形式でのすべてのコミュニケーションが倫理規範および基準に従うようにすべきである。プラットフォームによる匿名性の見せかけは、資格や能力、あるいは雇用主の資格や能力を虚偽表示する誘惑になる可能性がある。ソーシャルメディアで投資推奨や専門活動を故意に誤って表示する行為は、基準I(C)違反とみなされる。</p>
+</section>
+<section id="CFA0008-R-s07-01-01-04">
+<h4>省略</h4>
+<p>モデルやテクニカル分析プロセスの使用が増加する中で、事実や結果の省略は誤解を招く可能性がある。多くの会員および受験者は、投資機会の探索、投資商品開発、投資推奨および評価の作成のためにモデルやプロセスに依存している。入力データを意図的に省略した場合、結果は投資判断に依拠する者に誤解を与える可能性がある。また、モデルの結果は、あくまで入力と分析プロセスに基づく予想結果であるため、事実として提示すべきではない。</p>
+<p>パフォーマンス測定および帰属分析（performance measurement and attribution）における省略も、マネージャーの能力や成果を誤って示す可能性がある。会員および受験者は、自社がチェリーピッキング（選ばれた口座のみを代表として提示する状況）を防ぐために厳格な複合作成方針を策定するよう奨励すべきである。定義済み複合に含まれるべき口座を省略すると、顧客に対してマネージャーの戦略遂行の成功を誤って示すことになる可能性がある。</p>
+</section>
+<section id="CFA0008-R-s07-01-01-05">
+<h4>盗用</h4>
+<p>基準I(C)は、雇用主、同僚、顧客、潜在顧客、一般公衆向けの資料作成における盗用も禁止している。盗用とは、他者が作成した資料を出典や著者・出版社を明示せずに、実質的に同じ形でコピーまたは使用することである。会員および受験者は、他者の独自のアイデアや資料を許可なくコピー（または自らのものとして表現）してはならず、他人のアイデアや資料を使用する場合は必ず出典を明示し特定する必要がある。</p>
+<p>投資専門職は、投資意思決定プロセスにおいて膨大な金融、経済、統計データを利用している。さまざまな出版物やプレゼンテーションを通じて、投資専門家は常に他者の成果に触れ、それを適切に明示せずに使用したくなる誘惑にさらされている。</p>
+<p>投資運用における盗用による虚偽表示（misrepresentation through plagiarism）は、さまざまな形を取る。最も単純で明白な例は、他の企業や人物によるリサーチレポートや研究を取り、それらの名前を変更して、自分のオリジナル分析として公開することである。この行為は、基準I(C)の明確な違反である。その他の行為としては、（1）他者が作成した記事やレポートの抜粋を、引用を明示せず、原文のまままたはわずかに言い換えて使用する、（2）特定の引用を「主要アナリスト（leading analysts）」や「投資専門家（investment experts）」に帰属させると示すが、具体的な出典を明示しない、（3）他者が作成した統計予測を提示し出典を示すが、使用された限定条件や注意書きを含めない、（4）チャートやグラフの出典を明示せずに使用する、（5）作成者の許可や承認を得ずに独自開発のスプレッドシートやアルゴリズムをコピーする、などがある。</p>
+<p>外部委託された第三者リサーチを配布する場合、会員および受験者は、当該レポートの作成者として自分を表示しない限り、そのレポートを使用および配布できる。むしろ、会員または受験者がリサーチを精査して顧客向けに再編することで、顧客に付加価値を提供することができる。この場合、顧客は、会員または受験者が多様な情報源から最良のリサーチを見つける能力の対価を支払っていることを十分に理解している必要がある。会員および受験者は、自身の能力、専門知識の範囲、作業量を虚偽表示して顧客や潜在顧客を誤導してはならない。また、提示されるリサーチが、会員または受験者の企業内外の別の情報源からのものであるかどうかを開示すべきである。これにより、顧客はレポート作成に関与した専門家が誰か、分析を行ったのがアナリストか他の企業メンバーか外部の者かを理解できる。</p>
+<p>基準I(C)は、口頭でのコミュニケーションにおける盗用にも適用される。例として、グループ会議、同僚・顧客との面会、急速に普及している音声・映像メディアの使用、電子データ転送や電子メディアのコピーなどが含まれる。</p>
+<p>この基準に違反する最も重大な行為の一つは、複数の情報源に基づいたリサーチレポートを作成する際に出典を明示しないことである。このような情報源には、アイデア、統計集計、予測などが含まれ、あたかも自分のオリジナルであるかのように見せかける場合がある。アイデアに独占権はないが、会員および受験者は、明確に示すべき場合には出典を明示しなければならない。アナリストは、出典のない予測、収益予想、資産価値などを使用してはならない。出典を明示することで、責任をレポート作成者または関係する企業に直接帰属させることができる。</p>
+</section>
+<section id="CFA0008-R-s07-01-01-06">
+<h4>雇用主のために行った業務（Work Completed for Employer）</h4>
+<p>前述の段落は、基準I(C)違反となる行為を示している。ただし、場合によっては、同一企業内の他者が行ったリサーチや開発したモデルを会員または受験者が使用しても違反とはならない。最も一般的な例は、元のアナリストの一人以上がすでに企業を離れている場合である。企業で作成されたリサーチやモデルは企業の所有物であり、企業は会員や受験者が組織を離れた後もその成果物を使用する権利を保持する。企業は、過去のアナリストへの帰属を示さずに将来のレポートを発行することができる。ただし、会員または受験者が以前発行されたレポートを自分の名前だけで再発行することは認められない。</p>
+</section>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1873_modules_items_147244_306_Standard_IB_Application_of_the_Standard.html" >← 前へ</a>
+  <span class="title">3.07 | Standard I(C) Misrepresentation</span>
+  <a href="courses_1873_modules_items_147250_308_Standard_IC_Recommended_Procedures.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

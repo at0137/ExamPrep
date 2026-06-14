@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flashcards: An Introduction to the Global Investment Performance Standards (GIPS®)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Investment Performance Presentation and GIPS › Module 2: An Introduction to the Global Investment Performance Standards (GIPS®)</nav>
+<h1 class="page-title screenreader-only">Flashcards: An Introduction to the Global Investment Performance Standards (GIPS®)</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM2113-flashcards" title="Flashcards: An Introduction to the Global Investment Performance Standards (GIPS®)"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール2：グローバル投資パフォーマンス基準 (Global Investment Performance Standards, GIPS®) 入門 フラッシュカード (Flashcards)</h2></header><h3 class="dp-has-icon"><i aria-hidden="true" class="dp-icon fas fa-book-reader"></i></h3><p class="cfa-curriculum-flashcard-inst">以下のカードをクリックすると、その用語の定義が表示される。次へまたは前へをクリックするとカードをスクロールできる。</p><div class="flashcard-container"><div class="flashcard listener-added" id="flashcard1" style="display: block;"><div class="front"><p>発生主義会計 (Accrual accounting)</p></div><div class="back"><p>収益が受領された時や費用が支払われた時ではなく、収益が発生した時または費用が発生した時に取引を記録すること。</p></div></div><div class="flashcard listener-added" id="flashcard2" style="display: none;"><div class="front"><p>アドバイザリー専用資産 (Advisory-only assets)</p></div><div class="back"><p>企業が投資助言を提供するが、投資判断の実行に対する統制権や売買権限を持たない資産。</p></div></div><div class="flashcard listener-added" id="flashcard3" style="display: none;"><div class="front"><p>集計リターン法 (Aggregate Return Method)</p></div><div class="back"><p>コンポジットに含まれるポートフォリオのすべての資産および外部キャッシュフローを統合し、単一ポートフォリオと同様の方法でコンポジット・リターンを計算する方法。</p></div></div><div class="flashcard listener-added" id="flashcard4" style="display: none;"><div class="front"><p>アセットオーナー (Asset owner)</p></div><div class="back"><p>参加者、受益者、または組織自身のために、直接または外部運用者を通じて投資を管理する主体。</p></div></div><div class="flashcard listener-added" id="flashcard5" style="display: none;"><div class="front"><p>期首資産＋加重キャッシュフロー法 (Beginning Assets Plus Weighted Cash Flows Method)</p></div><div class="back"><p>期首価値に加えて加重キャッシュフローを用いて基礎ポートフォリオのリターンにウェイトを付けるコンポジット・リターン計算方法。各外部キャッシュフローは、その発生日に基づいて期間中の比例的ウェイトが適用される。</p></div></div><div class="flashcard listener-added" id="flashcard6" style="display: none;"><div class="front"><p>期首資産ウェイト法 (Beginning Assets Weighting Method)</p></div><div class="back"><p>期首価値を用いて基礎ポートフォリオのリターンにウェイトを付けるコンポジット・リターン計算方法。</p></div></div><div class="flashcard listener-added" id="flashcard7" style="display: none;"><div class="front"><p>ベンチマーク (Benchmark)</p></div><div class="back"><p>投資の文脈において、ポートフォリオのパフォーマンス評価の基準または参照点。</p></div></div><div class="flashcard listener-added" id="flashcard8" style="display: none;"><div class="front"><p>広範配布プールド・ファンド (Broad distribution pooled fund)</p></div><div class="back"><p>一般投資家が当該プールド・ファンドの持分を購入または保有できる枠組みの下で規制されており、個別の対面説明のみに限定されないプールド・ファンド。</p></div></div><div class="flashcard listener-added" id="flashcard9" style="display: none;"><div class="front"><p>バンドル手数料 (Bundled fee)</p></div><div class="back"><p>複数の手数料を1つの総合手数料としてまとめることができる手数料。これには運用報酬、取引コスト、カストディ手数料、管理手数料などの任意の組み合わせが含まれる。</p></div></div><div class="flashcard listener-added" id="flashcard10" style="display: none;"><div class="front"><p>キャリード・インタレスト (Carried interest)</p></div><div class="back"><p>投資ビークルによる投資から生じた利益のうち、ゼネラル・パートナーに配分される利益。</p></div></div><div class="flashcard listener-added" id="flashcard11" style="display: none;"><div class="front"><p>コンポジット (Composite)</p></div><div class="back"><p>類似した投資マンデート、目的、または戦略に従って企業が運用する1つ以上のポートフォリオの集合。</p></div></div><div class="flashcard listener-added" id="flashcard12" style="display: none;"><div class="front"><p>コンポジット定義 (Composite definition)</p></div><div class="back"><p>ポートフォリオをコンポジットに割り当てるための詳細な基準。</p></div></div><div class="flashcard listener-added" id="flashcard13" style="display: none;"><div class="front"><p>コンポジット説明 (Composite description)</p></div><div class="back"><p>コンポジットの投資マンデート、目的、または戦略に関する一般的な情報。</p></div></div><div class="flashcard listener-added" id="flashcard14" style="display: none;"><div class="front"><p>裁量 (Discretion)</p></div><div class="back"><p>企業が意図した戦略を実行する能力。</p></div></div><div class="flashcard listener-added" id="flashcard15" style="display: none;"><div class="front"><p>独立した事業体 (Distinct business entity)</p></div><div class="back"><p>他の部門や部署から組織的・機能的に分離され、管理する資産に対する裁量を保持し、投資意思決定プロセスにおいて独立性を有する単位、部門、部署、または拠点。</p></div></div><div class="flashcard listener-added" id="flashcard16" style="display: none;"><div class="front"><p>外部キャッシュフロー (External cash flow)</p></div><div class="back"><p>ポートフォリオに流入または流出する資本（現金または投資）。ただし、配当や利息などの収益は含まない。</p></div></div><div class="flashcard listener-added" id="flashcard17" style="display: none;"><div class="front"><p>公正価値 (Fair value)</p></div><div class="back"><p>独立した当事者間で秩序ある取引により売却可能な価格。評価は、可能な場合には測定日における活発な市場での同一資産の客観的かつ観察可能な未調整の市場価格に基づいて決定されなければならない。公正価値には未収収益を含めなければならない。</p></div></div><div class="flashcard listener-added" id="flashcard18" style="display: none;"><div class="front"><p>手数料支払ポートフォリオ (Fee-paying portfolios)</p></div><div class="back"><p>投資運用サービスに対して手数料が課されるポートフォリオ。</p></div></div><div class="flashcard listener-added" id="flashcard19" style="display: none;"><div class="front"><p><b>Firm</b></p></div><div class="back"><p>GIPS基準への準拠のために定義された主体。最も一般的な例は投資運用会社である。</p></div></div><div class="flashcard listener-added" id="flashcard20" style="display: none;"><div class="front"><p>GIPSアセットオーナー・レポート (GIPS Asset Owner Report)</p></div><div class="back"><p>トータルファンドまたはコンポジットに関するアセットオーナーの提示資料であり、GIPS基準で要求されるすべての情報を含み、推奨情報または補足情報を含む場合もある。</p></div></div><div class="flashcard listener-added" id="flashcard21" style="display: none;"><div class="front"><p>GIPSコンポジット・レポート (GIPS Composite Report)</p></div><div class="back"><p>コンポジットに関する提示資料であり、GIPS基準で要求されるすべての情報を含み、推奨情報または補足情報を含む場合もある。</p></div></div><div class="flashcard listener-added" id="flashcard22" style="display: none;"><div class="front"><p>GIPSプールド・ファンド・レポート (GIPS Pooled Fund Report)</p></div><div class="back"><p>プールド・ファンドに関する提示資料であり、GIPS基準で要求されるすべての情報を含み、推奨情報または補足情報を含む場合もある。</p></div></div><div class="flashcard listener-added" id="flashcard23" style="display: none;"><div class="front"><p>GIPSレポート (GIPS Report)</p></div><div class="back"><p>コンポジットまたはプールド・ファンドに関する提示資料であり、GIPS基準で要求されるすべての情報を含み、推奨情報または補足情報を含む場合もある。</p></div></div><div class="flashcard listener-added" id="flashcard24" style="display: none;"><div class="front"><p>グロス・リターン (Gross-of-fees return)</p></div><div class="back"><p>取引コストを控除した投資リターン。</p></div></div><div class="flashcard listener-added" id="flashcard25" style="display: none;"><div class="front"><p>内部ディスパージョン (Internal dispersion)</p></div><div class="back"><p>コンポジット内の個々のポートフォリオの年次リターンのばらつきを測定する指標。指標には、最高／最低、レンジ、標準偏差（資産加重または等加重）などが含まれるが、これらに限定されない。</p></div></div><div class="flashcard listener-added" id="flashcard26" style="display: none;"><div class="front"><p>内部収益率 (Internal rate of return, IRR)</p></div><div class="back"><p>キャッシュアウトフローの現在価値とキャッシュインフローの現在価値を等しくする暗黙の割引率または実効複利収益率。マネー・ウェイテッド・リターンを計算する一般的な方法。</p></div></div><div class="flashcard listener-added" id="flashcard27" style="display: none;"><div class="front"><p>運用報酬 (Investment management fees)</p></div><div class="back"><p>ポートフォリオの運用に対して企業に支払われる手数料。通常は資産ベース、成果連動型、またはその組み合わせであるが、他の形態もあり得る。キャリード・インタレストも含まれる。</p></div></div><div class="flashcard listener-added" id="flashcard28" style="display: none;"><div class="front"><p>投資運用会社 (Investment manager)</p></div><div class="back"><p>顧客のために資産を運用する組織。</p></div></div><div class="flashcard listener-added" id="flashcard29" style="display: none;"><div class="front"><p>大口キャッシュフロー (Large cash flow)</p></div><div class="back"><p>ポートフォリオを評価せずサブ期間リターンを計算しない場合に外部キャッシュフローがパフォーマンスを歪める可能性があると企業が判断する水準。キャッシュフロー額またはポートフォリオもしくはコンポジット資産の割合に基づいて定義されなければならない。</p></div></div><div class="flashcard listener-added" id="flashcard30" style="display: none;"><div class="front"><p>レバレッジ (Leverage)</p></div><div class="back"><p>借入または各種金融商品を利用して、投資家の自己資本に対する潜在的な利益および損失を拡大すること。</p></div></div><div class="flashcard listener-added" id="flashcard31" style="display: none;"><div class="front"><p>限定配布プールド・ファンド (Limited distribution pooled fund)</p></div><div class="back"><p>広範配布プールド・ファンド以外のすべてのプールド・ファンド。</p></div></div><div class="flashcard listener-added" id="flashcard32" style="display: none;"><div class="front"><p>リンキング (Linking)</p></div><div class="back"><p>サブ期間リターンを幾何的に結合して期間リターンを計算する方法、または期間リターンを幾何的に結合してより長期のリターンを計算する方法。</p></div></div><div class="flashcard listener-added" id="flashcard33" style="display: none;"><div class="front"><p>市場価値 (Market value)</p></div><div class="back"><p>一定時点において投資家が売買できる価格に保有数量を乗じ、未収収益を加えた金額。</p></div></div><div class="flashcard listener-added" id="flashcard34" style="display: none;"><div class="front"><p>修正ディーツ法 (Modified Dietz Method)</p></div><div class="back"><p>日次加重された外部キャッシュフローを調整してポートフォリオ・リターンを計算する方法。</p></div></div><div class="flashcard listener-added" id="flashcard35" style="display: none;"><div class="front"><p>マネー・ウェイテッド・リターン (Money-weighted return, MWR)</p></div><div class="back"><p>価値の変化および外部キャッシュフローのタイミングと規模を反映するリターン計算方法。</p></div></div><div class="flashcard listener-added" id="flashcard36" style="display: none;"><div class="front"><p>ネット・リターン (Net-of-fees return)</p></div><div class="back"><p>グロス・リターンから運用報酬（成果報酬およびキャリード・インタレストを含む）を控除したリターン。</p></div></div><div class="flashcard listener-added" id="flashcard37" style="display: none;"><div class="front"><p>非手数料ポートフォリオ (Non-fee-paying portfolios)</p></div><div class="back"><p>投資運用サービスに対して手数料が課されないポートフォリオ。</p></div></div><div class="flashcard listener-added" id="flashcard38" style="display: none;"><div class="front"><p>パフォーマンス検証 (Performance examination)</p></div><div class="back"><p>独立した検証者がGIPS基準の要求するパフォーマンス検証手続に従って、特定のコンポジットまたはプールド・ファンドについて検証を実施するプロセス。</p></div></div><div class="flashcard listener-added" id="flashcard39" style="display: none;"><div class="front"><p>プールド・ファンド (Pooled fund)</p></div><div class="back"><p>複数の投資家によって所有持分が保有される可能性のあるファンド。</p></div></div><div class="flashcard listener-added" id="flashcard40" style="display: none;"><div class="front"><p>プールド・ファンドの説明 (Pooled fund description)</p></div><div class="back"><p>プールド・ファンドの投資マンデート、目的、または戦略に関する一般的な情報。</p></div></div><div class="flashcard listener-added" id="flashcard41" style="display: none;"><div class="front"><p>ポータビリティ (Portability)</p></div><div class="back"><p>特定の条件が満たされている場合に、過去の企業または関連会社のパフォーマンスを自社の過去パフォーマンスとして使用・表示する企業の能力。</p></div></div><div class="flashcard listener-added" id="flashcard42" style="display: none;"><div class="front"><p>ポートフォリオ (Portfolio)</p></div><div class="back"><p>個別に管理される投資の集合。</p></div></div><div class="flashcard listener-added" id="flashcard43" style="display: none;"><div class="front"><p>プライベート市場投資 (Private market investments)</p></div><div class="back"><p>非流動的で公開市場で取引されず、取引所にも上場していない投資。これには実物資産（例：不動産、インフラ）、プライベート・エクイティなどが含まれる。</p></div></div><div class="flashcard listener-added" id="flashcard44" style="display: none;"><div class="front"><p>見込み顧客 (Prospective client)</p></div><div class="back"><p>企業のコンポジット戦略のいずれかに関心を示し、かつ当該コンポジットに投資する資格を有する個人または法人。</p></div></div><div class="flashcard listener-added" id="flashcard45" style="display: none;"><div class="front"><p>見込み投資家 (Prospective investor)</p></div><div class="back"><p>企業のプールド・ファンドのいずれかに関心を示し、かつ当該プールド・ファンドに投資する資格を有する個人または法人。</p></div></div><div class="flashcard listener-added" id="flashcard46" style="display: none;"><div class="front"><p>規定 (Provisions)</p></div><div class="back"><p>GIPS基準の原則が分解された個別の項目。それぞれの規定は要件または推奨事項としてのタスクや行動を規定する。</p></div></div><div class="flashcard listener-added" id="flashcard47" style="display: none;"><div class="front"><p>推奨事項 (Recommendation)</p></div><div class="back"><p>実施または遵守が望ましいとされるタスクまたは行動であり、GIPS基準では “should” という語で示される。推奨事項はベストプラクティスとされるが、必須ではない。</p></div></div><div class="flashcard listener-added" id="flashcard48" style="display: none;"><div class="front"><p>要件 (Requirement)</p></div><div class="back"><p>必ず実施または遵守しなければならないタスクまたは行動であり、GIPS基準では “must” という語で示される。</p></div></div><div class="flashcard listener-added" id="flashcard49" style="display: none;"><div class="front"><p>分別口座 (Segregated account)</p></div><div class="back"><p>単一の顧客が保有するポートフォリオ。</p></div></div><div class="flashcard listener-added" id="flashcard50" style="display: none;"><div class="front"><p>重要キャッシュフロー (Significant cash flow)</p></div><div class="back"><p>1つ以上の顧客主導の外部キャッシュフローにより、企業がコンポジット戦略を一時的に実行できなくなると判断する水準。</p></div></div><div class="flashcard listener-added" id="flashcard51" style="display: none;"><div class="front"><p>サブアドバイザー (Sub-advisor)</p></div><div class="back"><p>企業が投資運用責任を有する資産の一部または全部を運用するために雇用する第三者の投資運用者。</p></div></div><div class="flashcard listener-added" id="flashcard52" style="display: none;"><div class="front"><p>一時口座 (Temporary new account)</p></div><div class="back"><p>顧客主導の外部キャッシュフローを、コンポジット戦略に従って投資されるか、または払い出されるまで一時的に保管する口座。</p></div></div><div class="flashcard listener-added" id="flashcard53" style="display: none;"><div class="front"><p>理論上のパフォーマンス (Theoretical performance)</p></div><div class="back"><p>提示されている戦略に実際に投資された資産を有するポートフォリオまたはコンポジットから導出されたものではないパフォーマンス。</p></div></div><div class="flashcard listener-added" id="flashcard54" style="display: none;"><div class="front"><p>時間加重リターン (Time-weighted return, TWR)</p></div><div class="back"><p>価値の変化を反映しつつ、外部キャッシュフローの影響を排除または中立化しようとするリターン計算方法。</p></div></div><div class="flashcard listener-added" id="flashcard55" style="display: none;"><div class="front"><p>企業総資産 (Total firm assets)</p></div><div class="back"><p>企業が投資運用責任を有するすべての裁量資産および非裁量資産。</p></div></div><div class="flashcard listener-added" id="flashcard56" style="display: none;"><div class="front"><p>トータルファンド (Total fund)</p></div><div class="back"><p>特定の投資マンデートに従ってアセットオーナーが運用する資産プールであり、通常は複数の資産クラスから構成される。トータルファンドは通常、複数の基礎ポートフォリオから成り、それぞれが投資マンデートを達成するための戦略の一つを表す。</p></div></div><div class="flashcard listener-added" id="flashcard57" style="display: none;"><div class="front"><p>プールド・ファンド総費用 (Total pooled fund fees)</p></div><div class="back"><p>プールド・ファンドに課されるすべての手数料および費用。これには運用報酬や管理手数料などが含まれるが、これらに限定されない。</p></div></div><div class="flashcard listener-added" id="flashcard58" style="display: none;"><div class="front"><p>トータルリターン (Total return)</p></div><div class="back"><p>測定期間中の実現損益および未実現損益に加え、収益を含むリターン。</p></div></div><div class="flashcard listener-added" id="flashcard59" style="display: none;"><div class="front"><p>約定日基準会計 (Trade date accounting)</p></div><div class="back"><p>決済日ではなく、売買成立日に資産または負債を認識すること。</p></div></div><div class="flashcard listener-added" id="flashcard60" style="display: none;"><div class="front"><p>取引コスト (Transaction costs)</p></div><div class="back"><p>投資の売買に伴うコスト。これらのコストは通常、仲介手数料、取引所手数料、および／またはブローカーによるビッド・オファー・スプレッドの形をとる。</p></div></div><div class="flashcard listener-added" id="flashcard61" style="display: none;"><div class="front"><p>未コールのコミットメント資本 (Uncalled committed capital)</p></div><div class="back"><p>顧客または投資家から企業に対して拠出が約束されているが、企業がまだコール（引き出し）していない資産。</p></div></div><div class="flashcard listener-added" id="flashcard62" style="display: none;"><div class="front"><p>検証 (Verification)</p></div><div class="back"><p>独立した検証者が、GIPS基準の要求する検証手続に従い、企業全体を対象として検証を実施するプロセス。</p></div></div><div class="flashcard listener-added" id="flashcard63" style="display: none;"><div class="front"><p>検証者 (Verifier)</p></div><div class="back"><p>GIPS基準への準拠を主張する企業またはアセットオーナーから独立した第三者であり、検証を実施するために雇用される者。</p></div></div></div><div class="controls"><div class="control-button" id="prevBtn">Previous Card</div><div class="control-button" id="nextBtn">Next Card</div></div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1370_modules_items_99554_Glossary_An_Introduction_to_the_Global_Investment_Performance_Standards_GIPS.html" >← 前へ</a>
+  <span class="title">Flashcards: An Introduction to the Global Investment Performance Standards (GIPS®)</span>
+  <a href="courses_1370_modules_items_104343_008_CIPM_Abbreviations_List.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

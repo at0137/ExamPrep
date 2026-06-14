@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.02 | Index Definition and Calculations of Value and Returns</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0162-R-s02" title="2.02 | Index Definition and Calculations of Value and Returns">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール2：証券市場指数（Security Market Indexes） 2.02｜指数の定義および値とリターンの計算（Index Definition and Calculations of Value and Returns）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">証券市場指数（security market index）を説明する</li>
+<li class="cfa-curriculum-los-item">指数の値（value）、価格リターン（price return）、およびトータルリターン（total return）を計算し、解釈する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>証券市場指数（security market index）は、特定の証券市場（security market）、市場セグメント（market segment）、または資産クラス（asset class）を表す。ほとんどの指数は、市場で取引可能な証券（marketable securities）のポートフォリオとして構築される。</p>
+<p>指数の値（value）は、指数に含まれる個々の証券（構成銘柄、constituent securities）の実際の市場価格または推定市場価格を用いて、定期的に計算される。各証券市場指数について、投資家は同一の指数（すなわち、同一の構成銘柄およびウェイトを持つ指数）に対して2つのバージョンに遭遇する可能性がある。すなわち、価格リターンに基づくバージョンとトータルリターンに基づくバージョンである。名称のとおり、価格リターン指数（price return index）、別名価格指数（price index）は、指数に含まれる構成銘柄の価格のみを反映する。一方、トータルリターン指数（total return index）は、構成銘柄の価格だけでなく、設定時（inception）以降に受け取ったすべての収益（income）の再投資も反映する。</p>
+<p>設定時（inception）においては、価格リターン指数とトータルリターン指数の値は等しい。しかし、時間の経過とともに、配当（dividends）および／または利息（interest）のすべてを再投資するトータルリターン指数の値は、価格リターン指数の値をますます上回るようになる。複数期間にわたる各バージョンの値の計算方法を見ることで、その理由が理解できる。</p>
+<p>価格リターン指数（price return index）の値は次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E1"><math>
+<semantics>
+<mrow>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>P</mi>
+<mi>R</mi>
+<mi>I</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>i</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>N</mi>
+</munderover>
+<mrow>
+<msub>
+<mi>n</mi>
+<mi>i</mi>
+</msub>
+<msub>
+<mi>P</mi>
+<mi>i</mi>
+</msub>
+</mrow>
+</mstyle>
+</mrow>
+<mi>D</mi>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">1</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>V PRI ＝ 価格リターン指数の値（value of the price return index）</li>
+<li>n i ＝ 指数ポートフォリオにおいて保有される構成銘柄 i の数量（number of units）</li>
+<li>N ＝ 指数に含まれる構成銘柄の数（number of constituent securities）</li>
+<li>P i ＝ 構成銘柄 i の単位価格（unit price）</li>
+<li>D ＝ 除数（divisor）の値</li>
+</ul>
+<p>除数（divisor）は、設定時（inception）に最初に選ばれる数値である。多くの場合、価格指数（price index）の初期値が1,000のような扱いやすい値になるように選定される。その後、指数提供者（index provider）は、構成銘柄の価格変動とは無関係な指数値の変化を避けるため、必要に応じて除数の値を調整する。例えば、構成銘柄を変更する際には、変更後の指数の値が変更前の指数の値と等しくなるように除数を調整することがある。</p>
+<p>指数リターン（index return）の計算は、投資ポートフォリオ（investment portfolio）のリターン計算と同様に、価格リターンまたはトータルリターンを測定することができる。価格リターン（price return）は、価格上昇（price appreciation）または価格の変化率のみを測定する。トータルリターン（total return）は、価格上昇に加えて利息（interest）、配当（dividends）、およびその他の分配（distributions）を含む。</p>
+<section id="CFA0162-R-s02-01">
+<h3 class="dp-heading">単一期間リターン（Single-Period Returns）の計算</h3>
+<p>証券市場指数（security market index）の価格リターンは、2つの方法で計算できる。すなわち、価格リターン指数の値の変化率、または構成銘柄の価格リターンの加重平均である。指数の価格リターンは次のように表される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E2"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>PR</mtext>
+</mrow>
+<mi>I</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>P</mi>
+<mi>R</mi>
+<mi>I</mi>
+<mn>1</mn>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>P</mi>
+<mi>R</mi>
+<mi>I</mi>
+<mn>0</mn>
+</mrow>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>P</mi>
+<mi>R</mi>
+<mi>I</mi>
+<mn>0</mn>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">2</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PR I ＝ 指数ポートフォリオの価格リターン（price return）（小数表示、例えば12％は0.12）</li>
+<li>V PRI 1 ＝ 期間末における価格リターン指数の値</li>
+<li>V PRI 0 ＝ 期間初における価格リターン指数の値</li>
+</ul>
+<p>同様に、各構成銘柄の価格リターンは次のように表される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E3"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>PR</mtext>
+</mrow>
+<mi>i</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>P</mi>
+<mrow>
+<mi>i</mi>
+<mn>1</mn>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>P</mi>
+<mrow>
+<mi>i</mi>
+<mn>0</mn>
+</mrow>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mi>P</mi>
+<mrow>
+<mi>i</mi>
+<mn>0</mn>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">3</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PR i ＝ 構成銘柄 i の価格リターン（小数表示）</li>
+<li>P i 1 ＝ 期間末における構成銘柄 i の価格</li>
+<li>P i 0 ＝ 期間初における構成銘柄 i の価格</li>
+</ul>
+<p>指数の価格リターンは個々の証券の価格リターンの加重平均に等しいため、次のように表すことができる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E4"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>PR</mtext>
+</mrow>
+<mi>I</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>i</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>N</mi>
+</munderover>
+<mrow>
+<msub>
+<mtext>w</mtext>
+<mi>i</mi>
+</msub>
+<msub>
+<mrow>
+<mtext>PR</mtext>
+</mrow>
+<mi>i</mi>
+</msub>
+</mrow>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>i</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>N</mi>
+</munderover>
+<mrow>
+<msub>
+<mtext>w</mtext>
+<mi>i</mi>
+</msub>
+</mrow>
+</mstyle>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>P</mi>
+<mrow>
+<mi>i</mi>
+<mn>1</mn>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>P</mi>
+<mrow>
+<mi>i</mi>
+<mn>0</mn>
+</mrow>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mi>P</mi>
+<mrow>
+<mi>i</mi>
+<mn>0</mn>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">4</span></div>
+<p>ここで：</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PR I ＝ 指数ポートフォリオの価格リターン（小数表示）</li>
+<li>PR i ＝ 構成銘柄 i の価格リターン（小数表示）</li>
+<li>N ＝ 指数に含まれる個別証券の数</li>
+<li>w i ＝ 証券 i のウェイト（指数ポートフォリオにおいて証券 i に配分される割合）</li>
+<li>P i 1 ＝ 期間末における構成銘柄 i の価格</li>
+<li>P i 0 ＝ 期間初における構成銘柄 i の価格</li>
+</ul>
+<p>式（4）は次のように簡潔に書き直すことができる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E5">PR<em><sub>I</sub> </em> = w<sub>1</sub>PR<sub>1</sub> + w<sub>2</sub>PR<sub>2</sub> + … + w<em><sub>N</sub> </em>PR<em><sub>N</sub> </em>  <span class="cfa-curriculum-display-formula-number">5</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PR I ＝ 指数ポートフォリオの価格リターン（小数表示）</li>
+<li>PR i ＝ 構成銘柄 i の価格リターン（小数表示）</li>
+<li>w i ＝ 証券 i のウェイト（指数ポートフォリオにおける配分割合）</li>
+<li>N ＝ 指数に含まれる証券数</li>
+</ul>
+<p>トータルリターン（total return）は、価格上昇に加えて利息（interest）、配当（dividends）、およびその他の分配（distributions）を含む。したがって、指数のトータルリターンは、価格リターン指数の値の変化（価格上昇）に、期間中の収益（配当および／または利息）を加えたものであり、これを期間初の価格リターン指数の値に対する割合として表したものである。指数のトータルリターンは次のように表される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E6"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>TR</mtext>
+</mrow>
+<mi>I</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>P</mi>
+<mi>R</mi>
+<mi>I</mi>
+<mn>1</mn>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>P</mi>
+<mi>R</mi>
+<mi>I</mi>
+<mn>0</mn>
+</mrow>
+</msub>
+<mo>+</mo>
+<mi>I</mi>
+<mi>n</mi>
+<msub>
+<mi>c</mi>
+<mi>I</mi>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>P</mi>
+<mi>R</mi>
+<mi>I</mi>
+<mn>0</mn>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">6</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>TR I ＝ 指数ポートフォリオのトータルリターン（小数表示）</li>
+<li>V PRI 1 ＝ 期間末における価格リターン指数の値</li>
+<li>V PRI 0 ＝ 期間初における価格リターン指数の値</li>
+<li>Inc I ＝ 期間中に指数に含まれるすべての証券から得られる総収益（配当（dividends）および／または利息（interest））</li>
+</ul>
+<p>指数のトータルリターン（total return）は、構成銘柄のトータルリターンの加重平均としても計算できる。指数に含まれる各構成銘柄のトータルリターンは次のように計算される：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E7"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>TR</mtext>
+</mrow>
+<mi>i</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>P</mi>
+<mrow>
+<mn>1</mn>
+<mi>i</mi>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>P</mi>
+<mrow>
+<mn>0</mn>
+<mi>i</mi>
+</mrow>
+</msub>
+<mo>+</mo>
+<mi>I</mi>
+<mi>n</mi>
+<msub>
+<mi>c</mi>
+<mi>i</mi>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mi>P</mi>
+<mrow>
+<mn>0</mn>
+<mi>i</mi>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">7</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>TR i ＝ 構成銘柄 i のトータルリターン（小数表示）</li>
+<li>P 1 i ＝ 期間末における構成銘柄 i の価格</li>
+<li>P 0 i ＝ 期間初における構成銘柄 i の価格</li>
+<li>Inc i ＝ 期間中に証券 i から得られる総収益（配当および／または利息）</li>
+</ul>
+<p>指数のトータルリターンは構成銘柄のトータルリターンの加重平均として計算できるため、次のように表すことができる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E8"><math>
+<semantics>
+<mrow>
+<msub>
+<mrow>
+<mtext>TR</mtext>
+</mrow>
+<mi>I</mi>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>i</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>N</mi>
+</munderover>
+<mrow>
+<msub>
+<mtext>w</mtext>
+<mi>i</mi>
+</msub>
+<msub>
+<mrow>
+<mtext>TR</mtext>
+</mrow>
+<mi>i</mi>
+</msub>
+</mrow>
+</mstyle>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<munderover>
+<mo>∑</mo>
+<mrow>
+<mi>i</mi>
+<mo>=</mo>
+<mn>1</mn>
+</mrow>
+<mi>N</mi>
+</munderover>
+<mrow>
+<msub>
+<mtext>w</mtext>
+<mi>i</mi>
+</msub>
+<mrow>
+<mo>(</mo>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<msub>
+<mi>P</mi>
+<mrow>
+<mn>1</mn>
+<mi>i</mi>
+</mrow>
+</msub>
+<mo>−</mo>
+<msub>
+<mi>P</mi>
+<mrow>
+<mn>0</mn>
+<mi>i</mi>
+</mrow>
+</msub>
+<mo>+</mo>
+<mi>I</mi>
+<mi>n</mi>
+<msub>
+<mi>c</mi>
+<mi>i</mi>
+</msub>
+</mrow>
+<mrow>
+<msub>
+<mi>P</mi>
+<mrow>
+<mn>0</mn>
+<mi>i</mi>
+</mrow>
+</msub>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+<mo>)</mo>
+</mrow>
+</mrow>
+</mstyle>
+</mrow>
+</semantics>
+</math> <span class="cfa-curriculum-display-formula-number">8</span></div>
+<p>式（8）は次のように簡潔に書き直すことができる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E9">TR<em><sub>I</sub> </em> = w<sub>1</sub>TR<sub>1</sub> + w<sub>2</sub>TR<sub>2</sub> + … + w<em><sub>N</sub> </em>TR<em><sub>N</sub> </em>  <span class="cfa-curriculum-display-formula-number">9</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>TR I ＝ 指数ポートフォリオのトータルリターン（小数表示）</li>
+<li>TR i ＝ 構成銘柄 i のトータルリターン（小数表示）</li>
+<li>w i ＝ 証券 i のウェイト（指数ポートフォリオにおいて証券 i に配分される割合）</li>
+<li>N ＝ 指数に含まれる証券数</li>
+</ul>
+</section>
+<section id="CFA0162-R-s02-02">
+<h3 class="dp-heading">複数期間にわたる指数値（index values）の計算</h3>
+<p>複数期間にわたる指数値の計算には、指数リターン系列（series of index returns）を幾何的に連結（geometrically linking）する必要がある。指数の価格リターン系列を用いて、次の式により価格リターン指数の値を計算できる：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E10">V<em><sub>PRIT</sub> </em> = V<em><sub>PRI </sub></em><sub>0</sub>(1 + PR<em><sub>I </sub></em><sub>1</sub>)(1 + PR<em><sub>I </sub></em><sub>2</sub>)…(1 + PR<em><sub>IT</sub></em>)  <span class="cfa-curriculum-display-formula-number">10</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>V PRI 0 ＝ 設定時（inception）における価格リターン指数の値</li>
+<li>V PRIT ＝ 時点 t における価格リターン指数の値</li>
+<li>PR IT ＝ 期間 t における指数の価格リターン（小数表示）、t ＝ 1, 2, …, T</li>
+</ul>
+<p>設定時の値が1,000であり、第1期および第2期の価格リターンがそれぞれ5％および3％である指数を考えると、価格リターン指数の値は次のように計算される：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0162-R-Ta">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間（Period）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（Return）（％）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">計算（Calculation）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期末値（Ending Value）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000（1.00）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000.00</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000（1.05）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,050.00</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">3.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000（1.05）（1.03）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,081.50</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>同様に、指数のトータルリターン系列（series of total returns）を用いて、次の式によりトータルリターン指数の値を計算する：</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA0162-R-E11">V<em><sub>TRIT</sub> </em> = V<em><sub>TRI</sub></em><sub> 0</sub>(1 + TR<em><sub>I</sub></em><sub> 1</sub>)(1 + TR<em><sub>I</sub></em><sub> 2</sub>)…(1 + TR<em><sub>IT</sub></em>)  <span class="cfa-curriculum-display-formula-number">11</span></div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>V TRI 0 ＝ 設定時（inception）における指数の値</li>
+<li>V TRIT ＝ 時点 t におけるトータルリターン指数の値</li>
+<li>TR IT ＝ 期間 t における指数のトータルリターン（小数表示）、t ＝ 1, 2, …, T</li>
+</ul>
+<p>同じ指数が、第1期に1.5％、第2期に2.0％の収益（income）による追加リターンを生むと仮定すると、第1期および第2期のトータルリターンはそれぞれ6.5％および5％となる。このとき、トータルリターン指数の値は次のように計算される：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA0162-R-Tb">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期間（Period）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">リターン（Return）（％）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">計算（Calculation）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">期末値（Ending Value）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000（1.00）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000.00</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6.50</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000（1.065）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,065.00</td>
+</tr>
+<tr>
+<td style="text-align: center; vertical-align: top; padding: 8px;">2</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5.00</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,000（1.065）（1.05）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">1,118.25</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>上記のとおり、時間の経過とともに、受け取ったすべての配当（dividends）および／または利息（interest）を再投資するトータルリターン指数（total return index）の値は、価格リターン指数（price return index）の値を、ますます大きな差で上回るようになる。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="SecurityMarketIndexContent">
+<p>特定の証券市場（security market）、市場セグメント（market segment）、または資産クラス（asset class）を表す証券のポートフォリオ。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ConstituentSecuritiesContent">
+<p>指数に関して、その指数内に含まれる個々の証券（individual securities）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PriceReturnIndexContent">
+<p>構成銘柄の価格上昇（price appreciation）または価格変化率のみを反映する指数。価格指数（price index）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PriceIndexContent">
+<p>財およびサービスのバスケットの平均価格を表す。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TotalReturnIndexContent">
+<p>構成銘柄の価格上昇または価格変化率に加えて、設定時（inception）以降に受け取ったすべての収益（income）を反映する指数。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DivisorContent">
+<p>価格リターン指数（price return index）の値を決定するために用いられる数値（分母、denominator）。これは指数の設定時（inception）に最初に選定され、その後、構成銘柄の価格変動とは無関係な指数値の変化を避けるために、必要に応じて指数提供者（index provider）によって調整される。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PriceReturnContent">
+<p>指数またはポートフォリオに含まれる証券の価格上昇または価格変化率のみを測定する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TotalReturnContent">
+<p>指数またはポートフォリオに含まれる証券の価格上昇、すなわち価格変化率に加えて、期間中に受け取った収益（income）を測定する。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="TotalReturnContent">
+<p>指数またはポートフォリオに含まれる証券の価格上昇、すなわち価格変化率に加えて、期間中に受け取った収益（income）を測定する。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142213_201_Introduction.html" >← 前へ</a>
+  <span class="title">2.02 | Index Definition and Calculations of Value and Returns</span>
+  <a href="courses_1868_modules_items_142218_203_Index_Construction.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

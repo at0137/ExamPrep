@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10.09 | Detection of Financial Reporting Quality Issues: Introduction and Presentation Choices</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA1533-R-s08-R-1" title="10.09 | Detection of Financial Reporting Quality Issues: Introduction and Presentation Choices">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール10：財務報告の質（Financial Reporting Quality） 10.09｜財務報告の質の問題の検出：導入および表示上の選択（Detection of Financial Reporting Quality Issues: Introduction and Presentation Choices）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">アナリストの評価に影響を与える可能性のある表示上の選択（presentation choices）（非GAAP指標（non-GAAP measures）を含む）について説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>会計基準の適用における選択肢は数多く存在し、これがおそらく会計文献や教科書が膨大である理由の一つである。さらに複雑さを増す要因として、測定はしばしば経済的現象の見積りに依存する点がある。2つの見積りはいずれも正当化可能であっても、企業の財務諸表に対して大きく異なる影響を及ぼす場合がある。前述のとおり、特定の見積りの選択は、報告企業の経営者の動機に依存することがある。多くの選択肢が存在し、かつ会計プロセスにおける見積りには本質的な柔軟性があるため、経営者は財務報告を通じてアナリストの期待を管理し達成するための多くの手段を有している。</p>
+<p>企業が財務報告において行う選択を理解することは、作成された報告の全体的な質―すなわち財務報告の質（financial reporting quality）および利益の質（earnings quality）―を評価するうえで基本的である。選択は、情報の表示方法（財務報告の質）と、財務成果の計算方法（利益の質）の両方に存在する。表示に関する選択（財務報告の質）は投資家にとって透明である場合がある。一方で、財務成果の計算に関する選択（利益の質）は、報告数値の構築の深部に組み込まれている可能性があるため、識別がより困難である。</p>
+<p>会計上の選択肢の存在により、経営者は財務成果の報告に影響を与えることができる。ある選択は報告期間における業績および財政状態を増加させ（アグレッシブな選択）、他の選択は将来期間においてそれらを増加させる（保守的な選択）。報告期間における業績および財政状態を増加させたい経営者は、以下を行う可能性がある：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s08-L1">
+<li class="cfa-curriculum-list-item">収益を前倒しで認識する；</li>
+<li class="cfa-curriculum-list-item">非経常的取引（non-recurring transactions）を利用して利益を増加させる；</li>
+<li class="cfa-curriculum-list-item">費用を将来期間に繰り延べる；</li>
+<li class="cfa-curriculum-list-item">資産をより高い価値で測定・報告する；および／または</li>
+<li class="cfa-curriculum-list-item">負債をより低い価値で測定・報告する。</li>
+<li class="cfa-curriculum-list-item">将来期間において業績および財政状態を増加させたい経営者は、以下を行う可能性がある：</li>
+<li class="cfa-curriculum-list-item">現在の利益を将来期間に繰り延べる（「雨の日のために利益を取っておく（save income for a “rainy day”）」）；および／または</li>
+<li class="cfa-curriculum-list-item">将来の費用を現在期間に認識し、将来の業績改善のための布石を打つ。</li>
+</ul>
+<p>本レッスンでは、情報の表示方法および会計要素〔資産（assets）、負債（liabilities）、所有者持分（owners’ equity）、収益および利得（revenue and gains）（income）、費用および損失（expenses and losses）〕の認識・測定・報告に関する潜在的な選択肢のいくつかを説明する。GAAP内の選択に加えて、企業は不正な報告（fraudulent reports）を作成する可能性もある。例えば、実在しない収益や資産が含まれることがある。後続のレッスンでは、低品質な財務報告を示唆する警告サインについて説明する。</p>
+<section id="CFA1533-R-s08-01-01">
+<h3 class="dp-heading">表示上の選択（Presentation Choices）</h3>
+<p>1990年代のテクノロジーブームおよび2000年代初頭のインターネットバブルでは、投資家に人気の企業に共通する特徴があった。それは、従来の株価収益率（price-to-earnings ratio, P/E）による評価では株価を正当化するのに十分な現在の利益を生み出せないことであった。多くの投資家は、この一見した異常を、利益や従来の評価手法はもはやこれらの企業には当てはまらないと合理化することで説明しようとした。営業業績を測定するための奇妙な新指標が登場した。ウェブサイト運営者は、四半期に獲得した「アイボール（eyeballs）」や、訪問者に対するサイトの「スティッキネス（stickiness）」を語った。「プロフォーマ利益（pro forma earnings）」、すなわち「非GAAP利益指標（non-GAAP earnings measures）」のさまざまな形態が、この時代の財務報告の定番となった。</p>
+<p>多くのテクノロジー企業はプロフォーマ報告の熟練した実践者であったが、その利用は彼らが初めてではなかった。1990年代初頭には、大企業のリストラクチャリング（downsizing）が一般的であり、大規模なリストラクチャリング費用（restructuring charges）が多くの既存企業の営業成績を覆い隠していた。例えば、メインフレームからパーソナルコンピュータ中心の世界への適応を進めていたInternational Business Machines（IBM）は、1991年、1992年、1993年にそれぞれ37億ドル、116億ドル、89億ドルの大規模なリストラクチャリング費用を計上した。IBMだけではなく、Searsは1993年に27億ドル、AT&amp;Tは1995年に77億ドルのリストラクチャリング費用を計上した。これらは例外ではなく、リストラクチャリング費用は四半期報告における標準的な出来事となっていた。企業は、自社の事業が低迷しているとの認識に対抗し、また投資家の営業成績評価を支援するという名目で、プロフォーマ指標においてリストラクチャリング費用を除外することで利益発表を「きれいに」することが多かった。</p>
+<p>企業結合（business combinations）の会計原則も、プロフォーマ利益の人気を高める要因となった。2001年以前には、企業買収はしばしばのれん（goodwill）の償却費を生じさせ、その後の利益報告を弱く見せる結果となった。さらに、買収の会計処理には持分プーリング法（pooling-of-interests）と取得法（purchase method）の2つが存在していた。現在は廃止された持分プーリング法は、適用要件が厳しいため採用が困難であったが、のれん償却を伴わないため強く望まれていた。テクノロジーブーム期には買収が一般的であり、多くが取得法で処理され、当時のルールでは最大40年間にわたりのれん償却が利益を圧迫した。取得法を適用する企業は、持分プーリング法を適用できる企業に比べて報告上不利であると認識し、無形資産およびのれんの償却を除外した調整後利益を提示することで対応した。</p>
+<p>投資家は企業間比較を一貫した基準で行おうとするため、利息・税金・減価償却・償却前利益（earnings before interest, taxes, depreciation, and amortization, EBITDA）は非常に一般的な業績指標となっている。EBITDAはノイズの多い報告シグナルを排除するものと広く考えられている。このノイズは、減価償却、無形資産の償却、リストラクチャリング費用に関する企業間の会計手法の違いによって生じる可能性がある。企業は独自のEBITDAを構築・報告することがあり、「調整後EBITDA（adjusted EBITDA）」と呼ぶこともある。これは純利益から除外する項目を追加することで算出される。アナリストが遭遇する可能性のある項目には以下が含まれる：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s08-L2">
+<li class="cfa-curriculum-list-item">オペレーティング・リース（operating leases）の賃借料支払を加えたEBITDAR（earnings before interest, taxes, depreciation, amortization, and rentals）；</li>
+<li class="cfa-curriculum-list-item">株式報酬（equity-based compensation）（通常、非現金費用であることを理由として除外される）；</li>
+<li class="cfa-curriculum-list-item">買収関連費用（acquisition-related charges）；</li>
+<li class="cfa-curriculum-list-item">のれんまたはその他の無形資産に関する減損損失（impairment charges）；</li>
+<li class="cfa-curriculum-list-item">長期性資産（long-lived assets）の減損損失；</li>
+<li class="cfa-curriculum-list-item">訴訟費用（litigation costs）；および</li>
+<li class="cfa-curriculum-list-item">債務消滅損益（loss/gain on debt extinguishments）。</li>
+</ul>
+<p>非GAAP利益指標（non-GAAP earnings measures）の普及を促す他のインセンティブとして、ローン契約の財務制限条項（loan covenants）がある。貸し手は借入企業に対して、GAAPベースの純利益（net income）を出発点としつつも、貸し手にとって適切な指標に調整した業績基準の達成および維持を求めることがある。企業は、この指標を自社の望ましい非GAAP指標として、利益発表や経営者コメント（米国ではmanagement discussion and analysisと呼ばれる）における流動性や支払能力の説明に用いる場合がある。</p>
+<p>前述のとおり、企業がSEC提出書類において非GAAP財務指標を使用する場合、最も直接的に比較可能なGAAP指標を同等の重要性で表示し、両者の調整（reconciliation）を提示しなければならない。また、経営者は当該非GAAP指標が企業の財政状態および業績に関して有用な情報を提供すると考える理由を説明しなければならない。さらに、重要である場合には、非GAAP指標の追加的な利用目的も開示する必要がある。</p>
+<p>同様に、IFRSでは、財務報告に含まれる非IFRS指標（non-IFRS measures）について、その定義および説明（なぜ利用者にとって関連性がある可能性があるかを含む）が求められる。経営者は非IFRS指標とIFRS指標の調整表を提示しなければならない。懸念されるのは、経営者が非GAAP指標を用いてGAAP指標から注意をそらす可能性があることである。</p>
+<p>SECは、非GAAP財務指標の定義が、以下のいずれかを示す効果を持つすべての指標を含むことを意図している：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s08-L3">
+<li class="cfa-curriculum-list-item">GAAPに従って算定された税引前利益または純利益（income or loss before taxes or net income or loss）など、財務諸表に表示されたものとは異なる業績指標（measure of performance）；または</li>
+<li class="cfa-curriculum-list-item">GAAPに従って算定されたキャッシュフローまたは営業キャッシュフロー（cash flow from operations）とは異なる流動性指標（measure of liquidity）。</li>
+</ul>
+<p>SECは、EBITおよびEBITDAを除き、現金決済を要する費用または負債を非GAAP流動性指標から除外することを禁止している。また、非経常的（non-recurring）、非頻繁（infrequent）、または異常（unusual）とラベル付けされた項目であっても、再発する可能性が非常に高い場合にそれらを除外または平準化することを目的とした非GAAP業績指標の算定も禁止されている。SECは、報告日を基準として前後2年以内の期間を、当該項目が反復的であるかどうかを判断する関連期間とみなしている。例5では、非GAAP指標の誤用および誤表示の事例を示す。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA1533-R-s08-EXM-1-5">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例5：非GAAP指標の誤用および誤表示（Misuse and Misreporting of Non-GAAP Measures）</h4>
+<p>Grouponはオンライン割引販売業者である。同社の2011年の新規公開登録届出書（S-1）において、当時のCEOであるAndrew Masonは、「当社は従来の方法で自らを測定しない（We don’t measure ourselves in conventional ways）」と題するセクションで、調整後連結セグメント営業利益（adjusted consolidated segment operating income, adjusted CSOI）について投資家に事前の注意喚起を行った。Exhibit 12は、「非GAAP財務指標（Non-GAAP Financial Measures）」と題されたセクションの抜粋を示しており、より詳細な説明がなされている。Exhibit 13も同じ登録届出書からの抜粋であり、CSOIと最も比較可能なUS GAAP指標との調整表を示している。SECは審査において、オンラインマーケティング費用は事業の反復的費用であるとの立場を取った。これに対しGrouponは、マーケティング費用は取得コストに類似しており反復的費用ではないと主張し、「時間の経過とともにマーケティングを拡大したのと同じ速さで縮小し、顧客獲得に関するマーケティング費用を削減する」と説明した。</p>
+<p>最終的に、多くの否定的な報道を受けて、Grouponは非GAAP指標を変更した。Exhibit 14は、SECの審査後に11月に提出された最終目論見書からの抜粋を示している。以下の設問に答えるために、3つの図表を使用せよ。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA1533-R-s08-EXH-1-12">
+<h5 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>
+               Exhibit 12<span style="display: block;">Groupon’s “Non-GAAP Financial Measures”</span>
+</h5>
+<p>6月のS-1提出書類からの開示（Disclosures from June S-1 Filing）</p>
+<p>調整後CSOIは、北米および国際の2つのセグメントの営業利益に対し、オンラインマーケティング費用、買収関連費用（acquisition-related costs）、および株式報酬費用（stock-based compensation expense）を調整したものである。オンラインマーケティング費用は主に新規加入者獲得のコストを表し、当社が追求する成長の程度によって決定される。買収関連費用は特定の買収に関連する非経常的かつ非現金項目である。株式報酬費用も非現金項目である。当社は、調整後CSOIを、非現金費用または将来の営業費用を示さない項目を除外していることから、事業の業績を測定する重要な指標と考えている。また、調整後CSOIは連結損益計算書全体の補完的指標として捉えることが重要であると考えている。</p>
+<p>調整後CSOIの利用には分析ツールとしての限界があり、この指標を単独で、またはGAAPに基づく業績分析の代替として用いるべきではない。主な限界は以下のとおりである：</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s08-L4">
+<li class="cfa-curriculum-list-item">調整後CSOIは、新規加入者獲得のために現在行っている多額の現金投資を反映していない；</li>
+<li class="cfa-curriculum-list-item">調整後CSOIは、経営陣や従業員への株式報酬の発行や買収に関連して発生する希薄化効果（dilutive impact）を反映していない；</li>
+<li class="cfa-curriculum-list-item">調整後CSOIは、当社が負担する可能性のある負債に関する利息費用や元本返済に必要な現金支出を反映していない；</li>
+<li class="cfa-curriculum-list-item">調整後CSOIは、為替差損益（foreign exchange gains and losses）を反映していない；</li>
+<li class="cfa-curriculum-list-item">調整後CSOIは、当社が支払う可能性のある税金を反映しておらず、これは利用可能な現金の減少を意味する；</li>
+<li class="cfa-curriculum-list-item">調整後CSOIは、運転資本（working capital）の変動やそれに必要な現金を反映していない；および</li>
+<li class="cfa-curriculum-list-item">他社（同業他社を含む）は調整後CSOIを異なる方法で計算したり、異なる財務指標を用いて収益性を評価する場合があり、その結果、比較指標としての有用性が低下する。</li>
+</ul>
+<p>これらの制約のため、調整後CSOIは当社が事業成長に投資するために利用可能な裁量的キャッシュの指標として考慮されるべきではない。当社の業績を評価する際には、調整後CSOIを、各種キャッシュフロー指標、純損失（net loss）、およびその他のGAAPベースの結果と併せて検討すべきである。</p>
+</div>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA1533-R-s08-EXH-1-13">
+<h5 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>
+               Exhibit 13<span style="display: block;">Groupon’s Adjusted CSOI</span>
+</h5>
+<p>6月のS-1提出書類からの抜粋（Excerpt from June S-1 Filing）</p>
+<p>以下は、CSOIと最も比較可能なUS GAAP指標である「営業損失（loss from operations）」との調整表であり、2008年、2009年、2010年の各年度および2010年および2011年3月31日までの3か月間について示している：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1533-R-s08-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; ">（単位：千米ドル）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px; ">12月31日終了年度</th>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">3月31日終了3か月</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2008</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2009</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2010</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2010</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2011</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業損失／営業利益（(Loss) Income from operations）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（1,632）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（1,077）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（420,344）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,571</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（117,148）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">調整項目（Adjustments）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">オンラインマーケティング（Online marketing）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">162</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,446</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">241,546</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3,904</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">179,903</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">株式報酬（stock-based compensation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">115</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">36,168</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">116</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">18,864</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">買収関連（acquisition-related）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">203,183</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">—</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">調整合計（Total adjustments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">186</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,561</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">480,897</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">4,020</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">198,767</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">調整後CSOI（Adjusted CSOI）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（1,446）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">3,484</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">60,553</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">12,591</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">81,619</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA1533-R-s08-EXH-1-14">
+<h5 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>
+               Exhibit 14<span style="display: block;">Groupon’s CSOI</span>
+</h5>
+<p>修正後S-1提出書類からの抜粋（Excerpt from Revised S-1 Filing）</p>
+<p>以下は、CSOIと最も比較可能なUS GAAP指標である「営業損失（loss from operations）」との調整表であり、2008年、2009年、2010年の各年度および2010年および2011年9月30日までの9か月間について示している：</p>
+<div class="cfa-curriculum-table-wrap" id="CFA1533-R-s08-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; ">（単位：千米ドル）</th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px; ">12月31日終了年度</th>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px; "></th>
+<th colspan="2" style="text-align: center; vertical-align: bottom; padding: 8px; ">9月30日終了9か月</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2008</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2009</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2010</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2010</strong>
+</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px; ">
+<strong>2011</strong>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">営業損失（Loss from operations）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（1,632）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（1,077）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（420,344）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（84,215）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（218,414）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">調整項目（Adjustments）：</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">株式報酬（stock-based compensation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">115</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">36,168</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">8,739</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">60,922</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">買収関連（acquisition-related）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">—</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">203,183</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">37,844</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（4,793）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">調整合計（Total adjustments）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">24</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">115</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">239,351</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">46,583</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">56,129</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px; ">CSOI</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（1,608）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">(962)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（180,993）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; "> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（37,632）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px; ">（162,285）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>Grouponは調整後CSOI指標の説明に際してどのような注意喚起を行っていたか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Grouponは、調整後CSOI指標は単独で考慮すべきではなく、GAAPに基づく分析の代替として考慮すべきでもなく、「裁量的キャッシュフロー（discretionary cash flow）の指標として考慮すべきではない」と注意喚起している。同社は多くの制約を列挙しており、その主な内容は調整後CSOIが反映していない項目に関するものである。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">2. </span>
+<p>Grouponは調整後CSOIから「オンラインマーケティング（online marketing）」を除外している。この費用の除外は、SECの非GAAP業績指標に関する制限とどのように比較されるか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>SECは、非GAAP指標が、非経常的（non-recurring）、非頻繁（infrequent）、または異常（unusual）と分類された項目であっても、再発する可能性が非常に高い場合にはそれらを除外すべきでないと規定している。オンラインマーケティング費用は報告されたすべての期間で発生しており、今後も発生する可能性が高いため、この項目の除外はSECの要件に反していると考えられる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">3. </span>
+<p>2011年第1四半期において、オンラインマーケティング費用の除外は調整後CSOIの算定にどのような影響を与えたか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Exhibit 13に示されているとおり、2011年第1四半期において、オンラインマーケティング費用の除外は、US GAAPベースでは純損失であった企業を、少なくとも調整後CSOIで定義される利益へと転換させるのに十分であった。調整後CSOIを業績指標として用いると、同社は2011年第1四半期の業績が前年通年と比較して35％高い結果を示している。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">4. </span>
+<p>2010年について、修正後の非GAAP指標による結果は当初報告された指標とどのように異なるか？</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>Exhibit 14に示されているとおり、修正後の指標は現在CSOIと呼ばれ、もはや調整後CSOIとは呼ばれていない。2010年については、オンラインマーケティング費用を含む修正後の非GAAP指標では、60,553,000米ドルの利益ではなく、180,993,000米ドルの損失が示されている。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>例5において、Grouponは報告方法を変更し、SECが誤解を招くと判断した非GAAP指標を修正した。他のケースでは、SECは誤解を招く非GAAP情報を報告した企業に対して執行措置（enforcement actions）を講じている。その一例として、2009年にSafeNet Inc.に対して行われた措置があり、同社は通常の営業費用を非経常費用として不適切に分類したとして告発された。これは買収企業の統合に関連する費用であり、非GAAP利益から除外することで利益目標を達成するためであった。さらに、2017年にはMDC Partners Inc.（MDCA）に対して、非GAAP指標の不適切な調整および利益発表における過度な強調表示についてSECが措置を講じた。この案件は、同社が規則に従うことに同意したにもかかわらずそれを遵守しなかったことを受けて提起されたものであり、SECの指摘には次のように記されている：「2012年12月に[SECの]企業金融部（Division of Corporation Finance）との書簡において非GAAP財務指標の開示規則を遵守することに同意したにもかかわらず、MDCAは6四半期にわたりこれらの規則に違反し続けた。」Exhibit 15は、執行措置の対象となったMDC Partnersの利益発表の見出しおよび小見出しを示している。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA1533-R-s08-EXH-1-15">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">Exhibit 15 MDC Partners Inc.のプレスリリースからの抜粋（Excerpt from MDC Partners Inc. Press Release）</h4>
+<p>本抜粋は、定期的な利益発表を公表するプレスリリースの見出し、小見出し、および冒頭文を示している。</p>
+<section id="CFA1533-R-s08-01-01-01-01">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">SEC Form 8-K filed 24 April 2014</h6>
+</section>
+<section id="CFA1533-R-s08-01-01-01-02">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">MDC PARTNERS INC. REPORTS RECORD RESULTS FOR THE THREE MONTHS ENDED MARCH 31, 2014</h6>
+<div class="cfa-curriculum-blockquote">
+<p>オーガニック売上高成長率（organic revenue growth）8.3％、EBITDA成長率18.1％、およびマージン改善90ベーシスポイント（basis points）</p>
+<p>フリーキャッシュフロー（free cash flow）成長率34.0％</p>
+<p>2014年ガイダンス引き上げにより、前年比EBITDA成長率+13.5％～+16.1％、マージン改善60～70ベーシスポイント、フリーキャッシュフロー成長率+15.8％～+20.2％を示唆</p>
+</div>
+</section>
+<section id="CFA1533-R-s08-01-01-01-03">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">FIRST QUARTER HIGHLIGHTS</h6>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA1533-R-s08-L5">
+<li class="cfa-curriculum-list-item">売上高は2億6,560万ドルから2億9,260万ドルへ増加（+10.1％）</li>
+<li class="cfa-curriculum-list-item">オーガニック売上高は8.3％増加</li>
+<li class="cfa-curriculum-list-item">EBITDAは3,080万ドルから3,640万ドルへ増加（+18.1％）</li>
+<li class="cfa-curriculum-list-item">EBITDAマージンは11.6％から12.5％へ90ベーシスポイント改善</li>
+<li class="cfa-curriculum-list-item">フリーキャッシュフローは1,540万ドルから2,060万ドルへ増加（+34.0％）</li>
+<li class="cfa-curriculum-list-item">新規ビジネス獲得額（Net New Business wins）は2,440万ドル</li>
+</ul>
+<div class="cfa-curriculum-blockquote">
+<p>ニューヨーク州ニューヨーク（2014年4月24日）－MDC Partners Inc.（NASDAQ: MDCA；TSX: MDZ.A）は本日、2014年3月31日までの3か月間の財務結果を発表した。</p>
+<p>…</p>
+</div>
+</section>
+</div>
+<p>一般に、経営者は投資家が企業の業績をよりよく理解できるようにするためだけでなく、自社の業績をより好意的に見せるためにも非GAAP財務指標（non-GAAP financial measures）を構築することを選択する場合がある。場合によっては、経営者は、提示が義務付けられている基準準拠の財務情報（standards-compliant financial information）から注意をそらすような形で非GAAP指標を提示しようとすることがある。</p>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s08-FN-1-1Content">
+<p>
+<sup>19</sup> SEC, “Final Rule: Conditions for Use of Non-GAAP Financial Measures,” Securities and Exchange Commission, <a href="http://www.sec.gov/rules/final/33-8176.htm" target="_blank">www.sec.gov/rules/final/33-8176.htm</a>.</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="CFA1533-R-s08-FN-1-2Content">
+<p>20 GrouponとSECの間の書簡（correspondence）、2011年9月16日にEDGARに提出。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143726_1008_Mechanisms_That_Discipline_Financial_Reporting_Quality.html" >← 前へ</a>
+  <span class="title">10.09 | Detection of Financial Reporting Quality Issues: Introduction and Presentation Choices</span>
+  <a href="courses_1867_modules_items_143731_1010_Accounting_Choices_and_Estimates.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

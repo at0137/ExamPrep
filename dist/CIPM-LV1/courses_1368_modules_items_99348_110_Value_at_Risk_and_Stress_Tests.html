@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.10 | Value at Risk and Stress Tests</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { font-family: 'Lato', 'Helvetica Neue', Arial, sans-serif; margin: 0; background: #f0f2f5; color: #333; font-size: 16px; line-height: 1.6; }
+.page-wrapper { max-width: 900px; margin: 0 auto; background: #fff; padding: 32px 48px 64px; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+nav.breadcrumb { font-size: 13px; color: #666; margin-bottom: 20px; }
+nav.breadcrumb a { color: #0770a3; text-decoration: none; }
+nav.breadcrumb a:hover { text-decoration: underline; }
+
+/* Reading content */
+.dp-wrapper { margin: 0; }
+.dp-header { margin-bottom: 24px; }
+.dp-heading { font-size: 22px; font-weight: 700; color: #2d3b45; margin: 0; line-height: 1.3; }
+.dp-header-pre { display: block; font-size: 13px; font-weight: 400; color: #666; margin-bottom: 4px; }
+.dp-hr-solid-light { border: none; border-top: 1px solid #ddd; margin: 20px 0; }
+.dp-flat-sections p { margin: 0 0 14px; }
+.dp-flat-sections ul, .dp-flat-sections ol { margin: 0 0 14px 24px; }
+.dp-flat-sections li { margin-bottom: 6px; }
+.dp-flat-sections h3 { font-size: 17px; font-weight: 700; color: #2d3b45; margin: 24px 0 8px; }
+.dp-flat-sections table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+.dp-flat-sections th, .dp-flat-sections td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+.dp-flat-sections th { background: #f0f4f7; font-weight: 600; }
+.dp-flat-sections figure { margin: 20px 0; }
+.dp-flat-sections img { max-width: 100%; height: auto; }
+
+/* Learning Outcomes box */
+.cfa-curriculum-los-box { background: #eef5fb; border-left: 4px solid #0770a3; padding: 14px 18px; margin: 0 0 20px; border-radius: 0 4px 4px 0; }
+.cfa-curriculum-los-box h3 { margin: 0 0 8px; font-size: 15px; color: #0770a3; }
+.cfa-curriculum-los-box ul { margin: 0 0 0 20px; }
+.cfa-curriculum-los-box li { font-size: 14px; margin-bottom: 4px; }
+
+/* ── Knowledge Check ── */
+figure.dp-content-block { margin: 36px 0 0; border: 2px solid #0770a3; border-radius: 8px; overflow: hidden; }
+figure.dp-content-block > figcaption {
+  background: #0770a3; color: #fff; padding: 12px 18px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px;
+  letter-spacing: .3px;
+}
+figure.dp-content-block > figcaption i { opacity: .85; }
+
+/* fieldset reset */
+.dp-qc fieldset { border: none; margin: 0; padding: 20px; }
+.dp-qc-question { margin-bottom: 18px; }
+.dp-qc-question legend { font-size: 15px; font-weight: 500; padding: 0; float: left; width: 100%; }
+.dp-qc-question p { margin: 0 0 8px; }
+.cfa-curriculum-question-with-label { font-size: 15px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Answer choices — radio hidden, dt acts as button */
+dl.dp-qc-answers { margin: 0; padding: 0; list-style: none; }
+dt.dp-qc-answer {
+  border: 2px solid #ccc; border-radius: 6px; margin-bottom: 10px;
+  padding: 12px 16px; cursor: pointer; background: #fafafa;
+  transition: border-color .15s, background .15s;
+  display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+dt.dp-qc-answer:hover { border-color: #0770a3; background: #f0f7fc; }
+dt.dp-qc-answer label { cursor: pointer; flex: 1; margin: 0; }
+dt.dp-qc-answer label p { margin: 0; }
+/* hide the actual radio */
+dt.dp-qc-answer input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+/* status icon slot */
+dt.dp-qc-answer::after {
+  content: ''; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid #ccc; flex-shrink: 0; margin-top: 1px;
+  display: inline-block;
+}
+/* selected wrong */
+dt.dp-qc-answer.qc-wrong {
+  border-color: #c62828; background: #ffebee; cursor: default;
+}
+dt.dp-qc-answer.qc-wrong::after {
+  content: '✗'; border-color: #c62828; background: #c62828;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+/* correct answer revealed */
+dt.dp-qc-answer.qc-correct {
+  border-color: #2e7d32; background: #e8f5e9; cursor: default;
+}
+dt.dp-qc-answer.qc-correct::after {
+  content: '✓'; border-color: #2e7d32; background: #2e7d32;
+  color: #fff; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+dt.dp-qc-answer.qc-disabled { cursor: default; }
+
+/* Response / explanation */
+dd.dp-qc-response {
+  display: none !important;   /* overridden by JS with style.display */
+  margin: -4px 0 10px 0; padding: 12px 16px;
+  border-radius: 0 0 6px 6px; font-size: 14px; line-height: 1.55;
+}
+dd.dp-qc-response.dp-qc-correct {
+  background: #e8f5e9; border: 2px solid #2e7d32; border-top: none;
+}
+dd.dp-qc-response:not(.dp-qc-correct) {
+  background: #ffebee; border: 2px solid #c62828; border-top: none;
+}
+.dp-qc-answer-type { display: none; } /* icons handled by dt::after */
+.dp-qc-content p { margin: 0 0 6px; }
+.cfa-curriculum-option-label { font-weight: 700; }
+
+/* Result banner */
+.qc-result-banner {
+  margin: 0 0 16px; padding: 12px 18px; border-radius: 6px;
+  font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-result-banner .icon   { font-size: 20px; }
+
+/* Reset button */
+.qc-reset-btn {
+  margin-top: 14px; background: #546e7a; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 13px;
+  display: block;
+}
+.qc-reset-btn:hover { background: #37474f; }
+
+/* Popover (glossary) */
+.dp-popover-trigger { color: #0770a3; border-bottom: 1px dotted #0770a3; cursor: help; position: relative; }
+.dp-popup-content {
+  display: none; position: absolute; z-index: 100; background: #fff;
+  border: 1px solid #ccc; border-radius: 4px; padding: 8px 12px;
+  font-size: 13px; max-width: 280px; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  left: 0; top: 1.6em; white-space: normal;
+}
+.dp-popover-trigger.open .dp-popup-content { display: block; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Fixed bottom nav */
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* Index page */
+.index-header { background: #2d3b45; color: #fff; padding: 28px 40px; margin-bottom: 32px; }
+.index-header h1 { margin: 0 0 6px; font-size: 26px; }
+.index-header p { margin: 0; color: #aec7d8; font-size: 14px; }
+.course-section { margin-bottom: 36px; }
+.course-section h2 { font-size: 18px; color: #2d3b45; border-bottom: 2px solid #0770a3; padding-bottom: 6px; margin-bottom: 14px; }
+.module-section { margin-bottom: 20px; }
+.module-section h3 { font-size: 13px; color: #666; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+ul.lesson-list { list-style: none; margin: 0; padding: 0; }
+ul.lesson-list li { margin-bottom: 5px; }
+ul.lesson-list li a { color: #0770a3; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 7px; }
+ul.lesson-list li a:hover { text-decoration: underline; }
+ul.lesson-list li a.has-quiz::after {
+  content: "KC"; font-size: 10px; background: #fff3e0; color: #e65100;
+  border: 1px solid #ffb74d; border-radius: 3px; padding: 0 5px;
+  font-weight: 700; letter-spacing: .3px;
+}
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+<nav class="breadcrumb"><a href="index.html">Index</a> › Risk Measurement and Attribution › Module 1: Risk Measurement and Risk Attribution</nav>
+<h1 class="page-title screenreader-only">1.10 | Value at Risk and Stress Tests</h1>
+<div id="todo-date-mount-point"></div>
+<div class="dp-wrapper dp-flat-sections variation-2" id="CIPM0018-R-s10-R-1" title="1.10 | Value at Risk and Stress Tests"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール1：リスク測定とリスク要因分解 (Risk Measurement and Risk Attribution) 1.10｜バリュー・アット・リスクとストレステスト (Value at Risk and Stress Tests)</h2></header><div class="cfa-curriculum-los-box"><h3 class="dp-has-icon cfa-curriculum-los-box">学習目標 (Learning Outcomes)</h3><p class="p1">The candidate should be able to:</p><ul id="CIPM0018-R-s10-los-1CIPM0018-R-s10-los-2"><li class="cfa-curriculum-los-item">バリュー・アット・リスク (value at risk)、ストレステスト (stress tests)、シナリオ分析 (scenario analysis) を説明および解釈し、それぞれの長所と短所を説明しなさい。</li><li class="cfa-curriculum-los-item">バリュー・アット・リスクの推定方法を説明しなさい。</li></ul></div><hr class="dp-hr-solid-light dp-hr-color-dp-primary"/><p>以下のレッスンでは、バリュー・アット・リスクおよびストレステストを説明し、それぞれの長所と短所を解説する。</p><section id="CIPM0018-R-s10-01-01"><h3 class="dp-heading">バリュー・アット・リスク (Value at Risk)</h3><p>バリュー・アット・リスクは最も一般的な将来志向のリスク尺度の一つであるが、過去リターンの尺度として計算することも可能である。バリュー・アット・リスクは損失可能性を確率に基づいて測定する指標であり、慣例として正の数で表され、通貨単位またはパーセンテージで表現される。この指標は投資、ポートフォリオ、戦略、または企業に適用できる。より正式には、バリュー・アット・リスク (VaR) とは、特定の期間において、一定の確率水準で超過すると予想される損失の推定値である26。この定義における「超過すると予想される」という表現は、VaRが最小値であることを意味する。「ポートフォリオの1日1%VaRが300万ユーロである」という表現は、1日の間にポートフォリオが少なくとも300万ユーロの損失を被る確率が1%であることを意味する。同様に、99%の信頼水準でポートフォリオの1日VaRが300万ユーロであるとも言える27。VaRはしばしば最大損失額を示すと誤解されるが、この誤解はポートフォリオのリスクを過小評価する原因となる。</p><p>VaRは通常、将来志向（ex ante）のリスク尺度であり、その推定は常に確率または信頼水準のもとで行われる。95%信頼水準の場合、95%の確率でポートフォリオの損失は計算されたVaR未満となる。一方で、5%の確率で損失はVaR以上となるとも解釈できる。より高い信頼水準を用いるとVaRは大きくなり、その水準以上の損失が発生する頻度は低くなる。99%信頼水準は95%よりも保守的であり、より極端な結果に焦点を当てる。一般的に用いられる信頼水準は95%と99%である。</p><p>VaRを計算する最も単純な方法は、リターン系列を並べ替えて最も悪いリターンを特定し、所望の確率水準に対応するリターンを選ぶことである。例えば、図表17 (Exhibit 17) の月次期待リターンを考える。</p><div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s10-EXH17"><div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"></i>Exhibit 17<span style="display: block;">Value at Risk</span></div><div class="cfa-curriculum-table-container"><div class="dp-table-scroll"><table aria-labelledby="CIPM0018-R-s10-EXH17-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM0018-R-s10-EXH17-title">図表17：バリュー・アット・リスク (Value at Risk)</caption><thead><tr><th style="text-align: left; vertical-align: bottom; padding: 8px; ">月次リターン観測値 (monthly return observations)</th><th style="text-align: center; vertical-align: bottom; padding: 8px; ">リターン（%）</th></tr></thead><tbody><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">1</th><td style="text-align: center; vertical-align: top; padding: 8px; ">8.9</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">2</th><td style="text-align: center; vertical-align: top; padding: 8px; ">3.2</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">3</th><td style="text-align: center; vertical-align: top; padding: 8px; ">−7.8</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">4</th><td style="text-align: center; vertical-align: top; padding: 8px; ">2.1</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">5</th><td style="text-align: center; vertical-align: top; padding: 8px; ">−13.7</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">6</th><td style="text-align: center; vertical-align: top; padding: 8px; ">11.0</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">7</th><td style="text-align: center; vertical-align: top; padding: 8px; ">5.7</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">8</th><td style="text-align: center; vertical-align: top; padding: 8px; ">−8.2</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">9</th><td style="text-align: center; vertical-align: top; padding: 8px; ">15.2</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">10</th><td style="text-align: center; vertical-align: top; padding: 8px; ">9.4</td></tr></tbody></table></div></div></div><p>90%信頼区間および1か月の期間でVaRを求めるには、リターンを高い順から低い順に並べる。この系列で最も悪いリターンは−13.7、次に悪いのは−8.2である。この系列が期待リターンを代表しているとすると、10回中9回、すなわち90%の確率で、1か月の損失は−8.2%を超えないと予想される。実務ではより多くの観測値が必要であるが、この例は概念を示している。</p><p>時間軸 (time horizon) もVaRの重要な要素である。時間軸はリターンを測定する期間を示す。上記の例では、90%信頼水準、1か月の期間、VaR 8.2%を持つポートフォリオを考えた。この場合、1か月の損失が8.2%を超えるのは10%の確率である。この指標は連続した複数月の損失確率を示すものではなく、それにより8.2%を大きく上回る損失が生じる可能性もある。</p><p>時間軸の選択は投資家の特性に依存する。VaRは投資銀行により日次の収益リスクを測定する手段として開発された。現在でも多くの金融機関は日次VaRを報告しており、これは頻繁に取引されるポートフォリオを反映している。一方、年金基金などは週次または月次VaRを報告することがあり、これはより長期の投資期間を反映する。その他条件が同じであれば、時間軸が長いほどVaRは大きくなる。</p><p>VaRの推定には主に3つの方法があり、それぞれ前提、データ要件、利点および欠点が異なる：</p><ul class="cfa-curriculum-list-bullet" id="CIPM0018-R-s10-L1"><li class="cfa-curriculum-list-item">分析的方法（分析的アプローチ、分散共分散法 (variance–covariance)、パラメトリック法 (parametric) とも呼ばれる）、</li><li class="cfa-curriculum-list-item">ヒストリカル法 (historical)、および</li><li class="cfa-curriculum-list-item">モンテカルロ法 (Monte Carlo)。</li></ul><p>分析的方法は比較的容易に計算でき、必要なのは期待リターンと標準偏差のみである。しかし、この方法はリターンが正規分布 (normal distribution) に従うという仮定に依存するという重大な欠点がある。この仮定の妥当性は分析対象の戦略によって異なる。例えば、先進国株式ポートフォリオは正規分布に近い可能性が高いが、債券アービトラージ型ヘッジファンドでは適切でない可能性がある。オプションを多用するポートフォリオは正規分布から大きく乖離する傾向があり、この場合分析的方法は不適切である。</p><p>別の方法としてヒストリカル法がある。例えば、過去リターンの観測値が100ある場合、99%信頼水準のVaRは全体で2番目に悪いリターンとなる。これは全体の1%に相当する観測値によって超過されるためである。</p><p>ヒストリカル法の利点は、リターン分布に関する仮定を必要としない点である。必要なデータは分析対象のポートフォリオまたは証券の過去リターン系列である。ただし、この方法は過去のリターンが将来のリターンの適切な代表であるという仮定を置く。この仮定は評価期間によっては成立しない場合もある。例えば、市場クラッシュを含まない期間を用いた場合、そのリスクは反映されない。また、特定の歴史的状況が将来に同様に再現される可能性は低いという欠点もある。</p><p>ヒストリカル法のもう一つの問題は、現在の投資が適切な過去リターン系列に対応している必要がある点である。新規発行の株式や債券などは、分析期間全体にわたるデータが存在しない場合がある。この場合、代替資産 (proxy investment) を用いることが可能である。VaRの計算は入力データの正確性および完全性に大きく依存する。</p><p>モンテカルロ法は、リターン分布が正規分布から大きく乖離するポートフォリオに適している場合がある。多くのヘッジファンドは裾の厚い分布 (fat tails) を持ち、極端なリターンの発生確率が高い。モンテカルロ法は乱数生成を用いて潜在的なリターンを推定し、オプションやデリバティブの影響を分析に組み込みやすい。一方で、投資対象が増えるほど計算の複雑性が高まり、多くの計算資源を必要とするという欠点がある。</p><p>VaRに対する批判の一つは、それが最大損失を示すように聞こえる点であるが、実際には特定の確率と期間において期待される最小損失を示すものである。VaRを超える損失の大きさを評価するために、拡張指標も開発されている。例えば、テール・バリュー・アット・リスク (tail value at risk, TVaR)、条件付きVaR (conditional VaR)、条件付きテール期待値 (conditional tail expectation)、期待ショートフォール (expected shortfall) は、VaRに加えてVaR超過部分の期待損失を含む。例えば99%VaRの場合、TVaRは最悪の1%の平均損失を捉える。この場合の条件とは、リターンがVaRより悪いという条件である。</p><p>VaRへの寄与 (contribution to VaR) は有用な拡張概念であるが、その計算方法は本モジュールの範囲外である。これはファンド全体のボラティリティに対する各セグメントの相対的寄与を測定する。図表18 (Exhibit 18) の年金リスク分析を考える。</p><div class="cfa-curriculum-table-wrap" id="CIPM0018-R-s10-EXH18"><div aria-hidden="true" class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"></i>Exhibit 18<span style="display: block;">Pension Risk Analysis (% of total fund)</span></div><div class="cfa-curriculum-table-container"><div class="dp-table-scroll"><table aria-labelledby="CIPM0018-R-s10-EXH18-title" class="table" data-active-table="true"><caption class="cfa-curriculum-table-caption-hidden" id="CIPM0018-R-s10-EXH18-title">図表18：年金リスク分析（総ファンドに対する割合）</caption><thead><tr><th style="text-align: left; vertical-align: bottom; padding: 8px; "></th><th style="text-align: center; vertical-align: bottom; padding: 8px; ">VaRへの寄与 (contribution to value at risk)</th><th style="text-align: center; vertical-align: bottom; padding: 8px; ">資産配分 (asset allocation)</th></tr></thead><tbody><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">グローバル株式 (global equities)</th><td style="text-align: center; vertical-align: top; padding: 8px; ">75%</td><td style="text-align: center; vertical-align: top; padding: 8px; ">61%</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">国債 (Treasuries)</th><td style="text-align: center; vertical-align: top; padding: 8px; ">−4</td><td style="text-align: center; vertical-align: top; padding: 8px; ">11</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">ヘッジファンド (hedge funds)</th><td style="text-align: center; vertical-align: top; padding: 8px; ">2</td><td style="text-align: center; vertical-align: top; padding: 8px; ">4</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">TIPS</th><td style="text-align: center; vertical-align: top; padding: 8px; ">1</td><td style="text-align: center; vertical-align: top; padding: 8px; ">8</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">実物資産 (real assets)</th><td style="text-align: center; vertical-align: top; padding: 8px; ">17</td><td style="text-align: center; vertical-align: top; padding: 8px; ">9</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">コモディティ (commodities)</th><td style="text-align: center; vertical-align: top; padding: 8px; ">9</td><td style="text-align: center; vertical-align: top; padding: 8px; ">5</td></tr><tr><th style="text-align: left; vertical-align: top; padding: 8px; ">Cash</th><td style="text-align: center; vertical-align: top; padding: 8px; ">0</td><td style="text-align: center; vertical-align: top; padding: 8px; ">2</td></tr></tbody></table></div></div></div><p>図表18は、グローバル株式が資産の61%を占めるにもかかわらず、VaRの75%を占めていることを示している。一方、国債は資産の11%を占めるが、全体のVaRを4%相殺しており、強力な分散効果を持つ。このことは、グローバル株式の配分を増やすとVaRが増加し、国債の配分を増やすとVaRが減少する傾向があることを示唆する。</p><p>上記のパラメータ（信頼水準、時間軸、手法）に加えて、VaRには様々な種類があり、異なる情報を提供する。例えば、ポートフォリオ全体のVaRは様々な方法で計算できるが、構成要素間の関係を分析することで相対的リスクの理解が深まり、資産配分の意思決定に役立つ。VaRへの寄与は、各セグメントが全体のVaRにどれだけ寄与しているかを示すが、分散効果は別途示されない場合がある。分散効果を独立した項目として示すことや、非分散VaRを各セグメントごとに計算する方法もある。VaRは市場価値比率、総VaR比率、または絶対額で表すことができる。インクリメンタルVaR (incremental VaR) は、特定のセグメントを除去した場合の影響を示す。VaRの推定方法には標準的な方法はなく、単に「VaR」と表記される場合でも、どの計算方法が用いられているかを明確にすることが重要である。</p><p>VaRの計算方法の選択は結果に大きな影響を与えるため、これに基づいて投資判断を行う前に、その前提を理解することが重要である。ポートフォリオ全体およびその構成要素のVaRを計算した後、それぞれの相対的リスクやベンチマークとの比較、時間推移の分析は有益な洞察を提供する。</p><figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0018-R-s10-Ba"><figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"></i>Knowledge Check: Analysis of VaR</figcaption><section><p>以下を仮定する：</p><ul class="cfa-curriculum-list-bullet" id="CIPM0018-R-s10-L2"><li class="cfa-curriculum-list-item">ポートフォリオ価値 (portfolio value) = 10億ユーロ；総VaR (total VaR) = 1億ユーロ</li><li class="cfa-curriculum-list-item">株式配分 (equity allocation) = 5億ユーロ；株式のVaR寄与 (equity contribution to VaR) = 8,000万ユーロ</li><li class="cfa-curriculum-list-item">国債配分 (Treasuries allocation) = 5億ユーロ；国債のVaR寄与 = 2,000万ユーロ（または5億ユーロの4%）</li></ul><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0018-R-s10-Q1"><legend><span class="cfa-curriculum-question-with-label">1. </span><p>1億ユーロを株式から国債へ移動させた場合、他の条件が一定であれば、総VaRは次のうちどれに最も近いか：</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-0" id="dp-qc-0-0" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-0"><p>A. 8,000万ユーロ</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい解答を選択して詳細を確認しなさい。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse0-1" id="dp-qc-0-1" name="dp-qc-0" type="radio" value="true"/><label for="dp-qc-0-1"><p>B. 8,800万ユーロ</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse0-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h4 class="cfa-curriculum-solution-title">解答 (Solution)</h4><p>Bが正解である。株式および国債のVaR寄与を投資額に対する割合で表すと、それぞれ 8,000万/5億 = 16%、2,000万/5億 = 4% である。株式から国債へ1億ユーロを移動した後、株式のVaR寄与は4億ユーロの16%で6,400万ユーロ、国債のVaR寄与は6億ユーロの4%で2,400万ユーロとなる。したがって総VaRは6,400万 + 2,400万 = 8,800万ユーロである。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse0-2" id="dp-qc-0-2" name="dp-qc-0" type="radio" value="false"/><label for="dp-qc-0-2"><p>C. 1億ユーロ</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse0-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい解答を選択して詳細を確認しなさい。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div></section></figure></section><section id="CIPM0018-R-s10-01-02"><h3 class="dp-heading">ストレステスト (Stress Tests)</h3><p>将来志向のリスク分析のもう一つの応用はストレステストである。多くの規制当局は現在、企業にストレステストの結果報告を求めており、場合によっては非常に具体的なパラメータを指定し、また場合によっては解釈の余地を残した広範なガイドラインを提示している。ストレステストとは、株式市場、コモディティ価格、金利などのパラメータの変化がポートフォリオに与える影響を推定するプロセスである。シナリオ分析 (scenario analysis) はこれに関連し、特定の過去のシナリオが再び発生した場合のポートフォリオへの影響を示す。</p><p>ストレステストおよびシナリオ分析は通常、計算を簡略化するためにファクター分析 (factor analysis) を取り入れる。各投資またはポートフォリオは関連する市場要因の変化の影響を受け、それらは指数や証券で表現される。投資リターンとファクターリターンの相関が分かれば、ファクターの変化が投資に与える影響を計算できる。ストレステストでは、分析対象とする特定のファクターまたはその組み合わせを選び、それらの値が大きく不利に動いた場合の影響を評価する。例えば、米国証券取引委員会 (US Securities and Exchange Commission) は、マネー・マーケット・ファンドに対して、金利、信用力、流動性の変化の影響を個別および組み合わせで検証し、基準価額を維持できなくなる点を特定することを求めている。</p><p>ヒストリカル・シナリオ分析は、VaRのヒストリカル法と同様の欠点を持つ。現在のポートフォリオに含まれる投資が、シナリオで考慮される過去期間には存在していない可能性がある。歴史的シナリオは通常、大きな損失や高いボラティリティを伴う印象的な期間から選ばれる。ファクターエクスポージャーを用いることで、過去のファクター変化が再現された場合の現在ポートフォリオへの影響を推定できる。欠点として、歴史は同じ形で繰り返されることがほとんどない点が挙げられる。一方で、直感的であり、リスク管理の重要性を示すのに有用であるという利点もある。</p><figure class="dp-content-block cfa-curriculum-exercise-box" id="CIPM0018-R-s10-Bb"><figcaption class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-pencil-alt cp-out-default" style="background: inherit !important;"></i>Knowledge Check: Value at Risk and Stress Testing</figcaption><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0018-R-s10-Q2"><legend><span class="cfa-curriculum-question-with-label">1. </span><p>オプションやその他のデリバティブを多く含むポートフォリオに対して、最も適切なVaR推定手法はどれか：</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-0" id="dp-qc-1-0" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-0"><p>A. ヒストリカル法 (historical)</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい解答を選択して詳細を確認しなさい。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse1-1" id="dp-qc-1-1" name="dp-qc-1" type="radio" value="false"/><label for="dp-qc-1-1"><p>B. パラメトリック法 (parametric)</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse1-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい解答を選択して詳細を確認しなさい。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse1-2" id="dp-qc-1-2" name="dp-qc-1" type="radio" value="true"/><label for="dp-qc-1-2"><p>C. モンテカルロ法 (Monte Carlo)</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse1-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h4 class="cfa-curriculum-solution-title">解答 (Solution)</h4><p>Cが正解である。モンテカルロ法は乱数生成を用いて多数のリターンシナリオを予測するため、正規分布や安定したリターンを仮定する他の手法よりも依存度が低い。</p></section></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0018-R-s10-Q3"><legend><span class="cfa-curriculum-question-with-label">2. </span><p>99%信頼区間で1か月VaRが100万ドルの場合、投資家は次のように予想される：</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-0" id="dp-qc-2-0" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-0"><p>A. 任意の月に100万ドル以上の損失を被らない。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse2-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい解答を選択して詳細を確認しなさい。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse2-1" id="dp-qc-2-1" name="dp-qc-2" type="radio" value="true"/><label for="dp-qc-2-1"><p>B. 1%の確率で1か月に100万ドル以上の損失を被る。</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse2-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h4 class="cfa-curriculum-solution-title">解答 (Solution)</h4><p>Bが正解である。VaRは特定の信頼水準と期間において期待される最小損失の推定値である。</p></section></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse2-2" id="dp-qc-2-2" name="dp-qc-2" type="radio" value="false"/><label for="dp-qc-2-2"><p>C. 1%の確率で1か月に約100万ドルの損失を被る。</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse2-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Cは不正解。正しい解答を選択して詳細を確認しなさい。</p></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div><div class="dp-content-block"><div class="dp-qc dp-qc-built"><fieldset><div class="dp-qc-question"><legend><div class="dp-qc-question cfa-curriculum-question-with-label" id="CIPM0018-R-s10-Q4"><legend><span class="cfa-curriculum-question-with-label">3. </span><p>VaRの計算におけるどのような調整がストレステストの例となるか：</p></legend></div></legend></div><dl class="dp-qc-answers"><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse3-0" id="dp-qc-3-0" name="dp-qc-3" type="radio" value="false"/><label for="dp-qc-3-0"><p>A. 信頼水準を95%から99%に引き上げる</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse3-0" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Aは不正解。正しい解答を選択して詳細を確認しなさい。</p></div></dd><dt class="dp-qc-answer"><input class="dp-qc-field" data-response="dpQcResponse3-1" id="dp-qc-3-1" name="dp-qc-3" type="radio" value="false"/><label for="dp-qc-3-1"><p>B. 期間を1週間から1日に短縮する</p></label><br/></dt><dd class="dp-qc-response" id="dpQcResponse3-1" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-times"></i></span><div class="dp-qc-content cfa-curriculum-solution"><p>Bは不正解。正しい解答を選択して詳細を確認しなさい。</p></div></dd><dt class="dp-qc-answer dp-qc-correct"><input class="dp-qc-field" data-response="dpQcResponse3-2" id="dp-qc-3-2" name="dp-qc-3" type="radio" value="true"/><label for="dp-qc-3-2"><p>C. 投資間のリターン相関 (correlation of returns) を1に引き上げる</p></label><br/></dt><dd class="dp-qc-response dp-qc-correct" id="dpQcResponse3-2" style="display: none;"><span class="dp-qc-answer-type"><i class="fas fa-fw fa-check"></i></span><div class="dp-qc-content dp-qc-correct-flag cfa-curriculum-solution"><section><h4 class="cfa-curriculum-solution-title">解答 (Solution)</h4><p>Cが正解である。VaRの計算に用いる信頼水準や時間軸を調整すると結果の値は変化するが、これらのパラメータは現在のポートフォリオや市場のリスクの変化を示すものではない。相関の仮定を調整することは市場リスクを表すパラメータにストレスをかける例であり、その結果の値は市場条件の変化がポートフォリオに与える影響を示す。</p></section></div></dd></dl><a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="javascript:void(0)" role="button" style="display: inline-block;">Check Answer</a></fieldset></div></div></figure></section><div class="dp-content-block cfa-curriculum-reflist"><h3 class="dp-has-icon cfa-curriculum-reflist">参考文献一覧 (Reference List)</h3><div class="dp-panels-wrapper dp-accordion-default"><h3 class="dp-panel-heading cfa-curriculum-reflist-title dp-panels-built" id="dpPanel0">参考文献 (References)</h3><div aria-labelledby="dpPanel0" class="dp-panel-content" id="dpPanel0Content" role="region" style="display: none;" tabindex="0"><ul id="CIPM0018-R-s10-ref1"><li id="CIPM0018-R-s10-R1list">Chance, D., Grant, K., および Marsland, J.（2007）「リスク管理 (Risk Management)」『投資ポートフォリオ管理：動的プロセス (Managing Investment Portfolios: A Dynamic Process)』第3版、Maginn, J. L., Tuttle, D. L., Pinto, J. E., McLeavey, D. W. 編、ニュージャージー州ホーボーケン：John Wiley &amp; Sons。</li></ul></div></div></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip1Content" role="tooltip" style="display: none;"><p>26 統計学の用語では、ある期間におけるx%の確率を持つVaRは、その期間の結果分布（最悪から最良へ並べた）のxパーセンタイルを表す。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-fn" id="transformedTip2Content" role="tooltip" style="display: none;"><p>27 本節の説明は主にChance、Grant、Marsland（2007）に基づいている。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip0Content" role="tooltip" style="display: none;"><p>指定された期間において、一定の確率水準で超過すると予想される損失の推定値。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip3Content" role="tooltip" style="display: none;"><p>VaRに加えて、VaRを超過する損失が発生した場合の期待損失を含む値。</p></div><div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="transformedTip4Content" role="tooltip" style="display: none;"><p>ファンド全体のボラティリティに対する各セグメントの相対的ボラティリティを測定する指標。</p></div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1368_modules_items_99347_109_Drawdown_Measures.html" >← 前へ</a>
+  <span class="title">1.10 | Value at Risk and Stress Tests</span>
+  <a href="courses_1368_modules_items_99349_111_Analysis_of_Investment_Characteristics.html" >次へ →</a>
+</div>
+<script>
+(function() {
+  // ── Knowledge Check quiz ──
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var answered = false;
+    var answers  = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+
+    // Find response dd by data-response id on the radio inside each dt
+    function getResponse(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      if (!radio) return null;
+      var id = radio.getAttribute('data-response');
+      return id ? document.getElementById(id) : dt.nextElementSibling;
+    }
+
+    function isCorrect(dt) {
+      var radio = dt.querySelector('input[type="radio"]');
+      return radio ? radio.value === 'true' : dt.classList.contains('dp-qc-correct');
+    }
+
+    // Insert result banner placeholder before the dl
+    var dl = qc.querySelector('dl.dp-qc-answers');
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    banner.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(banner, dl);
+
+    // Insert reset button after the dl
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    resetBtn.style.display = 'none';
+    if (dl) dl.parentNode.insertBefore(resetBtn, dl.nextSibling);
+
+    function revealAnswer(selectedDt) {
+      if (answered) return;
+      answered = true;
+      var correct = isCorrect(selectedDt);
+
+      // Style each answer dt and show its response
+      answers.forEach(function(dt) {
+        dt.classList.add('qc-disabled');
+        var resp = getResponse(dt);
+        if (isCorrect(dt)) {
+          dt.classList.add('qc-correct');
+          if (resp) resp.style.display = 'block';
+        } else if (dt === selectedDt && !correct) {
+          dt.classList.add('qc-wrong');
+          if (resp) resp.style.display = 'block';
+        }
+      });
+
+      // Show result banner
+      banner.style.display = 'flex';
+      if (correct) {
+        banner.className = 'qc-result-banner correct';
+        banner.innerHTML = '<span class="icon">✓</span> 正解です！';
+      } else {
+        banner.className = 'qc-result-banner wrong';
+        // Find correct label text
+        var correctDt = answers.find(function(d) { return isCorrect(d); });
+        var correctLabel = correctDt ? correctDt.querySelector('label') : null;
+        var correctText = correctLabel ? correctLabel.textContent.trim() : '';
+        banner.innerHTML = '<span class="icon">✗</span> 不正解。正解：' + correctText;
+      }
+
+      resetBtn.style.display = 'block';
+    }
+
+    // Click on dt or label
+    answers.forEach(function(dt) {
+      dt.addEventListener('click', function() { revealAnswer(dt); });
+      dt.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); revealAnswer(dt); }
+      });
+      dt.setAttribute('tabindex', '0');
+      dt.setAttribute('role', 'button');
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', function() {
+      answered = false;
+      answers.forEach(function(dt) {
+        dt.classList.remove('qc-correct', 'qc-wrong', 'qc-disabled');
+        var resp = getResponse(dt);
+        if (resp) resp.style.display = 'none';
+      });
+      banner.style.display = 'none';
+      resetBtn.style.display = 'none';
+    });
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (cards.length) {
+    var current = 0;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function() {
+        card.classList.toggle('flipped');
+      });
+    });
+
+    cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+    var nav = document.createElement('div');
+    nav.className = 'fc-nav';
+    nav.innerHTML =
+      '<button id="fc-prev" disabled>← 前へ</button>' +
+      '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+      '<button id="fc-next">次へ →</button>';
+    cards[0].parentNode.insertBefore(nav, cards[0]);
+
+    function showCard(n) {
+      cards[current].style.display = 'none';
+      cards[current].classList.remove('flipped');
+      current = n;
+      cards[current].style.display = '';
+      document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+      document.getElementById('fc-prev').disabled = current === 0;
+      document.getElementById('fc-next').disabled = current === cards.length - 1;
+    }
+
+    document.getElementById('fc-prev').addEventListener('click', function() {
+      if (current > 0) showCard(current - 1);
+    });
+    document.getElementById('fc-next').addEventListener('click', function() {
+      if (current < cards.length - 1) showCard(current + 1);
+    });
+  }
+
+  // ── Glossary popovers ──
+  document.querySelectorAll('.dp-popover-trigger').forEach(function(trigger) {
+    var targetId = trigger.getAttribute('aria-describedby');
+    if (!targetId) return;
+    var popup = document.getElementById(targetId);
+    if (!popup) return;
+    popup.classList.add('dp-popup-content');
+    popup.style.display = 'none';
+    trigger.style.position = 'relative';
+    trigger.appendChild(popup);
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      trigger.classList.toggle('open');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+      if (!trigger.contains(e.target)) trigger.classList.remove('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

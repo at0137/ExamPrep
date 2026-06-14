@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.01 | Introduction</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2436-R-s01-R-1" title="6.01 | Introduction">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：債券評価（Fixed-Income Bond Valuation）：価格と利回り（Prices and Yields）6.01｜イントロダクション（Introduction）</h2>
+</header>
+<p>本章では、割引キャッシュフロー分析（discounted cash flow analysis）を用いて債券価格を算出し、使用する割引率やクーポン利率、残存期間（time-to-maturity）といった債券の特性が価格にどのように影響するかを示す。債券価格と将来キャッシュフローからは内部収益率（internal rate of return）を算出でき、これは満期利回り（yield-to-maturity, YTM）と呼ばれ、一定の仮定の下で固定利付投資家にとって有用なリターン指標となる。本モジュールで適用する仮定の一つは、すべての利息および元本のキャッシュフローが約定通りに支払われるというものである。債券価格とその特性の関係を検討し、異なる特性が価格に与える影響を示し、クーポン支払日およびその間の価格算定を説明する。最後に、価格や満期利回りが不明な場合に、類似債券を用いて推定するマトリックス・プライシング（matrix pricing）を紹介する。</p>
+<p>Most of the examples and exhibits used throughout the reading can be <a class="instructure_file_link instructure_scribd_file inline_disabled" data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1802/files/382206" data-api-returntype="File" data-canvas-previewable="true" href="https://learn.cfainstitute.org/courses/1802/files/382206?wrap=1" id="382204" target="_blank" title="Interactive Spreadsheet Download">downloaded as a Microsoft Excel workbook</a>. Each worksheet in the workbook is labeled with the corresponding example or exhibit number in the text.</p>
+<div class="dp-content-block cfa-curriculum-overview-box" id="CFA2436-R-s01-Ba">
+<h3 class="dp-has-icon cfa-curriculum-overview-box cfa-curriculum-box-title">学習モジュール概要（Learning Module Overview）</h3>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2436-R-s01-L1">
+<li class="cfa-curriculum-list-item">債券価格は割引キャッシュフロー分析の応用である。債券価格は、そのキャッシュフローや将来キャッシュフローの割引に用いられる金利など、債券の特性の関数である。</li>
+<li class="cfa-curriculum-list-item">債券価格と額面、またはクーポン利率と割引率を比較することで、債券がディスカウント（discount）、パー（par）、またはプレミアム（premium）で取引されているかを判定できる。</li>
+<li class="cfa-curriculum-list-item">債券の市場価格が既知であれば、キャッシュフローの内部収益率を算出でき、これを満期利回り（yield-to-maturity, YTM）という。YTMは将来キャッシュフローの現在価値を債券価格に等しくする単一の利率である。</li>
+<li class="cfa-curriculum-list-item">債券投資家の収益率は、(1)満期まで保有し、(2)発行体が予定通りに利息および元本を全額支払い、(3)すべてのクーポンを同一のYTMで再投資する場合に、YTMと一致する。</li>
+<li class="cfa-curriculum-list-item">クーポン支払日と支払日の間で債券が価格付けまたは取引される場合、前回のクーポン支払日以降に発生した経過利息（accrued interest）を売り手に補償するために追加する必要がある。これは買い手が次回のクーポンを全額受け取るためである。</li>
+<li class="cfa-curriculum-list-item">任意の日における経過利息を計算するには、クーポン額に対して、クーポン期間に経過した日数の割合（経過日数／クーポン期間の日数）を乗じる。日数計算には複数の慣行があり、代表的なものにactual/actualおよび30/360がある。</li>
+<li class="cfa-curriculum-list-item">債券価格はYTMの変化と逆方向に変動する。債券の特性は、YTMの変化に対する価格感応度を決定する。</li>
+<li class="cfa-curriculum-list-item">固定クーポン債では、クーポン利率が低いほど、YTMの一定の変化に対する価格変動率は大きくなる。一般に、残存期間が長いほど、YTMの一定の変化に対する価格変動率は大きくなる。</li>
+<li class="cfa-curriculum-list-item">上場株式とは異なり、多くの債券は取引が活発ではなく（thinly traded）、価格発見（price discovery）が困難になる。</li>
+<li class="cfa-curriculum-list-item">マトリックス・プライシング（matrix pricing）は、新発債や流動性の低い債券の価格を、同一または類似の特性を持つ証券の利回りを用いて推定する手法である。マトリックス・プライシングは債券の価格提示に広く用いられている。</li>
+</ul>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2436-R-s01-Bb">
+<h3 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">学習モジュール自己評価（Learning Module Self-Assessment）</h3>
+<section>
+<p>これらの初期問題は、本モジュールに対する現在の理解度を評価するためのものである。</p>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2436-R-s01-Q1"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>2035年1月1日に満期を迎える企業債は、年率3.25%の半年ごとのクーポンを支払い、額面は100である。市場割引率は4.0%である。取引受渡日が2030年1月1日の場合、30/360日数計算を仮定したときの債券価格（額面比％）として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 96.632</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。債券価格は、クーポンおよび元本支払いを市場割引率で割り引いた現在価値の合計である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E"><em>PV</em> = <em>PMT</em> <sub>1</sub>/(1 + <em>r</em>)<sup>1</sup> + <em>PMT</em> <sub>2</sub>/(1 + <em>r</em>)<sup>2</sup> + … + (<em>PMT<sub>N</sub> </em> + <em>FV<sub>N</sub> </em>)/(1 + <em>r</em>)<em> <sup>N</sup> </em>,</div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PMT = 1.625</li>
+<li>r = 0.02</li>
+<li>FV = 100</li>
+<li>N = 10</li>
+</ul>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___1"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>1</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>3</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>4</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___2"><math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>6</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>7</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>8</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>9</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>101.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>10</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___3"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mn>96.632.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>注：計算では数値は丸めていないが、表示のために小数第3位まで示している。解答は小数第3位まで丸める。</p>
+<p>この計算はMicrosoft ExcelやGoogle SheetsのPV関数またはPRICE関数でも行うことができる：</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2436-R-s01-L2">
+<li class="cfa-curriculum-list-item">=-PV(rate, nper, pmt, [FV], type)</li>
+<li class="cfa-curriculum-list-item">=-PV(0.02,10,1.625,100,0)</li>
+<li class="cfa-curriculum-list-item">= 96.632</li>
+<li class="cfa-curriculum-list-item">=PRICE(受渡日（settlement）, 満期日（maturity）, クーポン利率（rate）, 利回り（yield）, 償還額（redemption）, 支払頻度（frequency）, [日数計算基準（basis）])</li>
+<li class="cfa-curriculum-list-item">=PRICE(DATE(2030,1,1),DATE(2035,1,1),0.0325,0.04,100,2)</li>
+<li class="cfa-curriculum-list-item">= 96.632</li>
+</ul>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 96.661</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。債券価格は、クーポンおよび元本支払いを市場割引率で割り引いた現在価値の合計である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E"><em>PV</em> = <em>PMT</em> <sub>1</sub>/(1 + <em>r</em>)<sup>1</sup> + <em>PMT</em> <sub>2</sub>/(1 + <em>r</em>)<sup>2</sup> + … + (<em>PMT<sub>N</sub> </em> + <em>FV<sub>N</sub> </em>)/(1 + <em>r</em>)<em> <sup>N</sup> </em>,</div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PMT = 1.625</li>
+<li>r = 0.02</li>
+<li>FV = 100</li>
+<li>N = 10</li>
+</ul>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___1"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>1</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>3</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>4</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___2"><math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>6</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>7</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>8</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>9</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>101.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>10</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___3"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mn>96.632.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>注：計算では数値は丸めていないが、表示のために小数第3位まで示している。解答は小数第3位まで丸める。</p>
+<p>この計算はMicrosoft ExcelやGoogle SheetsのPV関数またはPRICE関数でも行うことができる：</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2436-R-s01-L2">
+<li class="cfa-curriculum-list-item">=-PV(rate, nper, pmt, [FV], type)</li>
+<li class="cfa-curriculum-list-item">=-PV(0.02,10,1.625,100,0)</li>
+<li class="cfa-curriculum-list-item">= 96.632</li>
+<li class="cfa-curriculum-list-item">=PRICE(受渡日（settlement）, 満期日（maturity）, クーポン利率（rate）, 利回り（yield）, 償還額（redemption）, 支払頻度（frequency）, [日数計算基準（basis）])</li>
+<li class="cfa-curriculum-list-item">=PRICE(DATE(2030,1,1),DATE(2035,1,1),0.0325,0.04,100,2)</li>
+<li class="cfa-curriculum-list-item">= 96.632</li>
+</ul>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 103.436</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。債券価格は、クーポンおよび元本支払いを市場割引率で割り引いた現在価値の合計である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E"><em>PV</em> = <em>PMT</em> <sub>1</sub>/(1 + <em>r</em>)<sup>1</sup> + <em>PMT</em> <sub>2</sub>/(1 + <em>r</em>)<sup>2</sup> + … + (<em>PMT<sub>N</sub> </em> + <em>FV<sub>N</sub> </em>)/(1 + <em>r</em>)<em> <sup>N</sup> </em>,</div>
+<p>where</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PMT = 1.625</li>
+<li>r = 0.02</li>
+<li>FV = 100</li>
+<li>N = 10</li>
+</ul>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___1"><math>
+<semantics>
+<mtable columnalign="left">
+<mtr>
+<mtd>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>1</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>2</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>3</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>4</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>5</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+</mtd>
+</mtr>
+<mtr>
+<mtd>
+<mrow></mrow>
+</mtd>
+</mtr>
+</mtable>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___2"><math>
+<semantics>
+<mrow>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>6</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>7</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>8</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>1.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mn>9</mn>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>101.625</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.02</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>10</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___3"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<mi>V</mi>
+<mo>=</mo>
+<mn>96.632.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>注：計算では数値は丸めていないが、表示のために小数第3位まで示している。解答は小数第3位まで丸める。</p>
+<p>この計算はMicrosoft ExcelやGoogle SheetsのPV関数またはPRICE関数でも行うことができる：</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2436-R-s01-L2">
+<li class="cfa-curriculum-list-item">=-PV(rate, nper, pmt, [FV], type)</li>
+<li class="cfa-curriculum-list-item">=-PV(0.02,10,1.625,100,0)</li>
+<li class="cfa-curriculum-list-item">= 96.632</li>
+<li class="cfa-curriculum-list-item">=PRICE(受渡日（settlement）, 満期日（maturity）, クーポン利率（rate）, 利回り（yield）, 償還額（redemption）, 支払頻度（frequency）, [日数計算基準（basis）])</li>
+<li class="cfa-curriculum-list-item">=PRICE(DATE(2030,1,1),DATE(2035,1,1),0.0325,0.04,100,2)</li>
+<li class="cfa-curriculum-list-item">= 96.632</li>
+</ul>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2436-R-s01-Q2"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>次のうち、債券投資の収益率が満期利回り（yield-to-maturity, YTM）と一致するために必要でない条件はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 債券を満期まで保有する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。投資家がYTMを実現するためには、発行体が予定通りすべてのクーポンおよび元本を支払う必要がある。</p>
+<p>Aは誤りであり、YTMを実現するには満期まで保有する必要がある。</p>
+<p>Cも誤りであり、YTMを実現するにはクーポンをYTMと同じ利率で再投資する必要がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 発行体は1回だけクーポン支払いをデフォルトしてもよい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。投資家がYTMを実現するためには、発行体が予定通りすべてのクーポンおよび元本を支払う必要がある。</p>
+<p>Aは誤りであり、YTMを実現するには満期まで保有する必要がある。</p>
+<p>Cも誤りであり、YTMを実現するにはクーポンをYTMと同じ利率で再投資する必要がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. クーポン支払いをYTMと同じ利率で再投資する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。投資家がYTMを実現するためには、発行体が予定通りすべてのクーポンおよび元本を支払う必要がある。</p>
+<p>Aは誤りであり、YTMを実現するには満期まで保有する必要がある。</p>
+<p>Cも誤りであり、YTMを実現するにはクーポンをYTMと同じ利率で再投資する必要がある。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2436-R-s01-Q3"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>2030年1月1日に発行された3年物のソブリン債は、毎年1.5%の半年ごとのクーポンを支払い、各年の6月30日と12月31日に支払われる。額面は100であり、市場割引率は2.0%である。取引受渡日が2031年8月29日の場合、actual/actual日数計算を仮定したときのフラット価格（flat price）（額面比％）として最も近いものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 99.343</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。フラット価格はフル価格（full price）から経過利息（accrued interest）を差し引いたものである。フル価格は受渡日時点での現在価値であり、クーポン支払日の間であるため部分期間を含む。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___4"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msup>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mn>1</mn>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mn>2</mn>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mo>⋯</mo>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+<mo>+</mo>
+<mi>F</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mi>N</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mrow>
+</semantics>
+</math></div>
+<p>Here,</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PMT = 0.75</li>
+<li>r = 0.01</li>
+<li>t = 60（2031年6月30日から2031年8月29日までの日数）</li>
+<li>T = 184（2031年6月30日から次回クーポン支払日の2031年12月31日までの日数）</li>
+<li>FV = 100</li>
+<li><em>N</em> = 3</li>
+</ul>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___5"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>0.75</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.01</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>1</mn>
+<mo>−</mo>
+<mn>60</mn>
+<mo>/</mo>
+<mn>184</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>0.75</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.01</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>2</mn>
+<mo>−</mo>
+<mn>60</mn>
+<mo>/</mo>
+<mn>184</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100.75</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.01</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>3</mn>
+<mo>−</mo>
+<mn>60</mn>
+<mo>/</mo>
+<mn>184</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___6"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mn>99.587.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>経過利息は、次回クーポン支払いのうち売り手に帰属する比例配分分である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___7"><math>
+<semantics>
+<mrow>
+<mi>A</mi>
+<mi>I</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mi>t</mi>
+<mi>T</mi>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+<mo>,</mo>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___8"><math>
+<semantics>
+<mrow>
+<mi>A</mi>
+<mi>I</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>60</mn>
+</mrow>
+<mrow>
+<mn>184</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mn>0.75</mn>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___9"><math>
+<semantics>
+<mrow>
+<mi>A</mi>
+<mi>I</mi>
+<mo>=</mo>
+<mn>0.245.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>フラット価格は 99.587 − 0.245 = 99.343。</p>
+<p>現在価値の計算はスプレッドシートでも容易に行える。また、Microsoft ExcelやGoogle SheetsのPRICE関数を用いてフラット価格（フル価格ではない）を直接求めることもできる。</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2436-R-s01-L3">
+<li class="cfa-curriculum-list-item">=PRICE(受渡日（settlement）, 満期日（maturity）, クーポン利率（rate）, 利回り（yield）, 償還額（redemption）, 支払頻度（frequency）, [日数計算基準（basis）])</li>
+<li class="cfa-curriculum-list-item">=PRICE(DATE(2031,8,29),DATE(2032,12,31),0.015,0.02,100,2)</li>
+<li class="cfa-curriculum-list-item">= 99.343</li>
+</ul>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 99.587</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。フラット価格はフル価格から経過利息を差し引いたものである。フル価格は受渡日時点での現在価値であり、クーポン支払日の間であるため部分期間を含む。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___4"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msup>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mn>1</mn>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mn>2</mn>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mo>⋯</mo>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+<mo>+</mo>
+<mi>F</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mi>N</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mrow>
+</semantics>
+</math></div>
+<p>Here,</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PMT = 0.75</li>
+<li>r = 0.01</li>
+<li>t = 60（2031年6月30日から2031年8月29日までの日数）</li>
+<li>T = 184（2031年6月30日から次回クーポン支払日の2031年12月31日までの日数）</li>
+<li>FV = 100</li>
+<li><em>N</em> = 3</li>
+</ul>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___5"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>0.75</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.01</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>1</mn>
+<mo>−</mo>
+<mn>60</mn>
+<mo>/</mo>
+<mn>184</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>0.75</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.01</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>2</mn>
+<mo>−</mo>
+<mn>60</mn>
+<mo>/</mo>
+<mn>184</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100.75</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.01</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>3</mn>
+<mo>−</mo>
+<mn>60</mn>
+<mo>/</mo>
+<mn>184</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___6"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mn>99.587.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>経過利息（accrued interest）は、次回クーポン支払いのうち売り手に帰属する比例配分分である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___7"><math>
+<semantics>
+<mrow>
+<mi>A</mi>
+<mi>I</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mi>t</mi>
+<mi>T</mi>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+<mo>,</mo>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___8"><math>
+<semantics>
+<mrow>
+<mi>A</mi>
+<mi>I</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>60</mn>
+</mrow>
+<mrow>
+<mn>184</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mn>0.75</mn>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___9"><math>
+<semantics>
+<mrow>
+<mi>A</mi>
+<mi>I</mi>
+<mo>=</mo>
+<mn>0.245.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>フラット価格（flat price）は 99.587 − 0.245 = 99.343。</p>
+<p>現在価値の計算はスプレッドシートソフトでも容易に行える。また、Microsoft ExcelやGoogle SheetsのPRICE関数を用いてフラット価格（フル価格ではない）を直接求めることもできる。</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2436-R-s01-L3">
+<li class="cfa-curriculum-list-item">=PRICE(受渡日（settlement）, 満期日（maturity）, クーポン利率（rate）, 利回り（yield）, 償還額（redemption）, 支払頻度（frequency）, [日数計算基準（basis）])</li>
+<li class="cfa-curriculum-list-item">=PRICE(DATE(2031,8,29),DATE(2032,12,31),0.015,0.02,100,2)</li>
+<li class="cfa-curriculum-list-item">= 99.343</li>
+</ul>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 99.832</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Aが正しい。フラット価格はフル価格（full price）から経過利息を差し引いたものである。フル価格は受渡日時点での現在価値であり、クーポン支払日の間であるため部分期間を含む。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___4"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msup>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msup>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mn>1</mn>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mn>2</mn>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mo>⋯</mo>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+<mo>+</mo>
+<mi>F</mi>
+<mi>V</mi>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mfenced>
+<mrow>
+<mn>1</mn>
+<mo>+</mo>
+<mi>r</mi>
+</mrow>
+</mfenced>
+</mrow>
+<mrow>
+<mrow>
+<mrow>
+<mi>N</mi>
+<mo>−</mo>
+<mi>t</mi>
+</mrow>
+<mo>/</mo>
+<mi>T</mi>
+</mrow>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>.</mo>
+</mrow>
+</semantics>
+</math></div>
+<p>Here,</p>
+<ul class="cfa-curriculum-definition-list">
+<li>PMT = 0.75</li>
+<li>r = 0.01</li>
+<li>t = 60（2031年6月30日から2031年8月29日までの日数）</li>
+<li>T = 184（2031年6月30日から次回クーポン支払日の2031年12月31日までの日数）</li>
+<li>FV = 100</li>
+<li><em>N</em> = 3</li>
+</ul>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___5"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>0.75</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.01</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>1</mn>
+<mo>−</mo>
+<mn>60</mn>
+<mo>/</mo>
+<mn>184</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>+</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>0.75</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.01</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>2</mn>
+<mo>−</mo>
+<mn>60</mn>
+<mo>/</mo>
+<mn>184</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>100.75</mn>
+</mrow>
+<mrow>
+<msup>
+<mrow>
+<mo stretchy="false">(</mo>
+<mn>1</mn>
+<mo>+</mo>
+<mn>0.01</mn>
+<mo stretchy="false">)</mo>
+</mrow>
+<mrow>
+<mn>3</mn>
+<mo>−</mo>
+<mn>60</mn>
+<mo>/</mo>
+<mn>184</mn>
+</mrow>
+</msup>
+</mrow>
+</mfrac>
+</mstyle>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___6"><math>
+<semantics>
+<mrow>
+<mi>P</mi>
+<msub>
+<mi>V</mi>
+<mrow>
+<mi>F</mi>
+<mi>u</mi>
+<mi>l</mi>
+<mi>l</mi>
+</mrow>
+</msub>
+<mo>=</mo>
+<mn>99.587.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>経過利息（accrued interest）は、次回クーポン支払いのうち売り手に帰属する比例配分分である。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___7"><math>
+<semantics>
+<mrow>
+<mi>A</mi>
+<mi>I</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mi>t</mi>
+<mi>T</mi>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mi>P</mi>
+<mi>M</mi>
+<mi>T</mi>
+<mo>,</mo>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___8"><math>
+<semantics>
+<mrow>
+<mi>A</mi>
+<mi>I</mi>
+<mo>=</mo>
+<mstyle displaystyle="true">
+<mfrac>
+<mrow>
+<mn>60</mn>
+</mrow>
+<mrow>
+<mn>184</mn>
+</mrow>
+</mfrac>
+</mstyle>
+<mo>×</mo>
+<mn>0.75</mn>
+</mrow>
+</semantics>
+</math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2436-R-s01-E___9"><math>
+<semantics>
+<mrow>
+<mi>A</mi>
+<mi>I</mi>
+<mo>=</mo>
+<mn>0.245.</mn>
+</mrow>
+</semantics>
+</math></div>
+<p>フラット価格（flat price）は 99.587 − 0.245 = 99.343。</p>
+<p>現在価値の計算はスプレッドシートソフトでも容易に行える。また、Microsoft ExcelやGoogle SheetsのPRICE関数を用いてフラット価格（フル価格ではない）を直接求めることもできる。</p>
+<ul class="dp-more-space cfa-curriculum-list-simple" id="CFA2436-R-s01-L3">
+<li class="cfa-curriculum-list-item">=PRICE(受渡日（settlement）, 満期日（maturity）, クーポン利率（rate）, 利回り（yield）, 償還額（redemption）, 支払頻度（frequency）, [日数計算基準（basis）])</li>
+<li class="cfa-curriculum-list-item">=PRICE(DATE(2031,8,29),DATE(2032,12,31),0.015,0.02,100,2)</li>
+<li class="cfa-curriculum-list-item">= 99.343</li>
+</ul>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2436-R-s01-Q4"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>正誤問題：債券の提示価格（quoted price）はフル価格（full price）とも呼ばれ、買い手が売り手に支払う金額である。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 正しい</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>誤り。債券はフラット価格（flat price）で提示される。フル価格は買い手が売り手に支払う金額であり、受渡日がクーポン支払日でない場合には経過利息が含まれる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 誤り</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>誤り。債券はフラット価格（flat price）で提示される。フル価格は買い手が売り手に支払う金額であり、受渡日がクーポン支払日でない場合には経過利息が含まれる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2436-R-s01-Q5"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>日本政府が同日に同一クーポン利率の非コーラブル固定利付債を2本発行したとする。一方は満期10年、もう一方は満期30年である。両債券に適用される市場割引率がともに65ベーシスポイント上昇した場合、次のうち正しいものはどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 10年債の方が30年債よりも価格変動率が大きい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。一般に、同一のクーポン利率であれば、短期債は長期債に比べて、市場割引率が同じ幅で変化した場合の価格変動率は小さい。</p>
+<p>Aは誤りであり、一般に短期債は長期債よりも価格変動率が小さい。</p>
+<p>Cは誤りである。短期債と長期債は、市場割引率が同じ幅で変化した場合でも、同じ価格変動率にはならない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 10年債は30年債よりも価格変動率が小さい。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution dp-qc-correct-flag">解答</h3>
+<p>Bが正しい。一般に、同一のクーポン利率であれば、短期債は長期債に比べて、市場割引率が同じ幅で変化した場合の価格変動率は小さい。</p>
+<p>Aは誤りであり、一般に短期債は長期債よりも価格変動率が小さい。</p>
+<p>Cは誤りであり、短期債と長期債は市場割引率が同じ幅で変化した場合でも同じ価格変動率にはならない。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 10年債と30年債は同じ価格変動率となる。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>Bが正しい。一般に、同一のクーポン利率であれば、短期債は長期債に比べて、市場割引率が同じ幅で変化した場合の価格変動率は小さい。</p>
+<p>Aは誤りであり、一般に短期債は長期債よりも価格変動率が小さい。</p>
+<p>Cは誤りであり、短期債と長期債は市場割引率が同じ幅で変化した場合でも同じ価格変動率にはならない。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2436-R-s01-Q6"><span class="cfa-curriculum-question-with-label">6. </span>
+<p>正誤問題：次の記述の正誤を答え、理由を述べよ。</p>
+<p>マトリックス・プライシング（matrix pricing）は、デリバティブ市場（例：金利スワップ（interest rate swaps））の価格を用いて、取引データが乏しい流動性の低いまたは新発債の価格を決定する推定手法である。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 正しい</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>誤り。マトリックス・プライシングは、デリバティブ市場の取引ではなく、類似債券の価格を用いて流動性の低いまたは新発債の価格を推定する手法である。比較対象となる債券は、満期、クーポン利率、信用力が対象債券と類似している。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 誤り</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h3 class="cfa-curriculum-solution">解答</h3>
+<p>誤り。マトリックス・プライシングは、デリバティブ市場の取引ではなく、類似債券の価格を用いて流動性の低いまたは新発債の価格を推定する手法である。比較対象となる債券は、満期、クーポン利率、信用力が対象債券と類似している。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a>
+</div>
+</div>
+</section>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1869_modules_items_146046_Learning_Outcomes_Fixed-Income_Bond_Valuation_Prices_and_Yields.html" >← 前へ</a>
+  <span class="title">6.01 | Introduction</span>
+  <a href="courses_1869_modules_items_146055_602_Bond_Pricing_and_the_Time_Value_of_Money.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

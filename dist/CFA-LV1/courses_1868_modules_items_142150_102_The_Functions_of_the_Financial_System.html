@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.02 | The Functions of the Financial System</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s02" title="1.02 | The Functions of the Financial System">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.02｜金融システムの機能（The Functions of the Financial System）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">金融システムの主な機能を説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>金融システム（financial system）は、市場およびさまざまな金融仲介機関（financial intermediaries）から構成され、金融資産、実物資産、および金融リスクをさまざまな形で、ある主体から別の主体へ、ある場所から別の場所へ、ある時点から別の時点へと移転するのを支援する。これらの移転は、誰かがある資産または金融契約を別の資産または契約と交換するたびに行われる。本講でいう「人々（people）」とは、自分自身、企業、慈善団体、政府などのために行動する主体を含む広い概念であり、彼らが取引する資産や契約には、約束手形（notes）、債券（bonds）、株式（stocks）、上場投資信託（exchange-traded funds）、通貨（currencies）、先渡契約（forward contracts）、先物契約（futures contracts）、オプション契約（option contracts）、スワップ契約（swap contracts）、および特定の商品（commodities）が含まれる。通常の場合のように、買い手と売り手が自発的に取引を行うとき、両者はともに自分にとってより良い結果になると期待している。</p>
+<p>人々は金融システムを主に次の6つの目的で利用する：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA0161-R-L3">
+<li class="cfa-curriculum-list-item">将来のために貯蓄すること；</li>
+<li class="cfa-curriculum-list-item">現在の利用のために資金を借りること；</li>
+<li class="cfa-curriculum-list-item">エクイティ資本を調達すること；</li>
+<li class="cfa-curriculum-list-item">リスクを管理すること；</li>
+<li class="cfa-curriculum-list-item">即時および将来の受渡しのために資産を交換すること；</li>
+<li class="cfa-curriculum-list-item">情報に基づいて取引すること。</li>
+</ol>
+<p>金融システムの主な機能は、以下を促進することである：</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA0161-R-L4">
+<li class="cfa-curriculum-list-item">人々が金融システムを利用する目的の達成；</li>
+<li class="cfa-curriculum-list-item">総貯蓄と総借入を均衡させる収益率（rates of return）の発見；</li>
+<li class="cfa-curriculum-list-item">資本を最も効率的な用途へ配分すること。</li>
+</ol>
+<p>これらの機能は経済的厚生にとって極めて重要である。適切に機能する金融システムにおいては、取引コスト（transaction costs）は低く、アナリストは貯蓄や投資の価値を評価でき、希少な資本資源が効率的に活用される。</p>
+<p>セクション2.1から2.3では、これら3つの機能についてさらに詳しく説明する。セクション2.1の6つの小節では、人々が金融システムを利用する6つの主要な目的と、それらの目的達成を金融システムがどのように支援するかを扱う。セクション2.2および2.3では、それぞれ収益率の決定および資本配分の効率性について論じる。</p>
+<section id="CFA0161-R-s02-01">
+<h3 class="dp-heading">金融システムの利用目的の達成を支援すること（Helping People Achieve Their Purposes in Using the Financial System）</h3>
+<p>人々は金融システムを利用する際、しばしば複数の目的を同時に達成するために取引を行う。例えば、ある投資家が石油生産企業の株式を購入する場合、現在の富を将来に移転するため、将来エネルギー価格が上昇するリスクをヘッジするため、そしてその企業の株式が市場で過小評価されていることを示唆する自身の調査結果を活用するためである可能性がある。この投資が成功すれば、彼女は将来のための貯蓄を行い、エネルギー価格リスクを管理し、自身の調査からリターンを得たことになる。</p>
+<p>人々による金融システムの6つの主要な利用目的について個別に議論することで、人々がなぜ取引を行うのかをより明確に理解できるようになる。金融システムのさまざまな利用方法を識別する能力は、しばしば不適切な金融意思決定につながる混乱を回避するのに役立つ。これらの議論で言及される金融仲介機関は、セクション4でさらに詳しく説明される。</p>
+<section id="CFA0161-R-s02-01-01">
+<h4>貯蓄（Saving）</h4>
+<p>人々はしばしば、現在は使わず将来利用したい資金を持っている。例えば、退職後のために貯蓄する労働者は、現在の所得の一部を将来へ移転する必要がある。退職後には、その貯蓄を用いて、もはや得られない賃金を補うことになる。同様に、企業も売上収益から資金を蓄え、将来の支払期日に備えて仕入先への支払いを行ったり、負債を返済したり、資産（例えば他企業や設備）を取得したりする。</p>
+<p>現在から将来へ資金を移転するために、貯蓄者は約束手形、譲渡性預金証書（certificates of deposit）、債券、株式、投資信託（mutual funds）、または不動産などの実物資産を購入する。これらの選択肢は一般に、単に資金を保有するよりも高い期待収益率を提供する。その後、貯蓄者は将来これらの資産を売却して将来の支出を賄う。貯蓄者が金融リターンを得る目的で資金を投入する場合、一般に投資家（investors）と呼ばれる。資産を購入するときに投資（invest）し、売却するときにディベスト（divest）する。</p>
+<p>投資家は資金を運用している間、適正な収益率を要求する。この適正収益率は、資金の使用に対する対価と、投資が失敗した場合やインフレによって投資の実質価値が低下するリスクに対する補償を含む。</p>
+<p>金融システムは、銀行預金、約束手形、株式、投資信託などの投資商品（investment vehicles）を金融機関が提供し、それらを投資家が大きな取引コストを負担することなく売買できるようにすることで、貯蓄を促進する。これらの金融商品が適正に価格付けされ、かつ容易に取引できる場合、投資家はそれらを利用してより多くの貯蓄を行うようになる。</p>
+</section>
+<section id="CFA0161-R-s02-01-02">
+<h4>借入（Borrowing）</h4>
+<p>個人、企業、政府はしばしば、現在は保有していない資金を今すぐ支出したいと考える。彼らは借入によって、今実施したいプロジェクトのための資金を調達できる。企業はまた、所有権（ownership）やエクイティ持分（equity interests）を売却することで資金を調達することもできる（セクション2.1.3参照）。銀行やその他の投資家は、資金を必要とする者に対して資金を提供するが、それは利息付きで返済されると期待するため、あるいは将来の配当やキャピタルゲインといった支払いによって補償されると期待するためである。</p>
+<p>個人は、旅行、住宅、自動車、教育などの支出のために借入を行うことがある。一般的には住宅ローン（mortgages）や個人ローン、あるいはクレジットカードを利用して借入を行い、後に得る所得で返済する。</p>
+<p>企業は、現在の事業運営や新たな設備投資プロジェクトのために資金を必要とすることが多い。銀行との融資契約や信用枠（line of credit）の設定、あるいは債券などの固定利付証券（fixed income securities）の発行など、さまざまな方法で資金を調達する。企業は通常、将来の収益によって借入を返済する。また、借入に加えて、所有権持分を売却して資金を調達することもある。</p>
+<p>政府は、給与やその他の支出の支払い、プロジェクトの資金調達、国民への福祉給付の提供、各種活動への補助金支出などのために借入を行う。政府は短期証券（bills）、中期債（notes）、長期債（bonds）を発行して資金を調達し、将来の税収や場合によってはこれらの資金で実施されたプロジェクトからの収益によって債務を返済する。</p>
+<p>借り手は、貸し手が返済されると信じる場合にのみ資金を借りることができる。しかし、貸し手が元本と利息の全額返済が不確実であると考える場合、期待損失を補填し、資金を失う可能性に対する不安の対価として、より高い金利を要求する。借入コストを下げるために、借り手はしばしば担保（collateral）として資産を差し入れる。この担保には、借入資金で取得される資産が含まれることも多い。借り手が返済できない場合、貸し手は担保を売却してその代金で債務を回収することができる。</p>
+<p>貸し手は通常、高リスクのプロジェクトに投資する意図のある借り手には資金を貸さない。特に、他に担保を提供できない場合はなおさらである。しかし、そのようなプロジェクトが将来価値のあるキャッシュフローを生み出す可能性が高いと投資家が判断すれば、資金を提供することはあり得る。ただしその場合、貸付ではなく、プロジェクトのエクイティ（equity）と引き換えに資本を提供する。</p>
+<p>The financial system facilitates borrowing. Lenders aggregate
+                                        from savers the funds that borrowers require. Borrowers must
+                                        convince lenders that they can repay their loans, and that,
+                                        in the event they cannot, lenders can recover most of the
+                                        funds lent. Credit bureaus, credit rating agencies, and
+                                        governments promote borrowing; credit bureaus and credit
+                                        rating agencies do so by collecting and disseminating
+                                        information that lenders need to analyze credit prospects
+                                        and governments do so by establishing bankruptcy codes and
+                                        courts that define and enforce the rights of borrowers and
+                                        lenders. When the transaction costs of loans (i.e., the
+                                        costs of arranging, monitoring, and collecting them) are
+                                        low, borrowers can borrow more to fund current expenditures
+                                        with credible promises to return the money in the
+                                        future.</p>
+</section>
+<section id="CFA0161-R-s02-01-03">
+<h4>Raising Equity Capital</h4>
+<p>Companies often raise money for projects by selling (issuing)
+                                        ownership interests (e.g., corporate common stock or
+                                        partnership interests). Although these equity instruments
+                                        legally represent ownership in companies rather than loans
+                                        to the companies, selling equity to raise capital is simply
+                                        another mechanism for moving money from the future to the
+                                        present. When shareholders or partners contribute capital to
+                                        a company, the company obtains money in the present in
+                                        exchange for equity instruments that will be entitled to
+                                        distributions in the future. Although the repayment of the
+                                        money is not scheduled as it would be for loans, equity
+                                        instruments also represent potential claims on money in the
+                                        future.</p>
+<p>The financial system facilitates raising equity capital.
+                                        Investment banks help companies issue equities, analysts
+                                        value the securities that companies sell, and regulatory
+                                        reporting requirements and accounting standards attempt to
+                                        ensure the production of meaningful financial disclosures.
+                                        The financial system helps promote capital formation by
+                                        producing the financial information needed to determine fair
+                                        prices for equity. Liquid markets help companies raise
+                                        capital. In these markets, shareholders can easily divest
+                                        their equities as desired. When investors can easily value
+                                        and trade equities, they are more willing to fund reasonable
+                                        projects that companies wish to undertake.</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM1">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i>
+               Example 1<span style="display: block;">Financing Capital Projects</span>
+</h5>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>As a chief financial officer (CFO) of a large
+                                                industrial firm, you need to raise cash within a few
+                                                months to pay for a project to expand existing and
+                                                acquire new manufacturing facilities. What are the
+                                                primary options available to you?</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s02-01-03-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>Your primary options are to borrow the funds or
+                                                  to raise the funds by selling ownership interests.
+                                                  If the company borrows the funds, you may have the
+                                                  company pledge some or all of the project as
+                                                  collateral to reduce the cost of borrowing.</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA0161-R-s02-01-04">
+<h4>Managing Risks</h4>
+<p>Many people, companies, and governments face financial risks
+                                        that concern them. These risks include default risk and the
+                                        risk of changes in interest rates, exchange rates, raw
+                                        material prices, and sale prices, among many other risks.
+                                        These risks are often managed by trading contracts that
+                                        serve as hedges for the risks.</p>
+<p>For example, a farmer and a food processor both face risks
+                                        related to the price of grain. The farmer fears that prices
+                                        will be lower than expected when his grain is ready for sale
+                                        whereas the food processor fears that prices will be higher
+                                        than expected when she has to buy grain in the future. They
+                                        both can eliminate their exposures to these risks if they
+                                        enter into a binding forward contract for the farmer to sell
+                                        a specified quantity of grain to the food processor at a
+                                        future date at a mutually agreed upon price. By entering
+                                        into a forward contract that sets the future trade price,
+                                        they both eliminate their exposure to changing grain
+                                        prices.</p>
+<p>In general, hedgers trade to offset or insure against risks
+                                        that concern them. In addition to forward contracts, they
+                                        may use futures contracts, option contracts, or insurance
+                                        contracts to transfer risk to other entities more willing to
+                                        bear the risks (these contracts will be covered in Section
+                                        3.4). Often the hedger and the other entity face exactly the
+                                        opposite risks, so the transfer makes both more secure, as
+                                        in the grain example.</p>
+<p>The financial system facilitates risk management when liquid
+                                        markets exist in which risk managers can trade instruments
+                                        that are correlated (or inversely correlated) with the risks
+                                        that concern them without incurring substantial transaction
+                                        costs. Investment banks, exchanges, and insurance companies
+                                        devote substantial resources to designing such contracts and
+                                        to ensuring that they will trade in liquid markets. When
+                                        such markets exist, people are better able to manage the
+                                        risks that they face and often are more willing to undertake
+                                        risky activities that they expect will be profitable.</p>
+</section>
+<section id="CFA0161-R-s02-01-05">
+<h4>Exchanging Assets for Immediate Delivery (Spot Market
+                                        Trading)</h4>
+<p>People and companies often trade one asset for another that
+                                        they rate more highly or, equivalently, that is more useful
+                                        to them. They may trade one currency for another currency,
+                                        or money for a needed commodity or right. Following are some
+                                        examples that illustrate these trades:</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA0161-R-L5">
+<li class="cfa-curriculum-list-item">
+<p>Volkswagen pays its German workers in euros, but the
+                                                company receives dollars when it sells cars in the
+                                                United States. To convert money from dollars to
+                                                euros, Volkswagen trades in the foreign exchange
+                                                markets.</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>A Mexican investor who is worried about the prospects
+                                                for peso inflation or a potential devaluation of the
+                                                peso may buy gold in the spot gold market. (This
+                                                transaction may hedge against the risk of
+                                                devaluation of the peso because the value of gold
+                                                may increase with inflation.)</p>
+</li>
+<li class="cfa-curriculum-list-item">
+<p>A plastic producer must buy carbon credits to emit
+                                                carbon dioxide when burning fuel to comply with
+                                                environmental regulations. The carbon credit is a
+                                                legal right that the producer must have to engage in
+                                                activities that emit carbon dioxide.</p>
+</li>
+</ul>
+<p>In each of these cases, the trades are considered spot market
+                                        trades because the instruments trade for immediate delivery.
+                                        The financial system facilitates these exchanges when liquid
+                                        spot markets exist in which people can arrange and settle
+                                        trades without substantial transaction costs.</p>
+</section>
+<section id="CFA0161-R-s02-01-06">
+<h4>Information-Motivated Trading</h4>
+<p>
+<a aria-describedby="InformationMotivatedTradersContent" class="dp-popover-trigger cfa-curriculum-cite-glossary" href="#InformationMotivatedTradersContent">Information-motivated traders</a> trade to profit
+                                        from information that they believe allows them to predict
+                                        future prices. Like all other traders, they hope to buy at
+                                        low prices and sell at higher prices. Unlike pure investors,
+                                        however, they expect to earn a return on their information
+                                        in addition to the normal return expected for bearing risk
+                                        through time.</p>
+<p>Active investment managers are information-motivated traders
+                                        who collect and analyze information to identify securities,
+                                        contracts, and other assets that their analyses indicate are
+                                        under- or overvalued. They then buy those that they consider
+                                        undervalued and sell those that they consider overvalued. If
+                                        successful, they obtain a greater return than the
+                                        unconditional return that would be expected for bearing the
+                                        risk in their positions. The return that they expect to
+                                        obtain is a conditional return earned on the basis of the
+                                        information in their analyses. Practitioners often call this
+                                        process active portfolio management.</p>
+<p>Note that the distinction between pure investors and
+                                        information-motivated traders depends on their motives for
+                                        trading and not on the risks that they take or their
+                                        expected holding periods. Investors trade to move wealth
+                                        from the present to the future whereas information-motivated
+                                        traders trade to profit from superior information about
+                                        future values. When trading to move wealth forward, the time
+                                        period may be short or long. For example, a bank treasurer
+                                        may only need to move money overnight and might use money
+                                        market instruments trading in an interbank funds market to
+                                        accomplish that. A pension fund, however, may need to move
+                                        money 30 years forward and might do that by using shares
+                                        trading in a stock market. Both are investors although their
+                                        expected holding periods and the risks in the instruments
+                                        that they trade are vastly different.</p>
+<p>In contrast, information-motivated traders trade because
+                                        their information-based analyses suggest to them that prices
+                                        of various instruments will increase or decrease in the
+                                        future at a rate faster than others without their
+                                        information or analytical models would expect. After
+                                        establishing their positions, they hope that prices will
+                                        change quickly in their favor so that they can close their
+                                        positions, realize their profits, and redeploy their
+                                        capital. These price changes may occur almost
+                                        instantaneously, or they may take years to occur if
+                                        information about the mispricing is difficult to obtain or
+                                        understand.</p>
+<p>The two categories of traders are not mutually exclusive.
+                                        Investors also are often information-motivated traders. Many
+                                        investors who want to move wealth forward through time
+                                        collect and analyze information to select securities that
+                                        will allow them to obtain conditional returns that are
+                                        greater than the unconditional returns expected for
+                                        securities in their asset classes. If they have rational
+                                        reasons to expect that their efforts will indeed produce
+                                        superior returns, they are information-motivated traders. If
+                                        they consistently fail to produce such returns, their
+                                        efforts will be futile, and they would have been better off
+                                        simply buying and holding well-diversified portfolios.</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM2">
+<h5 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">
+<i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"> </i>
+               Example 2<span style="display: block;">Investing versus Information-Motivated
+                                                Trading</span>
+</h5>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>The head of a large labor union with a pension fund
+                                                asks you, a pension consultant, to distinguish
+                                                between investing and information-motivated trading.
+                                                You are expected to provide an explanation that
+                                                addresses the financial problems that she faces. How
+                                                would you respond?</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s02-01-06-01-01">
+<h5 class="cfa-curriculum-solution">Solution</h5>
+<p>The object of investing for the pension fund is
+                                                  to move the union’s pension assets from the
+                                                  present to the future when they will be needed to
+                                                  pay the union’s retired pensioners. The
+                                                  pension fund managers will typically do this by
+                                                  buying stocks, bonds, and perhaps other assets.
+                                                  The pension fund managers expect to receive a fair
+                                                  rate of return on the pension fund’s assets
+                                                  without paying excessive transaction costs and
+                                                  management fees. The return should compensate the
+                                                  fund for the risks that it bears and for the time
+                                                  that other people are using the fund’s
+                                                  money.</p>
+<p>The object of information-motivated trading is to
+                                                  earn a return in excess of the fair rate of
+                                                  return. Information-motivated traders analyze
+                                                  information that they collect with the hope that
+                                                  their analyses will allow them to predict better
+                                                  than others where prices will be in the future.
+                                                  They then buy assets that they think will produce
+                                                  excess returns and sell those that they think will
+                                                  underperform. Active investment managers are
+                                                  information-motivated traders.</p>
+<p>The characteristic that most distinguishes
+                                                  investors from information-motivated traders is
+                                                  the return that they expect. Although both types
+                                                  of traders hope to obtain extraordinary returns,
+                                                  investors rationally expect to receive only fair
+                                                  returns during the periods of their investments.
+                                                  In contrast, information-motivated traders expect
+                                                  to make returns in excess of required fair rates
+                                                  of return. Of course, not all investing or
+                                                  information-motivated trading is successful (in
+                                                  other words, the actual returns may not equal or
+                                                  exceed the expected returns).</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The financial system facilitates information-motivated
+                                        trading when liquid markets allow active managers to trade
+                                        without significant transaction costs. Accounting standards
+                                        and reporting requirements that produce meaningful financial
+                                        disclosures reduce the costs of being well informed, but do
+                                        not necessarily help informed traders profit because they
+                                        often compete with each other. The most profitable
+                                        well-informed traders are often those that have the most
+                                        unique insights into future values.</p>
+</section>
+<section id="CFA0161-R-s02-01-07">
+<h4>Summary </h4>
+<p>People use the financial system for many purposes, the most
+                                        important of which are saving, borrowing, raising equity
+                                        capital, managing risk, exchanging assets in spot markets,
+                                        and information-motivated trading. The financial system best
+                                        facilitates these uses when people can trade instruments
+                                        that interest them in liquid markets, when institutions
+                                        provide financial services at low cost, when information
+                                        about assets and about credit risks is readily available,
+                                        and when regulation helps ensure that everyone faithfully
+                                        honors their contracts.</p>
+</section>
+</section>
+<section id="CFA0161-R-s02-02">
+<h3 class="dp-heading">Determining Rates of Return</h3>
+<p>Saving, borrowing, and selling equity are all means of moving
+                                    money through time. Savers move money from the present to the
+                                    future whereas borrowers and equity issuers move money from the
+                                    future to the present.</p>
+<p>Because time machines do not exist, money can travel forward in
+                                    time only if an equal amount of money is travelling in the other
+                                    direction. This equality always occurs because borrowers and
+                                    equity sellers create the securities in which savers invest. For
+                                    example, the bond sold by a company that needs to move money
+                                    from the future to the present is the same bond bought by a
+                                    saver who needs to move money from the present to the
+                                    future.</p>
+<p>The aggregate amount of money that savers will move from the
+                                    present to the future is related to the expected rate of return
+                                    on their investments. If the expected return is high, they will
+                                    forgo current consumption and move more money to the future.
+                                    Similarly, the aggregate amount of money that borrowers and
+                                    equity sellers will move from the future to the present depends
+                                    on the costs of borrowing funds or of giving up ownership. These
+                                    costs can be expressed as the rate of return that borrowers and
+                                    equity sellers are expected to deliver in exchange for obtaining
+                                    current funds. It is the same rate that savers expect to receive
+                                    when delivering current funds. If this rate is low, borrowers
+                                    and equity sellers will want to move more money to the present
+                                    from the future. In other words, they will want to raise more
+                                    funds.</p>
+<p>Because the total money saved must equal the total money borrowed
+                                    and received in exchange for equity, the expected rate of return
+                                    depends on the aggregate supply of funds through savings and the
+                                    aggregate demand for funds. If the rate is too high, savers will
+                                    want to move more money to the future than borrowers and equity
+                                    issuers will want to move to the present. The expected rate will
+                                    have to be lower to discourage the savers and to encourage the
+                                    borrowers and equity issuers. Conversely, if the rate is too
+                                    low, savers will want to move less money forward than borrowers
+                                    and equity issuers will want to move to the present. The
+                                    expected rate will have to be higher to encourage the savers and
+                                    to discourage the borrowers and equity issuers. Between rates
+                                    too high and too low, an expected rate of return exists, in
+                                    theory, in which the aggregate supply of funds for investing
+                                    (supply of funds saved) and the aggregate demand for funds
+                                    through borrowing and equity issuing are equal.</p>
+<p>経済学者はこの利率を均衡金利（equilibrium interest rate）と呼ぶ。これは時間を通じて資金を移転するための価格である。この利率を決定することは、金融システムの最も重要な機能の一つである。均衡金利は、すべての証券が同じリスク、同じ満期、同じ流動性を持つ場合に存在する唯一の金利である。実際には、証券の必要収益率はリスク特性、満期、流動性によって異なる。特定の発行体においては、一般に投資家は負債よりもエクイティに対して、短期証券よりも長期証券に対して、流動性の低い証券よりも高い収益率を要求する。金融アナリストは、すべての必要収益率が共通の均衡金利にリスク調整を加えたものであると認識している。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM3">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例3 金利（Interest Rates）</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>あなたの所属する企業のチーフエコノミストが個人富裕層顧客向けに行うプレゼンテーションのために、経済における金利の役割に関する最も基本的な事実を説明して聴衆の理解を助けるよう依頼された。あなたはこれを引き受けた。どのような主要なポイントを伝えるべきか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">Check Answer</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s02-02-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>貯蓄者は現在資金を持っており、それを将来使用したいと考えている。一方、借り手は現在資金を必要としているが、将来には資金を持つと期待している。借り手は貯蓄者から資金を借り、将来返済することを約束する。</p>
+<p>金利（interest rate）は、貸し手（貯蓄者）が借り手に資金の使用を許す対価として期待する収益である。金利は資金を使用するための価格である。</p>
+<p>金利は、人々が借りたい資金の総量と貸したい資金の総量に依存する。人々が現在の資金を将来の資金よりも強く価値付ける場合、金利は高くなる。逆に、多くの人々が将来のために資金を使いたいと考え、現在追加の資金を必要とする人が少ない場合、金利は低くなる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA0161-R-s02-03">
+<h3 class="dp-heading">資本配分の効率性（Capital Allocation Efficiency）</h3>
+<p>プライマリー市場（primary capital markets, primary markets）は、企業や政府が資本（資金）を調達する市場である。企業は借入またはエクイティ発行によって資金を調達できる。政府は借入によって資金を調達する。</p>
+<p>経済は、その金融システムが資本を最も生産性の高い用途に配分する場合、資源配分効率的（allocationally efficient）であると言われる。企業は多くの潜在的プロジェクトに資金を求めるが、すべてのプロジェクトが投資に値するわけではない。金融システムの最も重要な機能の一つは、限られた資本が最良のプロジェクトのみに配分されることを確保することである。すなわち、貯蓄者から提供される資金は最も生産的な用途に配分されるべきである。</p>
+<p>市場経済においては、貯蓄者が直接または間接的にどのプロジェクトが資金を得るかを決定する。貯蓄者はどの証券に投資するかを選択することで直接的に資本配分を決定し、金融仲介機関に資金を提供することで間接的に資本配分を決定する。投資家は資金を失うことを恐れるため、信用力が高い、または優れた担保を持つ借り手には低い金利で貸し付け、そうでない借り手には高い金利を要求する。同様に、価格やリスクに対して最も有望と考えるエクイティのみを購入する。</p>
+<p>損失を回避するために、投資家はさまざまな投資機会の見通しを慎重に分析する。これにより、資本が効率的に配分される可能性が高まる。投資家および資金調達者の損失回避行動は、最良のプロジェクトのみが資金供給を受けることを保証する。このプロセスは、投資家が各プロジェクトの見通しについて十分な情報を持っている場合に最も効果的に機能する。</p>
+<p>一般に、投資家はプロジェクトの価値がコストを上回ると期待する場合にのみ投資する。期待が正確であれば、実施すべきプロジェクトのみが資金を得て、すべての実施すべきプロジェクトが資金を得ることになる。したがって、正確な市場情報は効率的な資本配分につながる。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM4">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例4 プライマリー市場における資本配分（Primary Market Capital Allocation）</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>プロジェクトの価値に関する不正確な情報は、どのようにして資本配分の誤りを引き起こすか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">Check Answer</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s02-03-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>プロジェクトは、その価値がコストを上回る場合にのみ実施されるべきである。投資家が不十分な情報に基づいてプロジェクト価値を過大評価し、実際の価値がコストを下回る場合、富を減少させるプロジェクトが実施される可能性がある。逆に、投資家が不十分な情報に基づいてプロジェクト価値を過小評価し、実際の価値がコストを上回る場合、富を増加させるプロジェクトが実施されない可能性がある。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="InformationMotivatedTradersContent">
+<p>将来価格を予測できると信じる情報から利益を得るために取引を行うトレーダー（information-motivated traders）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="PrimaryCapitalMarketsprimaryMarketsContent">
+<p>証券が初めて販売され、発行体がその収益を受け取る市場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AllocationallyEfficientContent">
+<p>市場、金融システム、または経済が、資源を最も価値の高い用途に配分することを促進する特性。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142148_101_Introduction.html" >← 前へ</a>
+  <span class="title">1.02 | The Functions of the Financial System</span>
+  <a href="courses_1868_modules_items_142152_103_Assets_and_Contracts.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

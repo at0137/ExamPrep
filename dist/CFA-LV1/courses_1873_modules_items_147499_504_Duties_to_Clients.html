@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.04 | Duties to Clients</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2160-R-s04-R-1" title="5.04 | Duties to Clients">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール5：倫理応用（Ethics Application）5.04｜顧客に対する義務（Duties to Clients）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">実務慣行（practices）、方針（policies）、および行為（conduct）を、CFA協会の倫理規範（Code of Ethics）および職業行為基準（Standards of Professional Conduct）に照らして評価せよ</li>
+<li class="cfa-curriculum-los-item">実務慣行（practices）、方針（policies）、および行為（conduct）が、CFA協会の倫理規範（Code of Ethics）および職業行為基準（Standards of Professional Conduct）に違反しているか否かを説明せよ</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<section id="CFA2160-R-s04-01-01">
+<h3 class="dp-heading">忠実義務、慎重性、および注意義務（Loyalty, Prudence, and Care）</h3>
+<div class="cfa-curriculum-blockquote">
+<p>会員および受験者は顧客に対して忠実義務を負い、合理的な注意をもって慎重な判断を行わなければならない。また、顧客の利益のために行動し、雇用主や自己の利益よりも顧客の利益を優先しなければならない。</p>
+</div>
+<section id="CFA2160-R-s04-01-01-01">
+<h4>Maste</h4>
+<p>Maste（CFA）は、金融商品および助言を提供する企業Dov Services（Dov）の唯一の取締役である。Masteは、Dovの認定代理人（authorized representatives）に対し、Dov顧客保護方針（Dov Client Protection Policy）を顧客契約に組み込むよう指示している。この方針は、金融助言提供の条件を定めるものであり、「顧客が可能な限り最良の助言と法の下で最大限の保護を受けられるように設計された複数の保護を含む」と記載されている。しかし、この方針の内容は、(1)顧客の最善利益のために行動しなかった場合の責任を免除する、(2)顧客および投資に関する適合性分析（suitability analyses）を行う義務を免除する、(3)証券法違反について顧客が請求できないと誤認させる、というものである。</p>
+<p>Masteの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s04-L1">
+<li class="cfa-curriculum-list-item">CFA協会の倫理規範および基準に違反する。</li>
+<li class="cfa-curriculum-list-item">方針の内容を完全に開示しているため適切である。</li>
+<li class="cfa-curriculum-list-item">助言契約の条件を自由に交渉できるため適切である。</li>
+</ol>
+<section id="CFA2160-R-s04-01-01-01-01">
+<h5>Analysis</h5>
+<p>Aが正しい。Dov顧客保護方針は、顧客の最善利益に反する行為や適切な助言を提供しない場合の責任を制限することで、DovおよびMasteの基本的な倫理的（そしておそらく法的）義務を免除しようとしている。基準III(A)「忠実義務、慎重性、および注意義務（Loyalty, Prudence, and Care）」は、顧客の利益のために行動し、顧客の利益を優先する義務を定めている。また、基準V(A)「注意義務および合理的根拠（Diligence and Reasonable Basis）」、基準III(B)「公正な取扱い（Fair Dealing）」、基準I(C)「虚偽表示（Misrepresentation）」も、投資専門家が遵守すべき基本原則を定めている。</p>
+<p>Bは誤りである。開示によって基本的な倫理義務を免除することはできない。また、この方針は顧客の法的請求権を誤って表示しており、顧客に利益があるかのような誤解を与える。</p>
+<p>Cは誤りである。一般に契約条件の交渉は可能であるが、顧客との間に著しい不均衡を生じさせたり、忠実義務などの基本的倫理義務を制限することは不適切である。</p>
+</section>
+</section>
+<section id="CFA2160-R-s04-01-01-02">
+<h4>Gaini</h4>
+<p>Gaini（CFA）は、複数の個人顧客を持つ商品トレーダーである。顧客の一人であるLaubeは、自己判断型（self-directed）の外国為替口座を開設し、Gainiは助言を行わない。Laubeは、証拠金要件（margin requirements）および不足時の清算（liquidation）に関する条項を含む標準契約に署名している。この契約は、「証拠金不足の場合、通知なしにすべてのポジションを清算できる」権限をGainiに与えている。</p>
+<p>Laubeは当初、USD/CHF契約を2件購入し、証拠金を4,000ドルに設定する。その後、異なる価格条件で2件の指値注文（pending limit orders）を出す。旅行中にこれらが順次約定し、証拠金要件は8,000ドルに増加する。一方で口座残高は6,900ドルに低下する。通知なしに、Gainiはすべてのポジションを清算し、37,000ドルの損失が確定する。</p>
+<p>Gainiの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s04-L2">
+<li class="cfa-curriculum-list-item">契約に従って行動しているため適切である。</li>
+<li class="cfa-curriculum-list-item">顧客の最善利益を守る義務に違反しているため不適切である。</li>
+<li class="cfa-curriculum-list-item">一部のみ清算すべきであったため不適切である。</li>
+</ol>
+<section id="CFA2160-R-s04-01-01-02-01">
+<h5>Analysis</h5>
+<p>Aが正しい。本ケースは基準III(A)に関するものであるが、顧客との関係の性質によって義務の内容は異なる。Laubeは自己判断で取引しており、Gainiは助言を提供していない。また、証拠金不足時の対応について契約で明確に合意している。Gainiは誤解を与えておらず、契約に従って行動している。清算は市場の健全性を維持するための措置でもある。</p>
+<p>Bは誤りである。本ケースでは、GainiはLaubeの口座を積極的に監視する義務を負っておらず、他の顧客や自己のリスク管理が優先される。</p>
+<p>Cは誤りである。契約に基づき全ポジションの清算が許されているため、一部のみ清算する義務はない。</p>
+</section>
+</section>
+<section id="CFA2160-R-s04-01-01-03">
+<h4>Braung</h4>
+<p>地方自治体はBraung（CFA）とその企業を財務アドバイザーとして雇い、一般財源債（general obligation bonds）の発行を支援させる。Braungは格付機関との面談のためニューヨークへ出張するが、週末の方が安価なため日程を調整し、妻とともに滞在することもある。出張後、Braungは費用を申請し、上司が業務外費用を差し引いたうえで自治体に請求する。</p>
+<p>どの費用が最も請求可能か。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s04-L3">
+<li class="cfa-curriculum-list-item">週末滞在の宿泊費および食費（全体コストが低くなるため）</li>
+<li class="cfa-curriculum-list-item">スポーツや劇場のチケット（合理的範囲内）</li>
+<li class="cfa-curriculum-list-item">業務上の理由による変更手数料</li>
+</ol>
+<section id="CFA2160-R-s04-01-01-03-01">
+<h5>Analysis</h5>
+<p>Aが正しい。全体として費用が低くなる場合、顧客利益にかなう。娯楽費や他顧客対応に伴う費用は請求できない。</p>
+<p>Bは誤りである。娯楽費の請求は不適切である。</p>
+<p>Cは誤りである。変更費用は通常自己負担である。</p>
+</section>
+</section>
+</section>
+<section id="CFA2160-R-s04-01-02">
+<h3 class="dp-heading">公正な取扱い（Fair Dealing）</h3>
+<div class="cfa-curriculum-blockquote">
+<p>会員および受験者は、投資分析（investment analysis）の提供、投資推奨（investment recommendations）の実施、投資行動（investment action）の実行、またはその他の専門的活動において、すべての顧客に対して公正かつ客観的に対応しなければならない。</p>
+</div>
+<section id="CFA2160-R-s04-01-02-01">
+<h4>Scherzer</h4>
+<p>Scherzer（CFA）は、大手運用会社のリサーチ責任者である。彼女は、投資推奨の変更を顧客に伝えるために、毎月「推奨更新レポート（Recommendation Update Reports）」を発行している。このレポートは毎月第1金曜日に電子メールで顧客に送信され、翌週月曜日に同社のウェブサイトに掲載される。社内方針では、推奨変更はこの月次レポートを通じてのみ行うこととされている。Scherzerはまた、将来の推奨変更を示唆する可能性のある情報を含む週次レポートも発行している。月次レポートはすべての顧客に送付されるが、週次レポートは年額1,000ドルの追加料金を支払う顧客のみが受け取ることができる。このオプションはすべての顧客に提供されており、契約において完全に開示されている。</p>
+<p>CFA協会の倫理規範および基準に準拠するために、Scherzerが取るべき行動はどれか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s04-L4">
+<li class="cfa-curriculum-list-item">何もする必要はない（すでに規範および基準に準拠している）。</li>
+<li class="cfa-curriculum-list-item">月次レポートを顧客への送付と同時にウェブサイトに掲載する。</li>
+<li class="cfa-curriculum-list-item">週次レポートをすべての顧客に無料で提供する。</li>
+</ol>
+<section id="CFA2160-R-s04-01-02-01-01">
+<h5>Analysis</h5>
+<p>Aが正しい。基準III(B)「公正な取扱い（Fair Dealing）」は、すべての顧客に対して公正かつ客観的に対応し、投資推奨に関する情報をすべての顧客が公平に行動できる形で提供することを求めている。Scherzerは月次レポートをすべての顧客に同時に送信しており、すべての顧客が同等に行動できる機会を持つ。また、週次レポートを有料サービスとして提供すること自体は、(1)すべての顧客が利用可能であること、(2)サービス内容が開示されていること、(3)推奨変更が無料顧客に不利とならないこと、を満たす限り問題ない。</p>
+<p>Bは誤りである。規範および基準は、ウェブサイトでの同時公開を義務付けていない。</p>
+<p>Cは誤りである。追加料金による差別化サービスは、他の顧客に不利益を与えない限り許容される。</p>
+</section>
+</section>
+</section>
+<section id="CFA2160-R-s04-01-03">
+<h3 class="dp-heading">適合性（Suitability）</h3>
+<ol class="cfa-curriculum-list-decimal" id="CFA2160-R-s04-L5">
+<li class="cfa-curriculum-list-item">会員および受験者が助言関係にある場合には、以下を行わなければならない。すなわち、投資推奨または投資行動を行う前に、顧客または見込み顧客の投資経験、リスク・リターン目標、および財務制約について合理的な調査を行い、これを定期的に見直し更新すること。また、投資が顧客の財務状況に適合し、書面による目標、マンデート（mandates）、制約と整合していることを確認すること。さらに、投資の適合性を顧客の全体ポートフォリオの観点から判断すること。</li>
+<li class="cfa-curriculum-list-item">特定のマンデートや戦略に基づいてポートフォリオを運用する場合には、その目標および制約と整合する投資行動のみを行わなければならない。</li>
+</ol>
+<section id="CFA2160-R-s04-01-03-01">
+<h4>Marte</h4>
+<p>Marte（CFA）はプエルトリコの資産運用者である。同地域の住民は地元証券への投資に税制上の優遇を受ける。これを活用するため、Marteの企業は、資産の67%以上を地元証券に投資し、最大50%まで借入が可能なクローズドエンドファンドを提供している。このファンドは通常、最大限までレバレッジをかけている。多くの顧客は中程度の資産規模で、保守的または中程度の投資目標を持つが、Marteは資産の85%以上をこのファンドに投資させている。</p>
+<p>Marteの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s04-L7">
+<li class="cfa-curriculum-list-item">CFA協会の倫理規範および基準に違反する。</li>
+<li class="cfa-curriculum-list-item">税制優遇を活用しているため適切である。</li>
+<li class="cfa-curriculum-list-item">リスクと利益を開示しているため適切である。</li>
+</ol>
+<section id="CFA2160-R-s04-01-03-01-01">
+<h5>Analysis</h5>
+<p>Aが正しい。基準III(C)「適合性（Suitability）」に違反する。高い集中度とレバレッジにより、顧客のリスク許容度に対して不適切である。</p>
+<p>Bは誤りである。税制優遇があっても過度な集中投資は不適切である。</p>
+<p>Cは誤りである。開示だけでは適合性の要件を満たさない。</p>
+</section>
+</section>
+<section id="CFA2160-R-s04-01-03-02">
+<h4>Duri</h4>
+<p>Duri（CFA）は個人顧客に助言を提供し、同時に会計事務所のパートナーでもある。顧客の退職資産を自己管理型年金（self-managed superannuation funds, SMSFs）に移す支援を行う。顧客の理由をそのまま受け入れ、投資目的を「成長」に再分類する。さらに、自社サービスを推奨する。</p>
+<p>Duriの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s04-L8">
+<li class="cfa-curriculum-list-item">CFA協会の倫理規範および基準に違反する。</li>
+<li class="cfa-curriculum-list-item">顧客の指示に従っているため許容される。</li>
+<li class="cfa-curriculum-list-item">Tabak Accountantsが提供するサービスが合理的であり、費用が競争的である場合には許容される。</li>
+</ol>
+<section id="CFA2160-R-s04-01-03-02-01">
+<h5>Analysis</h5>
+<p>Aが正しい。基準III(C)「適合性（Suitability）」は、助言関係にあるCFA協会の会員および受験者に対し、投資行動を行う前に顧客の投資経験、リスク・リターン目標、および財務制約について合理的な調査を行い、その投資が顧客の財務状況および目標・マンデートと整合しているかを判断することを求めている。Duriの顧客が退職資産を直接不動産に投資するSMSFへ移行したいと考えた際、Duriは適合性分析を行うことなく、その理由をそのまま受け入れているように見える。本ケースでは、Duriが以下の点を実施したかどうかは示されていない。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2160-R-s04-L9">
+<li class="cfa-curriculum-list-item">顧客が直接不動産投資を望む理由の評価</li>
+<li class="cfa-curriculum-list-item">顧客の財務目標の検討</li>
+<li class="cfa-curriculum-list-item">SMSFの設立または賃貸不動産保有に伴う利益、リスク、コストと既存の年金口座投資との比較</li>
+<li class="cfa-curriculum-list-item">資産分散（diversification）の検討</li>
+<li class="cfa-curriculum-list-item">顧客が退職時にSMSFから年金を受け取る意図があるか、また流動性の低い資産（不動産）でどのように実現するかの検討</li>
+<li class="cfa-curriculum-list-item">顧客が自身の年金資産および賃貸不動産を管理するための時間と専門知識を有しているかの評価</li>
+<li class="cfa-curriculum-list-item">顧客の収入減少や物件の空室期間が生じた場合でもSMSF戦略が維持可能かの検討</li>
+</ul>
+<p>これらの要因を含む分析を行わずに顧客をSMSFへ移行させることは不適切である。</p>
+<p>Bは誤りである。顧客が投資戦略の変更を希望した場合でも、Duriはその新しい戦略が適切かどうかを分析する責任を負う。本ケースでは、すべての顧客を形式的に「成長」投資家として分類し、SMSF投資を正当化している可能性がある。</p>
+<p>Cは誤りである。Duriは、自身の収益を増やす目的で自社の会計サービスを推奨している可能性がある。基準III(A)「忠実義務、慎重性、および注意義務」は、顧客利益を優先することを求めており、少なくとも利益相反（conflict of interest）として開示する必要がある。</p>
+</section>
+</section>
+</section>
+<section id="CFA2160-R-s04-01-04">
+<h3 class="dp-heading">パフォーマンス表示（Performance Presentation）</h3>
+<div class="cfa-curriculum-blockquote">
+<p>投資パフォーマンス情報を伝達する際、会員および受験者はそれが公正（fair）、正確（accurate）、かつ完全（complete）であるよう合理的な努力をしなければならない。</p>
+</div>
+<section id="CFA2160-R-s04-01-04-01">
+<h4>Jergenn</h4>
+<p>Jergenn（CFA）は、南アフリカの法律に基づく登録集団投資スキーム（collective investment scheme, CIS）であるVolare Investment Management（VIM）ファンドのポートフォリオマネージャーである。Jergennが作成した2022年の規制開示およびマーケティング資料には、2014年から2020年の年間パフォーマンスデータが正確に示されている。このパフォーマンスは、2021年にCISに資産が移行される前に同戦略を用いていた分別口座のコンポジットに基づいている。</p>
+<p>パフォーマンス履歴の提示に関して、Jergennの行為はどれに該当するか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s04-L10">
+<li class="cfa-curriculum-list-item">CFA協会の倫理規範および基準に違反する。</li>
+<li class="cfa-curriculum-list-item">パフォーマンスが正確であるため適切である。</li>
+<li class="cfa-curriculum-list-item">手数料控除後であれば適切である。</li>
+</ol>
+<section id="CFA2160-R-s04-01-04-01-01">
+<h5>Analysis</h5>
+<p>Aが正しい。基準III(D)「パフォーマンス表示（Performance Presentation）」は、投資パフォーマンス情報が公正・正確・完全であることを求めている。Jergennの提示は計算上は正確であるが、当該パフォーマンスがCISとしてのVIMファンドのものではないことを明確にしていないため、投資家に誤解を与える可能性がある。適切には、2014–2020年の実績が類似戦略の別主体によるものであり、CISとしてのファンドは2021年から存在することを開示すべきである。</p>
+<p>Bは誤りである。計算が正確であっても、開示不足により誤解を招くため不適切である。</p>
+<p>Cは誤りである。パフォーマンスは手数料控除前後いずれでも表示可能だが、その方法と影響が適切に開示される必要がある。</p>
+</section>
+</section>
+</section>
+<section id="CFA2160-R-s04-01-05">
+<h3 class="dp-heading">機密保持（Preservation of Confidentiality）</h3>
+<div class="cfa-curriculum-blockquote">
+<p>会員および受験者は、現顧客、過去の顧客、および見込み顧客に関する情報を機密として保持しなければならない。ただし以下の場合を除く。</p>
+</div>
+<ol class="cfa-curriculum-list-decimal" id="d111e229">
+<li class="cfa-curriculum-list-item">顧客または見込み顧客による違法行為に関する情報である場合</li>
+<li class="cfa-curriculum-list-item">開示が法令により要求されている場合、または</li>
+<li class="cfa-curriculum-list-item">顧客または見込み顧客が情報の開示を許可している場合。</li>
+</ol>
+<section id="CFA2160-R-s04-01-05-01">
+<h4>GiddingsおよびMarsh</h4>
+<p>Giddings（CFA）は、大手ブローカー／ディーラー兼投資顧問会社であるGWHのコンプライアンス責任者である。GWHはウェルスマネジメント業務に関連して、顧客の個人識別情報（personally identifiable information）（氏名、住所、電話番号、口座番号、残高、保有資産など）を保持している。Giddingsは、この機密情報へのアクセスおよび取扱いに関する従業員の行動を規律するため、行動規範（Code of Conduct）を含む複数の方針および制限を導入している。GWHで顧客サービス担当者として働くMarsh（CFA）は、在宅勤務を容易にするため、自宅の個人サーバーに顧客データをダウンロードすることを決定する。その後、Marshのサーバーがハッキングされ、ダウンロードされた顧客情報の一部がインターネット上で販売目的で公開される。</p>
+<p>MarshまたはGiddingsのいずれかがCFA協会の倫理規範および基準に違反したか。</p>
+<ol class="cfa-curriculum-list-upper-alpha" id="CFA2160-R-s04-L11">
+<li class="cfa-curriculum-list-item">Marshが違反した。</li>
+<li class="cfa-curriculum-list-item">Giddingsが違反した。</li>
+<li class="cfa-curriculum-list-item">両者とも違反した。</li>
+</ol>
+<section id="CFA2160-R-s04-01-05-01-01">
+<h5>Analysis</h5>
+<p>Cが正しい。基準III(E)「機密保持（Preservation of Confidentiality）」は、顧客情報を機密として保持することを求めている（違法行為、法令要求、顧客の許可がある場合を除く）。この基準は投資専門家に情報セキュリティの専門家であることまでは求めないが、コンプライアンス手続に従い、機密情報の偶発的な流出を防ぐための合理的な努力を求めている。Marshが個人サーバーへのダウンロードについて許可を得ていなかった場合、自己の目的のために顧客情報を不適切に使用したことは基準III(E)への違反である。また、情報の公開自体に直接関与していなかったとしても、その行為が流出の原因となっている。Marshは会社の情報通信および保存に関する手続を理解し遵守すべきであった。</p>
+<p>コンプライアンス責任者として、Giddingsは顧客情報を保護するための十分な方針および手続を整備する責任を負う。また、情報の安全性および完全性を確保し、不正アクセスや不正使用を防止する責任がある。GWHには方針が存在していたが、Marshが個人サーバーにデータをダウンロードできたことから、その統制は不十分であったと考えられる。さらに、方針が十分であったとしても、その有効性を監査または検証していた形跡はない。</p>
+<p>Aは誤りである。MarshとGiddingsの両者が違反している。</p>
+<p>Bは誤りである。MarshとGiddingsの両者が違反している。</p>
+</section>
+</section>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1873_modules_items_147496_503_Integrity_of_Capital_Markets.html" >← 前へ</a>
+  <span class="title">5.04 | Duties to Clients</span>
+  <a href="courses_1873_modules_items_147503_505_Duties_to_Employers.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

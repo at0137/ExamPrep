@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.02 | Portfolio Expected Return and Variance of Return</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2403-R-s02-R-1" title="5.02 | Portfolio Expected Return and Variance of Return"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール5：ポートフォリオ数学（Portfolio Mathematics）5.02｜ポートフォリオ期待リターンとリターン分散（Portfolio Expected Return and Variance of Return）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">ポートフォリオ・リターンの期待値（expected value）、分散（variance）、標準偏差（standard deviation）、共分散（covariances）、および相関（correlations）を計算し解釈する</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>ポートフォリオの期待リターン E(Rp) は、各構成証券の期待リターン（R₁からRₙ）を、それぞれのポートフォリオ内での比率（通貨単位ベースのウェイト w₁からwₙ）で加重平均したものである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-1"><math> <semantics> <mtable> <mtr> <mtd> <mi>E</mi> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <mi>E</mi> <mfenced> <mrow> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>+</mo> <msub> <mi>w</mi> <mn>2</mn> </msub> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>+</mo> <mo>…</mo> <mo>+</mo> <msub> <mi>w</mi> <mi>n</mi> </msub> <msub> <mi>R</mi> <mi>n</mi> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <msub> <mi>w</mi> <mn>1</mn> </msub> <mi>E</mi> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msub> <mi>w</mi> <mn>2</mn> </msub> <mi>E</mi> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mo>…</mo> <mo>+</mo> <msub> <mi>w</mi> <mi>n</mi> </msub> <mi>E</mi> <mfenced> <mrow> <msub> <mi>R</mi> <mi>n</mi> </msub> </mrow> </mfenced> </mtd> </mtr> </mtable> </semantics> </math>.<span class="cfa-curriculum-display-formula-number">1</span></div>
+<p>図表1に示される3資産ポートフォリオについて、各資産の期待リターンが推定されているとする。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2403-R-s02-EXH-1-1">
+<h3 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">図表1 サンプルポートフォリオのウェイトと期待リターン（Weights and Expected Returns of Sample Portfolio）</h3>
+<div class="cfa-curriculum-table-wrap" id="CFA2403-R-s02-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">資産クラス（Asset Class）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">ウェイト（Weight）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">期待リターン（%）（Expected Return (%)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">S&amp;P 500</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.50</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">13</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">米国長期社債（US long-term corporate bonds）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.25</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">MSCI EAFE</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.25</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">15</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ポートフォリオの期待リターンは11.75%と計算される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-"><math> <semantics> <mtable> <mtr> <mtd> <mi>E</mi> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msub> <mi>w</mi> <mn>1</mn> </msub> <mi>E</mi> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msub> <mi>w</mi> <mn>2</mn> </msub> <mi>E</mi> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msub> <mi>w</mi> <mn>3</mn> </msub> <mi>E</mi> <mfenced> <mrow> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <mn>0.50</mn> <mfenced> <mrow> <mn>13</mn> <mi>%</mi> </mrow> </mfenced> <mo>+</mo> <mn>0.25</mn> <mfenced> <mrow> <mn>6</mn> <mi>%</mi> </mrow> </mfenced> <mo>+</mo> <mn>0.25</mn> <mfenced> <mrow> <mn>15</mn> <mi>%</mi> </mrow> </mfenced> <mo>=</mo> <mn>11.75</mn> <mi>%</mi> </mtd> </mtr> </mtable> </semantics> </math>.</div>
+</div>
+<p>ここでは投資リスクの尺度としてポートフォリオのリターン分散に関心がある。したがって、ポートフォリオ分散は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-2">σ<sup>2</sup>(R<sub>p</sub>) = <em>E</em>[(R<sub>p</sub> <em>E</em>(R<sub>p</sub>))<sup>2</sup>].<span class="cfa-curriculum-display-formula-number">2</span></div>
+<p>これは将来志向の意味での期待分散である。このポートフォリオ分散の定義を実装するには、ポートフォリオ内の個々の資産に関する情報に加えて、共分散（covariance）の概念が必要となる。記法を簡潔にするため、E(Rp) を ERp と表記する。</p>
+<section id="CFA2403-R-s02-01-01">
+<h3 class="dp-heading">共分散（Covariance）</h3>
+<p>2つの確率変数 Ri と Rj が与えられたとき、それらの共分散は次のように定義される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-3">Cov(<em>R<sub>i</sub> </em>,<em>R<sub>j</sub></em>) = <em>E</em>[(<em>R<sub>i</sub> </em> − <em>ER<sub>i</sub></em>)(<em>R<sub>j</sub> </em> − <em>ER<sub>j</sub></em>)].<span class="cfa-curriculum-display-formula-number">3</span></div>
+<p>別の表記として σ(Ri, Rj) や σij がある。式3は、2つの確率変数の共分散が、それぞれの期待値からの偏差の積の確率加重平均であることを示している。この測度は母集団共分散（population covariance）であり、将来志向である。過去データの標本（サイズ n）に基づく標本共分散（sample covariance）は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-4"><math> <semantics> <mrow> <mtext>Cov</mtext> <mo stretchy="false">(</mo> <msub><mi>R</mi><mi>i</mi></msub> <mo>,</mo> <msub><mi>R</mi><mi>j</mi></msub> <mo stretchy="false">)</mo> <mo>=</mo> <mstyle displaystyle="true"> <mrow> <msubsup> <mo>∑</mo> <mrow><mi>t</mi><mo>=</mo><mn>1</mn></mrow> <mi>T</mi> </msubsup> <mrow> <mo stretchy="false">(</mo> <msub> <mi>R</mi> <mrow> <mi>i</mi> <mo>,</mo> <mi>t</mi> </mrow> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>i</mi> </msub> <mo stretchy="false">)</mo> </mrow> <mrow> <mo stretchy="false">(</mo> <msub> <mi>R</mi> <mrow> <mi>j</mi> <mo>,</mo> <mi>t</mi> </mrow> </msub> <mo>−</mo> <msub> <mover accent="true"> <mi>R</mi> <mo>¯</mo> </mover> <mi>j</mi> </msub> <mo stretchy="false">)</mo> </mrow> <mo>/</mo> <mo stretchy="false">(</mo> <mi>n</mi> <mo>−</mo> <mn>1</mn> <mo stretchy="false">)</mo> </mrow> </mstyle> </mrow> </semantics> </math>.<span class="cfa-curriculum-display-formula-number">4</span></div>
+<p>3資産ポートフォリオの分散の定義から出発し、それが3つの分散項と6つの共分散項に分解される様子を考える。導出過程は省略するが、結果は式5で与えられる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-5"><math> <semantics> <mrow> <mi>σ</mi> </mrow> </semantics> </math><sup> <mn>2</mn> </sup> <mrow> <mo>=</mo> <mi>E</mi> <mo>[</mo> <mo>(</mo> <mi>R</mi><sub> <mi>p</mi> </sub> <mo>−</mo> E<mo>(</mo> <mi>R</mi><sub> <mi>p</mi> </sub> <mo>)</mo> <mo>)</mo> <sup> <mn>2</mn> </sup> <mo>]</mo> </mrow> <mrow> <br/><mo>=</mo> <mi>E</mi> <mo>[</mo> <mo>(</mo> <mi>w</mi><sub> <mn>1</mn> </sub> <mi>R</mi><sub> <mi>1</mi> </sub> <mo>+</mo> <mi>w</mi><sub> <mn>2</mn> </sub> <mi>R</mi><sub> <mi>2</mi> </sub> <mo>+</mo> <mi>w</mi><sub> <mn>3</mn> </sub> <mi>R</mi><sub> <mi>3</mi> </sub> <mo>−</mo> <mi>E</mi> <mo>(</mo> <mi>w</mi><sub> <mn>1</mn> </sub> <mi>R</mi><sub> <mi>1</mi> </sub> <mo>+</mo> <mi>w</mi><sub> <mn>2</mn> </sub> <mi>R</mi><sub> <mi>2</mi> </sub> <mo>+</mo> <mi>w</mi><sub> <mn>3</mn> </sub> <mi>R</mi><sub> <mi>3</mi> </sub> <mo>)</mo> <mo>)</mo> <sup> <mn>2</mn> </sup> <mo>]</mo> </mrow> <mrow> <br/><mo>=</mo> <mi>E</mi> <mo>[</mo> <mo>(</mo> <mi>w</mi><sub> <mn>1</mn> </sub> <mi>R</mi><sub> <mi>1</mi> </sub> <mo>+</mo> <mi>w</mi><sub> <mn>2</mn> </sub> <mi>R</mi><sub> <mi>2</mi> </sub> <mo>+</mo> <mi>w</mi><sub> <mn>3</mn> </sub> <mi>R</mi><sub> <mi>3</mi> </sub> <mo>−</mo> <mi>w</mi><sub> <mn>1</mn> </sub> <mi>E</mi> <mi>R</mi><sub> <mn>1</mn> </sub> <mo>−</mo> <mi>w</mi><sub> <mn>2</mn> </sub> <mi>E</mi> <mi>R</mi><sub> <mn>2</mn> </sub> <mo>−</mo> <mi>w</mi><sub> <mn>3</mn> </sub> <mi>E</mi> <mi>R</mi><sub> <mn>3</mn> </sub> <mo>)</mo> <sup> <mn>2</mn> </sup> <mo>]</mo> </mrow> <span class="cfa-curriculum-display-formula-number">5</span></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___1"><math> <semantics> <mtable> <mtr> <mtd> <mo>=</mo> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msub> <mi>w</mi> <mn>2</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msub> <mi>w</mi> <mn>2</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>3</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>.</mo> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>共分散では変数の順序は関係ない（例えば Cov(R₂, R₁) = Cov(R₁, R₂)）。また、対角の分散項 σ²(R₁)、σ²(R₂)、σ²(R₃) はそれぞれ Cov(R₁, R₁)、Cov(R₂, R₂)、Cov(R₃, R₃) と表せる。このことを踏まえると、式5は次のように最も簡潔に表現できる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___2"><math> <semantics> <mrow> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <mstyle displaystyle="true"> <msubsup> <mo>∑</mo> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mn>3</mn> </msubsup> <mrow> <mstyle displaystyle="true"> <msubsup> <mo>∑</mo> <mrow> <mi>j</mi> <mo>=</mo> <mn>1</mn> </mrow> <mn>3</mn> </msubsup> <mrow> <msub> <mi>w</mi> <mi>i</mi> </msub> <msub> <mi>w</mi> <mi>j</mi> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mi>i</mi> </msub> <mo>,</mo> <msub> <mi>R</mi> <mi>j</mi> </msub> </mrow> </mfenced> </mrow> </mstyle> <mo>.</mo> </mrow> </mstyle> </mrow> </semantics> </math></div>
+<p>さらに、この表現は任意の資産数 n のポートフォリオに一般化できる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-6"><math> <semantics> <mrow> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <mstyle displaystyle="true"> <msubsup> <mo>∑</mo> <mrow> <mi>i</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </msubsup> <mrow> <mstyle displaystyle="true"> <msubsup> <mo>∑</mo> <mrow> <mi>j</mi> <mo>=</mo> <mn>1</mn> </mrow> <mi>n</mi> </msubsup> <mrow> <msub> <mi>w</mi> <mi>i</mi> </msub> <msub> <mi>w</mi> <mi>j</mi> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mi>i</mi> </msub> <mo>,</mo> <msub> <mi>R</mi> <mi>j</mi> </msub> </mrow> </mfenced> </mrow> </mstyle> <mo>.</mo> </mrow> </mstyle> </mrow> </semantics> </math> <span class="cfa-curriculum-display-formula-number">6</span></div>
+<p>式6は、個々のリターン分散がポートフォリオ分散の一部ではあるが、それがすべてではないことを示している。3つの分散項に対して、対角外の共分散項は6つ存在する。資産が20個ある場合、分散項は20個であるのに対し、対角外の共分散項は20×20 − 20 = 380個となる。第一の観察として、他の条件が同じであれば、保有資産数が増えるほど共分散の重要性は増す。</p>
+<p>共分散項は、リターンの共動（co-movements）がポートフォリオ全体の分散にどのように影響するかを捉える。共分散の定義から、2つの重要な性質が導かれる。</p>
+<ol class="cfa-curriculum-list-decimal" id="CFA2403-R-s02-L1">
+<li class="cfa-curriculum-list-item">共分散の符号は次のように解釈できる。ある資産のリターンが期待値を上回るときに、もう一方の資産のリターンが期待値を下回る傾向がある場合（平均的に逆の関係）、共分散は負となる。資産間のリターンが無関係であれば共分散は0となる。両資産のリターンが同時に期待値より上または下にある傾向がある場合（平均的に正の関係）、共分散は正となる。確率変数が自分自身との共分散（own covariance）はその分散に等しい：Cov(R, R) = E{[R − E(R)][R − E(R)]} = E{[R − E(R)]²} = σ²(R)。</li>
+</ol>
+<p>図表2は、ポートフォリオの期待リターン（パネルA）およびリターン分散（パネルB）の入力要素をまとめたものである。パネルBの共分散行列（covariance matrix）に示されるように、すべての共分散のリストが、ポートフォリオ分散を計算するために必要な統計情報を構成する。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2403-R-s02-EXH-1-2">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">図表2 ポートフォリオ期待リターンおよび分散の入力（Inputs to Portfolio Expected Return and Variance）</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2403-R-s02-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">A. ポートフォリオ期待リターンの入力</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: middle; padding: 8px;">Asset</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">A</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">B</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">E(RA)</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">E(RB)</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">E(RC)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: left; vertical-align: bottom; padding: 8px;">B. 共分散行列：ポートフォリオ分散の入力</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: middle; padding: 8px;">Asset</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">A</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">B</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">A</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Cov(RA, RA)</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Cov(RA, RB)</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Cov(RA, RC)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">B</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Cov(RB, RA)</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Cov(RB, RB)</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Cov(RB, RC)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">C</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Cov(RC, RA)</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Cov(RC, RB)</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">Cov(RC, RC)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>資産が3つの場合、共分散行列は3² = 3 × 3 = 9個の要素を持つが、対角項である分散（図表2で太字）は、非対角項とは別に扱われる。したがって、分散を除くと9 − 3 = 6個の共分散がある。しかし、Cov(RB, RA) = Cov(RA, RB)、Cov(RC, RA) = Cov(RA, RC)、Cov(RC, RB) = Cov(RB, RC)である。対角線の下側の共分散行列は、上側の鏡像となるため、どちらか一方（上側または下側）のみを用いればよい。その結果、推定すべき異なる共分散は6/2 = 3個となる。一般に、n個の証券については、n(n − 1)/2個の異なる共分散とn個の分散を推定する必要がある。</p>
+</div>
+<p>図表3に示される共分散行列を考える。リターンはパーセンテージで表されており、表中の値はリターンの二乗（%²）として示されている。例えば、38%²および400%²はそれぞれ小数表記で0.0038および0.0400となる。パーセンテージと小数の適切な使用により、同一の結果が得られる。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2403-R-s02-EXH-1-3">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">図表3 共分散行列（Covariance Matrix）</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2403-R-s02-T-1-c">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">S&amp;P 500</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">米国長期社債（US Long-Term Corporate Bonds）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">MSCI EAFE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">S&amp;P 500</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">400</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">45</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">189</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">米国長期社債（US long-term corporate bonds）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">45</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">81</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">38</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">MSCI EAFE</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">189</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">38</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">441</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>式5を用いて分散項をまとめると、次のようになる。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___3"><math> <semantics> <mtable> <mtr> <mtd> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>3</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>2</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <msup> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>400</mn> </mrow> </mfenced> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.25</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>81</mn> </mrow> </mfenced> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.25</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>441</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.25</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>45</mn> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.25</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>189</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.25</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.25</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>38</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <mn>100</mn> <mo>+</mo> <mn>5.0625</mn> <mo>+</mo> <mn>27.5625</mn> <mo>+</mo> <mn>11.25</mn> <mo>+</mo> <mn>47.25</mn> <mo>+</mo> <mn>4.75</mn> <mo>=</mo> <mn>195.875.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>分散は195.875である。リターンの標準偏差は √195.875 = 14%である。まとめると、このポートフォリオの期待年率リターンは11.75%、標準偏差は14%である。</p>
+<p>上記計算の最初の3項の合計（100 + 5.0625 + 27.5625）は132.625であり、これは個別分散がポートフォリオ分散に寄与する部分である。もし3資産のリターンが独立であれば、共分散は0となり、ポートフォリオの標準偏差は √132.625 = 11.52%となり、14%より低くなるため、より低リスクとなる。共分散が負であれば、132.625に負の値が加わるため、ポートフォリオ分散およびリスクはさらに低下する一方、期待リターンは変わらない。同じ期待リターンでリスクが低くなる。このリスク低減は分散投資効果（diversification benefit）であり、資産を組み合わせて保有することによるリスク低減の利益を意味する。分散投資効果は共分散が小さくなるほど大きくなる。この点は現代ポートフォリオ理論の重要な洞察である。この洞察は相関（correlation）の概念を用いるとより直感的に理解できる。</p>
+</div>
+</section>
+<section id="CFA2403-R-s02-01-02">
+<h3 class="dp-heading">相関（Correlation）</h3>
+<p>2つの確率変数 Ri と Rj の相関は次のように定義される。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-7">ρ(R<sub>i</sub>,R<sub>j</sub>) = Cov(R<sub>i</sub>,R<sub>j</sub>)/[σ(R<sub>i</sub>)σ(R<sub>j</sub>)].<span class="cfa-curriculum-display-formula-number">7</span></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___4">Alternative notations are Corr(R<sub>i</sub>,R<sub>j</sub>) and ρ<sub>ij</sub>.</div>
+<p>上記の相関の定義は将来志向である。なぜなら、将来志向の共分散を将来志向の標準偏差の積で割っているためである。多くの場合、共分散は Cov(Ri, Rj) = ρ(Ri, Rj)σ(Ri)σ(Rj) の関係を用いて置き換えられる。共分散と同様に、相関係数は線形関係の尺度であるが、この定義では割り算を行うため、単位を持たない純粋な数となり、その取り得る値は+1から−1の範囲に制限される。</p>
+<p>2つの変数が強い正の線形関係を持つ場合、相関は+1に近くなる。強い負の線形関係を持つ場合、相関は−1に近くなる。線形関係が弱い場合、相関は0に近くなる。この定義を用いると、共分散行列のデータのみから相関行列を構成することができる。図表4に相関行列を示す。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2403-R-s02-EXH-1-4">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title">図表4 リターンの相関行列（Correlation Matrix of Returns）</h4>
+<div class="cfa-curriculum-table-wrap" id="CFA2403-R-s02-T-1-d">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: middle; padding: 8px;"><strong> </strong></th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">S&amp;P 500</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">米国長期社債（US Long-Term Corporate Bonds）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">MSCI EAFE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">S&amp;P 500</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.00</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.25</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.45</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">米国長期社債（US long-term corporate bonds）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.25</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.00</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.20</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">MSCI EAFE</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.45</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.20</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">1.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>例えば、図表3より長期社債とMSCI EAFEの共分散は38である。長期社債の標準偏差は √81 = 9%、MSCI EAFEの標準偏差は √441 = 21%である（図表3の対角項より）。したがって、相関係数 ρ(R long-term bonds, R EAFE) は 38 / [(9%)(21%)] = 0.201（約0.20）となる。また、S&amp;P 500の自己相関は1である。これは共分散を標準偏差の二乗で割ることで得られる。</p>
+</div>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2403-R-s02-EXM-1-1">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例1 ポートフォリオ期待リターンおよび分散（ウェイト変化の場合）</h4>
+<section>
+<p>Anna Cintaraは次の2つの株式から異なるポートフォリオを構築している。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2403-R-s02-EXH-1-5">
+<h5 class="cfa-curriculum-exhibit-table-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> </i>Exhibit 5<span style="display: block;">Description of Two-Stock Portfolio</span></h5>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: middle; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">株式1（Stock 1）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">株式2（Stock 2）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">期待リターン（Expected return）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">4%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">8%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">標準偏差（Standard deviation）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">6%</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">15%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">現在のポートフォリオ・ウェイト（Current portfolio weights）</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.40</td>
+<td style="text-align: center; vertical-align: middle; padding: 8px;">0.60</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: middle; padding: 8px;">リターン間の相関（Correlation between returns）</td>
+<td colspan="2" style="text-align: center; vertical-align: middle; padding: 8px;">0.30</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>2つの株式のリターン間の共分散を計算せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>2つの株式リターンの相関は ρ(Ri, Rj) = Cov(Ri, Rj) / [σ(Ri) σ(Rj)] と表されるため、共分散は Cov(Ri, Rj) = ρ(Ri, Rj) σ(Ri) σ(Rj) となる。この2つの株式について、共分散は Cov(R1, R2) = ρ(R1, R2) σ(R1) σ(R2) = 0.30 × 6 × 15 = 27 である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>Cintaraが投資の100%を株式1に投資した場合（w1 = 1.00、w2 = 0.00）、ポートフォリオの期待リターンと標準偏差はいくらか。また、投資の100%を株式2に投資した場合（w1 = 0.00、w2 = 1.00）はどうか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>ポートフォリオが株式1に100%投資されている場合、期待リターンは4%、標準偏差は6%である。株式2に100%投資されている場合、期待リターンは8%、標準偏差は15%である。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>現在のポートフォリオ・ウェイトを用いた場合の期待リターンと標準偏差はいくらか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>現在の40/60ポートフォリオでは、期待リターンは</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___5"><em>E</em>(R<sub>p</sub>) = <em>w</em><sub>1</sub> <em>E</em>(<em>R</em><sub>1</sub>) + (1 − <em>w</em><sub>1</sub>)<em>E</em>(<em>R</em><sub>2</sub>) = 0.40(4%) + 0.60(8%) = 6.4%</div>
+<p>ポートフォリオの分散および標準偏差は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___6"><math> <semantics> <mtable columnalign="left"> <mtr> <mtd> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <msup> <mo stretchy="false">(</mo> <mrow> <mn>0.40</mn> </mrow> </msup> <msup> <mrow></mrow> <mrow> <msup> <mo stretchy="false">)</mo> <mn>2</mn> </msup> </mrow> </msup> <mfenced> <mrow> <mn>36</mn> </mrow> </mfenced> <mo>+</mo> <msup> <mo stretchy="false">(</mo> <mrow> <mn>0.60</mn> </mrow> </msup> <msup> <mrow></mrow> <mrow> <msup> <mo stretchy="false">)</mo> <mn>2</mn> </msup> </mrow> </msup> <mfenced> <mrow> <mn>225</mn> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.40</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.60</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>27</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <mn>5.76</mn> <mo>+</mo> <mn>81</mn> <mo>+</mo> <mn>12.96</mn> <mo>=</mo> <mn>99.72</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___7">σ(<em>R<sub>p</sub></em>) = 99.72<sup>½</sup></div>
+<div class="cfa-curriculum-display-formula-container">= 9.99%</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>w1 を0.00から1.00まで0.10刻みで変化させ（w2 = 1 − w1）、各ポートフォリオの期待リターンおよび標準偏差を計算せよ。結果（株式ウェイト、期待リターン、標準偏差）を表にまとめ、その結果を横軸に標準偏差、縦軸に期待リターンとしてグラフ化せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>各ポートフォリオ・ウェイトに対する期待リターン、分散、および標準偏差は次の表に示される。2および3の解答で3行はすでに計算済みであり、他の行も同様の期待リターン、分散、標準偏差の式を用いて計算される。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2403-R-s02-T-1-e">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">株式1のウェイト（Stock 1 weight）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">株式2のウェイト（Stock 2 weight）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">期待リターン（%）（Expected return (%)）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">分散（%²）（Variance (%²)）</th>
+<th style="text-align: center; vertical-align: middle; padding: 8px;">標準偏差（%）（Standard deviation (%)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">1.00</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.00</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.00</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">36.00</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.00</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.90</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.10</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.40</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">36.27</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.02</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.80</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.20</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">4.80</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">40.68</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.38</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.70</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.30</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5.20</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">49.23</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7.02</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.60</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.40</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5.60</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">61.92</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7.87</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.50</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.50</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.00</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">78.75</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">8.87</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.40</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.60</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.40</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">99.72</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9.99</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.30</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.70</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6.80</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">124.83</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11.17</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.20</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.80</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7.20</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">154.08</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">12.41</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.10</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0.90</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7.60</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">187.47</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">13.69</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">0.00</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1.00</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">8.00</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">225.00</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">15.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>期待リターンと標準偏差のグラフは次のとおりである。</p>
+<p><img alt="Standard deviation in percent on x-axis from 0 to 16 and expected return in percent on y-axis from 0 to 9. A curve passes from (6, 4), (8, 5.5), (10, 6) and (14, 7.8)." data-api-endpoint="https://learn.cfainstitute.org/api/v1/courses/1864/files/459690" data-api-returntype="File" id="CFA2403-R-s02-F1" loading="lazy" src="data:image/png;base64,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" style="width: clamp(250px, 100%, 800px); height: auto; display: block; margin-left: auto; margin-right: auto;"/></p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div class="dp-content-block cfa-curriculum-exercise-box" id="CFA2403-R-s02-B-1-a">
+<h4 class="dp-has-icon cfa-curriculum-exercise-box cfa-curriculum-box-title">問題セット（Question Set）</h4>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2403-R-s02-Q5"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>同一通貨単位で測定された米国債およびスペイン債のリターンの標準偏差はそれぞれ0.64および0.56である。両者の相関が0.24である場合、リターンの共分散として最も近い値はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.086</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はAである。共分散は標準偏差と相関の積として計算される：Cov(米国債リターン, スペイン債リターン) = σ(米国債) × σ(スペイン債) × ρ(米国債リターン, スペイン債リターン) = 0.64 × 0.56 × 0.24 = 0.086。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 0.335</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はAである。共分散は標準偏差と相関の積として計算される：Cov(米国債リターン, スペイン債リターン) = σ(米国債) × σ(スペイン債) × ρ(米国債リターン, スペイン債リターン) = 0.64 × 0.56 × 0.24 = 0.086。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 0.390</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はAである。共分散は標準偏差と相関の積として計算される：Cov(米国債リターン, スペイン債リターン) = σ(米国債) × σ(スペイン債) × ρ(米国債リターン, スペイン債リターン) = 0.64 × 0.56 × 0.24 = 0.086。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2403-R-s02-Q6"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>リターンの共分散が正となるのは、2つの資産のリターンがどのような場合か。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 同じ期待値を持つ場合。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。両資産のリターンが同時に期待値より上または下にある傾向がある場合、共分散は正となり、平均的に正の関係を示す。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 異なる時点で期待値を上回る場合。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。リターンの共分散は、両資産のリターンが同時に期待値の同じ側（上または下）にある傾向がある場合に正となり、平均的に正の関係を示す。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 同時に期待値の同じ側にある。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。リターンの共分散は、両資産のリターンが同時に期待値の同じ側（上または下）にある傾向がある場合に正となり、平均的に正の関係を示す。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2403-R-s02-Q7"><span class="cfa-curriculum-question-with-label">3. </span>
+<p>次のうち、2つの変数間の最も弱い線形関係を示す相関係数はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. −0.67</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はBである。相関が+1に近いほど強い正の線形関係、−1に近いほど強い負の線形関係を示す。相関が0は線形関係がないことを示す。相関が0に近いほど線形関係は弱い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. −0.24</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はBである。相関が+1に近いほど強い正の線形関係、−1に近いほど強い負の線形関係を示す。相関が0は線形関係がないことを示す。相関が0に近いほど線形関係は弱い。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 0.33</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はBである。相関が+1に近いほど強い正の線形関係、−1に近いほど強い負の線形関係を示す。相関が0は線形関係がないことを示す。相関が0に近いほど線形関係は弱い。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2403-R-s02-Q8"><span class="cfa-curriculum-question-with-label">4. </span>
+<p>あるアナリストが次のリターンの共分散行列を作成した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2403-R-s02-T-1-f">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ヘッジファンド（Hedge Fund）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">市場指数（Market Index）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ヘッジファンド（Hedge fund）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">256</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">110</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">市場指数（Market index）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">110</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">81</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ヘッジファンドと市場指数のリターンの相関として最も近い値はどれか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 0.005</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。2つの確率変数 Ri と Rj の相関は ρ(Ri, Rj) = Cov(Ri, Rj) / [σ(Ri) σ(Rj)] と定義される。添字 i をヘッジファンド、j を市場指数とすると、標準偏差は σ(Ri) = √256 = 16、σ(Rj) = √81 = 9 である。したがって、ρ(Ri, Rj) = Cov(Ri, Rj) / [σ(Ri) σ(Rj)] = 110 / (16 × 9) = 0.764 となる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 0.073</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。2つの確率変数 Ri と Rj の相関は ρ(Ri, Rj) = Cov(Ri, Rj) / [σ(Ri) σ(Rj)] と定義される。添字 i をヘッジファンド、j を市場指数とすると、標準偏差は σ(Ri) = √256 = 16、σ(Rj) = √81 = 9 である。したがって、ρ(Ri, Rj) = Cov(Ri, Rj) / [σ(Ri) σ(Rj)] = 110 / (16 × 9) = 0.764 となる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 0.764</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。2つの確率変数 Ri と Rj の相関は ρ(Ri, Rj) = Cov(Ri, Rj) / [σ(Ri) σ(Rj)] と定義される。添字 i をヘッジファンド、j を市場指数とすると、標準偏差は σ(Ri) = √256 = 16、σ(Rj) = √81 = 9 である。したがって、ρ(Ri, Rj) = Cov(Ri, Rj) / [σ(Ri) σ(Rj)] = 110 / (16 × 9) = 0.764 となる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2403-R-s02-Q9"><span class="cfa-curriculum-question-with-label">5. </span>
+<p>他の条件が一定の場合、2資産間の相関が+1.0に近づくと、分散投資効果（diversification benefits）はどのようになるか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>A. 減少する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はAである。2資産間の相関が+1に近づくほど、分散投資効果は減少する。すなわち、より強い正の線形関係を示すほど、分散によるリスク低減効果は小さくなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 変わらない。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はAである。2資産間の相関が+1に近づくほど、分散投資効果は減少する。すなわち、より強い正の線形関係を示すほど、分散によるリスク低減効果は小さくなる。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 増加する。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はAである。2資産間の相関が+1に近づくほど、分散投資効果は減少する。すなわち、より強い正の線形関係を示すほど、分散によるリスク低減効果は小さくなる。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2403-R-s02-Q10"><span class="cfa-curriculum-question-with-label">6. </span>
+<p>5銘柄からなるポートフォリオにおいて、分散を除いたユニークな共分散項はいくつ必要か。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p><span class="cfa-curriculum-option-label">A. </span>10</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はAである。5銘柄の共分散行列は5 × 5 = 25個の要素を持つ。対角の分散項5つを除くと、非対角項は20個となる。共分散行列は対称であるため、ユニークな要素は10個（20/2 = 10）である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p><span class="cfa-curriculum-option-label">B. </span>20</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はAである。5銘柄の共分散行列は5 × 5 = 25個の要素を持つ。対角の分散項5つを除くと、非対角項は20個となる。共分散行列は対称であるため、ユニークな要素は10個（20/2 = 10）である。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p><span class="cfa-curriculum-option-label">C. </span>25</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はAである。5銘柄の共分散行列は5 × 5 = 25個の要素を持つ。対角の分散項5つを除くと、非対角項は20個となる。共分散行列は対称であるため、ユニークな要素は10個（20/2 = 10）である。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2403-R-s02-Q11"><span class="cfa-curriculum-question-with-label">7. </span>
+<p>次のうち最も正確な記述はどれか。2資産間のリターンの共分散が0.0023である場合、</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 資産のリスクはほぼゼロである。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。リターンの共分散が正である場合、両資産のリターンは同時に期待値の同じ側（上または下）にある傾向がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 資産リターンは無関係である。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。リターンの共分散が正である場合、両資産のリターンは同時に期待値の同じ側（上または下）にある傾向がある。</p>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 資産リターンは正の関係を持つ。</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。リターンの共分散が正である場合、両資産のリターンは同時に期待値の同じ側（上または下）にある傾向がある。</p>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2403-R-s02-Q12"><span class="cfa-curriculum-question-with-label">8. </span>
+<p>2銘柄ポートフォリオは次の特性を持つ。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2403-R-s02-T-1-g">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">株式1（Stock 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">株式2（Stock 2）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">期待リターン（Expected return）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">標準偏差（Standard deviation）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">25%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ポートフォリオ・ウェイト（Portfolio weights）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.70</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">相関（Correlation）</td>
+<td colspan="2" style="text-align: center; vertical-align: top; padding: 8px;">0.20</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>ポートフォリオ・リターンの標準偏差はいくらか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 14.91%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はBである。2銘柄のリターンの共分散は Cov(R1, R2) = ρ(R1, R2) σ(R1) σ(R2) = 0.20 × 12 × 25 = 60 である。ポートフォリオ分散は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___8"><math> <semantics> <mtable> <mtr> <mtd> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <msup> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mn>2</mn> </msup> <msup> <mfenced> <mrow> <mn>12</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.70</mn> </mrow> </mfenced> <mn>2</mn> </msup> <msup> <mfenced> <mrow> <mn>25</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.70</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>60</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <mn>12.96</mn> <mo>+</mo> <mn>306.25</mn> <mo>+</mo> <mn>25.2</mn> <mo>=</mo> <mn>344.41.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>ポートフォリオの標準偏差は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___9">σ<sup>2</sup>(<em>R<sub>p</sub></em>) = 344.41<sup>½</sup> = 18.56%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>B. 18.56%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はBである。2銘柄のリターンの共分散は Cov(R1, R2) = ρ(R1, R2) σ(R1) σ(R2) = 0.20 × 12 × 25 = 60 である。ポートフォリオ分散は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___8"><math> <semantics> <mtable> <mtr> <mtd> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <msup> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mn>2</mn> </msup> <msup> <mfenced> <mrow> <mn>12</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.70</mn> </mrow> </mfenced> <mn>2</mn> </msup> <msup> <mfenced> <mrow> <mn>25</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.70</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>60</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <mn>12.96</mn> <mo>+</mo> <mn>306.25</mn> <mo>+</mo> <mn>25.2</mn> <mo>=</mo> <mn>344.41.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>ポートフォリオの標準偏差は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___9">σ<sup>2</sup>(<em>R<sub>p</sub></em>) = 344.41<sup>½</sup> = 18.56%.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>C. 21.10%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はBである。2銘柄のリターンの共分散は Cov(R1, R2) = ρ(R1, R2) σ(R1) σ(R2) = 0.20 × 12 × 25 = 60 である。ポートフォリオ分散は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___8"><math> <semantics> <mtable> <mtr> <mtd> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <msup> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mn>2</mn> </msup> <msup> <mfenced> <mrow> <mn>12</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.70</mn> </mrow> </mfenced> <mn>2</mn> </msup> <msup> <mfenced> <mrow> <mn>25</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.70</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>60</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <mn>12.96</mn> <mo>+</mo> <mn>306.25</mn> <mo>+</mo> <mn>25.2</mn> <mo>=</mo> <mn>344.41.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>ポートフォリオの標準偏差は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___9">σ<sup>2</sup>(<em>R<sub>p</sub></em>) = 344.41<sup>½</sup> = 18.56%.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc">
+<div class="dp-qc-question">
+<div class="dp-qc-question cfa-curriculum-question-with-label" id="CFA2403-R-s02-Q13"><span class="cfa-curriculum-question-with-label">9. </span>
+<p>Lena Hunzigerは次の3資産ポートフォリオを設計した。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2403-R-s02-T-1-h">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">資産1（Asset 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">資産2（Asset 2）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">資産3（Asset 3）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">期待リターン（Expected return）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">5%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">6%</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">7%</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">ポートフォリオ・ウェイト（Portfolio weight）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"><strong>0.20</strong></td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.30</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">0.50</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th colspan="4" style="text-align: center; vertical-align: top; padding: 8px;">分散共分散行列（Variance-Covariance Matrix）</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: top; padding: 8px;"> </th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">資産1（Asset 1）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">資産2（Asset 2）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">資産3（Asset 3）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産1（Asset 1）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">196</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">105</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">140</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産2（Asset 2）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">105</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">225</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">150</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産3（Asset 3）</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">140</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">150</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">400</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Hunzigerはポートフォリオの期待リターンを6.3%と推定した。ポートフォリオの標準偏差はいくらか。</p>
+</div>
+</div>
+<dl class="dp-qc-answers">
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>A. 13.07%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。3資産ポートフォリオの分散は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___10"><math> <semantics> <mtable> <mtr> <mtd> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>3</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>2</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <msup> <mfenced> <mrow> <mn>0.20</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>196</mn> </mrow> </mfenced> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>225</mn> </mrow> </mfenced> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>400</mn> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.20</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>105</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.20</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>140</mn> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>150</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <mn>7.84</mn> <mo>+</mo> <mn>20.25</mn> <mo>+</mo> <mn>100</mn> <mo>+</mo> <mn>12.6</mn> <mo>+</mo> <mn>28</mn> <mo>+</mo> <mn>45</mn> <mo>=</mo> <mn>213.69.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>ポートフォリオの標準偏差は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___11"><math> <semantics> <mrow> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msup> <mrow> <mn>213.69</mn> </mrow> <mrow> <mn>1</mn> <mo>/</mo> <mn>2</mn> </mrow> </msup> <mo>=</mo> <mn>14.62</mn> <mtext>%</mtext> </mrow> </semantics> </math>.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer" onclick="">
+<div class="dp-qc-content">
+<p>B. 13.88%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-times"> </i> </span>
+<div class="dp-qc-content">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。3資産ポートフォリオの分散は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___10"><math> <semantics> <mtable> <mtr> <mtd> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>3</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>2</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <msup> <mfenced> <mrow> <mn>0.20</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>196</mn> </mrow> </mfenced> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>225</mn> </mrow> </mfenced> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>400</mn> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.20</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>105</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.20</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>140</mn> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>150</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <mn>7.84</mn> <mo>+</mo> <mn>20.25</mn> <mo>+</mo> <mn>100</mn> <mo>+</mo> <mn>12.6</mn> <mo>+</mo> <mn>28</mn> <mo>+</mo> <mn>45</mn> <mo>=</mo> <mn>213.69.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>ポートフォリオの標準偏差は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___11"><math> <semantics> <mrow> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msup> <mrow> <mn>213.69</mn> </mrow> <mrow> <mn>1</mn> <mo>/</mo> <mn>2</mn> </mrow> </msup> <mo>=</mo> <mn>14.62</mn> <mtext>%</mtext> </mrow> </semantics> </math>.</div>
+</section>
+</div>
+</dd>
+<dt class="dp-qc-answer dp-qc-correct" onclick="">
+<div class="dp-qc-content">
+<p>C. 14.62%</p>
+</div>
+</dt>
+<dd class="dp-qc-response d-none dp-qc-correct"><span class="dp-qc-answer-type"> <i class="fas fa-fw fa-check"> </i> </span>
+<div class="dp-qc-content dp-qc-correct-flag">
+<section>
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>正解はCである。3資産ポートフォリオの分散は次のとおりである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___10"><math> <semantics> <mtable> <mtr> <mtd> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msubsup> <mi>w</mi> <mn>1</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>2</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> <mo>+</mo> <msubsup> <mi>w</mi> <mn>3</mn> <mn>2</mn> </msubsup> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>2</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>2</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>1</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>1</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <msub> <mi>w</mi> <mn>2</mn> </msub> <msub> <mi>w</mi> <mn>3</mn> </msub> <mtext>Cov</mtext> <mfenced> <mrow> <msub> <mi>R</mi> <mn>2</mn> </msub> <mo>,</mo> <msub> <mi>R</mi> <mn>3</mn> </msub> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <msup> <mfenced> <mrow> <mn>0.20</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>196</mn> </mrow> </mfenced> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>225</mn> </mrow> </mfenced> <mo>+</mo> <msup> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mn>2</mn> </msup> <mfenced> <mrow> <mn>400</mn> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.20</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>105</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.20</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>140</mn> </mrow> </mfenced> <mo>+</mo> <mn>2</mn> <mfenced> <mrow> <mn>0.30</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>0.50</mn> </mrow> </mfenced> <mfenced> <mrow> <mn>150</mn> </mrow> </mfenced> </mtd> </mtr> <mtr> <mtd> <mo>=</mo> <mn>7.84</mn> <mo>+</mo> <mn>20.25</mn> <mo>+</mo> <mn>100</mn> <mo>+</mo> <mn>12.6</mn> <mo>+</mo> <mn>28</mn> <mo>+</mo> <mn>45</mn> <mo>=</mo> <mn>213.69.</mn> </mtd> </mtr> </mtable> </semantics> </math></div>
+<p>ポートフォリオの標準偏差は</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2403-R-s02-E-1-___11"><math> <semantics> <mrow> <msup> <mi>σ</mi> <mn>2</mn> </msup> <mfenced> <mrow> <msub> <mi>R</mi> <mi>p</mi> </msub> </mrow> </mfenced> <mo>=</mo> <msup> <mrow> <mn>213.69</mn> </mrow> <mrow> <mn>1</mn> <mo>/</mo> <mn>2</mn> </mrow> </msup> <mo>=</mo> <mn>14.62</mn> <mtext>%</mtext> </mrow> </semantics> </math>.</div>
+</section>
+</div>
+</dd>
+</dl>
+<a class="dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" href="#" role="button">Check Answer</a></div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ExpectedReturnOnThePortfolioContent">
+<p>E(Rp) と表される。構成証券の期待リターン（R₁からRₙ）を、それぞれのウェイト（w₁からwₙ）で加重平均したもの。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CovarianceContent">
+<p>2つの確率変数間の共動（線形関係）を測る尺度。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="CorrelationContent">
+<p>2つの確率変数間の線形関係を測る尺度。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1864_modules_items_144393_501_Introduction.html" >← 前へ</a>
+  <span class="title">5.02 | Portfolio Expected Return and Variance of Return</span>
+  <a href="courses_1864_modules_items_144402_503_Forecasting_Correlation_of_Returns_Covariance_Given_a_Joint_Probability_Func.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

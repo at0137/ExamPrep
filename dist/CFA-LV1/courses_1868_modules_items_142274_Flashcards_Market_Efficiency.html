@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flashcards: Market Efficiency</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0163-flashcards" title="Flashcards: Market Efficiency"><header class="dp-header dp-flat-sections variation-2"><h2 class="dp-heading">モジュール3：市場効率性（Market Efficiency）フラッシュカード（Flashcards）</h2></header><h3 class="dp-has-icon"><i aria-hidden="true" class="dp-icon fas fa-book-reader"></i></h3><p class="cfa-curriculum-flashcard-inst">下のカードをクリックすると、その用語の定義が表示される。次へまたは前へをクリックしてカードを切り替える。</p><div class="flashcard-container"><div class="flashcard" id="flashcard1"><div class="front"><p>異常リターン（Abnormal return）</p></div><div class="back"><p>証券の実現リターンと、その証券のリスクおよび市場リターンを踏まえた期待リターンとの差。</p></div></div><div class="flashcard" id="flashcard2" style="display: none;"><div class="front"><p>アクティブ運用（Active investment）</p></div><div class="back"><p>投資家が特定のベンチマーク（benchmark）を上回ることを目指す投資手法。</p></div></div><div class="flashcard" id="flashcard3" style="display: none;"><div class="front"><p>アクティブリターン（Active return）</p></div><div class="back"><p>ポートフォリオのリターンから、そのポートフォリオのベンチマークのリターンを差し引いたもの。</p></div></div><div class="flashcard" id="flashcard4" style="display: none;"><div class="front"><p>裁定取引（Arbitrage）</p></div><div class="back"><p>（1）過小評価された資産またはポートフォリオを同時に購入し、同等であるが過大評価された資産またはポートフォリオを売却することで、価格差から無リスク利益を得ること。市場の非効率性を無リスクで利用する行為。（2）同等の資産または資産の組み合わせが異なる価格で取引される市場の状態であり、資金の純投資なしに無リスクで利益を得る機会を生み出す。機能が良好な金融市場では、裁定機会はほとんど存在しない。（3）資金の純投資を必要とせず、期待される正の純利益を得る無リスク取引。</p></div></div><div class="flashcard" id="flashcard5" style="display: none;"><div class="front"><p>行動ファイナンス（Behavioral finance）</p></div><div class="back"><p>投資家、アナリスト、およびポートフォリオ・マネージャーの投資意思決定に影響を与え、しばしばそれを歪める心理的要因を検討する金融分野。</p></div></div><div class="flashcard" id="flashcard6" style="display: none;"><div class="front"><p>データマイニング（Data mining）</p></div><div class="back"><p>データセットを広範に探索して統計的に有意なパターンを見つけることによりモデルを決定する手法。データ・スヌーピング（data snooping）とも呼ばれる。</p></div></div><div class="flashcard" id="flashcard7" style="display: none;"><div class="front"><p>データ・スヌーピング（Data snooping）</p></div><div class="back"><p>統計的に有意な結果（すなわち、p値（p-value）が十分に小さい、またはt統計量（t-statistic）が十分に大きい）を得るために、データを無意識または意図的に操作すること。例えば、複数のシミュレーションを行い最も良い結果を安易に採用することなど。pハッキング（p-hacking）とも呼ばれる。</p></div></div><div class="flashcard" id="flashcard8" style="display: none;"><div class="front"><p>予想外利益（Earnings surprise）</p></div><div class="back"><p>報告された1株当たり利益（EPS）と期待される1株当たり利益との差。予想外利益（unexpected earnings）とも呼ばれる。</p></div></div><div class="flashcard" id="flashcard9" style="display: none;"><div class="front"><p>効率的市場（Efficient market）</p></div><div class="back"><p>資産価格が新しい情報を迅速かつ合理的に反映する市場。情報効率的市場（informationally efficient market）も参照。</p></div></div><div class="flashcard" id="flashcard10" style="display: none;"><div class="front"><p>ファンダメンタル分析（Fundamental analysis）</p></div><div class="back"><p>公開されている情報を分析し、予測を作成して資産の本源的価値（intrinsic value）を推定すること。</p></div></div><div class="flashcard" id="flashcard11" style="display: none;"><div class="front"><p>ファンダメンタル価値（Fundamental value）</p></div><div class="back"><p>ファンダメンタル分析（fundamental analysis）を用いて、過小評価されており注目されていない企業を特定し、将来の収益およびキャッシュフローの成長を伴う企業再生（corporate turnaround）によって評価が上昇する可能性に投資する戦略。</p></div></div><div class="flashcard" id="flashcard12" style="display: none;"><div class="front"><p>ハーディング（Herding）</p></div><div class="back"><p>情報に基づく場合もそうでない場合もある集中的な取引。</p></div></div><div class="flashcard" id="flashcard13" style="display: none;"><div class="front"><p>情報カスケード（Information cascade）</p></div><div class="back"><p>最初に行動する参加者からの情報の伝達であり、その意思決定が他者の意思決定に影響を与える現象。</p></div></div><div class="flashcard" id="flashcard14" style="display: none;"><div class="front"><p>情報効率的市場（Informationally efficient market）</p></div><div class="back"><p>資産価格が新しい情報を迅速かつ合理的に反映する市場。</p></div></div><div class="flashcard" id="flashcard15" style="display: none;"><div class="front"><p>本源的価値（Intrinsic value）</p></div><div class="back"><p>オプションが任意の時点で行使された場合に、オプションの買い手が得る単位当たりの利益。オプションの行使価値（exercise value）とも呼ばれる。</p></div></div><div class="flashcard" id="flashcard16" style="display: none;"><div class="front"><p>1月効果（January effect）</p></div><div class="back"><p>株式市場のリターンが1月に他の月と比べて有意に高く、特に1月の最初の5営業日に異常リターンの大部分が発生するというカレンダー・アノマリー。ターン・オブ・ザ・イヤー効果（turn-of-the-year effect）とも呼ばれる。</p></div></div><div class="flashcard" id="flashcard17" style="display: none;"><div class="front"><p>損失回避（Loss aversion）</p></div><div class="back"><p>人々が同程度の利得よりも損失をより強く嫌う傾向。</p></div></div><div class="flashcard" id="flashcard18" style="display: none;"><div class="front"><p>市場アノマリー（Market anomaly）</p></div><div class="back"><p>市場で既知の関連情報や新たに公表された情報に直接結び付けることができない、証券の価格またはリターンの変化。</p></div></div><div class="flashcard" id="flashcard19" style="display: none;"><div class="front"><p>市場価値（Market value）</p></div><div class="back"><p>公開市場において資産または証券が現在売買される価格。</p></div></div><div class="flashcard" id="flashcard20" style="display: none;"><div class="front"><p>パッシブ運用（Passive investment）</p></div><div class="back"><p>市場や証券の短期的なパフォーマンスの変化予想に基づいてポートフォリオの変更を行わない、バイ・アンド・ホールド（buy-and-hold）手法。</p></div></div><div class="flashcard" id="flashcard21" style="display: none;"><div class="front"><p>リスク回避（Risk aversion）</p></div><div class="back"><p>より高いリスクを引き受けるためには、より高い期待リターンという形での補償が必要とされるような、リスクを嫌う傾向。</p></div></div><div class="flashcard" id="flashcard22" style="display: none;"><div class="front"><p>準強形式の効率的市場（Semi-strong-form efficient market）</p></div><div class="back"><p>証券価格がすべての公開され入手可能な情報を反映する市場。</p></div></div><div class="flashcard" id="flashcard23" style="display: none;"><div class="front"><p>空売り（Short selling）</p></div><div class="back"><p>借り入れた証券を売却し、将来より低い価格で買い戻して貸し手に返却することを意図した取引。</p></div></div><div class="flashcard" id="flashcard24" style="display: none;"><div class="front"><p>強形式の効率的市場（Strong-form efficient market）</p></div><div class="back"><p>証券価格が公開情報および私的情報のすべてを反映する市場。</p></div></div><div class="flashcard" id="flashcard25" style="display: none;"><div class="front"><p>テクニカル分析（Technical analysis）</p></div><div class="back"><p>価格および出来高データを用い（しばしばグラフ表示される）、意思決定を行う証券分析の手法。</p></div></div><div class="flashcard" id="flashcard26" style="display: none;"><div class="front"><p>年初効果（Turn-of-the-year effect）</p></div><div class="back"><p>株式市場のリターンが1月に他の月と比べて有意に高く、特に1月の最初の5営業日に異常リターンの大部分が発生するというカレンダー・アノマリー。</p></div></div><div class="flashcard" id="flashcard27" style="display: none;"><div class="front"><p>弱形式の効率的市場仮説（Weak-form efficient market hypothesis）</p></div><div class="back"><p>証券価格がすべての過去の市場データ、すなわち過去の価格および出来高情報を完全に反映しているという考え。</p></div></div></div><div class="controls"><div class="control-button" id="prevBtn">Previous Card</div><div class="control-button" id="nextBtn">Next Card</div></div></div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142272_Glossary_Market_Efficiency.html" >← 前へ</a>
+  <span class="title">Flashcards: Market Efficiency</span>
+  <a href="courses_1868_modules_items_142276_Real_World_Applications_Bloombergs_Technical_Study_Browser.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

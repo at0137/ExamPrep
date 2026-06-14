@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6.03 | The Effects of Inflation and Deflation on Inventories, Costs of Sales, and Gross Margin</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2423-R-s03-R-1" title="6.03 | The Effects of Inflation and Deflation on Inventories, Costs of Sales, and Gross Margin">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール6：棚卸資産の分析 (Analysis of Inventories) 6.03｜インフレーションおよびデフレーションが棚卸資産、売上原価、および売上総利益率に与える影響 (The Effects of Inflation and Deflation on Inventories, Costs of Sales, and Gross Margin)</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">棚卸資産コストのインフレーションおよびデフレーションが、異なる棚卸資産評価方法を用いる企業の財務諸表および各種比率にどのような影響を与えるかを計算し、説明する。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>販売可能商品総原価 (total cost of goods available for sale) を損益計算書上の売上原価 (cost of sales) と貸借対照表上の期末棚卸資産 (ending inventory) に配分する方法は、棚卸資産評価方法によって異なる。棚卸資産の単価が低下し、かつ棚卸資産数量が一定または増加している環境では、先入先出法 (first-in, first-out: FIFO) は（加重平均法 (weighted average cost) や後入先出法 (last-in, first-out: LIFO) と比較して）、販売可能商品総原価のうちより多くを売上原価として損益計算書に配分し、より少なくを期末棚卸資産として貸借対照表に配分する。その結果、FIFOの下では売上原価が高くなるため、売上総利益 (gross profit)、営業利益 (operating profit)、および税引前利益 (income before taxes) は低くなる。</p>
+<p>逆に、棚卸資産の単価が上昇し、かつ棚卸資産数量が一定または増加している環境では、FIFOは（加重平均法やLIFOと比較して）、販売可能商品総原価のうちより少なくを売上原価として損益計算書に配分し、より多くを期末棚卸資産として貸借対照表に配分する。その結果、FIFOの下では売上原価が低くなるため、売上総利益、営業利益、および税引前利益は高くなる。</p>
+<p>FIFOの下での棚卸資産の帳簿価額は、棚卸資産が最新に購入された項目から構成されると仮定されるため、現在の再調達価額 (current replacement value) をよりよく反映する。一方、LIFOの下での売上原価は、現在の再調達価額をよりよく反映する。LIFOの期末棚卸資産は、最も古い棚卸資産で構成されると仮定され、それに応じて原価が配分されるため、通常、現在の再調達価額を反映しない。例3では、FIFO法またはLIFO法を用いた場合に得られる異なる結果を示す。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA2423-R-s03-EXM-1-3">
+<h3 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-search" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Example 3<span style="display: block;">Impact of Inflation Using LIFO Compared to FIFO</span></h3>
+<section>
+<p>企業Lと企業Fは、企業LがLIFO法を使用し、企業FがFIFO法を使用している点を除いて、すべての点で同一である。各企業は5年間事業を行っており、毎年2,000単位の基準棚卸資産 (base inventory) を維持している。初年度を除き、各年の購入数量は販売数量と等しい。5年間にわたり、単位販売数量は毎年10％増加し、単位購入価格および販売価格は年初に毎年4％のインフレーションを反映して上昇した。初年度には、20,000単位が単価15.00米ドルで販売され、単位購入価格は8.00米ドルであった。</p>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">1. </span>
+<p>各企業について、5年間の各年における期末棚卸資産、売上高、売上原価、および売上総利益はいくらであったか。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<div class="cfa-curriculum-table-wrap" id="CFA2423-R-s03-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">LIFOを使用する企業L（米ドル）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第1年</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第2年</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第3年</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第4年</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第5年</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">期末棚卸資産 (Ending inventory) a</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,000</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高 (Sales) b</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">300,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">343,200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">392,621</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">449,158</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">513,837</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上原価 (Cost of sales) c</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">160,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">183,040</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">209,398</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">239,551</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">274,046</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益 (Gross profit)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">140,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">160,160</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">183,223</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">209,607</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">239,791</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>a 棚卸資産は毎年16,000米ドルで不変である（2,000単位 × 8米ドル）。初年度に取得した2,000単位が在庫として残っていると仮定される。</p>
+<p>b 売上高 (Sales) 年X = (20,000 × 15米ドル)(1.10)^(X–1) (1.04)^(X–1)。販売数量は毎年10％増加し、販売価格は毎年4％上昇する。</p>
+<p>c 売上原価 (Cost of sales) 年X = (20,000 × 8米ドル)(1.10)^(X–1) (1.04)^(X–1)。第1年には、20,000単位が単価8米ドルで販売される。その後の各年では、購入数量は販売数量と等しく、販売された単位は当該年に購入されたものと仮定される。購入数量は毎年10％増加し、購入価格は毎年4％上昇する。</p>
+</div>
+<p>もしある年に販売数量が購入数量を上回った場合、棚卸資産は減少する。これはLIFO清算 (LIFO liquidation) と呼ばれる。購入数量を超えて販売された単位の売上原価は、棚卸資産の帳簿価額を反映する。この例では、購入数量を超えて販売された各単位の売上原価は8米ドルとなり、売上総利益はより高くなる。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2423-R-s03-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">FIFOを使用する企業F（米ドル）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第1年</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第2年</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第3年</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第4年</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">第5年</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">期末棚卸資産 (Ending inventory) a</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">16,640</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17,306</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17,998</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">18,718</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上高 (Sales) b</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">300,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">343,200</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">392,621</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">449,158</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">513,837</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上原価 (Cost of sales) c</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">160,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">182,400</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">208,732</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">238,859</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">273,326</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益 (Gross profit)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">140,000</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">160,800</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">183,889</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">210,299</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">240,511</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>a 期末棚卸資産 年X = 2,000単位 × 年Xの原価 = 2,000単位 × [8米ドル × (1.04)^(X–1)]。年Xに取得した単位のうち2,000単位が棚卸資産として残っていると仮定される。</p>
+<p>b 売上高 (Sales) 年X = (20,000 × 15米ドル)(1.10)^(X–1) (1.04)^(X–1)。</p>
+<p>c 売上原価 (Cost of sales) 第1年 = 160,000米ドル（= 20,000単位 × 8米ドル）。期首棚卸資産は存在しない。</p>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s03-E-1-">Cost of sales Year X (where X ≠ 1) = Beginning inventory plus purchases less ending inventory</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s03-E-1-___1">= (Inventory at Year X–1) + [(20,000 × USD8)(1.10)<sup>X–1</sup>(1.04)<sup>X–1</sup>] − (Inventory at Year X)</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s03-E-1-___2">= 2,000(USD8)(1.04)<sup>X–2</sup> + [(20,000 × USD8)(1.10)<sup>X–1</sup>(1.04)<sup>X–1</sup>] – [2,000 (USD8)(1.04)<sup>X–1</sup>].</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s03-E-1-___3">For example, cost of sales Year 2 = 2,000(USD8) + [(20,000 x USD8)(1.10)(1.04)] – [2,000(USD8)(1.04)]</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s03-E-1-___4">= USD16,000 + USD183,040 – USD16,640 = USD182,400.</div>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label"><span class="cfa-curriculum-question-with-label">2. </span>
+<p>5年間にわたり、各企業および企業間で、棚卸資産回転率（期末棚卸資産の帳簿価額に基づく）および売上総利益率を比較せよ。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認 (Check Answer)</h4>
+<div class="dp-panel-content">
+<section>
+<h3 class="cfa-curriculum-solution">解答 (Solution)</h3>
+<div class="cfa-curriculum-table-wrap" id="CFA2423-R-s03-T-1-c">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"><strong>Year</strong></th>
+<th colspan="5" style="text-align: center; vertical-align: bottom; padding: 8px;">企業L (Company L)</th>
+<th rowspan="2" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong> </strong> <br/><br/><strong> </strong></th>
+<th colspan="5" style="text-align: center; vertical-align: bottom; padding: 8px;">企業F (Company F)</th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>3</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>4</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>5</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>1</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>3</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>4</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>5</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">棚卸資産回転率 (Inventory turnover)</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.4</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">15.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">17.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">10.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">11.0</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">12.1</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">13.3</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">14.6</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">売上総利益率（％） (Gross profit margin (%))</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;"> </td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.7</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.9</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.8</td>
+<td style="text-align: center; vertical-align: top; padding: 8px;">46.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s03-E-1-___5"><em>Inventory turnover ratio</em> = Cost of sales ÷ Ending inventory.</div>
+<p>棚卸資産回転率は、両社とも毎年上昇した。これは販売数量が増加する一方で、期末棚卸資産の数量が変わらないためである。棚卸資産回転率の上昇は企業Lの方が大きい。これは、企業Lの売上原価がインフレーションにより増加する一方で、棚卸資産の帳簿価額はインフレーションの影響を受けないためである。LIFO法を使用する企業は在庫管理をより効率的に行っているように見えるかもしれないが、これは誤解を招くものである。両社は購入および販売の数量と価格が同一であり、異なるのは使用している棚卸資産評価方法のみである。</p>
+<div class="cfa-curriculum-display-formula-container" id="CFA2423-R-s03-E-1-___6"><em>Gross profit margin</em> = Gross profit ÷ Sales.</div>
+<p>売上総利益率は、売上高と売上原価の両方が同じインフレーション率で増加するため、LIFOの下では安定している。FIFO法の下では、売上原価の一部が過去の低い購入価格を反映するため、第1年以降は売上総利益率がわずかに高くなる。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143608_602_Inventory_Valuation.html" >← 前へ</a>
+  <span class="title">6.03 | The Effects of Inflation and Deflation on Inventories, Costs of Sales, and Gross Margin</span>
+  <a href="courses_1867_modules_items_143614_604_Presentation_and_Disclosure.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

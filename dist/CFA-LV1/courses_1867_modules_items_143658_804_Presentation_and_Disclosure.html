@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8.04 | Presentation and Disclosure</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA2425-R-s04-R-1" title="8.04 | Presentation and Disclosure"><header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール8：長期負債および資本に関するトピック（Topics in Long-Term Liabilities and Equity）8.04｜表示および開示（Presentation and Disclosure）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box"><i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">長期負債および株式報酬（share-based compensation）に関連する財務諸表上の表示および開示について説明せよ。</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>本レッスンでは、リース（leases）、退職後給付（postretirement benefits）、および株式報酬の表示および開示要件を検討する。これらの開示は通常、財務諸表の注記（notes to the financial statements）に含まれる。</p>
+<section id="CFA2425-R-s04-01-01">
+<h3 class="dp-heading">リースの表示および開示（Presentation and Disclosure of Leases）</h3>
+<p>IFRSおよびUS GAAPの双方は、リースの開示の目的は、財務諸表利用者がリースに関連するキャッシュフローの金額、時期、および不確実性を評価するための情報を提供することであると示している。</p>
+<p>貸借対照表（balance sheet）の非流動部分（non-current portion）には通常、「使用権資産（right of use asset）」が含まれ、非流動負債（長期負債）区分には通常リース負債（lease liability）が表示される。しかし、リース資産およびリース債務の規模によっては、一部の企業では貸借対照表上にリースに関する独立した項目を設けず、「その他の資産（Other assets）」または「その他の負債（Other liabilities）」として報告する場合もある。貸借対照表に計上された金額に加え、借手（lessees）および貸手（lessors）の双方は、リースに関する定量的および定性的情報、リース会計要件に従うために行った重要な判断（significant judgments）、およびそれらのリースに関連して財務諸表に認識された金額とその表示箇所を開示しなければならない。</p>
+</section>
+<section id="CFA2425-R-s04-01-02">
+<h3 class="dp-heading">借手の開示（Lessee Disclosure）</h3>
+<p>具体的には、IFRS 16に示されているように、借手の開示には当期報告期間（current reporting period）について以下の金額が含まれなければならない。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s04-L1">
+<li class="cfa-curriculum-list-item">使用権資産（right of use assets）の帳簿価額（carrying amount）を、報告期間末（end of the reporting period）時点で基礎資産（underlying asset）の種類別に示したもの。</li>
+<li class="cfa-curriculum-list-item">リースに関する総キャッシュアウトフロー（total cash outflow for leases）。</li>
+<li class="cfa-curriculum-list-item">リース負債に係る利息費用（interest expense on lease liabilities）。</li>
+<li class="cfa-curriculum-list-item">使用権資産に係る減価償却費（depreciation charges）を基礎資産の種類別に示したもの。</li>
+<li class="cfa-curriculum-list-item">使用権資産の増加額（additions）。</li>
+</ul>
+<p>さらに、借手はリース負債の満期分析（maturity analysis）（債券や借入金など他の金融負債とは区別して）およびリース活動に関する追加の定量的・定性的情報を開示し、財務諸表利用者が借手のリース活動の性質および将来のキャッシュアウトフローを評価できるようにしなければならない。この分析には以下が含まれる。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s04-L2">
+<li class="cfa-curriculum-list-item">借手のリース活動の性質。</li>
+<li class="cfa-curriculum-list-item">リース負債の測定に反映されていないが、借手が潜在的にさらされている将来のキャッシュアウトフロー。</li>
+<li class="cfa-curriculum-list-item">リースにより課される制約またはコベナンツ（covenants）。</li>
+<li class="cfa-curriculum-list-item">セール・アンド・リースバック取引（sale and leaseback transactions）。</li>
+</ul>
+<p>図表7は、Apple Inc.の財務諸表注記におけるリース開示の再掲である。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2425-R-s04-EXH-1-7">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 7<span style="display: block;">Apple Corp’s 2021 Lease Note</span></h4>
+<section id="CFA2425-R-s04-01-02-01-01">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">Note 6 - Leases</h6>
+<p>当社は、小売、企業、製造、およびデータセンターのスペースを含む特定の設備および施設に関してリース契約を締結している。これらのリースは通常、当初契約期間が10年を超えず、一般的に複数年の更新オプション（renewal options）を含み、その一部は行使される可能性が合理的に高い（reasonably certain of exercise）。当社のリース契約には、リース要素（lease components）と非リース要素（nonlease components）の両方が含まれる場合がある。当社は、小売、企業、およびデータセンター施設に関するリースについて、リース要素と非リース要素を統合し、単一のリース要素として会計処理することを選択している。</p>
+<p>当社のリース契約に基づく支払いは固定または変動である可能性があり、変動リース支払い（variable lease payments）は主に基礎となるリース資産のアウトプットの購入量に基づいている。固定支払いに関連する当社のオペレーティング・リース（operating leases）のリース費用は、2021年および2020年にそれぞれ17億ドルおよび15億ドルであった。変動支払いに関連するリース費用は、2021年および2020年にそれぞれ129億ドルおよび93億ドルであった。旧リース会計基準（former lease accounting standards）に基づいて以前に報告されていたオペレーティング・リースの賃借料費用（rent expense）は、2019年に13億ドルであった。</p>
+<p>当社は2021年および2020年に、それぞれ14億ドルおよび15億ドルのオペレーティング・リースに関連する固定現金支払いを行った。リース負債と引き換えに取得した使用権資産（right-of-use, ROU）に関する非現金取引（noncash activities）は、2021年に33億ドル、2020年に105億ドルであり、これには2020年第1四半期におけるFASBの会計基準更新書（ASU No. 2016-02, Leases (Topic 842)）の適用の影響が含まれている。</p>
+<p>以下の表は、2021年9月25日および2020年9月26日時点の使用権資産（ROU assets）およびリース負債、ならびに関連する財務諸表の表示項目（financial statement line items）を示している（単位：百万米ドル）。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s04-T-1-a">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">リース関連資産および負債（Lease-Related Assets and Liabilities）</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">財務諸表表示項目（Financial Statement Line Items）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2021</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2020</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">使用権資産（Right-of-use assets）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">オペレーティング・リース（Operating leases）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の非流動資産（Other non-current assets）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10,087</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">8,570</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">ファイナンス・リース（Finance leases）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">有形固定資産（Property, plant and equipment）, 純額（net）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">861</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">629</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">使用権資産合計（Total right-of-use assets）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10,948</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9,199</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">リース負債（Lease liabilities）：</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">オペレーティング・リース（Operating leases）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の流動負債（Other current liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,449</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,436</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の非流動負債（Other non-current liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9,506</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">7,745</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">ファイナンス・リース（Finance leases）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の流動負債（Other current liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">79</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">24</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;">その他の非流動負債（Other non-current liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">769</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">637</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;">リース負債合計（Total lease liabilities）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11,803</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">9,482</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>2021年9月25日時点におけるリース負債の満期は以下のとおりである（単位：百万米ドル）。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s04-T-1-b">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">オペレーティング・リース（Operating Leases）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">ファイナンス・リース（Finance Leases）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>Total</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2022</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,629</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">104</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,733</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2023</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,560</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">123</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,683</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2024</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,499</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">99</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,598</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2025</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,251</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">46</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,297</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2026</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,061</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">26</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,087</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">それ以降（Thereafter）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">5,187</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">868</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">6,055</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">割引前負債合計（Total undiscounted liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">12,187</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,266</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">13,453</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">控除：見積利息（imputed interest）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（1,232）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(418)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（1,650）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">リース負債合計（Total lease liabilities）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">10,955</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">848</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">11,803</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>2021年9月25日および2020年9月26日時点における当社のリース負債に関連する加重平均残存リース期間（weighted-average remaining lease term）は、それぞれ10.8年および10.3年であった。</p>
+<p>2021年9月25日および2020年9月26日時点における当社のリース負債に関連する割引率（discount rate）はいずれも2.0%であった。これらの割引率は、当社のリースに内在する割引率（discount rates implicit in the leases）を容易に特定できないため、一般的に当社の追加借入利子率（incremental borrowing rate）の見積もりに基づいている。</p>
+<p>2021年9月25日時点で、当社はまだ開始されていない追加のリースに関して、主に企業施設および小売スペースに係る将来支払額11億ドルを有していた。これらのリースは2022年から2023年の間に開始され、リース期間は3年から20年にわたる。</p>
+</section>
+<p>出所：Apple Inc. 2021年Form 10-K年次報告書。</p>
+</div>
+</section>
+<section id="CFA2425-R-s04-01-03">
+<h3 class="dp-heading">貸手の開示（Lessor Disclosure）</h3>
+<p>IFRS 16は貸手に対して異なる開示要件を定めている。借手と同様に、貸手はリースが貸手の財政状態（financial position）、業績（performance）、およびキャッシュフローに与える影響を財務諸表利用者が評価できるようにする情報を（注記または財務諸表において）開示しなければならない。最低限、貸手は以下を開示すべきである。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s04-L3">
+<li class="cfa-curriculum-list-item">ファイナンス・リース（finance leases）について、</li>
+<li class="cfa-curriculum-list-item">売却益または売却損（selling profit or loss）の金額；</li>
+<li class="cfa-curriculum-list-item">リースに対する純投資（net investment in the lease）に係る金融収益（finance income）；およびリースの測定に含まれていない変動リース支払い（variable lease payments）に関連する収益；</li>
+<li class="cfa-curriculum-list-item">オペレーティング・リース（operating leases）については、リース収益（lease income）。ただし、指数またはレート（index or rate）に基づかない変動リース支払いに関連する収益は区分して開示する。</li>
+</ul>
+<p>さらに、貸手はリース活動に関する追加の定量的および定性的情報を提供しなければならない。これには、貸手のリース活動の性質および基礎となるリース資産に関して保持している権利に伴うリスクをどのように管理しているかを、利用者が評価するための情報が含まれる。</p>
+<p>ファイナンス・リースについては、貸手は純投資（net investment）の帳簿価額（carrying amount）の重要な変動に関する定性的および定量的な説明に加え、受取リース料（lease payments receivable）の満期分析を提供しなければならない。この分析では、少なくとも最初の5年間の各年について受け取る予定の割引前リース支払い（undiscounted lease payments）およびそれ以降の残存期間の合計額を示す必要がある。</p>
+<p>オペレーティング・リース（operating leases）について、貸手は各有形固定資産（property, plant, and equipment）の区分ごとに分解された情報（disaggregated information）を開示し、さらに受取リース料（lease payments）の満期分析を開示しなければならない。この満期分析では、少なくとも最初の5年間の各年ごとに受け取る予定の割引前リース支払い（undiscounted lease payments）と、それ以降の残存期間の合計額を示す必要がある。</p>
+</section>
+<section id="CFA2425-R-s04-01-04">
+<h3 class="dp-heading">退職後給付制度（postemployment plans）の表示および開示（Presentation and Disclosure of Postemployment Plans）</h3>
+<p>確定給付年金制度（defined benefit pension plans）および確定拠出年金制度（defined contribution pension plans）に関する開示は通常、財務諸表の注記に含まれるが、確定給付制度に関する開示の方がはるかに広範である。確定拠出制度については、国際会計基準第19号（International Accounting Standard 19, IAS 19）は、発行体（issuers）に対して、当期の損益計算書（income statement）に認識された金額を開示することのみを求めている。規制当局はより詳細な開示を要求する場合がある。例えば、米国証券取引委員会（US SEC）は、発行体に対し、従業員給付制度に関するForm 11-Kによる年次報告書の提出を求めており、そこには監査済みの制度財務諸表および制度の構造や保有資産の説明が含まれる。</p>
+<p>IAS 19は、確定給付年金制度に関する発行体の開示目的として以下を定義している。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s04-L4">
+<li class="cfa-curriculum-list-item">確定給付制度の特性およびそれに関連するリスクを説明すること。</li>
+<li class="cfa-curriculum-list-item">確定給付制度から生じる財務諸表上の金額（すなわち純年金資産または負債（net pension asset or liability））を特定し説明すること。</li>
+<li class="cfa-curriculum-list-item">確定給付制度が企業の将来キャッシュフローの金額、時期、および不確実性にどのような影響を与える可能性があるかを記述すること。</li>
+</ul>
+<p>IAS 19は原則主義（principles-based）であり、発行体に開示目的を達成する方法に関する裁量を与えているが、いくつかの具体的な規定も示しており、発行体に対して以下のような開示を要求している。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s04-L5">
+<li class="cfa-curriculum-list-item">提供される給付の性質、制度が運用される規制枠組み（regulatory framework）、制度のガバナンス（governance）、および制度が企業にさらすリスク。</li>
+<li class="cfa-curriculum-list-item">純年金資産または負債の期首残高から期末残高への調整表（reconciliation）。これには制度資産（plan assets）および確定給付債務（defined benefit obligation）の現在価値（present value）それぞれについて個別の調整を含み、勤務費用（service costs）、利息収益または費用（interest income or expense）、再測定（remeasurements）、過去勤務費用（past service costs）、制度への拠出（contributions）、およびその他の変動要因を示す。</li>
+<li class="cfa-curriculum-list-item">重要な仮定（例えば、確定給付債務の測定に使用される割引率（discount rate））の変化が財務諸表に報告される金額にどのように影響するかを示す感応度分析（sensitivity analysis）。</li>
+<li class="cfa-curriculum-list-item">制度資産の構成（composition）を、株式証券（equity securities）、債券（fixed-income securities）、不動産（real estate）などのカテゴリー別に示したもの。</li>
+<li class="cfa-curriculum-list-item">確定給付年金制度が企業の将来キャッシュフローに与える影響の指標。</li>
+</ul>
+<p>図表8の開示は、スイスのバイオ医薬品および診断企業であるRoche AGの2021年年次報告書に含まれている。Rocheは「年金およびその他の退職後給付（Pensions and other postemployment benefits）」と題する財務諸表注記において、退職後給付制度に関する詳細な情報を提供している。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2425-R-s04-EXH-1-8">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 8<span style="display: block;">Roche AG’s Pensions and Other Postemployment Benefits</span></h4>
+<section id="CFA2425-R-s04-01-04-01-01">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">Note 26. Pensions and other post-employment benefits</h6>
+<p>［Roche AGの］（「当グループ（Group）」）の目的は、従業員に対して魅力的で競争力のある退職後給付を提供すると同時に、各制度が適切に資金調達されていることを確保し、グループの長期的な財務状態への潜在的影響を管理することである。ほとんどの従業員はグループ会社がスポンサーとなる年金制度の対象となっている。このような制度の性質は、従業員が勤務する各国の法規制、税制要件、および市場慣行に応じて異なる。退職後給付制度は、グループが別個の基金または第三者の金融機関に固定拠出を行い、それ以上の法的または推定的義務（legal or constructive obligation）を負わない場合、「確定拠出制度（defined contribution plans）」として分類される。それ以外の制度はすべて「確定給付制度（defined benefit plans）」として分類される。</p>
+</section>
+<section id="CFA2425-R-s04-01-04-01-02">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">Defined contribution plans</h6>
+<p>確定拠出制度は、従業員およびグループから第三者によって管理される基金への拠出によって資金調達される。これらの制度に関するグループの費用は4億1,900万スイスフラン（2020年：4億900万スイスフラン）であった。このような制度に関しては、従業員の賃金および給与から控除された拠出金およびグループの拠出金に関する通常の前払金（prepayments）および未払計上（accruals）を除き、グループの貸借対照表には資産または負債は認識されない。グループの主要な確定拠出制度は、米国のRoche 401(k)貯蓄制度（US Roche 401(k) Savings Plan）である。</p>
+</section>
+<section id="CFA2425-R-s04-01-04-01-03">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">Defined benefit plans</h6>
+<p>制度は通常、グループから独立した信託（trusts）として設立され、グループ会社および従業員からの拠出によって資金調達される。場合によっては、特にドイツの主要な確定給付制度では、制度は未積立（unfunded）であり、グループは退職した従業員に対して自らの財務資源から直接年金を支払う。制度は通常、受託者委員会（Board of Trustees）などの上級統治機関によって管理され、通常は従業員および雇用者の代表で構成される。これらの制度の資金調達は、独立した数理計算評価（actuarial valuations）を用いて現地の規制に従って決定される。IAS 19の要件に従い、グループの財務諸表で使用するために別途独立した数理計算評価が作成される。グループの主要な年金制度はスイス、米国、およびドイツに所在し、これらでグループの確定給付債務の85%（2020年：85%）を占めている。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s04-T-1-c">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"> <span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Defined Benefit Plans: Income Statement (in millions of CHF) </span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2021</strong></th>
+<th rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;">            <strong>2020</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年金制度（Pension plans）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">その他の退職後給付制度（Other post-employment benefit plans）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">費用合計（Total expense）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年金制度</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">その他の退職後給付制度</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">費用合計</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">当期勤務費用（Current service cost）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">695</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">13</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">708</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">644</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">13</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">657</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">過去勤務費用（収益）（Past service cost (income)）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(30)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(30)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">清算（利益）損失（Settlement (gain) loss）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(2)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(2)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">営業費用合計（Total operating expenses）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">665</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">13</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">678</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">643</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">13</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">656</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">確定給付制度に係る純利息費用（Net interest cost of defined benefit plans）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">53</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">18</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">71</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">78</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">23</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">101</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">損益計算書に認識された費用合計（Total expense recognized on the income statement）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">718</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">31</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">749</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">721</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">36</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">757</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s04-T-1-d">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Defined Benefit Plans: Funding Status (in millions of CHF)</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th rowspan="2" style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2021</strong></th>
+<th rowspan="2" style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th colspan="3" style="text-align: center; vertical-align: bottom; padding: 8px;"><strong>2020</strong></th>
+</tr>
+<tr>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年金制度</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">その他の退職後給付制度</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">費用合計</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">年金制度（Pension plans）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">その他の退職後給付制度（Other post-employment benefit plans）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">費用合計（Total expense）</th>
+</tr>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;">積立制度（Funded plans）：</th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: top; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">制度資産の公正価値（Fair value of plan assets）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">18,817</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">347</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">19,164</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">17,639</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">328</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">17,967</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">確定給付債務（Defined benefit obligation）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（17,609）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(683)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（18,292）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（18,290）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(757)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（19,047）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">積立超過（不足）（Over (under) funding）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">1,208</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(336)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">872</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(651)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(429)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（1,080）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">非積立制度（Unfunded plans）：</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">確定給付債務（Defined benefit obligation）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（5,211）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(371)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（5,582）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（5,506）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(396)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（5,902）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">総積立状況（Total funding status）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（4,003）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(707)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（4,710）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（6,157）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(825)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（6,982）</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">資産認識の上限（Limit on asset recognition）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(3)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(3)</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">補填請求権（Reimbursement rights）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">108</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">108</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">0</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">118</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">118</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">純認識資産（負債）（Net recognized asset (liability)）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（4,006）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(599)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（4,605）</td>
+<td style="text-align: left; vertical-align: top; padding: 8px;"></td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（6,157）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">(707)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（6,864）</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s04-T-1-e">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> <span style="display: block;">Defined Benefit Plans: Cash Flows (in millions of CHF)</span></h6>
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">            <strong>2021</strong></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">            <strong>2020</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">雇用主拠出（補填控除後）―積立制度（Employer contributions, net of reimbursements – funded plans）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">            (413)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">            (410)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">給付支払―非積立制度（Benefits paid – unfunded plans）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">            (206)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">            (191)</td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">キャッシュ流入（流出）合計（Total cash inflow (outflow)）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">            (619)</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">            (601)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>最新の数理計算評価（actuarial valuations）に基づき、当グループは2022年における積立制度への雇用主拠出が約4億1,100万スイスフランになると見込んでいる。これには中外製薬の給付制度に関連する追加的な任意拠出（additional voluntary contributions）約1,000万スイスフランの見積もりが含まれる。非積立制度における2022年の給付支払は約2億400万スイスフランと見積もられており、その大部分はドイツの確定給付制度に関連している。</p>
+</section>
+<p>出所：Roche AG 2021年財務報告書。</p>
+</div>
+</section>
+<section id="CFA2425-R-s04-01-05">
+<h3 class="dp-heading">株式報酬（share-based compensation）の表示および開示（Presentation and Disclosure of Share-Based Compensation）</h3>
+<p>企業は、株式報酬制度（share-based compensation programs）について、財務諸表利用者が株式報酬取引（share-based payment arrangements）の性質および範囲、ならびにそれらの制度に関連する現在および将来の予想キャッシュフローや費用を理解できるようにする開示を提供することが求められる。発行体（issuers）は通常、これらの開示を財務諸表の注記に含める。IFRS 2に規定されているように、必要な開示には以下が含まれる。</p>
+<ul class="dp-more-space cfa-curriculum-list-bullet" id="CFA2425-R-s04-L6">
+<li class="cfa-curriculum-list-item">各種類の株式報酬取引の説明（その一般的な条件を含む）。これには、権利確定要件（vesting requirements）、付与されたオプションの最大期間（maximum term）、および決済方法（すなわち現金（cash）または株式（equity））が含まれる。</li>
+<li class="cfa-curriculum-list-item">オプション（options）の数および加重平均行使価格（weighted average exercise price）に関する詳細。これには、期首残高、当期付与数、当期失効数、当期行使数、当期期限切れ数、期末残高、および期末時点で行使可能な数が含まれる。</li>
+<li class="cfa-curriculum-list-item">当期に付与されたその他の持分金融商品（other equity instruments）（株式オプション以外）については、その数および測定日（measurement date）における加重平均公正価値（weighted average fair value）、ならびにその公正価値の測定方法に関する情報。</li>
+</ul>
+<p>図表9は、Apple Inc.の株式報酬に関する注記開示の抜粋であり、RSU（restricted stock units）および従業員株式購入制度（employee stock purchase plan）によって構成されている。2021年9月25日時点のAppleの株価は146.10米ドルであり、過去3年間で大きく上昇しており、これはRSU付与の公正価値の増加に反映されている。また、Appleの主要な株式報酬制度は「2014年従業員株式制度（2014 Employee Stock Plan）」と呼ばれている。これらの制度名は通常、株主によって承認された年を示している。新たな制度（新しい年号の名称を持つ）は取締役会（board）の裁量で作成され、株主の承認に付されることができるが、必ずしも旧制度の株式付与がすべて完了するまで待つ必要はない。発行体によっては、複数の株式報酬制度が同時に存在する場合もある。</p>
+<div class="dp-content-block cfa-curriculum-exhibit-box" id="CFA2425-R-s04-EXH-1-9">
+<h4 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-title"><i aria-hidden="true" class="fas fa-image" style="background: inherit !important;"><span class="dp-icon-content" style="display: none;"> </span></i> Exhibit 9<span style="display: block;">Apple Inc. 2021 Note Disclosure on Share-Based Compensation</span></h4>
+<section id="CFA2425-R-s04-01-05-01-01">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">2014 Employee Stock Plan</h6>
+<p>2014年従業員株式制度（2014 Employee Stock Plan、「2014 Plan」）は株主承認を受けた制度であり、役員（executive officers）を含む従業員に広範な株式報酬を付与することを目的としている。この制度では、制限付株式ユニット（restricted stock units, RSUs）、株式付与（stock grants）、業績連動型報酬（performance-based awards）、ストックオプション（stock options）、株価連動報酬（stock appreciation rights）、および現金ボーナス（cash bonus awards）の付与が認められている。2014年制度に基づいて付与されるRSUは通常、継続雇用を条件として4年間で権利確定し、権利確定時に1対1の割合で普通株式（common stock）として決済される。RSUの付与は、付与されたRSU数の2倍の係数で、制度における付与可能株式数を減少させる。取り消されたRSUおよび税源泉徴収義務を満たすために差し引かれた株式は、取り消しまたは差引きされたRSU数の2倍の係数で、制度における付与可能株式数を増加させる。すべてのRSUには配当相当権（dividend equivalent rights, DERs）が付与されており、RSU保有者は普通株主と同等の1株当たり配当価値を受け取る権利を有する。DERsは基礎となるRSUと同一の権利確定条件およびその他の条件に従う。2021年9月25日時点で、約7億6,000万株が2014年制度のもとで将来の発行のために確保されている。2003年従業員株式制度に基づく未行使報酬のうち、期限切れ、取消し、またはその他の理由で消滅したものや、RSUの税源泉徴収のために差し引かれた株式も、2014年制度における報酬付与に利用可能である。</p>
+</section>
+<section id="CFA2425-R-s04-01-05-01-02">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">Employee Stock Purchase Plan</h6>
+<p>従業員株式購入制度（Employee Stock Purchase Plan、「Purchase Plan」）は株主承認を受けた制度であり、ほぼすべての従業員が任意で加入し、給与控除（payroll deductions）を通じて、6か月の提供期間（offering periods）の開始時または終了時のいずれか低い公正市場価値（fair market value）の85%の価格で当社普通株式を購入することができる。従業員の給与控除は、従業員報酬の10%に制限されており、また年間で購入できる株式額は25,000ドルを超えることはできない。2021年9月25日時点で、約9,600万株が将来の発行のために確保されている。</p>
+</section>
+<section id="CFA2425-R-s04-01-05-01-03">
+<h6 class="dp-has-icon cfa-curriculum-exhibit-box cfa-curriculum-box-h2">Restricted Stock Units</h6>
+<p>当社のRSU活動および関連情報の2021年、2020年、および2019年の概要は以下のとおりである。</p>
+<div class="cfa-curriculum-table-wrap" id="CFA2425-R-s04-T-1-f">
+<div class="cfa-curriculum-table-container">
+<table class="table-bordered" data-active-table="true">
+<thead>
+<tr>
+<th style="text-align: left; vertical-align: bottom; padding: 8px;"></th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">RSU数（千単位）（Number of RSUs (thousands)）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">RSU1単位当たり付与日公正価値の加重平均（Weighted-Average Grant Date Fair Value per RSU）</th>
+<th style="text-align: center; vertical-align: bottom; padding: 8px;">公正価値合計（百万単位）（Aggregate Fair Value (millions)）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2018年9月29日時点の残高（Balance as of 29 September, 2018）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">368,618</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">33.65</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">RSU付与（RSUs granted）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">147,409</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">53.99</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">RSU権利確定（RSUs vested）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（168,350）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">33.80</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">RSU取消（RSUs canceled）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（21,609）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">40.71</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2019年9月28日時点の残高（Balance as of 28 September, 2019）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">326,068</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">42.30</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">RSU付与（RSUs granted）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">156,800</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">59.20</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">RSUの権利確定（RSUs vested）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（157,743）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">40.29</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">RSUの取消（RSUs canceled）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（14,347）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">48.07</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2020年9月26日時点の残高（Balance as of 26 September, 2020）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">310,778</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">51.58</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">RSU付与（RSUs granted）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">89,363</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">116.33</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">RSUの権利確定（RSUs vested）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（145,766）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">50.71</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">RSUの取消（RSUs canceled）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">（13,948）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">68.95</td>
+<td style="text-align: left; vertical-align: bottom; padding: 8px;"></td>
+</tr>
+<tr>
+<td style="text-align: left; vertical-align: top; padding: 8px;">2021年9月25日時点の残高（Balance as of 25 September, 2021）</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">240,427</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">75.16</td>
+<td style="text-align: center; vertical-align: bottom; padding: 8px;">35,324</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>RSUの各権利確定日における公正価値（fair value）は、2021年、2020年および2019年にそれぞれ190億ドル、108億ドルおよび86億ドルであった。2021年、2020年および2019年に権利確定したRSUの大半は純株式決済（net share settlement）で処理され、会社は従業員の所得税およびその他の雇用関連税の納税義務に相当する価値の株式を控除し、対応する現金を適切な税務当局（taxing authorities）に納付した。控除された株式総数はそれぞれ約5,300万株、5,600万株および5,900万株であり、各権利確定日における会社の終値（closing stock price）に基づいて評価されたRSUの価値に基づいている。従業員の税負担に関する税務当局への総支払額は、2021年、2020年および2019年にそれぞれ68億ドル、39億ドルおよび30億ドルであった。</p>
+<p>2021年9月25日時点で、未認識の報酬費用（unrecognized compensation cost）の合計は、未行使のRSUおよびストックオプション（stock options）に関連して136億ドルであり、会社はこれを加重平均2.5年の期間にわたって認識する見込みである。</p>
+</section>
+<p>出所：Apple Inc. 2021年Form 10-K年次報告書、47ページ。</p>
+</div>
+</section>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1867_modules_items_143655_803_Financial_Reporting_for_Postemployment_and_Share-Based_Compensation_Plans.html" >← 前へ</a>
+  <span class="title">8.04 | Presentation and Disclosure</span>
+  <a href="courses_1867_modules_items_143662_Glossary_Topics_in_Long-Term_Liabilities_and_Equity.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>

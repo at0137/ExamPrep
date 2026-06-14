@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.07 | Financial Intermediaries</title>
+
+
+<style id="viewer-nav-style">
+#viewer-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+  background: rgba(30,50,70,.93); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px; gap: 8px;
+  font-family: sans-serif; font-size: 13px;
+}
+#viewer-nav a {
+  color: #fff; text-decoration: none;
+  background: rgba(255,255,255,.15); border-radius: 5px;
+  padding: 6px 14px; white-space: nowrap;
+}
+#viewer-nav a:hover { background: rgba(255,255,255,.28); }
+#viewer-nav a.disabled { opacity: .3; pointer-events: none; }
+#viewer-nav .title {
+  color: #cde; font-size: 12px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: center;
+}
+body { padding-bottom: 52px; }
+
+/* ── Flashcard ── */
+.flashcard { cursor: pointer; margin: 12px 0; }
+.flashcard .front,
+.flashcard .back {
+  padding: 24px 20px; border: 2px solid #0770a3; border-radius: 8px;
+  min-height: 100px; display: flex; align-items: center; justify-content: center;
+  text-align: center; font-size: 15px; line-height: 1.5;
+}
+.flashcard .front { background: #f0f7fc; }
+.flashcard .back  { background: #e8f5e9; border-color: #2e7d32; display: none; }
+.flashcard.flipped .front { display: none; }
+.flashcard.flipped .back  { display: flex; }
+.fc-hint { text-align: center; font-size: 12px; color: #888; margin: 4px 0 10px; }
+.fc-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-bottom: 16px;
+}
+.fc-nav button {
+  background: #0770a3; color: #fff; border: none;
+  padding: 7px 18px; border-radius: 5px; cursor: pointer; font-size: 14px;
+}
+.fc-nav button:disabled { background: #bbb; cursor: default; }
+.fc-nav .fc-counter { font-size: 13px; color: #555; }
+
+/* Bootstrap utility missing from Canvas CDN CSS */
+.d-none { display: none !important; }
+/* Hide all KC responses by default regardless of d-none */
+dd.dp-qc-response { display: none !important; }
+dd.dp-qc-response.qc-show { display: block !important; }
+/* Canvas elements that are normally hidden without Canvas CSS */
+.dp-popup-content,
+.dp-popover-content,
+.dp-icon-content,
+.screenreader-only,
+[style*="display: none"] { display: none !important; }
+
+/* ── Knowledge Check ── */
+dt.dp-qc-answer {
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(7,112,163,0.15);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+dt.dp-qc-answer.qc-selected { background: #e3f2fd !important; outline: 2px solid #0770a3; }
+dt.dp-qc-answer.qc-correct-reveal { background: #e8f5e9 !important; outline: 2px solid #2e7d32; }
+dt.dp-qc-answer.qc-wrong-reveal   { background: #ffebee !important; outline: 2px solid #c62828; }
+dd.dp-qc-response.qc-show { display: block !important; }
+.qc-result-banner {
+  display: none; padding: 10px 16px; border-radius: 6px; margin: 8px 0;
+  font-weight: 700; font-size: 14px;
+}
+.qc-result-banner.correct { background: #e8f5e9; color: #1b5e20; border: 2px solid #2e7d32; }
+.qc-result-banner.wrong   { background: #ffebee; color: #b71c1c; border: 2px solid #c62828; }
+.qc-reset-btn {
+  display: none; margin: 8px 0; background: #546e7a; color: #fff; border: none;
+  padding: 6px 16px; border-radius: 5px; cursor: pointer; font-size: 13px;
+}
+</style>
+
+</head>
+<body class="full-width-layout lti-student-view">
+<div class="ic-app-nav-toggle-and-crumbs" style="display:none"></div>
+<div id="main" style="margin:0;padding:0 16px 16px;">
+  <div class="show-content user_content clearfix enhanced">
+<div class="dp-wrapper dp-flat-sections variation-2" id="CFA0161-R-s07" title="1.07 | Financial Intermediaries">
+<header class="dp-header dp-flat-sections variation-2">
+<h2 class="dp-heading">モジュール1：市場の組織と構造（Market Organization and Structure）1.07｜金融仲介機関（Financial Intermediaries）</h2>
+</header>
+<div class="cfa-curriculum-los-box">
+<h3 class="dp-has-icon cfa-curriculum-los-box">
+<i aria-hidden="true" class="icon-outcomes" style="background: inherit !important;"> </i>Learning Outcome</h3>
+<p class="p1">The candidate should be able to:</p>
+<ul>
+<li class="cfa-curriculum-los-item">金融仲介機関の種類とそれらが提供するサービスを説明する（describe types of financial intermediaries and services that they provide）</li>
+</ul>
+</div>
+<hr class="dp-hr-solid-light dp-hr-color-dp-primary"/>
+<p>金融仲介機関（financial intermediaries）は、主体が金融目標を達成するのを支援する。これらには、商業銀行（commercial banks）、モーゲージ銀行（mortgage banks）、投資銀行（investment banks）、信用組合（credit unions）、クレジットカード会社（credit card companies）、その他の金融会社、ブローカー（brokers）および取引所（exchanges）、ディーラー（dealers）およびアービトラージャー（arbitrageurs）、清算機関（clearinghouses）および保管機関（depositories）、投資信託（mutual funds）およびヘッジファンド（hedge funds）、保険会社（insurance companies）などが含まれる。これらが提供するサービスや商品は、顧客が直面する金融問題を自力で解決するよりも効率的に解決することを可能にする。金融仲介機関は、良好に機能する金融システムに不可欠である。</p>
+<p>金融仲介機関は、買い手と売り手を様々な形で結びつけるため「仲介者」と呼ばれる。これらは単純な取引から複雑な金融構造までを通じて、資本とリスクの移転を支援する。仲介機関の活動により、買い手と売り手は互いを知らずとも取引の利益を享受できる。</p>
+<p>本節では、発達した金融市場における主要な金融仲介機関を紹介する。まず明確に買い手と売り手を結びつける仲介機関から始め、次により間接的な関係を構築する仲介機関へと進む。多くの仲介機関は複数のサービスを提供するため、重複して言及されることがある。本節の最後では、金融仲介機関がどのように付加価値を提供するかを総括する。</p>
+<section id="CFA0161-R-s07-01">
+<h3 class="dp-heading">ブローカー、取引所、代替取引システム（Brokers, Exchanges, and Alternative Trading Systems）</h3>
+<p>ブローカー（brokers）は顧客の注文を執行する代理人であり、顧客と直接取引は行わない。代わりに、注文の反対側を引き受ける相手を探す。ブローカーは大手証券会社、銀行の証券部門、または取引所で働く。顧客同士を直接マッチングする場合もあれば、コンピュータシステムを用いる場合もある。ブローカーは取引相手探索コストを低減することで顧客の取引を支援する。</p>
+<p>ブロックブローカー（block brokers）は大口取引を扱う。大口注文は相手を見つけるのが難しく、通常は市場価格に対してプレミアム（買い）またはディスカウント（売り）で取引される。これは他のトレーダーに取引を促すが、大口投資家は市場への影響を避けるため注文の公開を嫌う。そのためブロックブローカーは注文の露出管理を慎重に行う。</p>
+<p>投資銀行（investment banks）は主に企業顧客に助言を提供し、新規発行（initial offerings）や追加発行（seasoned offerings）を支援する。コーポレートファイナンス部門は株式や債券の発行を支援し、またM&amp;A（mergers and acquisitions）も支援する。</p>
+<p>取引所（exchanges）はトレーダーが取引を行う場を提供する。従来はフロアで交渉が行われていたが、現在は注文に基づく電子マッチングが主流であり、ブローカーとの区別は曖昧になっている。例として、NYSE、Eurex、フランクフルト証券取引所（Frankfurt Stock Exchange）、シカゴ・マーカンタイル取引所（Chicago Mercantile Exchange）、東京証券取引所（Tokyo Stock Exchange）、シンガポール取引所（Singapore Exchange）がある。</p>
+<p>取引所は規制機能によりブローカーと区別される。多くの取引所は会員の行動を規制する。</p>
+<p>多くの取引所は上場企業にも規制を課し、適時開示を義務付ける。この情報により証券の適正評価が可能となる。情報が不足すると価格が本源的価値を反映せず、情報優位者が利益を得て市場参加者が減少し、資本コストが上昇する可能性がある。</p>
+<p>一部の取引所は議決権集中を制限し、支配株主による不当な支配を防ぐ。</p>
+<p>取引所の規制権限は政府または会員・発行体の合意に基づく。多くの国では政府機関が監督する。例として、日本の金融庁（Financial Services Agency）、英国の金融行動監視機構（Financial Conduct Authority）、ドイツ連邦金融監督庁（BaFin）、米国証券取引委員会（Securities and Exchange Commission）、オンタリオ証券委員会（Ontario Securities Commission）、アルゼンチン国家証券委員会（CNV）がある。</p>
+<p>代替取引システム（alternative trading systems, ATSs）は、電子通信ネットワーク（ECNs）や多国間取引施設（MTFs）とも呼ばれ、取引所に類似するが規制権限を持たない。多くは注文を公開しないダークプール（dark pools）として運営され、大口投資家に利用される。例として、MATCHNow、BATS、POSIT、Liquidnet、Baxter-FX、Turquoiseがある。</p>
+</section>
+<section id="CFA0161-R-s07-02">
+<h3 class="dp-heading">ディーラー（Dealers）</h3>
+<p>ディーラーは自己勘定で顧客と取引する。顧客が売りたい場合は買い取り、買いたい場合は保有または借入した証券を売却する。後に反対取引を行い利益を得る。</p>
+<p>ディーラーの提供するサービスは流動性（liquidity）であり、低コストで迅速に売買できる能力を意味する。店頭市場では顧客要請に応じて、取引所では提示価格で流動性を提供する。利益は売買価格差から得る。</p>
+<p>ディーラーは自己勘定取引会社、投資銀行、ヘッジファンドなどに所属する。裁量型とアルゴリズム型がある。例として、ドイツ銀行（Deutsche Bank）、RBCキャピタルマーケッツ、野村證券、Timber Hill、ゴールドマン・サックス、IG Groupなどがある。</p>
+<p>多くのディーラーはブローカー業務も行い、ブローカーもディーラー業務を行うため、ブローカー・ディーラー（broker–dealer）と呼ばれる。顧客利益と自己利益の間に利益相反が存在するため、顧客は執行方法を指定することがある。</p>
+<p>プライマリーディーラー（primary dealers）は中央銀行と取引を行い、金融政策の実施を支援する。中央銀行の売買に応じて市場に供給・吸収を行う。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM14">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例14：ブローカーとディーラー</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>ブローカーとディーラーを最も区別する特徴は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s07-02-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>ブローカーは顧客の代理として取引を仲介するが、顧客と直接取引しない。ディーラーは自己勘定で顧客と取引する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="CFA0161-R-s07-03">
+<h3 class="dp-heading">アービトラージャー（Arbitrageurs）</h3>
+<p>アービトラージャーは、同一または類似資産が異なる市場で異なる価格で取引される機会を利用して売買を行う。安く買い高く売ることで利益を得る。</p>
+<p>純粋裁定（pure arbitrage）は同一資産を異なる市場で売買するものであり、市場間の流動性を高める。</p>
+<p>ディーラーとアービトラージャーはいずれも流動性を提供するが、前者は時間差、後者は市場間差を埋める。実務では両者の役割は重複する。</p>
+<p>価格情報が十分に共有されている場合、純粋裁定機会は稀である。</p>
+<p>アービトラージャーは同一の基礎要因に依存する異なる証券を取引する。例として、コールオプション売りと現物株買いの組み合わせがある。</p>
+<p>これにより異なる市場の参加者が接続される。</p>
+<p>オプションディーラーは、相対的に割高なコールを売り、株式を買うことで利益を得る。高度な評価モデルとリスク管理が必要である。</p>
+<p>リスクを別形態で売買するプロセスはレプリケーション（replication）と呼ばれる。これによりリスクを変換し、契約の供給を調整する。</p>
+<p>コール需要が高い場合、価格が上昇し、アービトラージャーは株式購入とコール売りで供給を創出する。逆に需要が低い場合は契約を吸収する。</p>
+<div class="dp-content-block cfa-curriculum-example-box" id="CFA0161-R-EXM15">
+<h4 class="dp-has-icon cfa-curriculum-example-box cfa-curriculum-box-title">例15：ディーラーとアービトラージャー</h4>
+<div class="dp-content-block">
+<div class="dp-qc cfa-curriculum-question-with-label">
+<span class="cfa-curriculum-question-with-label">1. </span>
+<p>流動性提供の観点で、両者を最も明確に区別する特徴は何か。</p>
+<div class="dp-panels-wrapper dp-accordion-default">
+<div class="dp-panel-group">
+<h4 class="dp-panel-heading dp-qc-submit btn btn-dp-primary cfa-curriculum-btn-checkAnswer" style="background: var(--dt-color-primary-dark-text) !important; color: #fff !important;">解答を確認（Check Answer）</h4>
+<div class="dp-panel-content">
+<section id="CFA0161-R-s07-03-01-01">
+<h4 class="cfa-curriculum-solution">解答（Solution）</h4>
+<p>ディーラー（dealers）は、同一市場に異なる時点で到着する買い手と売り手に流動性を提供する。すなわち、時間を通じて流動性を移転する。一方、アービトラージャー（arbitrageurs）は、異なる市場に同時に到着する買い手と売り手に流動性を提供する。すなわち、市場間で流動性を移転する。</p>
+</section>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BrokerContent">
+<p>顧客に代わって証券の売買注文を執行し、その対価として手数料（commission）を受け取る代理人。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BlockBrokersContent">
+<p>大口取引に対してブローカレッジサービスを提供するブローカー（agent）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="InvestmentBanksContent">
+<p>主に企業顧客に対して助言を提供し、新規発行（initial offerings）や追加発行（seasoned offerings）などの取引の手配を支援する金融仲介機関。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ExchangeContent">
+<p>ルールに基づき、誰でもアクセス可能な市場であり、金融商品が取引され、価格および取引量の透明性が発行体、投資家およびその仲介者に提供される取引の場。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="AlternativeTradingSystemsContent">
+<p>取引所のように機能するが、取引システム内での取引行動を除き、参加者に対して規制権限を行使しない取引の場。電子通信ネットワーク（electronic communications networks）または多国間取引施設（multilateral trading facilities）とも呼ばれる。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ElectronicCommunicationsNetworksContent">
+<p>代替取引システム（alternative trading systems）および多国間取引施設（multilateral trading facilities）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="MultilateralTradingFacilitiesContent">
+<p>代替取引システム（alternative trading systems）を参照。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DarkPoolsContent">
+<p>顧客から受け取った注文を公開しない代替取引システム。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="DealersContent">
+<p>商業銀行（commercial banks）や投資銀行（investment banks）など、デリバティブのエンドユーザーに対して相手方として取引を行う金融仲介機関。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="LiquidityContent">
+<p>企業が短期的な債務を、キャッシュフローや容易に現金化可能な資産によってどの程度履行できるかを示す度合い。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="BrokerdealerContent">
+<p>取引の種類に応じて、自己勘定（ディーラー）としても代理人（ブローカー）としても機能する金融仲介機関（多くは企業）。</p>
+</div>
+<div class="dp-popover-content dp-popup-content cfa-curriculum-popup-glossary" id="ArbitrageursContent">
+<p>裁定取引（arbitrage）を行うトレーダー。裁定取引（arbitrage）を参照。</p>
+</div>
+</div>
+  </div>
+</div>
+<div id="viewer-nav">
+  <a href="index.html">☰ Index</a>
+  <a href="courses_1868_modules_items_142159_106_Contracts.html" >← 前へ</a>
+  <span class="title">1.07 | Financial Intermediaries</span>
+  <a href="courses_1868_modules_items_142166_108_Securitizers_Depository_Institutions_and_Insurance_Companies.html" >次へ →</a>
+</div>
+
+<script id="viewer-interactive">
+(function() {
+
+  // ── Knowledge Check ──
+  // Use a single state map keyed by qc element
+  var qcStates = new Map();
+
+  document.querySelectorAll('.dp-qc').forEach(function(qc) {
+    var dts = Array.from(qc.querySelectorAll('dt.dp-qc-answer'));
+    if (!dts.length) return;
+
+    var state = { answered: false, selectedIdx: -1, dts: dts };
+    qcStates.set(qc, state);
+
+    var submitBtn = qc.querySelector('a.dp-qc-submit');
+    var dl = qc.querySelector('dl.dp-qc-answers');
+
+    var banner = document.createElement('div');
+    banner.className = 'qc-result-banner';
+    (submitBtn || dl).parentNode.insertBefore(banner, submitBtn || dl);
+
+    var resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'qc-reset-btn';
+    resetBtn.textContent = '↩ もう一度';
+    banner.after(resetBtn);
+
+    state.banner = banner;
+    state.resetBtn = resetBtn;
+    state.submitBtn = submitBtn;
+
+    resetBtn.addEventListener('click', function() { resetQc(qc); });
+  });
+
+  function selectAnswer(qc, idx) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.selectedIdx = idx;
+    s.dts.forEach(function(d) { d.classList.remove('qc-selected'); });
+    s.dts[idx].classList.add('qc-selected');
+  }
+
+  function revealAnswer(qc) {
+    var s = qcStates.get(qc);
+    if (!s || s.answered) return;
+    s.answered = true;
+
+    var idx = s.selectedIdx;
+    var correct = idx >= 0 && s.dts[idx].classList.contains('dp-qc-correct');
+
+    s.dts.forEach(function(dt, i) {
+      dt.classList.remove('qc-selected');
+      dt.style.pointerEvents = 'none';
+      var dd = dt.nextElementSibling;
+      if (dt.classList.contains('dp-qc-correct')) {
+        dt.classList.add('qc-correct-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      } else if (i === idx) {
+        dt.classList.add('qc-wrong-reveal');
+        if (dd) { dd.classList.remove('d-none'); dd.classList.add('qc-show'); }
+      }
+    });
+
+    s.banner.style.display = 'block';
+    s.banner.className = 'qc-result-banner ' + (correct ? 'correct' : 'wrong');
+    s.banner.textContent = idx < 0 ? '選択肢を選んでください' : (correct ? '✓ 正解！' : '✗ 不正解');
+    if (s.submitBtn) s.submitBtn.style.display = 'none';
+    s.resetBtn.style.display = 'inline-block';
+  }
+
+  function resetQc(qc) {
+    var s = qcStates.get(qc);
+    if (!s) return;
+    s.answered = false;
+    s.selectedIdx = -1;
+    s.dts.forEach(function(dt) {
+      dt.classList.remove('qc-selected', 'qc-correct-reveal', 'qc-wrong-reveal');
+      dt.style.pointerEvents = '';
+      var dd = dt.nextElementSibling;
+      if (dd) { dd.classList.remove('qc-show'); dd.classList.add('d-none'); }
+    });
+    s.banner.style.display = 'none';
+    s.resetBtn.style.display = 'none';
+    if (s.submitBtn) s.submitBtn.style.display = '';
+  }
+
+  // Single document-level delegation — catches taps anywhere inside dt or submit
+  document.addEventListener('click', function(e) {
+    var dt = e.target.closest('dt.dp-qc-answer');
+    var submit = e.target.closest('a.dp-qc-submit');
+    if (dt) {
+      var qc = dt.closest('.dp-qc');
+      var s = qcStates.get(qc);
+      if (s) selectAnswer(qc, s.dts.indexOf(dt));
+    } else if (submit) {
+      e.preventDefault();
+      var qc = submit.closest('.dp-qc');
+      if (qc) revealAnswer(qc);
+    }
+  });
+
+  // ── Flashcards ──
+  var cards = Array.from(document.querySelectorAll('.flashcard'));
+  if (!cards.length) return;
+
+  var current = 0;
+
+  cards.forEach(function(card) {
+    card.addEventListener('click', function() {
+      card.classList.toggle('flipped');
+    });
+  });
+
+  // Add hint under first card
+  cards[0].insertAdjacentHTML('afterend', '<p class="fc-hint">タップで裏面を表示</p>');
+
+  // Nav bar before first card
+  var nav = document.createElement('div');
+  nav.className = 'fc-nav';
+  nav.innerHTML =
+    '<button id="fc-prev" disabled>← 前へ</button>' +
+    '<span class="fc-counter" id="fc-count">1 / ' + cards.length + '</span>' +
+    '<button id="fc-next">次へ →</button>';
+  cards[0].parentNode.insertBefore(nav, cards[0]);
+
+  function show(n) {
+    cards[current].style.display = 'none';
+    cards[current].classList.remove('flipped');
+    current = n;
+    cards[current].style.display = '';
+    document.getElementById('fc-count').textContent = (current+1) + ' / ' + cards.length;
+    document.getElementById('fc-prev').disabled = current === 0;
+    document.getElementById('fc-next').disabled = current === cards.length - 1;
+  }
+
+  document.getElementById('fc-prev').addEventListener('click', function() {
+    if (current > 0) show(current - 1);
+  });
+  document.getElementById('fc-next').addEventListener('click', function() {
+    if (current < cards.length - 1) show(current + 1);
+  });
+
+})();
+</script>
+
+</body>
+</html>
