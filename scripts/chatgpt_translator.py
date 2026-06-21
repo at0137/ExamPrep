@@ -174,6 +174,76 @@ class ChatGPTTranslator:
         self._wait_for_completion()
         return self._last_response()
 
+    # Prompt for transcribing + translating a paper page image
+    _VISION_PROMPT = """\
+これは英語の学術論文の1ページの画像です。次のルールでMarkdownに変換してください。
+- 本文は自然な日本語に翻訳する（直訳調を避ける）。
+- 数式は LaTeX で書く。インラインは $...$、独立した式は $$...$$ を使う。式番号があれば \\tag{...} で残す。
+- 表は Markdown の表に変換し、セルの文字は和訳する。
+- 図・チャートは本文に取り込まず、その位置に `![図](figure)` と、その下に図キャプションの和訳を1行で書く。
+- ページ番号・ヘッダー・フッター・著者脚注の定型部分は出力しない。
+- 見出しは # / ## / ### で表現する。
+- 出力はMarkdown本体のみ。前置きや「以下が翻訳です」等の説明文は一切付けない。
+- メジャーでない固有名詞は和訳の右に (English) を併記する。"""
+
+    def translate_image(self, image_path) -> str:
+        """
+        論文ページ画像をChatGPTに添付し、転記+和訳+LaTeX化したMarkdownを返す。
+
+        Args:
+            image_path: ページ画像(PNG/JPG)のパス。
+
+        Returns:
+            Markdown文字列（数式はLaTeX）。
+        """
+        if self._page is None:
+            raise RuntimeError("Call start() or use as context manager first.")
+
+        self._call_count += 1
+        if self._call_count > 1 and self._call_count % self.reset_every == 1:
+            print("  (新しいチャットを開始...)")
+            self._new_chat()
+
+        self._send_with_image(self._VISION_PROMPT, str(image_path))
+        self._wait_for_completion()
+        return self._last_response()
+
+    def _send_with_image(self, text: str, image_path: str):
+        """画像を添付してプロンプトを送信する。"""
+        # ChatGPT の隠れた file input に直接ファイルを渡す（ボタン操作不要）
+        file_input = self._page.locator('input[type="file"]').first
+        file_input.set_input_files(image_path)
+
+        # サムネイルのアップロード完了を待つ（プレビュー画像が出る or 一定時間）
+        try:
+            self._page.wait_for_selector(
+                'img[alt*="アップロード"], img[src^="blob:"], [data-testid="attachment"]',
+                timeout=60000,
+            )
+        except PWTimeout:
+            pass
+        self._page.wait_for_timeout(1500)
+
+        box = self._page.locator(
+            '#prompt-textarea, [data-testid="prompt-textarea"]'
+        ).first
+        box.click()
+        box.fill(text)
+        self._page.wait_for_timeout(400)
+
+        # 送信ボタンが有効化される（アップロード処理中は無効）まで待ってクリック
+        send = self._page.locator(
+            '[data-testid="send-button"], button[aria-label="Send message"]'
+        ).first
+        for _ in range(60):
+            try:
+                if send.is_enabled():
+                    break
+            except Exception:
+                pass
+            self._page.wait_for_timeout(1000)
+        send.click()
+
     @staticmethod
     def login():
         """Open browser for one-time manual login, then save session."""

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[1987] A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix (Newey, West)</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+    options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+<style>
+  body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", sans-serif;
+         max-width: 820px; margin: 0 auto; padding: 16px 20px 64px;
+         color: #1a1a1a; line-height: 1.85; font-size: 16px; }
+  h1 { font-size: 22px; color: #1a3a5c; border-bottom: 2px solid #0770a3; padding-bottom: 8px; }
+  h2 { font-size: 19px; color: #0770a3; margin-top: 32px; }
+  h3 { font-size: 16px; color: #444; }
+  table { border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; }
+  img { max-width: 100%; }
+  mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
+  figure { margin: 16px 0; text-align: center; }
+  figcaption { font-size: 13px; color: #666; }
+  .pagemark { margin: 40px 0 4px; padding-top: 16px; border-top: 1px dashed #cfd8e0;
+               color: #9aa7b2; font-size: 12px; letter-spacing: .08em; }
+  .topbar { font-size: 13px; margin-bottom: 8px; }
+  .topbar a { color: #0770a3; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">☰ 論文一覧</a></div>
+<div id="content"></div>
+<script type="text/markdown" id="src"><div class="pagemark">p.001</div>
+
+NBER テクニカル・ペーパー・シリーズ (NBER TECHNICAL PAPER SERIES)
+
+# 単純で半正定値な、不均一分散および自己相関に頑健な共分散行列
+（A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix）
+
+ホイットニー・K・ニューウェイ (Whitney K. Newey)
+
+ケネス・D・ウェスト (Kenneth D. West)
+
+テクニカル・ワーキング・ペーパー No. 55 (Technical Working Paper No. 55)
+
+全米経済研究所 (NATIONAL BUREAU OF ECONOMIC RESEARCH)
+1050 Massachusetts Avenue
+Cambridge, MA 02138
+1986年4月
+
+本稿で報告される研究は、NBER の「景気変動 (Economic Fluctuations)」研究プログラムの一部である。本稿で示される見解はすべて著者個人のものであり、全米経済研究所のものではない。
+
+<div class="pagemark">p.002</div>
+
+NBER テクニカル・ペーパー #55
+1986年4月
+
+# 単純で半正定値な、不均一分散および自己相関に頑健な共分散行列
+（A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix）
+
+## 要旨 (ABSTRACT)
+
+本稿では、不均一分散 (heteroskedasticity) および自己相関 (autocorrelation) に対して頑健 (consistent) な共分散行列を、構成上つねに半正定値 (positive semi-definite) となるように計算する単純な方法を示す。さらに、かなり一般的な条件のもとで、この推定された共分散行列の一致性 (consistency) を確立する。
+
+ホイットニー・K・ニューウェイ (Whitney K. Newey)
+経済学部 (Department of Economics)
+プリンストン大学 (Princeton University)
+Princeton, NJ 08544
+
+ケネス・D・ウェスト (Kenneth D. West)
+ウッドロー・ウィルソン・スクール (Woodrow Wilson School)
+プリンストン大学 (Princeton University)
+Princeton, NJ 08544
+
+<div class="pagemark">p.003</div>
+
+# 単純で半正定値な、不均一分散および自己相関に頑健な共分散行列
+（A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix）
+
+ホイットニー・K・ニューウェイ (Whitney K. Newey)、ケネス・D・ウェスト (Kenneth D. West)
+
+プリンストン大学 (Princeton University)
+
+改訂 1986年2月
+
+近年の多くの合理的期待 (rational expectations) モデルは、ハンセン (Hansen, 1982)、ハンセンとシングルトン (Hansen and Singleton, 1982)、カンビー・ホイジンガ・オブストフェルド (Cumby, Huizinga, and Obstfeld, 1983)、ホワイトとドモウィッツ (White and Domowitz, 1984) によって開発された手法を用いて推定されてきた。これらの推定手法は、直交条件 (orthogonality condition) $Eh_t(\theta^*) = 0$ を利用するものである。ここで $\theta^*$ は未知パラメータの $(k \times 1)$ ベクトル、$h_t(\theta)$ はデータとパラメータの関数からなる $(r \times 1)$ ベクトルであり、$r \geq k$ である。この直交条件を用いることで、一般化モーメント法 (generalized method of moments, GMM)（ハンセン (Hansen, 1982)）による $\theta^*$ の推定量を構成できる。すなわち、推定量 $\hat{\theta}$ を次式の解として選ぶ。
+
+$$\min_\theta \; h_T(\theta)' \hat{W}_T h_T(\theta), \tag{1}$$
+
+ここで $h_T(\theta) = \sum_{t=1}^{T} h_t(\theta)/T$ は $h_t(\theta)$ の標本モーメント (sample moments) ベクトルであり、$\hat{W}_T$ は（場合により）確率的な対称重み付け行列 (weighting matrix) である。
+
+カンビー・ホイジンガ・オブストフェルド (Cumby, Huizinga, and Obstfeld, 1983)、ハンセン (Hansen, 1982)、ホワイトとドモウィッツ (White and Domowitz, 1984) が示したように、$\hat{\theta}$ の漸近共分散行列 (asymptotic covariance matrix) は次式で与えられる。
+
+$$V_T = (H_T' W_T H_T)^{-1} H_T' W_T S_T W_T H_T (H_T' W_T H_T)^{-1} \tag{2}$$
+
+ここで $H_T = \sum_{t=1}^{T} E[h_{t\theta}(\theta^*)]/T$ であり、$h_{t\theta}(\theta)$ は $h_t(\theta)$ の偏導関数からなる $(r \times k)$ 行列である。$W_T$ は $\mathrm{plim}\,(\hat{W}_T - W_T) = 0$ を満たす非確率的な行列であり、$S_T = \sum_{s=1}^{T}\sum_{t=1}^{T} E[h_t(\theta^*) h_s(\theta^*)']/T$ である。一致 (consistent) 推定…
+
+<div class="pagemark">p.004</div>
+
+…この漸近共分散行列の一致推定は、信頼区間 (confidence intervals) や仮説検定 (hypothesis tests) の構成に不可欠である。$H_T$ の推定と $W_T$ の推定は容易である。なぜなら $\hat{W}_T$ は $W_T$ の自然な推定量となり、ハンセン (Hansen, 1982) やホワイトとドモウィッツ (White and Domowitz, 1984) の正則条件 (regularity conditions) のもとで $H_T$ の自然な推定量も得られるからである。本稿が扱うのはこの点ではない。
+
+$S_T$ の推定はより難しく、本稿でも重要となるのはこの点である。最適 GMM 推定量（$\hat{W}_T = (\hat{S}_T)^{-1}$ ととれば $V_T$ が漸近的に最小化される、ジョン・ホイジンガ (John Huizinga) による未公表の議論を参照）を得るうえでも、$S_T$ の一致推定量は望ましい。しかし、最適 GMM 推定量を得るためのこの方法は、$\hat{S}_T$ が半正定値でなければ計算上の問題を引き起こすため、必ずしも最良ではない。
+
+$S_T$ の推定量で従来提案されてきた最も単純なものは、次の形をとる。
+
+$$\tilde{S}_T = \hat{\Omega}_0 + \sum_{j=1}^{m} [\hat{\Omega}_j + \hat{\Omega}_j'], \qquad \hat{\Omega}_j = \sum_{t=j+1}^{T} \hat{h}_t \hat{h}_{t-j}'/T, \tag{4}$$
+
+ここで $\hat{h}_t = h_t(\hat{\theta})$ である。$\tilde{S}_T$ を構成するのに用いる標本自己共分散 (sample autocovariances) $\hat{\Omega}_j$ の本数の上限 $m$ は、多くの研究において $h_t(\theta^*)$ の非ゼロ自己相関 (autocorrelations) の本数に等しく設定される。この本数は事前 (a priori) に既知である（例えば、カンビー・ホイジンガ・オブストフェルド (Cumby, Huizinga, and Obstfeld, 1983)、ハンセンとシングルトン (Hansen and Singleton, 1982)、ウェスト (West, 1986b) を参照）。標本サイズが大きくなるにつれて $m$ も大きくできるよう、$m$ を $T$ の関数として選ぶこともできる（ホワイトとドモウィッツ (White and Domowitz, 1984) および後述の定理2を参照）。
+
+$\tilde{S}_T$ は一致推定量であるものの、有限標本において $m$ が非ゼロのとき、これが $V_T$ の…
+
+<div class="pagemark">p.005</div>
+
+…中央の行列として用いるべき $\tilde{S}_T$ は、半正定値である必要はない。このことは重要である。なぜなら $\tilde{S}_T$ が漸近的に有効な信頼区間や仮説検定を構成するうえで、（最適 GMM 推定量においても）中央の行列が半正定値であることが望まれるからである。$\tilde{S}_T$ が半正定値でないと、推定された共分散行列も半正定値でなくなり得る。加えて、$\hat{W}_T = (\tilde{S}_T)^{-1}$ という推定量は、$\tilde{S}_T$ が半正定値でない場合に問題を生じ得るため、最適 GMM 推定量としても用いることはできない。
+
+時間領域 (time domain) の手法を用いて $S_T$ を計算するうえで、$\tilde{S}_T$ が半正定値となることが保証される推定量を提案する。スペクトル法 (spectral methods) による $S_T$ の推定は、アイヘンバウムとシングルトン (Eichenbaum and Singleton, 1984) や、カンビー・ホイジンガ・オブストフェルド (Cumby, Huizinga, and Obstfeld, 1983) によっても提案されてきた。これらの手法は実用上やや適用が難しいと思われる。ハンセン (Hansen, 1982) が示唆したように、$S_T$ の推定にはスペクトル法によって $S_T$ を周波数ゼロ (frequency zero) で評価する方法があり得るが、それが本稿の動機づけとなっている。
+
+時間領域の手法による $S_T$ の推定は、$S_T$ を推定するスペクトル法（周波数領域 (frequency domain) の手法）が煩雑であるのに対し、非常に有用であることが分かる。ウェスト (West, 1985) と同様に、$\tilde{S}_T$ と同程度に計算が単純な $S_T$ の推定量 $\hat{S}_T$ を考える。
+
+$$\hat{S}_T = \hat{\Omega}_0 + \sum_{j=1}^{m} w(j,m)[\hat{\Omega}_j + \hat{\Omega}_j'], \qquad w(j,m) = 1 - [j/(m+1)]. \tag{5}$$
+
+この推定量は、$h_t(\theta^*)$ のスペクトル密度 (spectral density) を周波数ゼロで評価した推定量の $2\pi$ 倍に数値的に等しく、修正バートレット重み (modified Bartlett weights) を用いて標本自己共分散関数を平滑化したものである。アンダーソン (Anderson, 1971, 第9.2節) を参照。なお、$\hat{S}_T$ は $\tilde{S}_T$ と同様の手順で得られるが、標本自己共分散が重み付けされる点だけが異なる。
+
+<div class="pagemark">p.006</div>
+
+$w(j,m) = 1 - [j/(m+1)]$ により重み付けされ、これは $j$ が大きくなるにつれて減少する。このような共分散の平滑化により、$\hat{S}_T$ は半正定値であることが保証される。これは次の定理1に述べる重要な性質である。
+
+## 定理1: $\hat{S}_T$ は半正定値である。
+
+**証明:** 任意の $(r \times 1)$ ベクトル $c$ に対して、$c'\hat{S}_T c = \omega_0 + 2\sum_{j=1}^{m} w(j,m) \omega(j)$ となる。ここで $\omega(j) = \sum_{t=j+1}^{T} (c'\hat{h}_t)(c'\hat{h}_{t-j})/T$、$(j=0, 1, \ldots, T-1)$ である。$P = [p_{ij}]$ を、$p_{ij} = \omega(|i-j|)$ を成分とする $(m+1)$ 次元の対称行列とする。$P$ の半正定値性は、マクラウドとヒメネス (McLeod and Jimenez, 1984) において証明されている。$e$ を要素がすべて1の $(m+1 \times 1)$ ベクトルとすると、次が成り立つ。
+
+$$c'\hat{S}_T c = e'Pe/(m+1) \geq 0. \tag{6}$$
+
+定理1の証明において、重み関数 $w(j,m)$ をどう選ぶかには他の選択肢もあり、それでもなお $S_T$ の半正定値な推定量を与え得る。証明中の1ベクトルを $(v(0,m), \ldots, v(m,m))$ で置き換える。ここで各 $v(j,m)$ は任意の数である。すると、次の重みの選び方が $S_T$ の半正定値な推定量を与えることが分かる。
+
+$$w(j,m) = \left[\sum_{\ell=0}^{m-j} v(\ell,m) v(\ell+j,m)\right]\Big/\left[\sum_{\ell=0}^{m} v(\ell,m)^2\right]. \tag{7}$$
+
+また、$w(j,m)$ が、単変量時系列について非負のスペクトル密度推定量を生成するような重み関数となるように選ばれるならば、結果として得られる $S_T$ の推定量も半正定値となる。アンダーソン (Anderson, 1971, 第9.2節) では、不均一分散および自己相関に頑健な共分散行列とは異なる文脈で重み付けの選択を論じている。本稿でも後述するように、正則条件に関しては異なる集合を考える。ガラント (Gallant, 1985) は重みの選択を論じ、いくつかの結果を示している。
+
+<div class="pagemark">p.007</div>
+
+$m$ を固定したとき、$j$ の重み $w(j,m) = 1 - [j/(m+1)]$ は、$m$ が大きくなるにつれて 1 に近づく。したがって、$S_T$ の推定量が、これらの重みを用いた標本自己共分散を平滑化することによって得られると予想するのは妥当であり、このアプローチは標本サイズとともに $m$ が大きくなるときに有効である。整合性 (consistency) が成り立つための条件は、観測値間の距離が大きくなるにつれて、データ生成過程における依存性が弱まっていくこと（混合条件 (mixing condition)）である。行列 $A = [a_{ij}]$ に対し、そのノルムを $\max_{i,j} |a_{ij}|$ と表す。
+
+**定理 2 (Theorem 2)** 次を仮定する。
+
+(i) $h_t(\theta) = h(z_t, \theta)$ であり、ここで $h(z, \theta)$ はすべての $\theta$ に対して $z$ について可測 (measurable) であり、すべての $\theta$ について確率 1 で $\theta$ の近傍において微分可能である。
+
+(ii) (a) ある有限な $m(z)$ について、確率 1 ですべての $t$ に対して $\sup_\theta |h_t(\theta)| < m(z)$ かつ $\sup_\theta |h_{t\theta}(\theta)| < m(z)$ であり、$E[m(z_t)^2] < D$ がある有限の定数 $D$ について成り立つ。
+
+(b) ある定数 $b, \delta > 0$ について、すべての $t$ と $r \geq 1$ に対して $E[|h_t(\theta^*)|^{4(r+\delta)}] < D$ となるものが存在する。
+
+(iii) $z_t$ は混合系列 (mixing sequence) であり、すべての各 $j$ について $\alpha(j)$ がある有限の $D > 0$ に対して $\sum_j j^2 \alpha(j)^{1-1/r} < D$ を満たすか、あるいは $\phi(j)$ が $\sum_j j^2 \phi(j)^{1-1/(2r)} < D$ を満たす。
+
+(iv) すべての $t$ に対して $E[h_t(\theta^*)] = 0$ であり、$\sqrt{T}(\hat{\theta} - \theta^*)$ は確率有界 (bounded in probability) である。
+
+(v) 重み $w(j,m)$（$m = 1, 2, \dots, \ j = 1, \dots, m$）は $|w(j,m)| \leq C$ を満たし、$m$ は $T$ の関数 $m(T)$ として選ばれて、$\lim_{T \to \infty} m(T) = +\infty$ かつ $\lim_{T \to \infty} [m(T)/T^{1/4}] = 0$ を満たす。
+
+このとき、次が成り立つ。
+
+<div class="pagemark">p.008</div>
+
+$$
+\hat{S}_T = \hat{\Omega}_0 + \sum_{j=1}^{m(T)} w(j, m(T)) [\hat{\Omega}_j + \hat{\Omega}_j'] - S_T \xrightarrow{p} 0. \tag{8}
+$$
+
+定理 2 の証明は付録 (appendix) に与えられている。
+
+定理 2 の仮定は、$h_t(\theta)$ と $h_\theta(\theta)$ が一様有界な 2 次モーメント (uniformly bounded second moment) によって支配されること、$h_t(\theta^*)$ が一様有界なやや高次のモーメント (somewhat higher moment) をもつこと、そして観測値間の距離が大きくなるにつれてデータ生成過程の依存性が弱まること、を要求している。整合性 (consistency) は、もし $m(T)$ が $T$ とともに無限大に発散する速度が十分にゆっくりであれば成り立つ。
+
+ここで、$m$ を $w(j,m)$ が各 $j$ について 1 に等しくなるように選ぶと、本稿で考えている式 (4) の推定量 $\hat{S}_T$ ではなく、White and Domowitz (1984) によって考えられた特別なケースが得られることに注意する。本稿の整合性に関する結果は、いくつかの点で White and Domowitz (1984) のものと異なる。第一に、$\hat{\theta}$ が $T^{1/4}$ よりもゆっくりと増大すること、すなわち打ち切りパラメータ (truncation parameter) を選ぶことに関して、彼らの結果よりもわずかに弱い仮定を必要とする点である。
+
+$m(T)$ の増大率を選ぶことは、$h_t(\theta)$ のモーメントの増大率に大きく依存し、それゆえ整合性に関する一般的な結果からは将来の研究にとって有益な実用上の助言はほとんど得られない。もし将来の応用において、ここで提案された推定量に対して、より低次のモーメント条件のもとで $m$ をより速く増大させることが許されるなら、それは有益であろう。
+
+White and Domowitz (1984) の整合性に関する結果が成り立つためには、$\hat{\theta}$ の選択について比較的弱い仮定のもとで $m$ が $T^{1/4}$ より速く増大することが許されるとよい。さらに、$h_t$ における非線形性 (nonlinearity) を許容することも有益であろう。
+
+無限次移動平均 (infinite order moving average) を許容する整合性結果のための強い仮定の一つは、データ生成過程が有限の 4 次モーメント (finite fourth moments) をもち、独立同分布 (i.i.d.) の新規撹乱項 (innovations) を伴うことである。Theorem 1.2.2 の Fuller (1976) に示せるように、$m(T)$ が $T^{1/2}$ より速く増大しなければ $\hat{S}_T$ の整合性のために $m$ を選ぶことができる。一方で、Theorem 1.2.2 の Fuller (1976) で示されるように、整合性のためには $\hat{S}_T$ で十分である。
+
+<div class="pagemark">p.009</div>
+
+## 定理 2 の証明 (PROOF OF THEOREM 2)
+
+対称行列の列 $\{A_T\}$ が対称行列 $A_0$ に収束するのは、すべての適合的なベクトル (conformable vectors) $c$ について $c'A_T c \to c'A_0 c$ が成り立つとき、かつそのときに限る。そこで、線形結合 $c'\hat{h}_t$（ここで例えば $|c'\hat{h}_t| \leq r|c||\hat{h}_t|$）を考えれば、$r = 1$ のスカラーの場合に注意を限定することができる。
+
+$$
+\bar{S}_T = \sum_{t=1}^{T} \hat{h}_t^2 \Big/ T + 2\sum_{j=1}^{m} w(j,m) \sum_{t=j+1}^{T} \hat{h}_t \hat{h}_{t-j}\Big/T, \qquad h_t = h_t(\theta^*)
+$$
+
+とおく。表記の簡便のため、$\hat{h}_t$ における $T$ の引数は省略する。このとき、三角不等式 (triangle inequality) と $\hat{S}_T$ の形から次が従う。
+
+<div class="pagemark">p.010</div>
+
+$$
+|\bar{S}_T - S_T| \leq
+$$
+
+$$
+\Big|\bar{S}_T - \big[\sum_{t=1}^{T} h_t^2 + 2\sum_{j=1}^{m} w(j,m) \sum_{t=j+1}^{T} h_t h_{t-j}\big]\Big/T\Big|
+$$
+
+$$
++ \Big|\big[\sum_{t=1}^{T}(h_t^2 - E[h_t^2]) + 2\sum_{j=1}^{m} w(j,m) \sum_{t=j+1}^{T}(h_t h_{t-j} - E[h_t h_{t-j}])\big]\Big/T\Big|
+$$
+
+$$
++ \Big|\big[\sum_{t=1}^{T} E[h_t^2] + 2\sum_{j=1}^{m} w(j,m) \sum_{t=j+1}^{T} E[h_t h_{t-j}]\big]\Big/T - S_T\Big| \tag{9}
+$$
+
+第二の項について、
+
+$$
+\Big|\big[\sum_{t=1}^{T}(h_t^2 - E[h_t^2]) + 2\sum_{j=1}^{m} w(j,m) \sum_{t=j+1}^{T}(h_t h_{t-j} - E[h_t h_{t-j}])\big]\Big/T\Big|
+$$
+
+$$
+\leq \Big|\sum_{t=1}^{T}(h_t^2 - E[h_t^2])\Big/T\Big| + 2\sum_{j=1}^{m}|w(j,m)| \cdot \Big|\sum_{t=j+1}^{T}(h_t h_{t-j} - E[h_t h_{t-j}])\Big/T\Big|.
+$$
+
+式 (9) の第三の項が $T \to \infty$ のとき 0 に収束することは、Lemma 6.17（White (1984) の 153 ページ）から従う。
+
+<div class="pagemark">p.011</div>
+
+が確率的に 0 に収束する。とはいえ、（本稿の表記で）White (1984) の 153 ページにある二重和を、正しく添字付けされた和 $\sum_{t=j+1}^{T} \tilde{h}_t \tilde{h}_{t-j}$ で置き換え、White (1984) の Lemma 6.19 の証明と同じ議論を適用すると、$0$ から $T$ までのすべての $j$、およびすべての $T$ に対して、次を満たす有限の定数 $D^*$ が存在することがわかる。
+
+$$
+E\Big(\big[\sum_{t=j+1}^{T} Z_{tj}\big]^2\Big) \leq (T - j)(j+1)D^* \leq T(j+1)D^*, \qquad j \geq 0. \tag{10}
+$$
+
+ここで $Z_{tj} = h_t h_{t-j} - E[h_t h_{t-j}]$ である。$w(j,m)$ が $C$ で一様有界であることから $\sum_{j=1}^{m}|w(j,m)| \leq mC$ が従う。すると、任意の $\epsilon > 0$ について、三角不等式、含意則 (implication rule)（すなわち、事象 $A$ の発生が事象 $B$ の発生を含意するならば $\Pr(A) \leq \Pr(B)$ となること）、複数の事象の和事象の確率がそれらの確率の和以下であるという事実、チェビシェフの不等式 (Chebyshev's inequality)、および式 (10) から、次が成り立つ。
+
+$$
+\Pr\Big(\big|\sum_{j=1}^{m} w(j,m) \sum_{t=j+1}^{T} Z_{tj}\big|\Big/T > \epsilon\Big) \leq \Pr\Big(\sum_{j=1}^{m}|w(j,m)| \,\big|\sum_{t=j+1}^{T} Z_{tj}\big/T\big| > \epsilon\Big)
+$$
+
+$$
+\leq \sum_{j=1}^{m} \Pr\Big(\big|\sum_{t=j+1}^{T} Z_{tj}\big/T\big| > \epsilon/Cm\Big)
+$$
+
+$$
+\leq \sum_{j=1}^{m} (Cm/\epsilon)^2 D^* (j+1)\Big/T = D^* C^2 m^3 (m+3)\Big/(2\epsilon^2 T). \tag{11}
+$$
+
+このとき、$m$ が $T^{1/4}$ よりもゆっくりと増大するという事実、$\sum_{t=1}^{T}(h_t^2 - E[h_t^2])/T$ に適用した式 (10)（$j=0$ の場合）、および三角不等式から、式 (9) の第二の項は確率的に 0 に収束する。
+
+最後に、$m$ が増大するにつれて、確率 1 に近づくとともに $\bar{S}_T$ の $\theta^*$ のまわりでの平均値展開 (mean value expansion) を得ることが可能となる。$\tilde{h}_t = h_t(\tilde{\theta})$、$\tilde{h}_{t\theta} = h_{t\theta}(\tilde{\theta})$ とおく。ここで $\tilde{\theta}$ はこの展開における平均値 (mean value) である。このとき、確率 1 に近づくとともに、式 (9) の不等式の後の第一の項について次が成り立つ。
+
+<div class="pagemark">p.012</div>
+
+式 (9) の第一の項は、次のように書ける。
+
+$$
+2\Big[\sum_{t=1}^{T} \tilde{h}_t \tilde{h}_{t\theta} + \sum_{j=1}^{m} w(j,m) \sum_{t=j+1}^{T} \{\tilde{h}_t \tilde{h}_{t-j,\theta} + \tilde{h}_{t-j} \tilde{h}_{t\theta}\}\Big](\hat{\theta} - \theta^*)\Big|\Big/T
+$$
+
+$$
+\leq 2\Big[\sum_{t=1}^{T} m(z_t)^2 + \sum_{j=1}^{m} |w(j,m)| \sum_{t=j+1}^{T} 2m(z_t)m(z_{t-j})\Big] \cdot |\hat{\theta} - \theta^*|\Big/T
+$$
+
+$$
+\leq 2\Big[\sum_{t=1}^{T} m(z_t)^2 + \sum_{j=1}^{m} |w(j,m)| \sum_{t=j+1}^{T} \{m(z_t)^2 + m(z_{t-j})^2\}\Big] \cdot |\hat{\theta} - \theta^*|\Big/T
+$$
+
+$$
+\leq 2\big[(2Cm + 1)/\sqrt{T}\big] \cdot \Big[\sum_{t=1}^{T} m(z_t)^2\Big/T\Big] \cdot \sqrt{T}|\hat{\theta} - \theta^*|.
+$$
+
+ここで、$\sqrt{T}|\hat{\theta} - \theta^*|$ は仮定 (iv) によって確率有界 (bounded in probability) であり、また $\sum_{t=1}^{T} m(z_t)^2/T$ はマルコフの不等式 (Markov's inequality) と仮定 (ii)(a) によって確率有界であることに注意する。さらに、$m$ が $T^{1/4}$ よりもゆっくりと増大するという事実から $(2Cm + 1)/\sqrt{T}$ が 0 に収束するため、式 (9) の第一の項は確率的に 0 に収束する。
+
+結論はいまや式 (9) から従う。なぜなら、二番目の不等式の右辺の各項が確率的に 0 に収束することを示したからである。
+
+<div class="pagemark">p.013</div>
+
+# 脚注 (Footnotes)
+
+1. Stephen Cecchetti、Lars Hansen、John Huizinga の各氏、ならびに2名の査読者から有益なコメントをいただいたことに感謝する。また、研究助成 SES-8410249 および SES-8511070 を通じて支援をいただいた NSF にも感謝する。
+
+2. Doan and Litterman (1983) は、$S_T$ が半正定値であることを主張も証明もしておらず、また一致性 (consistency) も確立していない。
+
+3. Gallant (1985) の論文は、本ノートを投稿した後に著者らの目に留まったものである。
+
+<div class="pagemark">p.014</div>
+
+# References
+
+Anderson, T. W., The Statistical Analysis of Time Series, New York: John Wiley and Sons, 1971.
+
+Cumby, R. E., J. Huizinga, and M. Obstfeld, "Two-Step Two-Stage Least Squares Estimation in Models with Rational Expectations," Journal of Econometrics, 21 (1983), 333-355.
+
+Doan, T. A. and R. B. Litterman, RATS User's Manual, Minneapolis: VAR Econometrics, 1983.
+
+Eichenbaum, M. S., L. P. Hansen, and K. J. Singleton, "A Time Series Analysis of Representative Agent Models of Consumption and Leisure Choice under Uncertainty," manuscript, 1985.
+
+Fuller, W. A., Introduction to Statistical Time Series, New York: John Wiley and Sons, 1976.
+
+Gallant, A. R., "Dynamic Nonlinear Models," Ch. 9 of Nonlinear Statistical Models, North Carolina State University, Institute of Statistics Mimeograph Series No. 1667, July 1985.
+
+Hansen, L. P., "Large Sample Properties of Generalized Method of Moments Estimators," Econometrica, 50 (1982), 1029-1054.
+
+Hansen, L. P. and K. J. Singleton, "Generalized Instrumental Variable Estimation of Nonlinear Rational Expectations Models," Econometrica, 50 (1982), 1269-1286.
+
+McLeod, A. I. and W. K. Li, "Diagnostic Checking ARMA Time Series Models Using Squared-Residual Autocorrelations," Journal of Time Series Analysis, 4 (1983), 269-273.
+
+West, K. D., "A Specification Test for Speculative Bubbles," Princeton University Financial Research Memorandum No. 58, 1985.
+
+West, K. D., "A Variance Bounds Test of the Linear-Quadratic Inventory Model," Journal of Political Economy, forthcoming, 1986a.
+
+West, K. D., "Dividend Innovations and Stock Price Volatility," manuscript, 1986b.
+
+Whitt, D. and S. Wold, "A Completely Automatic French Curve: Fitting Spline Functions in a Cross Validation," Communications in Statistics, 4 (1975), 1-17.
+
+White, H. and I. Domowitz, "Nonlinear Regression with Dependent Observations," Econometrica, 52 (1984), 143-161.
+
+White, H., Asymptotic Theory for Econometricians, New York: Academic Press, 1984.</script>
+<script>
+  (function () {
+    var src = document.getElementById('src').textContent;
+    var store = [];
+    function keep(m) { store.push(m); return '@@MJX' + (store.length - 1) + '@@'; }
+    // marked が数式内の _ * \ を壊さないよう、変換前に数式を退避する
+    src = src.replace(/\$\$[\s\S]+?\$\$/g, keep)   // $$...$$
+             .replace(/\\\[[\s\S]+?\\\]/g, keep) // \[...\]
+             .replace(/\\\([\s\S]+?\\\)/g, keep) // \(...\)
+             .replace(/\$(?:\\.|[^\$\n])+?\$/g, keep); // $...$ (1行内)
+    var out = marked.parse(src);
+    out = out.replace(/@@MJX(\d+)@@/g, function (_, i) { return store[+i]; });
+    document.getElementById('content').innerHTML = out;
+    if (window.MathJax && MathJax.typesetPromise) { MathJax.typesetPromise(); }
+  })();
+</script>
+</body>
+</html>
